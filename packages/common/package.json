@@ -1,0 +1,39 @@
+{
+  "name": "@composable-router/common",
+  "version": "0.1.0",
+  "description": "Composable Router Common SDK",
+  "keywords": [
+    "composable-router"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dinngodev/router-sdk.git",
+    "directory": "packages/common"
+  },
+  "license": "MIT",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/**/*"
+  ],
+  "scripts": {
+    "build": "rm -rf dist && tsc -p tsconfig.build.json && tsc-alias -p tsconfig.build.json",
+    "format": "yarn sort-package-json",
+    "lint": "eslint --fix src",
+    "prepublishOnly": "yarn build",
+    "test": "mocha",
+    "test:e2e": "hardhat test",
+    "test:unit": "mocha --recursive src"
+  },
+  "dependencies": {
+    "@types/lodash": "^4.14.191",
+    "bignumber.js": "^9.1.1",
+    "ethers": "^5.7.2",
+    "lodash": "^4.17.21",
+    "tiny-invariant": "^1.3.1",
+    "type-fest": "^3.6.0"
+  },
+  "devDependencies": {
+    "@composable-router/test-helpers": "*"
+  }
+}

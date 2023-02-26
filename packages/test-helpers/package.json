@@ -1,0 +1,41 @@
+{
+  "name": "@composable-router/test-helpers",
+  "version": "0.1.0",
+  "description": "Composable Router Test Helpers SDK",
+  "keywords": [
+    "composable-router"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dinngodev/router-sdk.git",
+    "directory": "packages/common"
+  },
+  "license": "MIT",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/**/*"
+  ],
+  "scripts": {
+    "build": "rm -rf dist && tsc -p tsconfig.build.json && tsc-alias -p tsconfig.build.json",
+    "format": "yarn sort-package-json",
+    "lint": "eslint --fix src",
+    "prepublishOnly": "yarn build",
+    "test:e2e": "hardhat test"
+  },
+  "devDependencies": {
+    "@composable-router/common": "*"
+  },
+  "peerDependencies": {
+    "@composable-router/common": "^0.1.0",
+    "@nomicfoundation/hardhat-chai-matchers": "^1.0.6",
+    "@nomicfoundation/hardhat-network-helpers": "^1.0.8",
+    "@nomiclabs/hardhat-ethers": "^2.2.2",
+    "@types/chai": "^4.3.4",
+    "@types/mocha": "^10.0.1",
+    "chai": "^4.3.7",
+    "ethers": "^5.7.2",
+    "hardhat": "^2.12.7",
+    "mocha": "^10.2.0"
+  }
+}

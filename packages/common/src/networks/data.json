@@ -1,0 +1,112 @@
+[
+  {
+    "id": "mainnet",
+    "chainId": 1,
+    "name": "Ethereum",
+    "explorerUrl": "https://etherscan.io/",
+    "rpcUrl": "https://rpc.ankr.com/eth",
+    "nativeToken": {
+      "chainId": 1,
+      "address": "0x0000000000000000000000000000000000000000",
+      "decimals": 18,
+      "symbol": "ETH",
+      "name": "Ethereum"
+    },
+    "wrappedNativeToken": {
+      "chainId": 1,
+      "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+      "decimals": 18,
+      "symbol": "WETH",
+      "name": "Wrapped Ether"
+    },
+    "multicall2Address": "0x5BA1e12693Dc8F9c48aAD8770482f4739bEeD696"
+  },
+  {
+    "id": "polygon",
+    "chainId": 137,
+    "name": "Polygon",
+    "explorerUrl": "https://polygonscan.com/",
+    "rpcUrl": "https://rpc.ankr.com/polygon",
+    "nativeToken": {
+      "chainId": 137,
+      "address": "0x0000000000000000000000000000000000001010",
+      "decimals": 18,
+      "symbol": "MATIC",
+      "name": "Matic Token"
+    },
+    "wrappedNativeToken": {
+      "chainId": 137,
+      "address": "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270",
+      "decimals": 18,
+      "symbol": "WMATIC",
+      "name": "Wrapped Matic Token"
+    },
+    "multicall2Address": "0x275617327c958bD06b5D6b871E7f491D76113dd8"
+  },
+  {
+    "id": "arbitrum",
+    "chainId": 42161,
+    "name": "Arbitrum",
+    "explorerUrl": "https://arbiscan.io/",
+    "rpcUrl": "https://rpc.ankr.com/arbitrum",
+    "nativeToken": {
+      "chainId": 42161,
+      "address": "0x0000000000000000000000000000000000000000",
+      "decimals": 18,
+      "symbol": "ETH",
+      "name": "Ethereum"
+    },
+    "wrappedNativeToken": {
+      "chainId": 42161,
+      "address": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      "decimals": 18,
+      "symbol": "WETH",
+      "name": "Wrapped Ether"
+    },
+    "multicall2Address": "0x80C7DD17B01855a6D2347444a0FCC36136a314de"
+  },
+  {
+    "id": "optimism",
+    "chainId": 10,
+    "name": "Optimism",
+    "explorerUrl": "https://optimistic.etherscan.io/",
+    "rpcUrl": "https://rpc.ankr.com/optimism",
+    "nativeToken": {
+      "chainId": 10,
+      "address": "0x0000000000000000000000000000000000000000",
+      "decimals": 18,
+      "symbol": "ETH",
+      "name": "Ethereum"
+    },
+    "wrappedNativeToken": {
+      "chainId": 10,
+      "address": "0x4200000000000000000000000000000000000006",
+      "decimals": 18,
+      "symbol": "WETH",
+      "name": "Wrapped Ether"
+    },
+    "multicall2Address": "0x2DC0E2aa608532Da689e89e237dF582B783E552C"
+  },
+  {
+    "id": "avalanche",
+    "chainId": 43114,
+    "name": "Avalanche",
+    "explorerUrl": "https://snowtrace.io/",
+    "rpcUrl": "https://rpc.ankr.com/avalanche",
+    "nativeToken": {
+      "chainId": 43114,
+      "address": "0x0000000000000000000000000000000000000000",
+      "decimals": 18,
+      "symbol": "AVAX",
+      "name": "Avalanche"
+    },
+    "wrappedNativeToken": {
+      "chainId": 43114,
+      "address": "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
+      "decimals": 18,
+      "symbol": "WAVAX",
+      "name": "Wrapped AVAX"
+    },
+    "multicall2Address": "0xdDCbf776dF3dE60163066A5ddDF2277cB445E0F3"
+  }
+]

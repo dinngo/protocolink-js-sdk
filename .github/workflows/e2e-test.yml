@@ -1,0 +1,31 @@
+name: E2E Test
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  run-e2e-test:
+    name: Run e2e test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Build packages
+        run: |
+          yarn workspace @composable-router/common build
+          yarn workspace @composable-router/core build
+          yarn workspace @composable-router/test-helpers build
+          yarn workspace @composable-router/api build
+
+      - name: Run e2e test
+        run: yarn test:e2e
