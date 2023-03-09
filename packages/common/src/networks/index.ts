@@ -44,6 +44,7 @@ export enum ChainId {
   arbitrum = 42161,
   optimism = 10,
   avalanche = 43114,
+  fantom = 250,
 }
 
 export enum NetworkId {
@@ -52,6 +53,7 @@ export enum NetworkId {
   arbitrum = 'arbitrum',
   optimism = 'optimism',
   avalanche = 'avalanche',
+  fantom = 'fantom',
 }
 
 export function isSupportedChainId(chainId: number) {

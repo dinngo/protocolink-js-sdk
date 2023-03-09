@@ -108,5 +108,27 @@
       "name": "Wrapped AVAX"
     },
     "multicall2Address": "0xdDCbf776dF3dE60163066A5ddDF2277cB445E0F3"
+  },
+  {
+    "id": "fantom",
+    "chainId": 250,
+    "name": "Fantom",
+    "explorerUrl": "https://ftmscan.com/",
+    "rpcUrl": "https://rpc.ankr.com/fantom",
+    "nativeToken": {
+      "chainId": 250,
+      "symbol": "FTM",
+      "name": "Fantom",
+      "address": "0x0000000000000000000000000000000000000000",
+      "decimals": 18
+    },
+    "wrappedNativeToken": {
+      "chainId": 250,
+      "symbol": "WFTM",
+      "name": "Wrapped Fantom",
+      "address": "0x21be370D5312f44cB42ce377BC9b8a0cEF1A4C83",
+      "decimals": 18
+    },
+    "multicall2Address": "0xD98e3dBE5950Ca8Ce5a4b59630a5652110403E5c"
   }
 ]
