@@ -13,24 +13,33 @@ import type {
   PopulatedTransaction,
   Signer,
   utils,
-} from 'ethers';
-import type { FunctionFragment, Result } from '@ethersproject/abi';
-import type { Listener, Provider } from '@ethersproject/providers';
-import type { TypedEventFilter, TypedEvent, TypedListener, OnEvent, PromiseOrValue } from './common';
+} from "ethers";
+import type { FunctionFragment, Result } from "@ethersproject/abi";
+import type { Listener, Provider } from "@ethersproject/providers";
+import type {
+  TypedEventFilter,
+  TypedEvent,
+  TypedListener,
+  OnEvent,
+  PromiseOrValue,
+} from "./common";
 
 export interface WETHInterface extends utils.Interface {
   functions: {
-    'deposit()': FunctionFragment;
-    'withdraw(uint256)': FunctionFragment;
+    "deposit()": FunctionFragment;
+    "withdraw(uint256)": FunctionFragment;
   };
 
-  getFunction(nameOrSignatureOrTopic: 'deposit' | 'withdraw'): FunctionFragment;
+  getFunction(nameOrSignatureOrTopic: "deposit" | "withdraw"): FunctionFragment;
 
-  encodeFunctionData(functionFragment: 'deposit', values?: undefined): string;
-  encodeFunctionData(functionFragment: 'withdraw', values: [PromiseOrValue<BigNumberish>]): string;
+  encodeFunctionData(functionFragment: "deposit", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "withdraw",
+    values: [PromiseOrValue<BigNumberish>]
+  ): string;
 
-  decodeFunctionResult(functionFragment: 'deposit', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'withdraw', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "deposit", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "withdraw", data: BytesLike): Result;
 
   events: {};
 }
@@ -48,9 +57,13 @@ export interface WETH extends BaseContract {
     toBlock?: string | number | undefined
   ): Promise<Array<TEvent>>;
 
-  listeners<TEvent extends TypedEvent>(eventFilter?: TypedEventFilter<TEvent>): Array<TypedListener<TEvent>>;
+  listeners<TEvent extends TypedEvent>(
+    eventFilter?: TypedEventFilter<TEvent>
+  ): Array<TypedListener<TEvent>>;
   listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(eventFilter: TypedEventFilter<TEvent>): this;
+  removeAllListeners<TEvent extends TypedEvent>(
+    eventFilter: TypedEventFilter<TEvent>
+  ): this;
   removeAllListeners(eventName?: string): this;
   off: OnEvent<this>;
   on: OnEvent<this>;
@@ -58,7 +71,9 @@ export interface WETH extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
-    deposit(overrides?: PayableOverrides & { from?: PromiseOrValue<string> }): Promise<ContractTransaction>;
+    deposit(
+      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
 
     withdraw(
       wad: PromiseOrValue<BigNumberish>,
@@ -66,7 +81,9 @@ export interface WETH extends BaseContract {
     ): Promise<ContractTransaction>;
   };
 
-  deposit(overrides?: PayableOverrides & { from?: PromiseOrValue<string> }): Promise<ContractTransaction>;
+  deposit(
+    overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
 
   withdraw(
     wad: PromiseOrValue<BigNumberish>,
@@ -76,13 +93,18 @@ export interface WETH extends BaseContract {
   callStatic: {
     deposit(overrides?: CallOverrides): Promise<void>;
 
-    withdraw(wad: PromiseOrValue<BigNumberish>, overrides?: CallOverrides): Promise<void>;
+    withdraw(
+      wad: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<void>;
   };
 
   filters: {};
 
   estimateGas: {
-    deposit(overrides?: PayableOverrides & { from?: PromiseOrValue<string> }): Promise<BigNumber>;
+    deposit(
+      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
 
     withdraw(
       wad: PromiseOrValue<BigNumberish>,
@@ -91,7 +113,9 @@ export interface WETH extends BaseContract {
   };
 
   populateTransaction: {
-    deposit(overrides?: PayableOverrides & { from?: PromiseOrValue<string> }): Promise<PopulatedTransaction>;
+    deposit(
+      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
 
     withdraw(
       wad: PromiseOrValue<BigNumberish>,

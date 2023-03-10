@@ -1,5 +1,5 @@
 import { BigNumberish, constants } from 'ethers';
-import { IRouter } from './contracts/Router';
+import { IParam } from './contracts/Router';
 import * as common from '@composable-router/common';
 import invariant from 'tiny-invariant';
 
@@ -9,7 +9,7 @@ export interface NewLogicInputOptions {
   amountOffset?: BigNumberish;
 }
 
-export function newLogicInput(options: NewLogicInputOptions): IRouter.InputStruct {
+export function newLogicInput(options: NewLogicInputOptions): IParam.InputStruct {
   const { input } = options;
 
   let amountBps: BigNumberish;
@@ -26,37 +26,15 @@ export function newLogicInput(options: NewLogicInputOptions): IRouter.InputStruc
   return { token: input.token.elasticAddress, amountBps, amountOrOffset };
 }
 
-export interface NewLogicOutputOptions {
-  output: common.TokenAmount;
-  slippage?: number;
-}
-
-export function newLogicOutput(options: NewLogicOutputOptions): IRouter.OutputStruct {
-  const { output, slippage = 0 } = options;
-
-  return {
-    token: output.token.elasticAddress,
-    amountMin: slippage ? common.calcSlippage(output.amountWei, slippage) : output.amountWei,
-  };
-}
-
 export interface NewLogicOptions {
   to: string;
   data: string;
-  inputs?: IRouter.InputStruct[];
-  outputs?: IRouter.OutputStruct[];
+  inputs?: IParam.InputStruct[];
   approveTo?: string;
   callback?: string;
 }
 
 export function newLogic(options: NewLogicOptions) {
-  const {
-    to,
-    data,
-    inputs = [],
-    outputs = [],
-    approveTo = constants.AddressZero,
-    callback = constants.AddressZero,
-  } = options;
-  return { to, data, inputs, outputs, approveTo, callback };
+  const { to, data, inputs = [], approveTo = constants.AddressZero, callback = constants.AddressZero } = options;
+  return { to, data, inputs, approveTo, callback };
 }

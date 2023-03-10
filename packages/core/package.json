@@ -20,7 +20,8 @@
     "build": "rm -rf dist && tsc -p tsconfig.build.json && tsc-alias -p tsconfig.build.json",
     "format": "yarn sort-package-json",
     "lint": "eslint --fix src",
-    "prepublishOnly": "yarn build"
+    "prepublishOnly": "yarn build",
+    "typechain": "typechain --target ethers-v5 --out-dir src/contracts src/abis/*.json"
   },
   "dependencies": {
     "ethers": "^5.7.2",

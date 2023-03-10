@@ -1,4 +1,4 @@
-import { IRouter } from './contracts/Router';
+import { IParam } from './contracts/Router';
 import * as common from '@composable-router/common';
 import path from 'path';
 
@@ -10,7 +10,7 @@ export abstract class Logic extends common.Web3Toolkit {
     return `${this.protocol}:${this.id}`;
   }
 
-  abstract getLogic(fields: any, options?: any): Promise<IRouter.LogicStruct>;
+  abstract getLogic(fields: any, options?: any): Promise<IParam.LogicStruct>;
 }
 
 export interface LogicInterfaceGetSupportedTokens {

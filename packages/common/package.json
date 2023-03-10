@@ -23,7 +23,8 @@
     "prepublishOnly": "yarn build",
     "test": "mocha",
     "test:e2e": "hardhat test",
-    "test:unit": "mocha --recursive src"
+    "test:unit": "mocha --recursive src",
+    "typechain": "typechain --target ethers-v5 --out-dir src/contracts src/abis/*.json"
   },
   "dependencies": {
     "@types/lodash": "^4.14.191",

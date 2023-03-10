@@ -1,12 +1,12 @@
 import { BigNumberish } from 'ethers';
-import { IRouter } from './contracts/Router';
+import { IParam } from './contracts/Router';
 import { Router__factory } from './contracts';
 import * as common from '@composable-router/common';
 import { getContractAddress } from './config';
 
 export interface NewRouterExecuteTransactionOptions {
   chainId: number;
-  routerLogics: IRouter.LogicStruct[];
+  routerLogics: IParam.LogicStruct[];
   tokensReturn?: string[];
   value?: BigNumberish;
 }
