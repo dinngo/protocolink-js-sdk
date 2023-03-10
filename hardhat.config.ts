@@ -3,15 +3,6 @@ import '@nomicfoundation/hardhat-chai-matchers';
 import { HardhatUserConfig } from 'hardhat/config';
 
 const config: HardhatUserConfig = {
-  solidity: {
-    version: '0.8.17',
-    settings: {
-      optimizer: {
-        enabled: true,
-        runs: 200,
-      },
-    },
-  },
   networks: {
     hardhat: {
       chainId: process.env.CHAIN_ID ? parseInt(process.env.CHAIN_ID) : 1,

@@ -25,7 +25,6 @@ jobs:
           yarn workspace @composable-router/common build
           yarn workspace @composable-router/core build
           yarn workspace @composable-router/test-helpers build
-          yarn workspace @composable-router/api build
 
       - name: Run unit test
         run: yarn test:unit
