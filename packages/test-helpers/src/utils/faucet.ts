@@ -2,7 +2,7 @@ import * as common from '@composable-router/common';
 import * as helpers from '@nomicfoundation/hardhat-network-helpers';
 
 export const faucetMap: Record<number, string> = {
-  1: '0x47ac0Fb4F2D84898e4D9E7b4DaB3C24507a6D503',
+  1: '0x0D0707963952f2fBA59dD06f2b425ace40b492Fe',
 };
 
 export async function claimToken(

@@ -21,13 +21,15 @@
     "format": "yarn sort-package-json",
     "lint": "eslint --fix src",
     "prepublishOnly": "yarn build",
-    "typechain": "typechain --target ethers-v5 --out-dir src/contracts src/abis/*.json"
+    "test:e2e": "hardhat test",
+    "typechain": "rm -rf src/contracts && typechain --target ethers-v5 --out-dir src/contracts src/abis/*.json"
   },
   "dependencies": {
     "ethers": "^5.7.2",
     "tiny-invariant": "^1.3.1"
   },
   "devDependencies": {
-    "@composable-router/common": "*"
+    "@composable-router/common": "*",
+    "@composable-router/test-helpers": "*"
   }
 }

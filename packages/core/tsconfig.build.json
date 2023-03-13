@@ -5,5 +5,5 @@
     "declarationDir": "dist",
     "rootDir": "src"
   },
-  "exclude": ["test/**/*", "**/*.test.ts"]
+  "exclude": ["test/**/*", "**/*.test.ts", "hardhat.config.ts"]
 }
