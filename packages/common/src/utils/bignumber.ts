@@ -21,7 +21,7 @@ export function toBigUnit(amountWei: BigNumberish, decimals: number, options: To
       displayDecimals ? displayDecimals : decimals,
       mode === 'round' ? BigNumberJS.ROUND_HALF_UP : mode === 'ceil' ? BigNumberJS.ROUND_CEIL : BigNumberJS.ROUND_FLOOR
     )
-    .toString();
+    .toFixed();
 }
 
 export function calcSlippage(amountWei: BigNumberish, slippage: number, base = 10000) {

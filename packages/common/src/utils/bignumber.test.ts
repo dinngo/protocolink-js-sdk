@@ -148,6 +148,18 @@ describe('Test toBigUnit', function () {
       options: { displayDecimals: 5 },
       expected: '0',
     },
+    {
+      title: '0.000000135345117678',
+      amountWei: BigNumber.from('135345117678'),
+      decimals: 18,
+      expected: '0.000000135345117678',
+    },
+    {
+      title: '1353451176780000000000',
+      amountWei: BigNumber.from('1353451176780000000000'),
+      decimals: 18,
+      expected: '1353.45117678',
+    },
   ];
 
   testCases.forEach(({ title, amountWei, decimals, options, expected }) => {
