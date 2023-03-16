@@ -8,6 +8,11 @@ export interface GlobalOptions {
   readonly slippage: number;
 }
 
+export enum TradeType {
+  exactIn = 'exactIn',
+  exactOut = 'exactOut',
+}
+
 // Parameters are input to or output from a source external to the process.
 
 export type TokenToTokenExactInParams<T = object> = {
@@ -20,6 +25,16 @@ export type TokenToTokenExactOutParams<T = object> = {
   output: common.TokenAmount;
 } & T;
 
+export type TokenToTokenParams<T = object> = (TokenToTokenExactInParams | TokenToTokenExactOutParams) & T;
+
+export function isTokenToTokenExactInParams<T = object>(v: any): v is TokenToTokenExactInParams<T> {
+  return !!v.input && !!v.tokenOut;
+}
+
+export function isTokenToTokenExactOutParams<T = object>(v: any): v is TokenToTokenExactOutParams<T> {
+  return !!v.tokenIn && !!v.output;
+}
+
 // Fields identify the inputs and outputs of an activity.
 
 export type TokenInFields<T = object> = { input: common.TokenAmount; amountBps?: BigNumberish } & T;
@@ -28,7 +43,14 @@ export type TokensInFields<T = object> = { inputs: common.TokenAmounts } & T;
 export type TokenOutFields<T = object> = { output: common.TokenAmount } & T;
 export type TokensOutFields<T = object> = { outputs: common.TokenAmounts } & T;
 
+export type TokenToTokenExactInFields<T = object> = {
+  input: common.TokenAmount;
+  output: common.TokenAmount;
+  amountBps?: BigNumberish;
+} & T;
+
 export type TokenToTokenFields<T = object> = {
+  tradeType: TradeType;
   input: common.TokenAmount;
   output: common.TokenAmount;
   amountBps?: BigNumberish;

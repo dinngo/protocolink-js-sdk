@@ -21,7 +21,9 @@
     "format": "yarn sort-package-json",
     "lint": "eslint --fix src",
     "prepublishOnly": "yarn build",
+    "test": "mocha",
     "test:e2e": "hardhat test",
+    "test:unit": "mocha --recursive src",
     "typechain": "rm -rf src/contracts && typechain --target ethers-v5 --out-dir src/contracts src/abis/*.json"
   },
   "dependencies": {
