@@ -78,28 +78,28 @@ export class Token {
     return address;
   }
 
-  wrapped() {
-    return this.isNative() ? new Token(getNetwork(this.chainId).wrappedNativeToken) : this;
+  get wrapped(): Token {
+    return this.isNative ? new Token(getNetwork(this.chainId).wrappedNativeToken) : this;
   }
 
   is(token: TokenTypes) {
     return this.chainId === token.chainId && this.address === token.address;
   }
 
-  isNative() {
+  get isNative() {
     return this.is(getNetwork(this.chainId).nativeToken);
   }
 
-  isWrapped() {
+  get isWrapped() {
     return this.is(getNetwork(this.chainId).wrappedNativeToken);
   }
 
   get elasticAddress() {
-    return this.isNative() ? ELASTIC_ADDRESS : this.address;
+    return this.isNative ? ELASTIC_ADDRESS : this.address;
   }
 
   sortsBefore(token: TokenTypes) {
-    return this.wrapped().address.toLowerCase() < Token.from(token).wrapped().address.toLowerCase();
+    return this.wrapped.address.toLowerCase() < Token.from(token).wrapped.address.toLowerCase();
   }
 
   toObject(): TokenObject {

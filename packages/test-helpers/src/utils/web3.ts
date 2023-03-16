@@ -13,7 +13,7 @@ export async function getBalance(
   const chainId = await getChainId();
   const token = await common.tokenOrAddressToToken(chainId, tokenOrAddress, hre.ethers.provider);
 
-  const balanceWei = token.isNative()
+  const balanceWei = token.isNative
     ? await hre.ethers.provider.getBalance(account, blockTag)
     : await common.ERC20__factory.connect(token.address, hre.ethers.provider).balanceOf(account, { blockTag });
 
@@ -23,7 +23,7 @@ export async function getBalance(
 }
 
 export async function approve(user: SignerWithAddress, spender: string, tokenAmount: common.TokenAmount) {
-  if (tokenAmount.token.isNative()) return;
+  if (tokenAmount.token.isNative) return;
 
   const erc20 = common.ERC20__factory.connect(tokenAmount.token.address, user);
   const allowance = await erc20.allowance(user.address, spender);

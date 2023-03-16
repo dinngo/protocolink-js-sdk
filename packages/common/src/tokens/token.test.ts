@@ -67,7 +67,7 @@ describe('Token', function () {
 
     testCases.forEach(({ token, expected }, i) => {
       it(`case ${i + 1}`, function () {
-        expect(token.isNative()).to.eq(expected);
+        expect(token.isNative).to.eq(expected);
       });
     });
   });
@@ -90,7 +90,7 @@ describe('Token', function () {
 
     testCases.forEach(({ token, expected }, i) => {
       it(`case ${i + 1}`, function () {
-        expect(token.isWrapped()).to.eq(expected);
+        expect(token.isWrapped).to.eq(expected);
       });
     });
   });
@@ -113,7 +113,7 @@ describe('Token', function () {
 
     testCases.forEach(({ token, expected }, i) => {
       it(`case ${i + 1}`, function () {
-        expect(JSON.stringify(token.wrapped())).to.eq(JSON.stringify(expected));
+        expect(JSON.stringify(token.wrapped)).to.eq(JSON.stringify(expected));
       });
     });
   });

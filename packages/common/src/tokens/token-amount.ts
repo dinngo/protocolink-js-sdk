@@ -94,7 +94,7 @@ export class TokenAmount {
     return this;
   }
 
-  isZero() {
+  get isZero() {
     return BigNumberJS(this.amount).isZero();
   }
 
@@ -253,14 +253,14 @@ export class TokenAmounts {
   compact() {
     const tokenAmounts = new TokenAmounts();
     Object.keys(this.tokenAmountMap).forEach((tokenAddress) => {
-      if (!this.tokenAmountMap[tokenAddress].isZero()) {
+      if (!this.tokenAmountMap[tokenAddress].isZero) {
         tokenAmounts.add(this.tokenAmountMap[tokenAddress]);
       }
     });
     return tokenAmounts;
   }
 
-  isEmpty() {
+  get isEmpty() {
     return this.length === 0;
   }
 
@@ -268,7 +268,7 @@ export class TokenAmounts {
     let nativeTokenAmount: TokenAmount | undefined;
     for (const tokenAddress of Object.keys(this.tokenAmountMap)) {
       const tokenAmount = this.tokenAmountMap[tokenAddress];
-      if (tokenAmount.token.isNative()) {
+      if (tokenAmount.token.isNative) {
         nativeTokenAmount = tokenAmount;
         break;
       }
@@ -279,7 +279,7 @@ export class TokenAmounts {
   get erc20() {
     return Object.keys(this.tokenAmountMap).reduce((accumulator, tokenAddress) => {
       const tokenAmount = this.tokenAmountMap[tokenAddress];
-      if (!tokenAmount.token.isNative()) accumulator.set(tokenAmount);
+      if (!tokenAmount.token.isNative) accumulator.set(tokenAmount);
       return accumulator;
     }, new TokenAmounts());
   }
