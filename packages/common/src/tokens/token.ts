@@ -39,11 +39,11 @@ export class Token {
   }
 
   static isNative(chainId: number, address: string): boolean;
-  static isNative(tokenObject: TokenObject): boolean;
+  static isNative(token: TokenTypes): boolean;
   static isNative(arg0: any, ...otherArgs: any[]) {
     let chainId: number;
     let address: string;
-    if (isTokenObject(arg0)) {
+    if (isTokenTypes(arg0)) {
       chainId = arg0.chainId;
       address = arg0.address;
     } else {
@@ -54,11 +54,11 @@ export class Token {
   }
 
   static isWrapped(chainId: number, address: string): boolean;
-  static isWrapped(tokenObject: TokenObject): boolean;
+  static isWrapped(token: TokenTypes): boolean;
   static isWrapped(arg0: any, ...otherArgs: any[]) {
     let chainId: number;
     let address: string;
-    if (isTokenObject(arg0)) {
+    if (isTokenTypes(arg0)) {
       chainId = arg0.chainId;
       address = arg0.address;
     } else {

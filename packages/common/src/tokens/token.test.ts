@@ -16,7 +16,43 @@ describe('Test isTokenObject', function () {
   });
 });
 
-describe('Token', function () {
+describe('Token class', function () {
+  context('Test isNative', function () {
+    const testCases = [
+      { actual: Token.isNative(mainnetTokens.ETH), expected: true },
+      { actual: Token.isNative(mainnetTokens.ETH.toObject()), expected: true },
+      { actual: Token.isNative(mainnetTokens.ETH.chainId, mainnetTokens.ETH.address), expected: true },
+      { actual: Token.isNative(mainnetTokens.WETH), expected: false },
+      { actual: Token.isNative(mainnetTokens.WETH.toObject()), expected: false },
+      { actual: Token.isNative(mainnetTokens.WETH.chainId, mainnetTokens.WETH.address), expected: false },
+    ];
+
+    testCases.forEach(({ actual, expected }, i) => {
+      it(`case ${i + 1}`, function () {
+        expect(actual).to.eq(expected);
+      });
+    });
+  });
+
+  context('Test isWrapped', function () {
+    const testCases = [
+      { actual: Token.isWrapped(mainnetTokens.ETH), expected: false },
+      { actual: Token.isWrapped(mainnetTokens.ETH.toObject()), expected: false },
+      { actual: Token.isWrapped(mainnetTokens.ETH.chainId, mainnetTokens.ETH.address), expected: false },
+      { actual: Token.isWrapped(mainnetTokens.WETH), expected: true },
+      { actual: Token.isWrapped(mainnetTokens.WETH.toObject()), expected: true },
+      { actual: Token.isWrapped(mainnetTokens.WETH.chainId, mainnetTokens.WETH.address), expected: true },
+    ];
+
+    testCases.forEach(({ actual, expected }, i) => {
+      it(`case ${i + 1}`, function () {
+        expect(actual).to.eq(expected);
+      });
+    });
+  });
+});
+
+describe('Token instance', function () {
   context('Test new instance', function () {
     it('args', function () {
       const chainId = 1;
