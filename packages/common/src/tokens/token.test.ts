@@ -154,6 +154,29 @@ describe('Token instance', function () {
     });
   });
 
+  context('Test unwrapped', function () {
+    const testCases = [
+      {
+        token: mainnetTokens.WETH,
+        expected: mainnetTokens.ETH,
+      },
+      {
+        token: mainnetTokens.ETH,
+        expected: mainnetTokens.ETH,
+      },
+      {
+        token: mainnetTokens.USDC,
+        expected: mainnetTokens.USDC,
+      },
+    ];
+
+    testCases.forEach(({ token, expected }, i) => {
+      it(`case ${i + 1}`, function () {
+        expect(JSON.stringify(token.unwrapped)).to.eq(JSON.stringify(expected));
+      });
+    });
+  });
+
   context('Test elasticAddress', function () {
     const testCases = [
       {

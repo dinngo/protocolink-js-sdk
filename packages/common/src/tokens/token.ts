@@ -78,10 +78,6 @@ export class Token {
     return address;
   }
 
-  get wrapped(): Token {
-    return this.isNative ? new Token(getNetwork(this.chainId).wrappedNativeToken) : this;
-  }
-
   is(token: TokenTypes) {
     return this.chainId === token.chainId && this.address === token.address;
   }
@@ -92,6 +88,14 @@ export class Token {
 
   get isWrapped() {
     return this.is(getNetwork(this.chainId).wrappedNativeToken);
+  }
+
+  get wrapped(): Token {
+    return this.isNative ? new Token(getNetwork(this.chainId).wrappedNativeToken) : this;
+  }
+
+  get unwrapped(): Token {
+    return this.isWrapped ? new Token(getNetwork(this.chainId).nativeToken) : this;
   }
 
   get elasticAddress() {
