@@ -18,7 +18,8 @@ describe('Test faucet claim', function () {
   const testCases: { tokenOrAddress: common.TokenOrAddress; amount: string }[] = [
     { tokenOrAddress: mainnetTokens.ETH, amount: '1' },
     { tokenOrAddress: mainnetTokens.WETH, amount: '1' },
-    { tokenOrAddress: mainnetTokens.USDC.address, amount: '1' },
+    { tokenOrAddress: '0xBe9895146f7AF43049ca1c1AE358B0541Ea49704', amount: '1' }, // cbETH
+    { tokenOrAddress: '0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0', amount: '1' }, // wstETH
   ];
 
   testCases.forEach(({ tokenOrAddress, amount }) => {
