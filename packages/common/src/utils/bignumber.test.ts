@@ -22,6 +22,12 @@ describe('Test toSmallUnit', function () {
       decimals: 1,
       expected: 10,
     },
+    {
+      title: '0.000000001506411313',
+      amount: '0.000000001506411313',
+      decimals: 18,
+      expected: 1506411313,
+    },
   ];
 
   testCases.forEach(({ title, amount, decimals, expected }) => {

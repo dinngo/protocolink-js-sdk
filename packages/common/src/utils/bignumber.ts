@@ -4,7 +4,7 @@ import BigNumberJS from 'bignumber.js';
 export function toSmallUnit(amount: string, decimals: number) {
   return Number(amount) === 0
     ? BigNumber.from(0)
-    : utils.parseUnits(BigNumberJS(amount).decimalPlaces(decimals, BigNumberJS.ROUND_DOWN).toString(), decimals);
+    : utils.parseUnits(BigNumberJS(amount).decimalPlaces(decimals, BigNumberJS.ROUND_DOWN).toFixed(), decimals);
 }
 
 export interface ToBigUnitOptions {
