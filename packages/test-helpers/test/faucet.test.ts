@@ -1,10 +1,11 @@
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
-import { claimToken } from '../src/utils/faucet';
+import { claimToken } from 'src/utils/faucet';
 import * as common from '@composable-router/common';
 import { expect } from 'chai';
-import { getChainId } from '../src/utils/network';
+import { getChainId } from 'src/utils/network';
 import hre from 'hardhat';
-import { mainnetTokens } from 'src';
+import { mainnetTokens } from 'src/fixtures';
+import { snapshotAndRevertEach } from 'src/hooks';
 
 describe('Test faucet claim', function () {
   let chainId: number;
@@ -14,6 +15,8 @@ describe('Test faucet claim', function () {
     [, user] = await hre.ethers.getSigners();
     chainId = await getChainId();
   });
+
+  snapshotAndRevertEach();
 
   const testCases: { tokenOrAddress: common.TokenOrAddress; amount: string }[] = [
     { tokenOrAddress: mainnetTokens.ETH, amount: '1' },

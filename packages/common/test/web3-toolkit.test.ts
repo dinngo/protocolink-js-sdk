@@ -1,7 +1,7 @@
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 import { TokenAmount, TokenAmounts, Web3Toolkit, newErc20ApproveTransactionRequest } from 'src';
 import { expect } from 'chai';
-import { getChainId } from '@composable-router/test-helpers';
+import { getChainId, snapshotAndRevertEach } from '@composable-router/test-helpers';
 import hre from 'hardhat';
 import { mainnetTokens } from './fixtures/tokens';
 
@@ -15,6 +15,8 @@ describe('Web3Toolkit', function () {
     chainId = await getChainId();
     [, user] = await hre.ethers.getSigners();
   });
+
+  snapshotAndRevertEach();
 
   context('Test getAllowance()', function () {
     const testCases = [

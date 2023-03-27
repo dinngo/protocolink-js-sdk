@@ -1,11 +1,13 @@
 import { Router, Router__factory, calcAccountAgent, setContractAddress } from 'src';
 import { expect } from 'chai';
-import { getChainId } from '@composable-router/test-helpers';
+import { getChainId, snapshotAndRevertOnce } from '@composable-router/test-helpers';
 import hre from 'hardhat';
 
 describe('Test calcAccountAgent', function () {
   let chainId: number;
   let router: Router;
+
+  snapshotAndRevertOnce();
 
   before(async function () {
     chainId = await getChainId();
