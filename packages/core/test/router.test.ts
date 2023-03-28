@@ -1,4 +1,5 @@
 import { Router, Router__factory, calcAccountAgent, setContractAddress } from 'src';
+import * as common from '@composable-router/common';
 import { expect } from 'chai';
 import { getChainId, snapshotAndRevertOnce } from '@composable-router/test-helpers';
 import hre from 'hardhat';
@@ -13,7 +14,11 @@ describe('Test calcAccountAgent', function () {
     chainId = await getChainId();
     const [deployer] = await hre.ethers.getSigners();
 
-    router = await (await new Router__factory().connect(deployer).deploy()).deployed();
+    router = await (
+      await new Router__factory()
+        .connect(deployer)
+        .deploy(common.getWrappedNativeToken(chainId).address, deployer.address, deployer.address)
+    ).deployed();
     setContractAddress(chainId, 'Router', router.address);
     const agentImplementation = await router.agentImplementation();
     setContractAddress(chainId, 'AgentImplementation', agentImplementation);

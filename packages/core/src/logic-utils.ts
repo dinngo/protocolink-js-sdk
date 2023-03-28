@@ -1,5 +1,6 @@
 import { BigNumberish, constants } from 'ethers';
 import { IParam } from './contracts/Router';
+import { WrapMode } from './logic-types';
 import * as common from '@composable-router/common';
 import invariant from 'tiny-invariant';
 
@@ -30,11 +31,19 @@ export interface NewLogicOptions {
   to: string;
   data: string;
   inputs?: IParam.InputStruct[];
+  wrapMode?: number;
   approveTo?: string;
   callback?: string;
 }
 
 export function newLogic(options: NewLogicOptions) {
-  const { to, data, inputs = [], approveTo = constants.AddressZero, callback = constants.AddressZero } = options;
-  return { to, data, inputs, approveTo, callback };
+  const {
+    to,
+    data,
+    inputs = [],
+    wrapMode = WrapMode.none,
+    approveTo = constants.AddressZero,
+    callback = constants.AddressZero,
+  } = options;
+  return { to, data, inputs, wrapMode, approveTo, callback };
 }

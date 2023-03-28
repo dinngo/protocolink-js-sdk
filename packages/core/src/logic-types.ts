@@ -8,6 +8,12 @@ export interface GlobalOptions {
   readonly slippage: number;
 }
 
+export enum WrapMode {
+  none = 0,
+  wrapBefore = 1,
+  unwrapAfter = 2,
+}
+
 export enum TradeType {
   exactIn = 'exactIn',
   exactOut = 'exactOut',
