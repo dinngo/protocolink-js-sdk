@@ -1,5 +1,5 @@
 import { BigNumber, providers, utils } from 'ethers';
-import { ELASTIC_ADDRESS, Token, TokenOrAddress } from './tokens';
+import { ELASTIC_ADDRESS, Token, TokenAmount, TokenOrAddress, isTokenObject } from './tokens';
 import { ERC20__factory, Multicall2, Multicall2__factory } from './contracts';
 import { Network, getNetwork } from './networks';
 
@@ -22,33 +22,42 @@ export class Web3Toolkit {
     return Multicall2__factory.connect(this.network.multicall2Address, this.provider);
   }
 
-  async getToken(tokenAddress: string) {
-    if (tokenAddress === this.nativeToken.address || tokenAddress === ELASTIC_ADDRESS) {
-      return this.nativeToken;
+  async getToken(tokenOrAddress: TokenOrAddress) {
+    let token: Token;
+    if (typeof tokenOrAddress === 'string') {
+      const tokenAddress = tokenOrAddress;
+      if (tokenAddress === this.nativeToken.address || tokenAddress === ELASTIC_ADDRESS) {
+        token = this.nativeToken;
+      } else {
+        const iface = ERC20__factory.createInterface();
+        const calls: Multicall2.CallStruct[] = [
+          { target: tokenAddress, callData: iface.encodeFunctionData('decimals') },
+          { target: tokenAddress, callData: iface.encodeFunctionData('symbol') },
+          { target: tokenAddress, callData: iface.encodeFunctionData('name') },
+        ];
+        const { returnData } = await this.multicall2.callStatic.aggregate(calls);
+
+        const [decimals] = iface.decodeFunctionResult('decimals', returnData[0]);
+
+        let symbol: string;
+        let name: string;
+        try {
+          [symbol] = iface.decodeFunctionResult('symbol', returnData[1]);
+          [name] = iface.decodeFunctionResult('name', returnData[2]);
+        } catch {
+          symbol = utils.parseBytes32String(returnData[1]);
+          name = utils.parseBytes32String(returnData[2]);
+        }
+
+        token = new Token(this.chainId, tokenAddress, decimals, symbol, name);
+      }
+    } else if (isTokenObject(tokenOrAddress)) {
+      token = Token.from(tokenOrAddress);
+    } else {
+      token = tokenOrAddress;
     }
 
-    const iface = ERC20__factory.createInterface();
-
-    const calls: Multicall2.CallStruct[] = [
-      { target: tokenAddress, callData: iface.encodeFunctionData('decimals') },
-      { target: tokenAddress, callData: iface.encodeFunctionData('symbol') },
-      { target: tokenAddress, callData: iface.encodeFunctionData('name') },
-    ];
-    const { returnData } = await this.multicall2.callStatic.aggregate(calls);
-
-    const [decimals] = iface.decodeFunctionResult('decimals', returnData[0]);
-
-    let symbol: string;
-    let name: string;
-    try {
-      [symbol] = iface.decodeFunctionResult('symbol', returnData[1]);
-      [name] = iface.decodeFunctionResult('name', returnData[2]);
-    } catch {
-      symbol = utils.parseBytes32String(returnData[1]);
-      name = utils.parseBytes32String(returnData[2]);
-    }
-
-    return new Token(this.chainId, tokenAddress, decimals, symbol, name);
+    return token;
   }
 
   async getTokens(tokenAddresses: string[]) {
@@ -89,6 +98,16 @@ export class Web3Toolkit {
     }
 
     return tokens;
+  }
+
+  async getBalance(account: string, tokenOrAddress: TokenOrAddress, blockTag?: providers.BlockTag) {
+    const token = await this.getToken(tokenOrAddress);
+    const balanceWei = token.isNative
+      ? await this.provider.getBalance(account, blockTag)
+      : await ERC20__factory.connect(token.address, this.provider).balanceOf(account, { blockTag });
+    const balance = new TokenAmount(token).setWei(balanceWei);
+
+    return balance;
   }
 
   async getAllowance(account: string, tokenOrAddress: TokenOrAddress, spender: string) {

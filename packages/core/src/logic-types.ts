@@ -59,7 +59,10 @@ export type TokenInParams<T = object> = { tokenIn: common.Token } & T;
 
 export type TokenInFields<T = object> = { input: common.TokenAmount; amountBps?: BigNumberish } & T;
 
-export type TokensInFields<T = object> = { inputs: common.TokenAmounts } & T;
+export type TokensInFields<T = object> = {
+  inputs: common.TokenAmounts;
+  amountsBps?: Record<number, BigNumberish>;
+} & T;
 
 export type TokenOutParams<T = object> = { tokenOut: common.Token } & T;
 

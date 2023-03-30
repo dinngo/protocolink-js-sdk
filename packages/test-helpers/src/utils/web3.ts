@@ -11,13 +11,9 @@ export async function getBalance(
 ) {
   const hre = await import('hardhat');
   const chainId = await getChainId();
-  const token = await common.tokenOrAddressToToken(chainId, tokenOrAddress, hre.ethers.provider);
 
-  const balanceWei = token.isNative
-    ? await hre.ethers.provider.getBalance(account, blockTag)
-    : await common.ERC20__factory.connect(token.address, hre.ethers.provider).balanceOf(account, { blockTag });
-
-  const balance = new common.TokenAmount(token).setWei(balanceWei);
+  const web3Toolkit = new common.Web3Toolkit(chainId, hre.ethers.provider);
+  const balance = await web3Toolkit.getBalance(account, tokenOrAddress, blockTag);
 
   return balance;
 }

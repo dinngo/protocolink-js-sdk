@@ -10,13 +10,45 @@ describe('Web3Toolkit', function () {
 
   let chainId: number;
   let user: SignerWithAddress;
+  let web3Toolkit: Web3Toolkit;
 
   before(async function () {
     chainId = await getChainId();
     [, user] = await hre.ethers.getSigners();
+    web3Toolkit = new Web3Toolkit(chainId, hre.ethers.provider);
   });
 
   snapshotAndRevertEach();
+
+  context('Test getBalance()', function () {
+    const testCases = [
+      {
+        account: '0x47ac0Fb4F2D84898e4D9E7b4DaB3C24507a6D503',
+        tokenOrAddress: mainnetTokens.ETH,
+        blockTag: 16923000,
+        expected: '584999.075061347770335037',
+      },
+      {
+        account: '0x47ac0Fb4F2D84898e4D9E7b4DaB3C24507a6D503',
+        tokenOrAddress: mainnetTokens.USDC.toObject(),
+        blockTag: 16923000,
+        expected: '772999999.84',
+      },
+      {
+        account: '0x47ac0Fb4F2D84898e4D9E7b4DaB3C24507a6D503',
+        tokenOrAddress: mainnetTokens.DAI.address,
+        blockTag: 16923000,
+        expected: '64499972',
+      },
+    ];
+
+    testCases.forEach(({ account, tokenOrAddress, blockTag, expected }, i) => {
+      it(`case ${i + 1}`, async function () {
+        const balance = await web3Toolkit.getBalance(account, tokenOrAddress, blockTag);
+        expect(balance.amount).to.eq(expected);
+      });
+    });
+  });
 
   context('Test getAllowance()', function () {
     const testCases = [
@@ -27,7 +59,6 @@ describe('Web3Toolkit', function () {
 
     testCases.forEach(({ tokenAmount }, i) => {
       it(`case ${i + 1}`, async function () {
-        const web3Toolkit = new Web3Toolkit(chainId, hre.ethers.provider);
         let allowance = await web3Toolkit.getAllowance(user.address, tokenAmount.token, spender);
         expect(allowance).to.eq(0);
 
@@ -53,7 +84,6 @@ describe('Web3Toolkit', function () {
 
     testCases.forEach((testCase, i) => {
       it(`case ${i + 1}`, async function () {
-        const web3Toolkit = new Web3Toolkit(chainId, hre.ethers.provider);
         const tokens = testCase.tokenAmounts.tokens;
         let allowances = await web3Toolkit.getAllowances(user.address, tokens, spender);
         for (const allowance of allowances) {
