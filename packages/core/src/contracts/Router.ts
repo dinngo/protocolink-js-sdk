@@ -62,13 +62,13 @@ export declare namespace IParam {
 
 export interface RouterInterface extends utils.Interface {
   functions: {
-    'addSigner(address,uint256)': FunctionFragment;
+    'addSigner(address)': FunctionFragment;
     'agentImplementation()': FunctionFragment;
     'agents(address)': FunctionFragment;
     'calcAgent(address)': FunctionFragment;
     'domainSeparator()': FunctionFragment;
-    'execute((address,bytes,(address,uint256,uint256)[],uint8,address,address)[],address[])': FunctionFragment;
-    'executeWithSignature(((address,bytes,(address,uint256,uint256)[],uint8,address,address)[],uint256),address,bytes,address[])': FunctionFragment;
+    'execute((address,bytes,(address,uint256,uint256)[],uint8,address,address)[],address[],uint256)': FunctionFragment;
+    'executeWithSignature(((address,bytes,(address,uint256,uint256)[],uint8,address,address)[],uint256),address,bytes,address[],uint256)': FunctionFragment;
     'feeCalculators(bytes4)': FunctionFragment;
     'feeCollector()': FunctionFragment;
     'getAgent()': FunctionFragment;
@@ -87,7 +87,7 @@ export interface RouterInterface extends utils.Interface {
     'setFeeCalculators(bytes4[],address[])': FunctionFragment;
     'setFeeCollector(address)': FunctionFragment;
     'setPauser(address)': FunctionFragment;
-    'signerReferrals(address)': FunctionFragment;
+    'signers(address)': FunctionFragment;
     'transferOwnership(address)': FunctionFragment;
     'user()': FunctionFragment;
   };
@@ -119,23 +119,29 @@ export interface RouterInterface extends utils.Interface {
       | 'setFeeCalculators'
       | 'setFeeCollector'
       | 'setPauser'
-      | 'signerReferrals'
+      | 'signers'
       | 'transferOwnership'
       | 'user'
   ): FunctionFragment;
 
-  encodeFunctionData(
-    functionFragment: 'addSigner',
-    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
-  ): string;
+  encodeFunctionData(functionFragment: 'addSigner', values: [PromiseOrValue<string>]): string;
   encodeFunctionData(functionFragment: 'agentImplementation', values?: undefined): string;
   encodeFunctionData(functionFragment: 'agents', values: [PromiseOrValue<string>]): string;
   encodeFunctionData(functionFragment: 'calcAgent', values: [PromiseOrValue<string>]): string;
   encodeFunctionData(functionFragment: 'domainSeparator', values?: undefined): string;
-  encodeFunctionData(functionFragment: 'execute', values: [IParam.LogicStruct[], PromiseOrValue<string>[]]): string;
+  encodeFunctionData(
+    functionFragment: 'execute',
+    values: [IParam.LogicStruct[], PromiseOrValue<string>[], PromiseOrValue<BigNumberish>]
+  ): string;
   encodeFunctionData(
     functionFragment: 'executeWithSignature',
-    values: [IParam.LogicBatchStruct, PromiseOrValue<string>, PromiseOrValue<BytesLike>, PromiseOrValue<string>[]]
+    values: [
+      IParam.LogicBatchStruct,
+      PromiseOrValue<string>,
+      PromiseOrValue<BytesLike>,
+      PromiseOrValue<string>[],
+      PromiseOrValue<BigNumberish>
+    ]
   ): string;
   encodeFunctionData(functionFragment: 'feeCalculators', values: [PromiseOrValue<BytesLike>]): string;
   encodeFunctionData(functionFragment: 'feeCollector', values?: undefined): string;
@@ -161,7 +167,7 @@ export interface RouterInterface extends utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: 'setFeeCollector', values: [PromiseOrValue<string>]): string;
   encodeFunctionData(functionFragment: 'setPauser', values: [PromiseOrValue<string>]): string;
-  encodeFunctionData(functionFragment: 'signerReferrals', values: [PromiseOrValue<string>]): string;
+  encodeFunctionData(functionFragment: 'signers', values: [PromiseOrValue<string>]): string;
   encodeFunctionData(functionFragment: 'transferOwnership', values: [PromiseOrValue<string>]): string;
   encodeFunctionData(functionFragment: 'user', values?: undefined): string;
 
@@ -190,7 +196,7 @@ export interface RouterInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: 'setFeeCalculators', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'setFeeCollector', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'setPauser', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'signerReferrals', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'signers', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'transferOwnership', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'user', data: BytesLike): Result;
 
@@ -201,7 +207,7 @@ export interface RouterInterface extends utils.Interface {
     'Paused()': EventFragment;
     'PauserSet(address)': EventFragment;
     'Resumed()': EventFragment;
-    'SignerAdded(address,uint256)': EventFragment;
+    'SignerAdded(address)': EventFragment;
     'SignerRemoved(address)': EventFragment;
   };
 
@@ -257,9 +263,8 @@ export type ResumedEventFilter = TypedEventFilter<ResumedEvent>;
 
 export interface SignerAddedEventObject {
   signer: string;
-  referral: BigNumber;
 }
-export type SignerAddedEvent = TypedEvent<[string, BigNumber], SignerAddedEventObject>;
+export type SignerAddedEvent = TypedEvent<[string], SignerAddedEventObject>;
 
 export type SignerAddedEventFilter = TypedEventFilter<SignerAddedEvent>;
 
@@ -295,7 +300,6 @@ export interface Router extends BaseContract {
   functions: {
     addSigner(
       signer: PromiseOrValue<string>,
-      referral: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -310,6 +314,7 @@ export interface Router extends BaseContract {
     execute(
       logics: IParam.LogicStruct[],
       tokensReturn: PromiseOrValue<string>[],
+      referral: PromiseOrValue<BigNumberish>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -318,6 +323,7 @@ export interface Router extends BaseContract {
       signer: PromiseOrValue<string>,
       signature: PromiseOrValue<BytesLike>,
       tokensReturn: PromiseOrValue<string>[],
+      referral: PromiseOrValue<BigNumberish>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -380,10 +386,7 @@ export interface Router extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    signerReferrals(
-      signer: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber] & { referral: BigNumber }>;
+    signers(signer: PromiseOrValue<string>, overrides?: CallOverrides): Promise<[boolean] & { valid: boolean }>;
 
     transferOwnership(
       newOwner: PromiseOrValue<string>,
@@ -395,7 +398,6 @@ export interface Router extends BaseContract {
 
   addSigner(
     signer: PromiseOrValue<string>,
-    referral: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -410,6 +412,7 @@ export interface Router extends BaseContract {
   execute(
     logics: IParam.LogicStruct[],
     tokensReturn: PromiseOrValue<string>[],
+    referral: PromiseOrValue<BigNumberish>,
     overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -418,6 +421,7 @@ export interface Router extends BaseContract {
     signer: PromiseOrValue<string>,
     signature: PromiseOrValue<BytesLike>,
     tokensReturn: PromiseOrValue<string>[],
+    referral: PromiseOrValue<BigNumberish>,
     overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -477,7 +481,7 @@ export interface Router extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  signerReferrals(signer: PromiseOrValue<string>, overrides?: CallOverrides): Promise<BigNumber>;
+  signers(signer: PromiseOrValue<string>, overrides?: CallOverrides): Promise<boolean>;
 
   transferOwnership(
     newOwner: PromiseOrValue<string>,
@@ -487,11 +491,7 @@ export interface Router extends BaseContract {
   user(overrides?: CallOverrides): Promise<string>;
 
   callStatic: {
-    addSigner(
-      signer: PromiseOrValue<string>,
-      referral: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    addSigner(signer: PromiseOrValue<string>, overrides?: CallOverrides): Promise<void>;
 
     agentImplementation(overrides?: CallOverrides): Promise<string>;
 
@@ -504,6 +504,7 @@ export interface Router extends BaseContract {
     execute(
       logics: IParam.LogicStruct[],
       tokensReturn: PromiseOrValue<string>[],
+      referral: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -512,6 +513,7 @@ export interface Router extends BaseContract {
       signer: PromiseOrValue<string>,
       signature: PromiseOrValue<BytesLike>,
       tokensReturn: PromiseOrValue<string>[],
+      referral: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -559,7 +561,7 @@ export interface Router extends BaseContract {
 
     setPauser(pauser_: PromiseOrValue<string>, overrides?: CallOverrides): Promise<void>;
 
-    signerReferrals(signer: PromiseOrValue<string>, overrides?: CallOverrides): Promise<BigNumber>;
+    signers(signer: PromiseOrValue<string>, overrides?: CallOverrides): Promise<boolean>;
 
     transferOwnership(newOwner: PromiseOrValue<string>, overrides?: CallOverrides): Promise<void>;
 
@@ -597,8 +599,8 @@ export interface Router extends BaseContract {
     'Resumed()'(): ResumedEventFilter;
     Resumed(): ResumedEventFilter;
 
-    'SignerAdded(address,uint256)'(signer?: PromiseOrValue<string> | null, referral?: null): SignerAddedEventFilter;
-    SignerAdded(signer?: PromiseOrValue<string> | null, referral?: null): SignerAddedEventFilter;
+    'SignerAdded(address)'(signer?: PromiseOrValue<string> | null): SignerAddedEventFilter;
+    SignerAdded(signer?: PromiseOrValue<string> | null): SignerAddedEventFilter;
 
     'SignerRemoved(address)'(signer?: PromiseOrValue<string> | null): SignerRemovedEventFilter;
     SignerRemoved(signer?: PromiseOrValue<string> | null): SignerRemovedEventFilter;
@@ -607,7 +609,6 @@ export interface Router extends BaseContract {
   estimateGas: {
     addSigner(
       signer: PromiseOrValue<string>,
-      referral: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -622,6 +623,7 @@ export interface Router extends BaseContract {
     execute(
       logics: IParam.LogicStruct[],
       tokensReturn: PromiseOrValue<string>[],
+      referral: PromiseOrValue<BigNumberish>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -630,6 +632,7 @@ export interface Router extends BaseContract {
       signer: PromiseOrValue<string>,
       signature: PromiseOrValue<BytesLike>,
       tokensReturn: PromiseOrValue<string>[],
+      referral: PromiseOrValue<BigNumberish>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -689,7 +692,7 @@ export interface Router extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    signerReferrals(signer: PromiseOrValue<string>, overrides?: CallOverrides): Promise<BigNumber>;
+    signers(signer: PromiseOrValue<string>, overrides?: CallOverrides): Promise<BigNumber>;
 
     transferOwnership(
       newOwner: PromiseOrValue<string>,
@@ -702,7 +705,6 @@ export interface Router extends BaseContract {
   populateTransaction: {
     addSigner(
       signer: PromiseOrValue<string>,
-      referral: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -717,6 +719,7 @@ export interface Router extends BaseContract {
     execute(
       logics: IParam.LogicStruct[],
       tokensReturn: PromiseOrValue<string>[],
+      referral: PromiseOrValue<BigNumberish>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -725,6 +728,7 @@ export interface Router extends BaseContract {
       signer: PromiseOrValue<string>,
       signature: PromiseOrValue<BytesLike>,
       tokensReturn: PromiseOrValue<string>[],
+      referral: PromiseOrValue<BigNumberish>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -784,7 +788,7 @@ export interface Router extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    signerReferrals(signer: PromiseOrValue<string>, overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    signers(signer: PromiseOrValue<string>, overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     transferOwnership(
       newOwner: PromiseOrValue<string>,

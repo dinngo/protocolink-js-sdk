@@ -24,7 +24,7 @@
     "test": "mocha",
     "test:e2e": "hardhat test",
     "test:unit": "mocha --recursive src",
-    "typechain": "rm -rf src/contracts && typechain --target ethers-v5 --out-dir src/contracts src/abis/*.json"
+    "typechain": "rm -rf src/contracts && typechain --target ethers-v5 --out-dir src/contracts src/abis/*.json && pretty-quick"
   },
   "dependencies": {
     "ethers": "^5.7.2",

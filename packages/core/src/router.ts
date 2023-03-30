@@ -22,14 +22,15 @@ export interface NewRouterExecuteTransactionOptions {
   routerLogics: IParam.LogicStruct[];
   tokensReturn?: string[];
   value?: BigNumberish;
+  referralCode?: number;
 }
 
 export function newRouterExecuteTransactionRequest(
   options: NewRouterExecuteTransactionOptions
 ): common.TransactionRequest {
-  const { chainId, routerLogics, tokensReturn = [], value = 0 } = options;
+  const { chainId, routerLogics, tokensReturn = [], value = 0, referralCode = 0 } = options;
   const iface = Router__factory.createInterface();
-  const data = iface.encodeFunctionData('execute', [routerLogics, tokensReturn]);
+  const data = iface.encodeFunctionData('execute', [routerLogics, tokensReturn, referralCode]);
 
   return { to: getContractAddress(chainId, 'Router'), data, value };
 }
