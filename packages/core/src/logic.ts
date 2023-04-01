@@ -10,7 +10,7 @@ export abstract class Logic extends common.Web3Toolkit {
     return `${this.protocol}:${this.id}`;
   }
 
-  abstract getLogic(fields: any, options?: any): Promise<IParam.LogicStruct>;
+  abstract build(fields: any, options?: any): Promise<IParam.LogicStruct>;
 }
 
 export interface LogicTokenListInterface {
