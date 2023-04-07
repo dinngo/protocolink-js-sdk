@@ -7,8 +7,8 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/dinngodev/router-sdk.git",
-    "directory": "packages/common"
+    "url": "https://github.com/dinngo/composable-router-sdk.git",
+    "directory": "packages/test-helpers"
   },
   "license": "MIT",
   "main": "dist/index.js",
@@ -23,10 +23,7 @@
     "prepublishOnly": "yarn build",
     "test:e2e": "hardhat test"
   },
-  "devDependencies": {
-    "@composable-router/common": "*"
-  },
-  "peerDependencies": {
+  "dependencies": {
     "@composable-router/common": "^0.1.0",
     "@nomicfoundation/hardhat-chai-matchers": "^1.0.6",
     "@nomicfoundation/hardhat-network-helpers": "^1.0.8",
