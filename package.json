@@ -19,6 +19,7 @@
     "test:unit": "yarn nx run-many --target=test:unit"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.26.1",
     "@nomicfoundation/hardhat-chai-matchers": "^1.0.6",
     "@nomicfoundation/hardhat-network-helpers": "^1.0.8",
     "@nomiclabs/hardhat-ethers": "^2.2.2",
