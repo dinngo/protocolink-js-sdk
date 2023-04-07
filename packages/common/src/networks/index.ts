@@ -38,6 +38,10 @@ export function getNetworkId(chainId: number) {
   return getNetwork(chainId).id;
 }
 
+export function setRpcUrl(chainId: number, rpcUrl: string) {
+  networkMap[chainId].rpcUrl = rpcUrl;
+}
+
 export enum ChainId {
   mainnet = 1,
   polygon = 137,
@@ -62,4 +66,14 @@ export function isSupportedChainId(chainId: number) {
 
 export function isSupportedNetworkId(networkId: string) {
   return networks.some((network) => network.id == networkId);
+}
+
+export enum ExplorerType {
+  tx = 'tx',
+  address = 'address',
+  token = 'token',
+}
+
+export function newExplorerUrl(chainId: number, type: 'tx' | 'address' | 'token', data: string): string {
+  return `${getNetwork(chainId).explorerUrl}${type}/${data}`;
 }
