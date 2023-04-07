@@ -1,7 +1,7 @@
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 import { TokenAmount, TokenAmounts, Web3Toolkit, newErc20ApproveTransactionRequest } from 'src';
 import { expect } from 'chai';
-import { getChainId, snapshotAndRevertEach } from '@composable-router/test-helpers';
+import { getChainId, snapshotAndRevertEach } from '@furucombo/composable-router-test-helpers';
 import hre from 'hardhat';
 import { mainnetTokens } from './fixtures/tokens';
 

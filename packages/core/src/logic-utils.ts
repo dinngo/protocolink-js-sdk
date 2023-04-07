@@ -1,7 +1,7 @@
 import { BigNumberish, constants } from 'ethers';
 import { IParam } from './contracts/Router';
 import { WrapMode } from './logic-types';
-import * as common from '@composable-router/common';
+import * as common from '@furucombo/composable-router-common';
 import invariant from 'tiny-invariant';
 
 export interface NewLogicInputOptions {

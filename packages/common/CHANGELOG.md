@@ -1,4 +1,4 @@
-# @composable-router/common
+# @furucombo/composable-router-common
 
 ## 0.1.0
 

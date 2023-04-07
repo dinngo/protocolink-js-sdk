@@ -1,7 +1,7 @@
 import { Router, Router__factory, calcAccountAgent, setContractAddress } from 'src';
-import * as common from '@composable-router/common';
+import * as common from '@furucombo/composable-router-common';
 import { expect } from 'chai';
-import { getChainId, snapshotAndRevertOnce } from '@composable-router/test-helpers';
+import { getChainId, snapshotAndRevertOnce } from '@furucombo/composable-router-test-helpers';
 import hre from 'hardhat';
 
 describe('Test calcAccountAgent', function () {

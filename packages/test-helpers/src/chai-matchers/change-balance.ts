@@ -1,4 +1,4 @@
-import * as common from '@composable-router/common';
+import * as common from '@furucombo/composable-router-common';
 import { getBalance } from '../utils';
 
 export function supportChangeBalance(Assertion: Chai.AssertionStatic, utils: Chai.ChaiUtils) {

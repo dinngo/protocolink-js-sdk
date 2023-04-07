@@ -1,5 +1,5 @@
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
-import * as common from '@composable-router/common';
+import * as common from '@furucombo/composable-router-common';
 import { constants, providers } from 'ethers';
 import { expect } from 'chai';
 import { getChainId } from './network';

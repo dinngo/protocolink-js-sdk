@@ -1,7 +1,7 @@
 import { TokenToTokenParams, isTokenToTokenExactInParams, isTokenToTokenExactOutParams } from './logic-types';
-import * as common from '@composable-router/common';
+import * as common from '@furucombo/composable-router-common';
 import { expect } from 'chai';
-import { mainnetTokens } from '@composable-router/test-helpers';
+import { mainnetTokens } from '@furucombo/composable-router-test-helpers';
 
 describe('Test TokenToTokenParams', function () {
   const paramsExactIn: TokenToTokenParams = {

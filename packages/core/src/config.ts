@@ -1,4 +1,4 @@
-import * as common from '@composable-router/common';
+import * as common from '@furucombo/composable-router-common';
 
 type ContractNames = 'Router' | 'AgentImplementation';
 

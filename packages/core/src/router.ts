@@ -1,7 +1,7 @@
 import { BigNumberish, utils } from 'ethers';
 import { IParam } from './contracts/Router';
 import { Router__factory } from './contracts';
-import * as common from '@composable-router/common';
+import * as common from '@furucombo/composable-router-common';
 import { getContractAddress } from './config';
 
 export const AGENT_BYTECODE =

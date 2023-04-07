@@ -1,4 +1,4 @@
-# @composable-router/common
+# @furucombo/composable-router-common
 
 The common sdk for Composable Router.
 
@@ -7,11 +7,11 @@ The common sdk for Composable Router.
 Install the package via `npm`:
 
 ```sh
-npm install @composable-router/common
+npm install @furucombo/composable-router-common
 ```
 
 or `yarn`:
 
 ```sh
-yarn add @composable-router/common
+yarn add @furucombo/composable-router-common
 ```

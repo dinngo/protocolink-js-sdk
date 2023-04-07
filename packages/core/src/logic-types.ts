@@ -1,5 +1,5 @@
 import { BigNumberish } from 'ethers';
-import * as common from '@composable-router/common';
+import * as common from '@furucombo/composable-router-common';
 
 export interface GlobalOptions {
   readonly account: string;

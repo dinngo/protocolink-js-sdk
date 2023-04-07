@@ -1,8 +1,9 @@
 {
-  "name": "@composable-router/common",
+  "name": "@furucombo/composable-router-common",
   "version": "0.1.0",
   "description": "Composable Router Common SDK",
   "keywords": [
+    "furucombo",
     "composable-router"
   ],
   "repository": {
@@ -35,6 +36,6 @@
     "type-fest": "^3.6.0"
   },
   "devDependencies": {
-    "@composable-router/test-helpers": "^0.1.0"
+    "@furucombo/composable-router-test-helpers": "^0.1.0"
   }
 }

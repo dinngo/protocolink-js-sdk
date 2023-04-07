@@ -1,4 +1,4 @@
-# @composable-router/test-helpers
+# @furucombo/composable-router-test-helpers
 
 ## 0.1.0
 
