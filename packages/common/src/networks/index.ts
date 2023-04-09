@@ -38,8 +38,8 @@ export function getNetworkId(chainId: number) {
   return getNetwork(chainId).id;
 }
 
-export function setRpcUrl(chainId: number, rpcUrl: string) {
-  networkMap[chainId].rpcUrl = rpcUrl;
+export function setNetwork(chainId: number, network: Partial<Network>) {
+  networkMap[chainId] = { ...networkMap[chainId], ...network };
 }
 
 export enum ChainId {
