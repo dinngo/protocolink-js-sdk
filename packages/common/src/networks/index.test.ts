@@ -1,4 +1,14 @@
-import { ChainId, ExplorerType, NetworkId, isSupportedChainId, isSupportedNetworkId, newExplorerUrl } from './index';
+import {
+  ChainId,
+  ExplorerType,
+  NetworkId,
+  getNetwork,
+  isSupportedChainId,
+  isSupportedNetworkId,
+  networks,
+  newExplorerUrl,
+  setNetwork,
+} from './index';
 import { expect } from 'chai';
 
 describe('Test isSupportedChainId', function () {
@@ -152,6 +162,42 @@ describe('Test newExplorerUrl', function () {
   testCases.forEach(({ chainId, type, data, expected }, i) => {
     it(`case ${i + 1}`, function () {
       expect(newExplorerUrl(chainId, type, data)).to.eq(expected);
+    });
+  });
+});
+
+describe('Test setNetwork', function () {
+  const testCases: { chainId: number; network: Record<string, any> }[] = [
+    {
+      chainId: ChainId.mainnet,
+      network: {
+        rpcUrl: 'https://ethtaipei-node.furucombo.app/node',
+        explorerUrl: 'https://ethtaipei-node.furucombo.app/',
+      },
+    },
+  ];
+
+  testCases.forEach(({ chainId, network }, i) => {
+    it(`case ${i + 1}`, function () {
+      const oldNetwork = getNetwork(chainId);
+
+      setNetwork(chainId, network);
+
+      for (let i = 0; i < networks.length; i++) {
+        if (networks[i].chainId === chainId) {
+          Object.keys(network).forEach((key) => {
+            expect((networks[i] as Record<string, any>)[key]).to.eq(network[key]);
+          });
+          break;
+        }
+      }
+
+      const newNetwork: Record<string, any> = getNetwork(chainId);
+      Object.keys(network).forEach((key) => {
+        expect(newNetwork[key]).to.eq(network[key]);
+      });
+
+      setNetwork(chainId, oldNetwork);
     });
   });
 });

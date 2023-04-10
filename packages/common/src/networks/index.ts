@@ -39,6 +39,12 @@ export function getNetworkId(chainId: number) {
 }
 
 export function setNetwork(chainId: number, network: Partial<Network>) {
+  for (let i = 0; i < networks.length; i++) {
+    if (networks[i].chainId === chainId) {
+      networks[i] = { ...networks[i], ...network };
+      break;
+    }
+  }
   networkMap[chainId] = { ...networkMap[chainId], ...network };
 }
 
