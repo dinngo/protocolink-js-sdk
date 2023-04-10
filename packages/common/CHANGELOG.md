@@ -1,5 +1,11 @@
 # @furucombo/composable-router-common
 
+## 0.1.2
+
+### Patch Changes
+
+- 72282c9: fix setNetwork issue
+
 ## 0.1.1
 
 ### Patch Changes

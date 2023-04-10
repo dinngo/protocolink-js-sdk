@@ -1,5 +1,12 @@
 # @furucombo/composable-router-test-helpers
 
+## 0.1.2
+
+### Patch Changes
+
+- Updated dependencies [72282c9]
+  - @furucombo/composable-router-common@0.1.2
+
 ## 0.1.1
 
 ### Patch Changes

@@ -8,6 +8,6 @@
 
 | package                                                            | changelog                                   |
 | ------------------------------------------------------------------ | ------------------------------------------- |
-| [@furucombo/composable-router-core](packages/core/README.md)                 | [0.1.1](packages/core/CHANGELOG.md)         |
-| [@furucombo/composable-router-common](packages/common/README.md)             | [0.1.1](packages/common/CHANGELOG.md)       |
-| [@furucombo/composable-router-test-helpers](packages/test-helpers/README.md) | [0.1.1](packages/test-helpers/CHANGELOG.md) |
+| [@furucombo/composable-router-core](packages/core/README.md)                 | [0.1.2](packages/core/CHANGELOG.md)         |
+| [@furucombo/composable-router-common](packages/common/README.md)             | [0.1.2](packages/common/CHANGELOG.md)       |
+| [@furucombo/composable-router-test-helpers](packages/test-helpers/README.md) | [0.1.2](packages/test-helpers/CHANGELOG.md) |
