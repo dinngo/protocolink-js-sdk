@@ -9,8 +9,6 @@ export abstract class Logic extends common.Web3Toolkit {
   static get rid() {
     return `${this.protocol}:${this.id}`;
   }
-
-  abstract build(fields: any, options?: any): Promise<IParam.LogicStruct>;
 }
 
 export interface LogicTokenListInterface {
@@ -19,6 +17,10 @@ export interface LogicTokenListInterface {
 
 export interface LogicOracleInterface {
   quote(params: any): any;
+}
+
+export interface LogicBuilderInterface {
+  build(fields: any, options?: any): Promise<IParam.LogicStruct>;
 }
 
 export interface LogicClassInterface {
