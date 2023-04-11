@@ -1,5 +1,13 @@
 # @furucombo/composable-router-core
 
+## 0.1.3
+
+### Patch Changes
+
+- 9240130: move Logic abstract build func to interface
+- Updated dependencies
+  - @furucombo/composable-router-common@0.1.3
+
 ## 0.1.2
 
 ### Patch Changes
