@@ -1,5 +1,14 @@
 # @furucombo/composable-router-common
 
+## 0.1.4
+
+### Patch Changes
+
+- 2bdaf5c: add shortenTransactionHash func
+- Updated dependencies
+  - @types/lodash@4.14.194
+  - type-fest@3.8.0
+
 ## 0.1.3
 
 - bump version

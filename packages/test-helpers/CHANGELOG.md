@@ -1,5 +1,14 @@
 # @furucombo/composable-router-test-helpers
 
+## 0.1.4
+
+### Patch Changes
+
+- Updated dependencies [2bdaf5c]
+  - @furucombo/composable-router-common@0.1.4
+  - @nomiclabs/hardhat-ethers@2.2.3
+  - hardhat@2.13.1
+
 ## 0.1.3
 
 ### Patch Changes
