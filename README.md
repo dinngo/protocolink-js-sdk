@@ -6,8 +6,8 @@
 
 ## Packages
 
-| package                                                            | changelog                                   |
-| ------------------------------------------------------------------ | ------------------------------------------- |
-| [@furucombo/composable-router-core](packages/core/README.md)                 | [0.1.4](packages/core/CHANGELOG.md)         |
-| [@furucombo/composable-router-common](packages/common/README.md)             | [0.1.4](packages/common/CHANGELOG.md)       |
-| [@furucombo/composable-router-test-helpers](packages/test-helpers/README.md) | [0.1.4](packages/test-helpers/CHANGELOG.md) |
+| package                                                                      | version                                                                                                                                                             | changelog                                |
+| ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------- |
+| [@furucombo/composable-router-core](packages/core/README.md)                 | [![npm version](https://badge.fury.io/js/@furucombo%2Fcomposable-router-core.svg)](https://www.npmjs.com/package/@furucombo/composable-router-core)                 | [GO](packages/core/CHANGELOG.md)         |
+| [@furucombo/composable-router-common](packages/common/README.md)             | [![npm version](https://badge.fury.io/js/@furucombo%2Fcomposable-router-common.svg)](https://www.npmjs.com/package/@furucombo/composable-router-common)             | [GO](packages/common/CHANGELOG.md)       |
+| [@furucombo/composable-router-test-helpers](packages/test-helpers/README.md) | [![npm version](https://badge.fury.io/js/@furucombo%2Fcomposable-router-test-helpers.svg)](https://www.npmjs.com/package/@furucombo/composable-router-test-helpers) | [GO](packages/test-helpers/CHANGELOG.md) |
