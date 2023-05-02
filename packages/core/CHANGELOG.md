@@ -1,5 +1,13 @@
 # @furucombo/composable-router-core
 
+## 0.1.5
+
+### Patch Changes
+
+- e1b440f: remove GlobalOptions type properties - funds, balances, slippage
+- Updated dependencies [943b5e5]
+  - @furucombo/composable-router-common@0.1.5
+
 ## 0.1.4
 
 ### Patch Changes

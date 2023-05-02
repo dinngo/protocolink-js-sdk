@@ -1,5 +1,12 @@
 # @furucombo/composable-router-common
 
+## 0.1.5
+
+### Patch Changes
+
+- 943b5e5: Updated dependencies
+  - type-fest@3.9.0
+
 ## 0.1.4
 
 ### Patch Changes

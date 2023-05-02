@@ -1,5 +1,14 @@
 # @furucombo/composable-router-test-helpers
 
+## 0.1.5
+
+### Patch Changes
+
+- b655ab1: Updated dependencies
+  - hardhat@2.14.0
+- Updated dependencies [943b5e5]
+  - @furucombo/composable-router-common@0.1.5
+
 ## 0.1.4
 
 ### Patch Changes
