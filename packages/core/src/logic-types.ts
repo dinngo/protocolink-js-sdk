@@ -3,9 +3,6 @@ import * as common from '@furucombo/composable-router-common';
 
 export interface GlobalOptions {
   readonly account: string;
-  readonly funds: common.TokenAmounts;
-  readonly balances: common.TokenAmounts;
-  readonly slippage: number;
 }
 
 export enum WrapMode {
