@@ -55,6 +55,7 @@ export enum ChainId {
   optimism = 10,
   avalanche = 43114,
   fantom = 250,
+  zksync = 324,
 }
 
 export enum NetworkId {
@@ -64,10 +65,11 @@ export enum NetworkId {
   optimism = 'optimism',
   avalanche = 'avalanche',
   fantom = 'fantom',
+  zksync = 'zksync',
 }
 
 export function isSupportedChainId(chainId: number) {
-  return networks.some((network) => network.chainId == chainId);
+  return !!networkMap[chainId];
 }
 
 export function isSupportedNetworkId(networkId: string) {
@@ -80,6 +82,6 @@ export enum ExplorerType {
   token = 'token',
 }
 
-export function newExplorerUrl(chainId: number, type: 'tx' | 'address' | 'token', data: string): string {
+export function newExplorerUrl(chainId: number, type: 'tx' | 'address' | 'token', data: string) {
   return `${getNetwork(chainId).explorerUrl}${type}/${data}`;
 }

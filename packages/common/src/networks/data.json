@@ -130,5 +130,27 @@
       "decimals": 18
     },
     "multicall2Address": "0xD98e3dBE5950Ca8Ce5a4b59630a5652110403E5c"
+  },
+  {
+    "id": "zksync",
+    "chainId": 324,
+    "name": "zkSync",
+    "explorerUrl": "https://explorer.zksync.io/",
+    "rpcUrl": "https://mainnet.era.zksync.io/",
+    "nativeToken": {
+      "chainId": 324,
+      "symbol": "ETH",
+      "name": "Ethereum",
+      "address": "0x0000000000000000000000000000000000000000",
+      "decimals": 18
+    },
+    "wrappedNativeToken": {
+      "chainId": 324,
+      "symbol": "WETH",
+      "name": "Wrapped Ether",
+      "address": "0x5AEa5775959fBC2557Cc8789bC1bf90A239D9a91",
+      "decimals": 18
+    },
+    "multicall2Address": "0x1fCD733705ec1CF534dD19ecF627F013352e776F"
   }
 ]
