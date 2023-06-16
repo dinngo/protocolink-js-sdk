@@ -27,6 +27,10 @@ export const contractAddressMap: Record<number, { [k in ContractNames]: string }
     Router: '0x67e4d4Af097787Aa5a7daE7f9b147Bf32243F030',
     AgentImplementation: '0xe495bDD1d9f74855D31BF881aA68b1bFeD728f7D',
   },
+  [common.ChainId.zksync]: {
+    Router: '0x67e4d4Af097787Aa5a7daE7f9b147Bf32243F030',
+    AgentImplementation: '0xe495bDD1d9f74855D31BF881aA68b1bFeD728f7D',
+  },
 };
 
 export function getContractAddress(chainId: number, name: ContractNames) {

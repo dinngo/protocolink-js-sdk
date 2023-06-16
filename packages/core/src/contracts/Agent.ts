@@ -21,13 +21,13 @@ import type { TypedEventFilter, TypedEvent, TypedListener, OnEvent, PromiseOrVal
 export declare namespace IParam {
   export type InputStruct = {
     token: PromiseOrValue<string>;
-    amountBps: PromiseOrValue<BigNumberish>;
+    balanceBps: PromiseOrValue<BigNumberish>;
     amountOrOffset: PromiseOrValue<BigNumberish>;
   };
 
   export type InputStructOutput = [string, BigNumber, BigNumber] & {
     token: string;
-    amountBps: BigNumber;
+    balanceBps: BigNumber;
     amountOrOffset: BigNumber;
   };
 
@@ -48,11 +48,25 @@ export declare namespace IParam {
     approveTo: string;
     callback: string;
   };
+
+  export type FeeStruct = {
+    token: PromiseOrValue<string>;
+    amount: PromiseOrValue<BigNumberish>;
+    metadata: PromiseOrValue<BytesLike>;
+  };
+
+  export type FeeStructOutput = [string, BigNumber, string] & {
+    token: string;
+    amount: BigNumber;
+    metadata: string;
+  };
 }
 
 export interface AgentInterface extends utils.Interface {
   functions: {
-    'execute((address,bytes,(address,uint256,uint256)[],uint8,address,address)[],address[],bool)': FunctionFragment;
+    'execute((address,bytes,(address,uint256,uint256)[],uint8,address,address)[],address[])': FunctionFragment;
+    'executeByCallback((address,bytes,(address,uint256,uint256)[],uint8,address,address)[])': FunctionFragment;
+    'executeWithSignature((address,bytes,(address,uint256,uint256)[],uint8,address,address)[],(address,uint256,bytes32)[],address[])': FunctionFragment;
     'initialize()': FunctionFragment;
     'onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)': FunctionFragment;
     'onERC1155Received(address,address,uint256,uint256,bytes)': FunctionFragment;
@@ -65,6 +79,8 @@ export interface AgentInterface extends utils.Interface {
   getFunction(
     nameOrSignatureOrTopic:
       | 'execute'
+      | 'executeByCallback'
+      | 'executeWithSignature'
       | 'initialize'
       | 'onERC1155BatchReceived'
       | 'onERC1155Received'
@@ -74,9 +90,11 @@ export interface AgentInterface extends utils.Interface {
       | 'wrappedNative'
   ): FunctionFragment;
 
+  encodeFunctionData(functionFragment: 'execute', values: [IParam.LogicStruct[], PromiseOrValue<string>[]]): string;
+  encodeFunctionData(functionFragment: 'executeByCallback', values: [IParam.LogicStruct[]]): string;
   encodeFunctionData(
-    functionFragment: 'execute',
-    values: [IParam.LogicStruct[], PromiseOrValue<string>[], PromiseOrValue<boolean>]
+    functionFragment: 'executeWithSignature',
+    values: [IParam.LogicStruct[], IParam.FeeStruct[], PromiseOrValue<string>[]]
   ): string;
   encodeFunctionData(functionFragment: 'initialize', values?: undefined): string;
   encodeFunctionData(
@@ -108,6 +126,8 @@ export interface AgentInterface extends utils.Interface {
   encodeFunctionData(functionFragment: 'wrappedNative', values?: undefined): string;
 
   decodeFunctionResult(functionFragment: 'execute', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'executeByCallback', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'executeWithSignature', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'initialize', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'onERC1155BatchReceived', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'onERC1155Received', data: BytesLike): Result;
@@ -117,17 +137,29 @@ export interface AgentInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: 'wrappedNative', data: BytesLike): Result;
 
   events: {
-    'FeeCharged(address,uint256)': EventFragment;
+    'AmountReplaced(uint256,uint256,uint256)': EventFragment;
+    'FeeCharged(address,uint256,bytes32)': EventFragment;
   };
 
+  getEvent(nameOrSignatureOrTopic: 'AmountReplaced'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'FeeCharged'): EventFragment;
 }
+
+export interface AmountReplacedEventObject {
+  i: BigNumber;
+  j: BigNumber;
+  amount: BigNumber;
+}
+export type AmountReplacedEvent = TypedEvent<[BigNumber, BigNumber, BigNumber], AmountReplacedEventObject>;
+
+export type AmountReplacedEventFilter = TypedEventFilter<AmountReplacedEvent>;
 
 export interface FeeChargedEventObject {
   token: string;
   amount: BigNumber;
+  metadata: string;
 }
-export type FeeChargedEvent = TypedEvent<[string, BigNumber], FeeChargedEventObject>;
+export type FeeChargedEvent = TypedEvent<[string, BigNumber, string], FeeChargedEventObject>;
 
 export type FeeChargedEventFilter = TypedEventFilter<FeeChargedEvent>;
 
@@ -157,7 +189,18 @@ export interface Agent extends BaseContract {
     execute(
       logics: IParam.LogicStruct[],
       tokensReturn: PromiseOrValue<string>[],
-      isFeeEnabled: PromiseOrValue<boolean>,
+      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    executeByCallback(
+      logics: IParam.LogicStruct[],
+      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    executeWithSignature(
+      logics: IParam.LogicStruct[],
+      fees: IParam.FeeStruct[],
+      tokensReturn: PromiseOrValue<string>[],
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -199,7 +242,18 @@ export interface Agent extends BaseContract {
   execute(
     logics: IParam.LogicStruct[],
     tokensReturn: PromiseOrValue<string>[],
-    isFeeEnabled: PromiseOrValue<boolean>,
+    overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  executeByCallback(
+    logics: IParam.LogicStruct[],
+    overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  executeWithSignature(
+    logics: IParam.LogicStruct[],
+    fees: IParam.FeeStruct[],
+    tokensReturn: PromiseOrValue<string>[],
     overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -241,7 +295,15 @@ export interface Agent extends BaseContract {
     execute(
       logics: IParam.LogicStruct[],
       tokensReturn: PromiseOrValue<string>[],
-      isFeeEnabled: PromiseOrValue<boolean>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    executeByCallback(logics: IParam.LogicStruct[], overrides?: CallOverrides): Promise<void>;
+
+    executeWithSignature(
+      logics: IParam.LogicStruct[],
+      fees: IParam.FeeStruct[],
+      tokensReturn: PromiseOrValue<string>[],
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -281,15 +343,33 @@ export interface Agent extends BaseContract {
   };
 
   filters: {
-    'FeeCharged(address,uint256)'(token?: PromiseOrValue<string> | null, amount?: null): FeeChargedEventFilter;
-    FeeCharged(token?: PromiseOrValue<string> | null, amount?: null): FeeChargedEventFilter;
+    'AmountReplaced(uint256,uint256,uint256)'(i?: null, j?: null, amount?: null): AmountReplacedEventFilter;
+    AmountReplaced(i?: null, j?: null, amount?: null): AmountReplacedEventFilter;
+
+    'FeeCharged(address,uint256,bytes32)'(
+      token?: PromiseOrValue<string> | null,
+      amount?: null,
+      metadata?: null
+    ): FeeChargedEventFilter;
+    FeeCharged(token?: PromiseOrValue<string> | null, amount?: null, metadata?: null): FeeChargedEventFilter;
   };
 
   estimateGas: {
     execute(
       logics: IParam.LogicStruct[],
       tokensReturn: PromiseOrValue<string>[],
-      isFeeEnabled: PromiseOrValue<boolean>,
+      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    executeByCallback(
+      logics: IParam.LogicStruct[],
+      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    executeWithSignature(
+      logics: IParam.LogicStruct[],
+      fees: IParam.FeeStruct[],
+      tokensReturn: PromiseOrValue<string>[],
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -332,7 +412,18 @@ export interface Agent extends BaseContract {
     execute(
       logics: IParam.LogicStruct[],
       tokensReturn: PromiseOrValue<string>[],
-      isFeeEnabled: PromiseOrValue<boolean>,
+      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    executeByCallback(
+      logics: IParam.LogicStruct[],
+      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    executeWithSignature(
+      logics: IParam.LogicStruct[],
+      fees: IParam.FeeStruct[],
+      tokensReturn: PromiseOrValue<string>[],
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 

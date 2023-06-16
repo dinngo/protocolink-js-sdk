@@ -30,13 +30,43 @@ const _abi = [
   },
   {
     inputs: [],
-    name: 'InvalidCaller',
+    name: 'NotCallback',
     type: 'error',
   },
   {
     inputs: [],
-    name: 'UnresetCallback',
+    name: 'NotRouter',
     type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'UnresetCallbackWithCharge',
+    type: 'error',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'i',
+        type: 'uint256',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'j',
+        type: 'uint256',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'amount',
+        type: 'uint256',
+      },
+    ],
+    name: 'AmountReplaced',
+    type: 'event',
   },
   {
     anonymous: false,
@@ -52,6 +82,12 @@ const _abi = [
         internalType: 'uint256',
         name: 'amount',
         type: 'uint256',
+      },
+      {
+        indexed: false,
+        internalType: 'bytes32',
+        name: 'metadata',
+        type: 'bytes32',
       },
     ],
     name: 'FeeCharged',
@@ -80,7 +116,7 @@ const _abi = [
               },
               {
                 internalType: 'uint256',
-                name: 'amountBps',
+                name: 'balanceBps',
                 type: 'uint256',
               },
               {
@@ -118,13 +154,159 @@ const _abi = [
         name: 'tokensReturn',
         type: 'address[]',
       },
-      {
-        internalType: 'bool',
-        name: 'isFeeEnabled',
-        type: 'bool',
-      },
     ],
     name: 'execute',
+    outputs: [],
+    stateMutability: 'payable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        components: [
+          {
+            internalType: 'address',
+            name: 'to',
+            type: 'address',
+          },
+          {
+            internalType: 'bytes',
+            name: 'data',
+            type: 'bytes',
+          },
+          {
+            components: [
+              {
+                internalType: 'address',
+                name: 'token',
+                type: 'address',
+              },
+              {
+                internalType: 'uint256',
+                name: 'balanceBps',
+                type: 'uint256',
+              },
+              {
+                internalType: 'uint256',
+                name: 'amountOrOffset',
+                type: 'uint256',
+              },
+            ],
+            internalType: 'struct IParam.Input[]',
+            name: 'inputs',
+            type: 'tuple[]',
+          },
+          {
+            internalType: 'enum IParam.WrapMode',
+            name: 'wrapMode',
+            type: 'uint8',
+          },
+          {
+            internalType: 'address',
+            name: 'approveTo',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'callback',
+            type: 'address',
+          },
+        ],
+        internalType: 'struct IParam.Logic[]',
+        name: 'logics',
+        type: 'tuple[]',
+      },
+    ],
+    name: 'executeByCallback',
+    outputs: [],
+    stateMutability: 'payable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        components: [
+          {
+            internalType: 'address',
+            name: 'to',
+            type: 'address',
+          },
+          {
+            internalType: 'bytes',
+            name: 'data',
+            type: 'bytes',
+          },
+          {
+            components: [
+              {
+                internalType: 'address',
+                name: 'token',
+                type: 'address',
+              },
+              {
+                internalType: 'uint256',
+                name: 'balanceBps',
+                type: 'uint256',
+              },
+              {
+                internalType: 'uint256',
+                name: 'amountOrOffset',
+                type: 'uint256',
+              },
+            ],
+            internalType: 'struct IParam.Input[]',
+            name: 'inputs',
+            type: 'tuple[]',
+          },
+          {
+            internalType: 'enum IParam.WrapMode',
+            name: 'wrapMode',
+            type: 'uint8',
+          },
+          {
+            internalType: 'address',
+            name: 'approveTo',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'callback',
+            type: 'address',
+          },
+        ],
+        internalType: 'struct IParam.Logic[]',
+        name: 'logics',
+        type: 'tuple[]',
+      },
+      {
+        components: [
+          {
+            internalType: 'address',
+            name: 'token',
+            type: 'address',
+          },
+          {
+            internalType: 'uint256',
+            name: 'amount',
+            type: 'uint256',
+          },
+          {
+            internalType: 'bytes32',
+            name: 'metadata',
+            type: 'bytes32',
+          },
+        ],
+        internalType: 'struct IParam.Fee[]',
+        name: 'fees',
+        type: 'tuple[]',
+      },
+      {
+        internalType: 'address[]',
+        name: 'tokensReturn',
+        type: 'address[]',
+      },
+    ],
+    name: 'executeWithSignature',
     outputs: [],
     stateMutability: 'payable',
     type: 'function',

@@ -42,19 +42,19 @@ export function isTokenToTokenExactOutParams<T = object>(v: any): v is TokenToTo
 export type TokenToTokenExactInFields<T = object> = {
   input: common.TokenAmount;
   output: common.TokenAmount;
-  amountBps?: BigNumberish;
+  balanceBps?: BigNumberish;
 } & T;
 
 export type TokenToTokenFields<T = object> = {
   tradeType: TradeType;
   input: common.TokenAmount;
   output: common.TokenAmount;
-  amountBps?: BigNumberish;
+  balanceBps?: BigNumberish;
 } & T;
 
 export type TokenInParams<T = object> = { tokenIn: common.Token } & T;
 
-export type TokenInFields<T = object> = { input: common.TokenAmount; amountBps?: BigNumberish } & T;
+export type TokenInFields<T = object> = { input: common.TokenAmount; balanceBps?: BigNumberish } & T;
 
 export type TokensInFields<T = object> = {
   inputs: common.TokenAmounts;
@@ -70,7 +70,7 @@ export type TokensOutFields<T = object> = { outputs: common.TokenAmounts } & T;
 export type TokenToUserFields<T = object> = {
   input: common.TokenAmount;
   recipient: string;
-  amountBps?: BigNumberish;
+  balanceBps?: BigNumberish;
 } & T;
 
 export type RepayParams<T = object> = TokenInParams<{ borrower: string }> & T;

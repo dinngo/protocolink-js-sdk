@@ -17,7 +17,7 @@ describe('Test calcAccountAgent', function () {
     router = await (
       await new Router__factory()
         .connect(deployer)
-        .deploy(common.getWrappedNativeToken(chainId).address, deployer.address, deployer.address)
+        .deploy(common.getWrappedNativeToken(chainId).address, deployer.address, deployer.address, deployer.address)
     ).deployed();
     setContractAddress(chainId, 'Router', router.address);
     const agentImplementation = await router.agentImplementation();

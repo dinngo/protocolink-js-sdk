@@ -6,25 +6,25 @@ import invariant from 'tiny-invariant';
 
 export interface NewLogicInputOptions {
   input: common.TokenAmount;
-  amountBps?: BigNumberish;
+  balanceBps?: BigNumberish;
   amountOffset?: BigNumberish;
 }
 
 export function newLogicInput(options: NewLogicInputOptions): IParam.InputStruct {
   const { input } = options;
 
-  let amountBps: BigNumberish;
+  let balanceBps: BigNumberish;
   let amountOrOffset: BigNumberish;
-  if (options.amountBps && options.amountOffset !== undefined) {
-    invariant(common.validateAmountBps(options.amountBps), 'amountBps is invalid');
-    amountBps = options.amountBps;
+  if (options.balanceBps && options.amountOffset !== undefined) {
+    invariant(common.validateBps(options.balanceBps), 'balanceBps is invalid');
+    balanceBps = options.balanceBps;
     amountOrOffset = options.amountOffset;
   } else {
-    amountBps = constants.MaxUint256;
+    balanceBps = 0;
     amountOrOffset = input.amountWei;
   }
 
-  return { token: input.token.elasticAddress, amountBps, amountOrOffset };
+  return { token: input.token.elasticAddress, balanceBps, amountOrOffset };
 }
 
 export interface NewLogicOptions {
