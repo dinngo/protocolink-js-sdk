@@ -1,5 +1,12 @@
 # @furucombo/composable-router-core
 
+## 0.2.2
+
+### Patch Changes
+
+- 4918d53: export constants
+  - @furucombo/composable-router-common@0.2.2
+
 ## 0.2.1
 
 ### Patch Changes

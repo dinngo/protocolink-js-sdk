@@ -1,6 +1,6 @@
 {
   "name": "@furucombo/composable-router-core",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Composable Router Core SDK",
   "keywords": [
     "furucombo",
@@ -28,11 +28,11 @@
     "typechain": "rm -rf src/contracts && typechain --target ethers-v5 --out-dir src/contracts src/abis/*.json && pretty-quick"
   },
   "dependencies": {
-    "@furucombo/composable-router-common": "^0.2.1",
+    "@furucombo/composable-router-common": "^0.2.2",
     "ethers": "^5.7.2",
     "tiny-invariant": "^1.3.1"
   },
   "devDependencies": {
-    "@furucombo/composable-router-test-helpers": "^0.2.1"
+    "@furucombo/composable-router-test-helpers": "^0.2.2"
   }
 }
