@@ -1,5 +1,15 @@
 # @furucombo/composable-router-common
 
+## 0.2.0
+
+### Minor Changes
+
+- 0e22d1f: common package add zkSync network config
+
+### Patch Changes
+
+- 989190b: rename bps function names
+
 ## 0.1.5
 
 ### Patch Changes

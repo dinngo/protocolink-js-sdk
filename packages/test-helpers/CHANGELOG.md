@@ -1,5 +1,14 @@
 # @furucombo/composable-router-test-helpers
 
+## 0.2.0
+
+### Patch Changes
+
+- 5aba7de: update cbETH faucet
+- Updated dependencies [989190b]
+- Updated dependencies [0e22d1f]
+  - @furucombo/composable-router-common@0.2.0
+
 ## 0.1.5
 
 ### Patch Changes
