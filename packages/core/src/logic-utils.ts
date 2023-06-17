@@ -1,3 +1,4 @@
+import { BPS_NOT_USED } from './constants';
 import { BigNumberish, constants } from 'ethers';
 import { IParam } from './contracts/Router';
 import { WrapMode } from './logic-types';
@@ -20,7 +21,7 @@ export function newLogicInput(options: NewLogicInputOptions): IParam.InputStruct
     balanceBps = options.balanceBps;
     amountOrOffset = options.amountOffset;
   } else {
-    balanceBps = 0;
+    balanceBps = BPS_NOT_USED;
     amountOrOffset = input.amountWei;
   }
 
