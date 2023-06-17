@@ -1,4 +1,5 @@
 export * from './config';
+export * from './constants';
 export * from './contracts';
 export * from './contracts/Router';
 export * from './logic';
