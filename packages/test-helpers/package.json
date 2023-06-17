@@ -1,6 +1,6 @@
 {
   "name": "@furucombo/composable-router-test-helpers",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Composable Router Test Helpers SDK",
   "keywords": [
     "furucombo",
@@ -25,7 +25,7 @@
     "test:e2e": "hardhat test"
   },
   "dependencies": {
-    "@furucombo/composable-router-common": "^0.2.0",
+    "@furucombo/composable-router-common": "^0.2.1",
     "@nomicfoundation/hardhat-chai-matchers": "^1.0.6",
     "@nomicfoundation/hardhat-network-helpers": "^1.0.8",
     "@nomiclabs/hardhat-ethers": "^2.2.3",

@@ -1,5 +1,12 @@
 # @furucombo/composable-router-core
 
+## 0.2.1
+
+### Patch Changes
+
+- a3711fa: add BPS_NOT_USED, OFFSET_NOT_USED constants
+  - @furucombo/composable-router-common@0.2.1
+
 ## 0.2.0
 
 ### Minor Changes
