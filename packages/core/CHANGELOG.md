@@ -1,5 +1,12 @@
 # @furucombo/composable-router-core
 
+## 0.2.3
+
+### Patch Changes
+
+- 5bccfbc: add newCallbackParams func
+  - @furucombo/composable-router-common@0.2.3
+
 ## 0.2.2
 
 ### Patch Changes
