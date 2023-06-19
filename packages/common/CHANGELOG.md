@@ -1,5 +1,11 @@
 # @furucombo/composable-router-common
 
+## 0.2.5
+
+### Patch Changes
+
+- c22de8e: regenerate contracts files with @typechain/ethers-v5@11.0.0
+
 ## 0.2.4
 
 ### Patch Changes
