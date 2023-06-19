@@ -16,13 +16,13 @@ import type {
 } from 'ethers';
 import type { FunctionFragment, Result, EventFragment } from '@ethersproject/abi';
 import type { Listener, Provider } from '@ethersproject/providers';
-import type { TypedEventFilter, TypedEvent, TypedListener, OnEvent, PromiseOrValue } from './common';
+import type { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from './common';
 
 export declare namespace IParam {
   export type InputStruct = {
-    token: PromiseOrValue<string>;
-    balanceBps: PromiseOrValue<BigNumberish>;
-    amountOrOffset: PromiseOrValue<BigNumberish>;
+    token: string;
+    balanceBps: BigNumberish;
+    amountOrOffset: BigNumberish;
   };
 
   export type InputStructOutput = [string, BigNumber, BigNumber] & {
@@ -32,12 +32,12 @@ export declare namespace IParam {
   };
 
   export type LogicStruct = {
-    to: PromiseOrValue<string>;
-    data: PromiseOrValue<BytesLike>;
+    to: string;
+    data: BytesLike;
     inputs: IParam.InputStruct[];
-    wrapMode: PromiseOrValue<BigNumberish>;
-    approveTo: PromiseOrValue<string>;
-    callback: PromiseOrValue<string>;
+    wrapMode: BigNumberish;
+    approveTo: string;
+    callback: string;
   };
 
   export type LogicStructOutput = [string, string, IParam.InputStructOutput[], number, string, string] & {
@@ -50,9 +50,9 @@ export declare namespace IParam {
   };
 
   export type FeeStruct = {
-    token: PromiseOrValue<string>;
-    amount: PromiseOrValue<BigNumberish>;
-    metadata: PromiseOrValue<BytesLike>;
+    token: string;
+    amount: BigNumberish;
+    metadata: BytesLike;
   };
 
   export type FeeStructOutput = [string, BigNumber, string] & {
@@ -90,39 +90,24 @@ export interface AgentInterface extends utils.Interface {
       | 'wrappedNative'
   ): FunctionFragment;
 
-  encodeFunctionData(functionFragment: 'execute', values: [IParam.LogicStruct[], PromiseOrValue<string>[]]): string;
+  encodeFunctionData(functionFragment: 'execute', values: [IParam.LogicStruct[], string[]]): string;
   encodeFunctionData(functionFragment: 'executeByCallback', values: [IParam.LogicStruct[]]): string;
   encodeFunctionData(
     functionFragment: 'executeWithSignature',
-    values: [IParam.LogicStruct[], IParam.FeeStruct[], PromiseOrValue<string>[]]
+    values: [IParam.LogicStruct[], IParam.FeeStruct[], string[]]
   ): string;
   encodeFunctionData(functionFragment: 'initialize', values?: undefined): string;
   encodeFunctionData(
     functionFragment: 'onERC1155BatchReceived',
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>[],
-      PromiseOrValue<BigNumberish>[],
-      PromiseOrValue<BytesLike>
-    ]
+    values: [string, string, BigNumberish[], BigNumberish[], BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'onERC1155Received',
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BytesLike>
-    ]
+    values: [string, string, BigNumberish, BigNumberish, BytesLike]
   ): string;
-  encodeFunctionData(
-    functionFragment: 'onERC721Received',
-    values: [PromiseOrValue<string>, PromiseOrValue<string>, PromiseOrValue<BigNumberish>, PromiseOrValue<BytesLike>]
-  ): string;
+  encodeFunctionData(functionFragment: 'onERC721Received', values: [string, string, BigNumberish, BytesLike]): string;
   encodeFunctionData(functionFragment: 'router', values?: undefined): string;
-  encodeFunctionData(functionFragment: 'supportsInterface', values: [PromiseOrValue<BytesLike>]): string;
+  encodeFunctionData(functionFragment: 'supportsInterface', values: [BytesLike]): string;
   encodeFunctionData(functionFragment: 'wrappedNative', values?: undefined): string;
 
   decodeFunctionResult(functionFragment: 'execute', data: BytesLike): Result;
@@ -188,156 +173,152 @@ export interface Agent extends BaseContract {
   functions: {
     execute(
       logics: IParam.LogicStruct[],
-      tokensReturn: PromiseOrValue<string>[],
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+      tokensReturn: string[],
+      overrides?: PayableOverrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     executeByCallback(
       logics: IParam.LogicStruct[],
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+      overrides?: PayableOverrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     executeWithSignature(
       logics: IParam.LogicStruct[],
       fees: IParam.FeeStruct[],
-      tokensReturn: PromiseOrValue<string>[],
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+      tokensReturn: string[],
+      overrides?: PayableOverrides & { from?: string }
     ): Promise<ContractTransaction>;
 
-    initialize(overrides?: Overrides & { from?: PromiseOrValue<string> }): Promise<ContractTransaction>;
+    initialize(overrides?: Overrides & { from?: string }): Promise<ContractTransaction>;
 
     onERC1155BatchReceived(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<string>,
-      arg2: PromiseOrValue<BigNumberish>[],
-      arg3: PromiseOrValue<BigNumberish>[],
-      arg4: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      arg0: string,
+      arg1: string,
+      arg2: BigNumberish[],
+      arg3: BigNumberish[],
+      arg4: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     onERC1155Received(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<string>,
-      arg2: PromiseOrValue<BigNumberish>,
-      arg3: PromiseOrValue<BigNumberish>,
-      arg4: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      arg0: string,
+      arg1: string,
+      arg2: BigNumberish,
+      arg3: BigNumberish,
+      arg4: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     onERC721Received(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<string>,
-      arg2: PromiseOrValue<BigNumberish>,
-      arg3: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      arg0: string,
+      arg1: string,
+      arg2: BigNumberish,
+      arg3: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     router(overrides?: CallOverrides): Promise<[string]>;
 
-    supportsInterface(interfaceId: PromiseOrValue<BytesLike>, overrides?: CallOverrides): Promise<[boolean]>;
+    supportsInterface(interfaceId: BytesLike, overrides?: CallOverrides): Promise<[boolean]>;
 
     wrappedNative(overrides?: CallOverrides): Promise<[string]>;
   };
 
   execute(
     logics: IParam.LogicStruct[],
-    tokensReturn: PromiseOrValue<string>[],
-    overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+    tokensReturn: string[],
+    overrides?: PayableOverrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   executeByCallback(
     logics: IParam.LogicStruct[],
-    overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+    overrides?: PayableOverrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   executeWithSignature(
     logics: IParam.LogicStruct[],
     fees: IParam.FeeStruct[],
-    tokensReturn: PromiseOrValue<string>[],
-    overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+    tokensReturn: string[],
+    overrides?: PayableOverrides & { from?: string }
   ): Promise<ContractTransaction>;
 
-  initialize(overrides?: Overrides & { from?: PromiseOrValue<string> }): Promise<ContractTransaction>;
+  initialize(overrides?: Overrides & { from?: string }): Promise<ContractTransaction>;
 
   onERC1155BatchReceived(
-    arg0: PromiseOrValue<string>,
-    arg1: PromiseOrValue<string>,
-    arg2: PromiseOrValue<BigNumberish>[],
-    arg3: PromiseOrValue<BigNumberish>[],
-    arg4: PromiseOrValue<BytesLike>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    arg0: string,
+    arg1: string,
+    arg2: BigNumberish[],
+    arg3: BigNumberish[],
+    arg4: BytesLike,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   onERC1155Received(
-    arg0: PromiseOrValue<string>,
-    arg1: PromiseOrValue<string>,
-    arg2: PromiseOrValue<BigNumberish>,
-    arg3: PromiseOrValue<BigNumberish>,
-    arg4: PromiseOrValue<BytesLike>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    arg0: string,
+    arg1: string,
+    arg2: BigNumberish,
+    arg3: BigNumberish,
+    arg4: BytesLike,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   onERC721Received(
-    arg0: PromiseOrValue<string>,
-    arg1: PromiseOrValue<string>,
-    arg2: PromiseOrValue<BigNumberish>,
-    arg3: PromiseOrValue<BytesLike>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    arg0: string,
+    arg1: string,
+    arg2: BigNumberish,
+    arg3: BytesLike,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   router(overrides?: CallOverrides): Promise<string>;
 
-  supportsInterface(interfaceId: PromiseOrValue<BytesLike>, overrides?: CallOverrides): Promise<boolean>;
+  supportsInterface(interfaceId: BytesLike, overrides?: CallOverrides): Promise<boolean>;
 
   wrappedNative(overrides?: CallOverrides): Promise<string>;
 
   callStatic: {
-    execute(
-      logics: IParam.LogicStruct[],
-      tokensReturn: PromiseOrValue<string>[],
-      overrides?: CallOverrides
-    ): Promise<void>;
+    execute(logics: IParam.LogicStruct[], tokensReturn: string[], overrides?: CallOverrides): Promise<void>;
 
     executeByCallback(logics: IParam.LogicStruct[], overrides?: CallOverrides): Promise<void>;
 
     executeWithSignature(
       logics: IParam.LogicStruct[],
       fees: IParam.FeeStruct[],
-      tokensReturn: PromiseOrValue<string>[],
+      tokensReturn: string[],
       overrides?: CallOverrides
     ): Promise<void>;
 
     initialize(overrides?: CallOverrides): Promise<void>;
 
     onERC1155BatchReceived(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<string>,
-      arg2: PromiseOrValue<BigNumberish>[],
-      arg3: PromiseOrValue<BigNumberish>[],
-      arg4: PromiseOrValue<BytesLike>,
+      arg0: string,
+      arg1: string,
+      arg2: BigNumberish[],
+      arg3: BigNumberish[],
+      arg4: BytesLike,
       overrides?: CallOverrides
     ): Promise<string>;
 
     onERC1155Received(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<string>,
-      arg2: PromiseOrValue<BigNumberish>,
-      arg3: PromiseOrValue<BigNumberish>,
-      arg4: PromiseOrValue<BytesLike>,
+      arg0: string,
+      arg1: string,
+      arg2: BigNumberish,
+      arg3: BigNumberish,
+      arg4: BytesLike,
       overrides?: CallOverrides
     ): Promise<string>;
 
     onERC721Received(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<string>,
-      arg2: PromiseOrValue<BigNumberish>,
-      arg3: PromiseOrValue<BytesLike>,
+      arg0: string,
+      arg1: string,
+      arg2: BigNumberish,
+      arg3: BytesLike,
       overrides?: CallOverrides
     ): Promise<string>;
 
     router(overrides?: CallOverrides): Promise<string>;
 
-    supportsInterface(interfaceId: PromiseOrValue<BytesLike>, overrides?: CallOverrides): Promise<boolean>;
+    supportsInterface(interfaceId: BytesLike, overrides?: CallOverrides): Promise<boolean>;
 
     wrappedNative(overrides?: CallOverrides): Promise<string>;
   };
@@ -346,64 +327,60 @@ export interface Agent extends BaseContract {
     'AmountReplaced(uint256,uint256,uint256)'(i?: null, j?: null, amount?: null): AmountReplacedEventFilter;
     AmountReplaced(i?: null, j?: null, amount?: null): AmountReplacedEventFilter;
 
-    'FeeCharged(address,uint256,bytes32)'(
-      token?: PromiseOrValue<string> | null,
-      amount?: null,
-      metadata?: null
-    ): FeeChargedEventFilter;
-    FeeCharged(token?: PromiseOrValue<string> | null, amount?: null, metadata?: null): FeeChargedEventFilter;
+    'FeeCharged(address,uint256,bytes32)'(token?: string | null, amount?: null, metadata?: null): FeeChargedEventFilter;
+    FeeCharged(token?: string | null, amount?: null, metadata?: null): FeeChargedEventFilter;
   };
 
   estimateGas: {
     execute(
       logics: IParam.LogicStruct[],
-      tokensReturn: PromiseOrValue<string>[],
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+      tokensReturn: string[],
+      overrides?: PayableOverrides & { from?: string }
     ): Promise<BigNumber>;
 
     executeByCallback(
       logics: IParam.LogicStruct[],
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+      overrides?: PayableOverrides & { from?: string }
     ): Promise<BigNumber>;
 
     executeWithSignature(
       logics: IParam.LogicStruct[],
       fees: IParam.FeeStruct[],
-      tokensReturn: PromiseOrValue<string>[],
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+      tokensReturn: string[],
+      overrides?: PayableOverrides & { from?: string }
     ): Promise<BigNumber>;
 
-    initialize(overrides?: Overrides & { from?: PromiseOrValue<string> }): Promise<BigNumber>;
+    initialize(overrides?: Overrides & { from?: string }): Promise<BigNumber>;
 
     onERC1155BatchReceived(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<string>,
-      arg2: PromiseOrValue<BigNumberish>[],
-      arg3: PromiseOrValue<BigNumberish>[],
-      arg4: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      arg0: string,
+      arg1: string,
+      arg2: BigNumberish[],
+      arg3: BigNumberish[],
+      arg4: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     onERC1155Received(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<string>,
-      arg2: PromiseOrValue<BigNumberish>,
-      arg3: PromiseOrValue<BigNumberish>,
-      arg4: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      arg0: string,
+      arg1: string,
+      arg2: BigNumberish,
+      arg3: BigNumberish,
+      arg4: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     onERC721Received(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<string>,
-      arg2: PromiseOrValue<BigNumberish>,
-      arg3: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      arg0: string,
+      arg1: string,
+      arg2: BigNumberish,
+      arg3: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     router(overrides?: CallOverrides): Promise<BigNumber>;
 
-    supportsInterface(interfaceId: PromiseOrValue<BytesLike>, overrides?: CallOverrides): Promise<BigNumber>;
+    supportsInterface(interfaceId: BytesLike, overrides?: CallOverrides): Promise<BigNumber>;
 
     wrappedNative(overrides?: CallOverrides): Promise<BigNumber>;
   };
@@ -411,53 +388,53 @@ export interface Agent extends BaseContract {
   populateTransaction: {
     execute(
       logics: IParam.LogicStruct[],
-      tokensReturn: PromiseOrValue<string>[],
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+      tokensReturn: string[],
+      overrides?: PayableOverrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     executeByCallback(
       logics: IParam.LogicStruct[],
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+      overrides?: PayableOverrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     executeWithSignature(
       logics: IParam.LogicStruct[],
       fees: IParam.FeeStruct[],
-      tokensReturn: PromiseOrValue<string>[],
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+      tokensReturn: string[],
+      overrides?: PayableOverrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
-    initialize(overrides?: Overrides & { from?: PromiseOrValue<string> }): Promise<PopulatedTransaction>;
+    initialize(overrides?: Overrides & { from?: string }): Promise<PopulatedTransaction>;
 
     onERC1155BatchReceived(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<string>,
-      arg2: PromiseOrValue<BigNumberish>[],
-      arg3: PromiseOrValue<BigNumberish>[],
-      arg4: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      arg0: string,
+      arg1: string,
+      arg2: BigNumberish[],
+      arg3: BigNumberish[],
+      arg4: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     onERC1155Received(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<string>,
-      arg2: PromiseOrValue<BigNumberish>,
-      arg3: PromiseOrValue<BigNumberish>,
-      arg4: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      arg0: string,
+      arg1: string,
+      arg2: BigNumberish,
+      arg3: BigNumberish,
+      arg4: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     onERC721Received(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<string>,
-      arg2: PromiseOrValue<BigNumberish>,
-      arg3: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      arg0: string,
+      arg1: string,
+      arg2: BigNumberish,
+      arg3: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     router(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    supportsInterface(interfaceId: PromiseOrValue<BytesLike>, overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    supportsInterface(interfaceId: BytesLike, overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     wrappedNative(overrides?: CallOverrides): Promise<PopulatedTransaction>;
   };

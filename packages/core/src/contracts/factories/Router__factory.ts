@@ -3,7 +3,6 @@
 /* eslint-disable */
 import { Signer, utils, Contract, ContractFactory, Overrides } from 'ethers';
 import type { Provider, TransactionRequest } from '@ethersproject/providers';
-import type { PromiseOrValue } from '../common';
 import type { Router, RouterInterface } from '../Router';
 
 const _abi = [
@@ -1142,20 +1141,20 @@ export class Router__factory extends ContractFactory {
   }
 
   override deploy(
-    wrappedNative: PromiseOrValue<string>,
-    owner_: PromiseOrValue<string>,
-    pauser_: PromiseOrValue<string>,
-    feeCollector_: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    wrappedNative: string,
+    owner_: string,
+    pauser_: string,
+    feeCollector_: string,
+    overrides?: Overrides & { from?: string }
   ): Promise<Router> {
     return super.deploy(wrappedNative, owner_, pauser_, feeCollector_, overrides || {}) as Promise<Router>;
   }
   override getDeployTransaction(
-    wrappedNative: PromiseOrValue<string>,
-    owner_: PromiseOrValue<string>,
-    pauser_: PromiseOrValue<string>,
-    feeCollector_: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    wrappedNative: string,
+    owner_: string,
+    pauser_: string,
+    feeCollector_: string,
+    overrides?: Overrides & { from?: string }
   ): TransactionRequest {
     return super.getDeployTransaction(wrappedNative, owner_, pauser_, feeCollector_, overrides || {});
   }
