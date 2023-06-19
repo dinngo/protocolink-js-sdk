@@ -1,3 +1,4 @@
+import { Agent__factory } from './contracts';
 import { BPS_NOT_USED } from './constants';
 import { BigNumberish, constants } from 'ethers';
 import { IParam } from './contracts/Router';
@@ -47,4 +48,8 @@ export function newLogic(options: NewLogicOptions) {
     callback = constants.AddressZero,
   } = options;
   return { to, data, inputs, wrapMode, approveTo, callback };
+}
+
+export function newCallbackParams(logics: IParam.LogicStruct[]) {
+  return `0x${Agent__factory.createInterface().encodeFunctionData('executeByCallback', [logics]).substring(10)}`;
 }
