@@ -1,5 +1,16 @@
 # @furucombo/composable-router-test-helpers
 
+## 0.2.4
+
+### Patch Changes
+
+- ca4a620: faucet choose hardhat signer if token is native or wrapped native
+- 3340ee7: Updated dependencies
+  - @types/chai@4.3.5
+  - hardhat@2.15.0
+- Updated dependencies [20e094a]
+  - @furucombo/composable-router-common@0.2.4
+
 ## 0.2.3
 
 ### Patch Changes

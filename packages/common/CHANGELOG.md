@@ -1,5 +1,13 @@
 # @furucombo/composable-router-common
 
+## 0.2.4
+
+### Patch Changes
+
+- 20e094a: Updated dependencies
+  - @types/lodash@4.14.195
+  - type-fest@3.12.0
+
 ## 0.2.3
 
 ## 0.2.2

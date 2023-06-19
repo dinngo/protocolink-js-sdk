@@ -1,5 +1,12 @@
 # @furucombo/composable-router-core
 
+## 0.2.4
+
+### Patch Changes
+
+- Updated dependencies [20e094a]
+  - @furucombo/composable-router-common@0.2.4
+
 ## 0.2.3
 
 ### Patch Changes
