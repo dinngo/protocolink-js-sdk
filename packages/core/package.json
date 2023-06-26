@@ -1,6 +1,6 @@
 {
   "name": "@protocolink/core",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "description": "Protocolink Core SDK",
   "keywords": [
     "furucombo",
@@ -28,11 +28,11 @@
     "typechain": "rm -rf src/contracts && typechain --target ethers-v5 --out-dir src/contracts src/abis/*.json && pretty-quick"
   },
   "dependencies": {
-    "@protocolink/common": "^0.2.5",
+    "@protocolink/common": "^0.2.6",
     "ethers": "^5.7.2",
     "tiny-invariant": "^1.3.1"
   },
   "devDependencies": {
-    "@protocolink/test-helpers": "^0.2.5"
+    "@protocolink/test-helpers": "^0.2.6"
   }
 }

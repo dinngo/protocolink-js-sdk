@@ -1,5 +1,13 @@
 # @protocolink/test-helpers
 
+## 0.2.6
+
+### Patch Changes
+
+- 1fc3d76: rename scope to @protocolink
+- Updated dependencies [1fc3d76]
+  - @protocolink/common@0.2.6
+
 ## 0.2.5
 
 ### Patch Changes

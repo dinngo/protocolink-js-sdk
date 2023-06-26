@@ -1,6 +1,6 @@
 {
   "name": "@protocolink/common",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "description": "Protocolink Common SDK",
   "keywords": [
     "furucombo",
@@ -36,6 +36,6 @@
     "type-fest": "^3.12.0"
   },
   "devDependencies": {
-    "@protocolink/test-helpers": "^0.2.5"
+    "@protocolink/test-helpers": "^0.2.6"
   }
 }

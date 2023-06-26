@@ -1,5 +1,11 @@
 # @protocolink/common
 
+## 0.2.6
+
+### Patch Changes
+
+- 1fc3d76: rename scope to @protocolink
+
 ## 0.2.5
 
 ### Patch Changes
