@@ -1,9 +1,9 @@
 import { BPS_NOT_USED } from './constants';
 import { WrapMode } from './logic-types';
-import * as common from '@furucombo/composable-router-common';
+import * as common from '@protocolink/common';
 import { constants } from 'ethers';
 import { expect } from 'chai';
-import { mainnetTokens } from '@furucombo/composable-router-test-helpers';
+import { mainnetTokens } from '@protocolink/test-helpers';
 import { newCallbackParams, newLogic, newLogicInput } from './logic-utils';
 
 describe('Test newLogicInput', function () {

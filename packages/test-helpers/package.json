@@ -1,14 +1,14 @@
 {
-  "name": "@furucombo/composable-router-test-helpers",
+  "name": "@protocolink/test-helpers",
   "version": "0.2.5",
-  "description": "Composable Router Test Helpers SDK",
+  "description": "Protocolink Test Helpers SDK",
   "keywords": [
     "furucombo",
-    "composable-router"
+    "protocolink"
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/dinngo/composable-router-sdk.git",
+    "url": "https://github.com/dinngo/protocolink-js-sdk.git",
     "directory": "packages/test-helpers"
   },
   "license": "MIT",
@@ -25,7 +25,7 @@
     "test:e2e": "hardhat test"
   },
   "dependencies": {
-    "@furucombo/composable-router-common": "^0.2.5",
+    "@protocolink/common": "^0.2.5",
     "@nomicfoundation/hardhat-chai-matchers": "^1.0.6",
     "@nomicfoundation/hardhat-network-helpers": "^1.0.8",
     "@nomiclabs/hardhat-ethers": "^2.2.3",

@@ -1,8 +1,8 @@
 {
   "$schema": "https://unpkg.com/@changesets/config@2.3.0/schema.json",
-  "changelog": ["@changesets/cli/changelog", { "repo": "dinngo/composable-router-sdk" }],
+  "changelog": ["@changesets/cli/changelog", { "repo": "dinngo/protocolink-js-sdk" }],
   "commit": false,
-  "fixed": [["@furucombo/*"]],
+  "fixed": [],
   "linked": [],
   "access": "public",
   "baseBranch": "master",

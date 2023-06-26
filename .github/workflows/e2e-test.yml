@@ -22,9 +22,9 @@ jobs:
 
       - name: Build packages
         run: |
-          yarn workspace @furucombo/composable-router-common build
-          yarn workspace @furucombo/composable-router-core build
-          yarn workspace @furucombo/composable-router-test-helpers build
+          yarn workspace @protocolink/common build
+          yarn workspace @protocolink/core build
+          yarn workspace @protocolink/test-helpers build
 
       - name: Run e2e test
         run: yarn test:e2e

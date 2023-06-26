@@ -1,17 +1,17 @@
-# @furucombo/composable-router-common
+# @protocolink/common
 
-The common sdk for Composable Router.
+The common sdk for Protocolink.
 
 ## Install
 
 Install the package via `npm`:
 
 ```sh
-npm install @furucombo/composable-router-common
+npm install @protocolink/common
 ```
 
 or `yarn`:
 
 ```sh
-yarn add @furucombo/composable-router-common
+yarn add @protocolink/common
 ```

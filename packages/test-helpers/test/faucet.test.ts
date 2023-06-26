@@ -1,6 +1,6 @@
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 import { claimToken } from 'src/utils/faucet';
-import * as common from '@furucombo/composable-router-common';
+import * as common from '@protocolink/common';
 import { expect } from 'chai';
 import { getChainId } from 'src/utils/network';
 import hre from 'hardhat';

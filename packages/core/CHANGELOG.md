@@ -1,4 +1,4 @@
-# @furucombo/composable-router-core
+# @protocolink/core
 
 ## 0.2.5
 

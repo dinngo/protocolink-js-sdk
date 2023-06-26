@@ -1,5 +1,5 @@
 import { IParam } from './contracts/Router';
-import * as common from '@furucombo/composable-router-common';
+import * as common from '@protocolink/common';
 import path from 'path';
 
 export abstract class Logic extends common.Web3Toolkit {

@@ -1,4 +1,4 @@
-import * as common from '@furucombo/composable-router-common';
+import * as common from '@protocolink/common';
 import * as helpers from '@nomicfoundation/hardhat-network-helpers';
 
 export const faucetMap: Record<number, { default: string; specified: Record<string, string> }> = {

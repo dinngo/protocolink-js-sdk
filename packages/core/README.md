@@ -1,17 +1,17 @@
-# @furucombo/composable-router-core
+# @protocolink/core
 
-The core sdk for Composable Router.
+The core sdk for Protocolink.
 
 ## Install
 
 Install the package via `npm`:
 
 ```sh
-npm install @furucombo/composable-router-core
+npm install @protocolink/core
 ```
 
 or `yarn`:
 
 ```sh
-yarn add @furucombo/composable-router-core
+yarn add @protocolink/core
 ```

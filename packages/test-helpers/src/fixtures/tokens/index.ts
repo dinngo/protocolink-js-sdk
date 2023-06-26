@@ -1,4 +1,4 @@
-import * as common from '@furucombo/composable-router-common';
+import * as common from '@protocolink/common';
 import mainnetTokensJSON from './mainnet.json';
 
 type MainnetTokenSymbols = keyof typeof mainnetTokensJSON;

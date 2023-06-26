@@ -1,11 +1,7 @@
 {
-  "name": "router-monorepo",
+  "name": "protocolink-monorepo",
   "version": "0.0.0",
   "private": true,
-  "description": "Composable Router SDK",
-  "keywords": [
-    "composable-router"
-  ],
   "license": "MIT",
   "workspaces": {
     "packages": [

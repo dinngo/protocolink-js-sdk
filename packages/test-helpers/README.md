@@ -1,17 +1,17 @@
-# @furucombo/composable-router-test-helpers
+# @protocolink/test-helpers
 
-The test-helpers sdk for Composable Router.
+The test-helpers sdk for Protocolink.
 
 ## Install
 
 Install the package via `npm`:
 
 ```sh
-npm install --save-dev @furucombo/composable-router-test-helpers
+npm install --save-dev @protocolink/test-helpers
 ```
 
 or `yarn`:
 
 ```sh
-yarn add --dev @furucombo/composable-router-test-helpers
+yarn add --dev @protocolink/test-helpers
 ```
