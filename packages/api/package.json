@@ -1,0 +1,48 @@
+{
+  "name": "@protocolink/api",
+  "version": "0.2.0",
+  "description": "Protocolink API SDK",
+  "keywords": [
+    "furucombo",
+    "protocolink"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dinngo/protocolink-js-sdk.git",
+    "directory": "packages/api"
+  },
+  "license": "MIT",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/**/*"
+  ],
+  "scripts": {
+    "build": "rm -rf dist && tsc -p tsconfig.build.json && tsc-alias -p tsconfig.build.json",
+    "format": "yarn sort-package-json",
+    "lint": "eslint --fix src",
+    "prepublishOnly": "yarn build",
+    "test": "mocha",
+    "test:unit": "mocha --recursive src examples"
+  },
+  "dependencies": {
+    "@protocolink/common": "^0.2.6",
+    "@protocolink/core": "^0.2.6",
+    "@protocolink/logics": "^0.2.2",
+    "@types/lodash": "^4.14.195",
+    "@types/uuid": "^9.0.2",
+    "@uniswap/permit2-sdk": "^1.2.0",
+    "axios": "^1.3.6",
+    "axios-retry": "^3.5.0",
+    "bignumber.js": "^9.1.1",
+    "ethers": "^5.7.2",
+    "lodash": "^4.17.21",
+    "tiny-invariant": "^1.3.1",
+    "type-fest": "^3.12.0",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "@protocolink/api": "^0.2.0",
+    "@protocolink/test-helpers": "^0.2.6"
+  }
+}
