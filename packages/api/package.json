@@ -1,6 +1,6 @@
 {
   "name": "@protocolink/api",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Protocolink API SDK",
   "keywords": [
     "furucombo",
@@ -42,7 +42,7 @@
     "uuid": "^9.0.0"
   },
   "devDependencies": {
-    "@protocolink/api": "^0.2.0",
+    "@protocolink/api": "^0.2.1",
     "@protocolink/test-helpers": "^0.2.6"
   }
 }

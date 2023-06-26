@@ -1,5 +1,11 @@
 # @furucombo/composable-router-api
 
+## 0.2.1
+
+### Patch Changes
+
+- dd0307b: rename scope to @protocolink
+
 ## 0.2.0
 
 ### Minor Changes
