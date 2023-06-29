@@ -38,12 +38,16 @@ export function getNetwork(chainId: number) {
   return networkMap[chainId];
 }
 
-export function getNetworkId(chainId: number) {
+export function toNetworkId(chainId: number) {
   return getNetwork(chainId).id;
 }
 
-export function getChainId(networkId: number) {
-  return getNetwork(networkId).chainId;
+export function getNetworkById(networkId: string) {
+  return networkMapById[networkId];
+}
+
+export function toChainId(networkId: string) {
+  return getNetworkById(networkId).chainId;
 }
 
 export function setNetwork(chainId: number, network: Partial<Network>) {
