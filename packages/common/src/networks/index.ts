@@ -25,10 +25,14 @@ export interface Network {
 
 export const networks: Network[] = data;
 
-export const networkMap = networks.reduce((accumulator, network) => {
-  accumulator[network.chainId] = network;
-  return accumulator;
-}, {} as Record<number, Network>);
+export const [networkMap, networkMapById] = networks.reduce(
+  (accumulator, network) => {
+    accumulator[0][network.chainId] = network;
+    accumulator[1][network.id] = network;
+    return accumulator;
+  },
+  [{}, {}] as [Record<number, Network>, Record<string, Network>]
+);
 
 export function getNetwork(chainId: number) {
   return networkMap[chainId];
@@ -36,6 +40,10 @@ export function getNetwork(chainId: number) {
 
 export function getNetworkId(chainId: number) {
   return getNetwork(chainId).id;
+}
+
+export function getChainId(networkId: number) {
+  return getNetwork(networkId).chainId;
 }
 
 export function setNetwork(chainId: number, network: Partial<Network>) {

@@ -11,3 +11,4 @@
 | [@protocolink/core](packages/core/README.md)                 | [![npm version](https://badge.fury.io/js/@protocolink%2Fcore.svg)](https://www.npmjs.com/package/@protocolink/core)                 | [GO](packages/core/CHANGELOG.md)         |
 | [@protocolink/common](packages/common/README.md)             | [![npm version](https://badge.fury.io/js/@protocolink%2Fcommon.svg)](https://www.npmjs.com/package/@protocolink/common)             | [GO](packages/common/CHANGELOG.md)       |
 | [@protocolink/test-helpers](packages/test-helpers/README.md) | [![npm version](https://badge.fury.io/js/@protocolink%2Ftest-helpers.svg)](https://www.npmjs.com/package/@protocolink/test-helpers) | [GO](packages/test-helpers/CHANGELOG.md) |
+| [@protocolink/api](packages/api/README.md)                   | [![npm version](https://badge.fury.io/js/@protocolink%2Fapi.svg)](https://www.npmjs.com/package/@protocolink/api)                   | [GO](packages/api/CHANGELOG.md)          |
