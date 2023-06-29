@@ -1,5 +1,11 @@
 # @protocolink/common
 
+## 0.2.7
+
+### Patch Changes
+
+- 8581800: common package add getChainId func
+
 ## 0.2.6
 
 ### Patch Changes
