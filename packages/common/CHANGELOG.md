@@ -1,5 +1,11 @@
 # @protocolink/common
 
+## 0.2.8
+
+### Patch Changes
+
+- f2994a8: common package add getNetworkById func
+
 ## 0.2.7
 
 ### Patch Changes
