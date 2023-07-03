@@ -2,7 +2,7 @@ import * as common from '@protocolink/common';
 
 type ContractNames = 'Router' | 'AgentImplementation';
 
-export const contractAddressMap: Record<number, { [k in ContractNames]: string }> = {
+export const contractAddressMap: Record<number, Record<ContractNames, string>> = {
   [common.ChainId.mainnet]: {
     Router: '0x67e4d4Af097787Aa5a7daE7f9b147Bf32243F030',
     AgentImplementation: '0xe495bDD1d9f74855D31BF881aA68b1bFeD728f7D',
