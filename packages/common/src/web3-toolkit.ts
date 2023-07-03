@@ -1,9 +1,10 @@
 import { BigNumber, providers, utils } from 'ethers';
+import { ChainId, Network, getNetwork } from './networks';
 import { ELASTIC_ADDRESS, Token, TokenAmount, TokenOrAddress, isTokenObject } from './tokens';
 import { ERC20Interface } from './contracts/ERC20';
 import { ERC20__factory, Multicall2, Multicall2__factory } from './contracts';
 import { Multicall2Interface } from './contracts/Multicall2';
-import { Network, getNetwork } from './networks';
+import * as zk from 'zksync-web3';
 
 export class Web3Toolkit {
   readonly chainId: number;
@@ -15,7 +16,11 @@ export class Web3Toolkit {
   constructor(chainId: number, provider?: providers.Provider) {
     this.chainId = chainId;
     this.network = getNetwork(chainId);
-    this.provider = provider ? provider : new providers.JsonRpcProvider(this.network.rpcUrl);
+    this.provider = provider
+      ? provider
+      : chainId === ChainId.zksync
+      ? new zk.Provider(this.network.rpcUrl)
+      : new providers.JsonRpcProvider(this.network.rpcUrl);
     this.nativeToken = new Token(this.network.nativeToken);
     this.wrappedNativeToken = new Token(this.network.wrappedNativeToken);
   }

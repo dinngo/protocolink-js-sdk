@@ -33,7 +33,8 @@
     "ethers": "^5.7.2",
     "lodash": "^4.17.21",
     "tiny-invariant": "^1.3.1",
-    "type-fest": "^3.12.0"
+    "type-fest": "^3.12.0",
+    "zksync-web3": "^0.14.3"
   },
   "devDependencies": {
     "@protocolink/test-helpers": "^0.2.6"

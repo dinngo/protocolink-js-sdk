@@ -1,4 +1,4 @@
-import { ChainId } from './networks';
+import { ChainId, toNetworkId } from './networks';
 import { ELASTIC_ADDRESS } from './tokens';
 import { Web3Toolkit } from './web3-toolkit';
 import { expect } from 'chai';
@@ -46,7 +46,7 @@ describe('Web3Toolkit', function () {
     ];
 
     testCases.forEach(({ chainId, tokenAddress, expected }) => {
-      it(`${expected.symbol}`, async function () {
+      it(`${toNetworkId(chainId)}: ${expected.symbol}`, async function () {
         const web3Toolkit = new Web3Toolkit(chainId);
         const token = await web3Toolkit.getToken(tokenAddress);
         expect(JSON.stringify(token)).to.eq(JSON.stringify(expected));
