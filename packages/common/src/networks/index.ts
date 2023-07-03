@@ -34,6 +34,17 @@ export const [networkMap, networkMapById] = networks.reduce(
   [{}, {}] as [Record<number, Network>, Record<string, Network>]
 );
 
+export function setNetwork(chainId: number, network: Partial<Network>) {
+  const index = networks.findIndex((network) => network.chainId === chainId);
+  if (index > -1) {
+    networks[index] = { ...networks[index], ...network };
+    networkMap[chainId] = { ...networkMap[chainId], ...network };
+  } else {
+    networks.push(network as Network);
+    networkMap[chainId] = network as Network;
+  }
+}
+
 export function getNetwork(chainId: number) {
   return networkMap[chainId];
 }
@@ -48,16 +59,6 @@ export function getNetworkById(networkId: string) {
 
 export function toChainId(networkId: string) {
   return getNetworkById(networkId).chainId;
-}
-
-export function setNetwork(chainId: number, network: Partial<Network>) {
-  for (let i = 0; i < networks.length; i++) {
-    if (networks[i].chainId === chainId) {
-      networks[i] = { ...networks[i], ...network };
-      break;
-    }
-  }
-  networkMap[chainId] = { ...networkMap[chainId], ...network };
 }
 
 export enum ChainId {
