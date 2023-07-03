@@ -1,5 +1,11 @@
 # @protocolink/core
 
+## 0.2.7
+
+### Patch Changes
+
+- e96c34b: update calcAccountAgent for zkSync
+
 ## 0.2.6
 
 ### Patch Changes
