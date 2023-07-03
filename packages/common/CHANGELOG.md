@@ -1,5 +1,12 @@
 # @protocolink/common
 
+## 0.2.9
+
+### Patch Changes
+
+- ffc9dae: refine setNetwork func
+- a356dff: Web3Toolkit add zksync provider
+
 ## 0.2.8
 
 ### Patch Changes
