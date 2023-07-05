@@ -1,5 +1,6 @@
 import { ELASTIC_ADDRESS } from './constants';
 import { getNetwork } from '../networks';
+import { utils } from 'ethers';
 
 export interface TokenObject {
   chainId: number;
@@ -21,13 +22,13 @@ export class Token {
   constructor(arg0: any, ...otherArgs: any[]) {
     if (isTokenObject(arg0)) {
       this.chainId = arg0.chainId;
-      this.address = arg0.address;
+      this.address = utils.getAddress(arg0.address);
       this.decimals = arg0.decimals;
       this.symbol = arg0.symbol;
       this.name = arg0.name;
     } else {
       this.chainId = arg0;
-      this.address = otherArgs[0];
+      this.address = utils.getAddress(otherArgs[0]);
       this.decimals = otherArgs[1];
       this.symbol = otherArgs[2];
       this.name = otherArgs[3];
@@ -50,7 +51,7 @@ export class Token {
       chainId = arg0;
       address = otherArgs[0];
     }
-    return getNetwork(chainId).nativeToken.address === address;
+    return getNetwork(chainId).nativeToken.address === utils.getAddress(address);
   }
 
   static isWrapped(chainId: number, address: string): boolean;
@@ -65,7 +66,7 @@ export class Token {
       chainId = arg0;
       address = otherArgs[0];
     }
-    return getNetwork(chainId).wrappedNativeToken.address === address;
+    return getNetwork(chainId).wrappedNativeToken.address === utils.getAddress(address);
   }
 
   static getAddress(tokenOrAddress: TokenOrAddress) {
@@ -75,11 +76,11 @@ export class Token {
     } else {
       address = tokenOrAddress;
     }
-    return address;
+    return utils.getAddress(address);
   }
 
   is(token: TokenTypes) {
-    return this.chainId === token.chainId && this.address === token.address;
+    return this.chainId === token.chainId && this.address === utils.getAddress(token.address);
   }
 
   get isNative() {

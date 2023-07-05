@@ -42,6 +42,10 @@ describe('Token class', function () {
       { actual: Token.isWrapped(mainnetTokens.WETH), expected: true },
       { actual: Token.isWrapped(mainnetTokens.WETH.toObject()), expected: true },
       { actual: Token.isWrapped(mainnetTokens.WETH.chainId, mainnetTokens.WETH.address), expected: true },
+      {
+        actual: Token.isWrapped(mainnetTokens.WETH.chainId, '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'),
+        expected: true,
+      },
     ];
 
     testCases.forEach(({ actual, expected }, i) => {
@@ -50,38 +54,94 @@ describe('Token class', function () {
       });
     });
   });
+
+  context('Test isWrapped', function () {
+    const testCases = [
+      {
+        address: Token.getAddress(mainnetTokens.ETH),
+        expected: '0x0000000000000000000000000000000000000000',
+      },
+      {
+        address: Token.getAddress(mainnetTokens.ETH.toObject()),
+        expected: '0x0000000000000000000000000000000000000000',
+      },
+      {
+        address: Token.getAddress(mainnetTokens.ETH.address),
+        expected: '0x0000000000000000000000000000000000000000',
+      },
+      {
+        address: Token.getAddress(mainnetTokens.WETH),
+        expected: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+      },
+      {
+        address: Token.getAddress(mainnetTokens.WETH.toObject()),
+        expected: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+      },
+      {
+        address: Token.getAddress(mainnetTokens.WETH.address),
+        expected: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+      },
+      {
+        address: Token.getAddress('0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'),
+        expected: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+      },
+    ];
+
+    testCases.forEach(({ address, expected }, i) => {
+      it(`case ${i + 1}`, function () {
+        expect(address).to.eq(expected);
+      });
+    });
+  });
 });
 
 describe('Token instance', function () {
   context('Test new instance', function () {
-    it('args', function () {
-      const chainId = 1;
-      const address = '0x0000000000000000000000000000000000000000';
-      const decimals = 18;
-      const symbol = 'ETH';
-      const name = 'Ethereum';
-      const token = new Token(chainId, address, decimals, symbol, name);
-      expect(token.chainId).to.eq(chainId);
-      expect(token.address).to.eq(address);
-      expect(token.decimals).to.eq(decimals);
-      expect(token.symbol).to.eq(symbol);
-      expect(token.name).to.eq(name);
-    });
+    const testCases = [
+      {
+        tokenObject: {
+          chainId: 1,
+          address: '0x0000000000000000000000000000000000000000',
+          decimals: 18,
+          symbol: 'ETH',
+          name: 'Ethereum',
+        },
+        expectedAddress: '0x0000000000000000000000000000000000000000',
+      },
+      {
+        tokenObject: {
+          chainId: 324,
+          address: '0xc2b13bb90e33f1e191b8aa8f44ce11534d5698e3',
+          decimals: 18,
+          symbol: 'COMBO',
+          name: 'Furucombo',
+        },
+        expectedAddress: '0xc2B13Bb90E33F1E191b8aA8F44Ce11534D5698E3',
+      },
+    ];
 
-    it('TokenObject', function () {
-      const tokenObject = {
-        chainId: 1,
-        address: '0x0000000000000000000000000000000000000000',
-        decimals: 18,
-        symbol: 'ETH',
-        name: 'Ethereum',
-      };
-      const token = new Token(tokenObject);
-      expect(token.chainId).to.eq(tokenObject.chainId);
-      expect(token.address).to.eq(tokenObject.address);
-      expect(token.decimals).to.eq(tokenObject.decimals);
-      expect(token.symbol).to.eq(tokenObject.symbol);
-      expect(token.name).to.eq(tokenObject.name);
+    testCases.forEach(({ tokenObject, expectedAddress }, i) => {
+      it(`case ${i + 1}`, function () {
+        const token = new Token(
+          tokenObject.chainId,
+          tokenObject.address,
+          tokenObject.decimals,
+          tokenObject.symbol,
+          tokenObject.name
+        );
+        expect(token.chainId).to.eq(tokenObject.chainId);
+        expect(token.address).to.eq(expectedAddress);
+        expect(token.decimals).to.eq(tokenObject.decimals);
+        expect(token.symbol).to.eq(tokenObject.symbol);
+        expect(token.name).to.eq(tokenObject.name);
+
+        const tokenByObject = new Token(tokenObject);
+        expect(tokenByObject.chainId).to.eq(tokenObject.chainId);
+        expect(tokenByObject.address).to.eq(expectedAddress);
+        expect(tokenByObject.decimals).to.eq(tokenObject.decimals);
+        expect(tokenByObject.symbol).to.eq(tokenObject.symbol);
+        expect(tokenByObject.name).to.eq(tokenObject.name);
+      });
     });
   });
 
