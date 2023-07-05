@@ -1,5 +1,11 @@
 # @protocolink/common
 
+## 0.2.10
+
+### Patch Changes
+
+- e210a18: update Token's address always be checksum address
+
 ## 0.2.9
 
 ### Patch Changes
