@@ -1,5 +1,11 @@
 # @protocolink/core
 
+## 0.2.11
+
+### Patch Changes
+
+- b1b69b2: add mainnet fake addresses for test
+
 ## 0.2.10
 
 ### Patch Changes
