@@ -6,7 +6,7 @@ import * as logics from '@protocolink/logics';
 describe('CompoundV3 ClaimLogic', function () {
   context('Test getTokenList', async function () {
     logics.compoundv3.ClaimLogic.supportedChainIds.forEach((chainId) => {
-      it(`network: ${common.getNetworkId(chainId)}`, async function () {
+      it(`network: ${common.toNetworkId(chainId)}`, async function () {
         const tokenList = await getClaimTokenList(chainId);
         expect(tokenList.length).to.eq(1);
       });

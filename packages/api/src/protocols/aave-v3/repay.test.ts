@@ -6,7 +6,7 @@ import * as logics from '@protocolink/logics';
 describe('AaveV3 RepayLogic', function () {
   context('Test getTokenList', async function () {
     logics.aavev3.RepayLogic.supportedChainIds.forEach((chainId) => {
-      it(`network: ${common.getNetworkId(chainId)}`, async function () {
+      it(`network: ${common.toNetworkId(chainId)}`, async function () {
         const tokenList = await getRepayTokenList(chainId);
         expect(tokenList).to.have.lengthOf.above(0);
       });

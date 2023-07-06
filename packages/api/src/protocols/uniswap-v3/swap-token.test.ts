@@ -7,7 +7,7 @@ import { mainnetTokens } from '@protocolink/test-helpers';
 describe('UniswapV3 SwapTokenLogic', function () {
   context('Test getTokenList', async function () {
     logics.uniswapv3.SwapTokenLogic.supportedChainIds.forEach((chainId) => {
-      it(`network: ${common.getNetworkId(chainId)}`, async function () {
+      it(`network: ${common.toNetworkId(chainId)}`, async function () {
         const tokenList = await getSwapTokenTokenList(chainId);
         expect(tokenList).to.have.lengthOf.above(0);
       });

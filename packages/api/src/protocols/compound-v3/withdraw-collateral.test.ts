@@ -6,7 +6,7 @@ import * as logics from '@protocolink/logics';
 describe('CompoundV3 WithdrawCollateralLogic', function () {
   context('Test getTokenList', async function () {
     logics.compoundv3.WithdrawCollateralLogic.supportedChainIds.forEach((chainId) => {
-      it(`network: ${common.getNetworkId(chainId)}`, async function () {
+      it(`network: ${common.toNetworkId(chainId)}`, async function () {
         const tokenList = await getWithdrawCollateralTokenList(chainId);
         const marketIds = Object.keys(tokenList);
         expect(marketIds).to.have.lengthOf.above(0);
