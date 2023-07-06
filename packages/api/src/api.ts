@@ -4,11 +4,19 @@ import axiosRetry from 'axios-retry';
 import { classifying } from './utils';
 import * as common from '@protocolink/common';
 
-const client = axios.create({
-  baseURL: 'https://3hii9fl6i5.execute-api.us-east-1.amazonaws.com/beta',
-});
+const client = axios.create({ baseURL: 'https://api.protocolink.com' });
 
 axiosRetry(client, { retries: 3, retryDelay: axiosRetry.exponentialDelay });
+
+interface InitOptions {
+  baseURL?: string;
+}
+
+export function init(options: InitOptions) {
+  if (options.baseURL) {
+    client.defaults.baseURL = options.baseURL;
+  }
+}
 
 export { client };
 

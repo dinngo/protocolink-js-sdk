@@ -42,7 +42,6 @@
     "uuid": "^9.0.0"
   },
   "devDependencies": {
-    "@protocolink/api": "^0.2.1",
     "@protocolink/test-helpers": "^0.2.6"
   }
 }
