@@ -1,17 +1,10 @@
 {
-  "ETH": {
+  "COMBO": {
     "chainId": 1,
-    "address": "0x0000000000000000000000000000000000000000",
+    "address": "0xfFffFffF2ba8F66D4e51811C5190992176930278",
     "decimals": 18,
-    "symbol": "ETH",
-    "name": "Ethereum"
-  },
-  "WETH": {
-    "chainId": 1,
-    "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
-    "decimals": 18,
-    "symbol": "WETH",
-    "name": "Wrapped Ether"
+    "symbol": "COMBO",
+    "name": "Furucombo"
   },
   "DAI": {
     "chainId": 1,
@@ -19,6 +12,20 @@
     "decimals": 18,
     "symbol": "DAI",
     "name": "Dai Stablecoin"
+  },
+  "ETH": {
+    "chainId": 1,
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18,
+    "symbol": "ETH",
+    "name": "Ethereum"
+  },
+  "MKR": {
+    "chainId": 1,
+    "address": "0x9f8F72aA9304c8B593d555F12eF6589cC3A579A2",
+    "decimals": 18,
+    "symbol": "MKR",
+    "name": "Maker"
   },
   "USDC": {
     "chainId": 1,
@@ -41,11 +48,11 @@
     "symbol": "WBTC",
     "name": "Wrapped BTC"
   },
-  "MKR": {
+  "WETH": {
     "chainId": 1,
-    "address": "0x9f8F72aA9304c8B593d555F12eF6589cC3A579A2",
+    "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
     "decimals": 18,
-    "symbol": "MKR",
-    "name": "Maker"
+    "symbol": "WETH",
+    "name": "Wrapped Ether"
   }
 }
