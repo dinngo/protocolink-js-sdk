@@ -1,5 +1,19 @@
 # @furucombo/composable-router-api
 
+## 0.2.2
+
+### Patch Changes
+
+- e06c6b0: update api client baseURL
+- 67bb286: Updated dependencies
+  - @protocolink/common@0.2.10
+  - @protocolink/core@0.2.7
+  - @protocolink/logics@0.2.3
+  - axios-retry@3.5.1
+- d44b991: add syncswap protocol
+- Updated dependencies [b63c048]
+  - @protocolink/core@0.2.8
+
 ## 0.2.1
 
 ### Patch Changes

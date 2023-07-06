@@ -1,5 +1,11 @@
 # @protocolink/test-helpers
 
+## 0.2.7
+
+### Patch Changes
+
+- e1b34d8: fixtures add zksync tokens
+
 ## 0.2.6
 
 ### Patch Changes

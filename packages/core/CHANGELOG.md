@@ -1,5 +1,11 @@
 # @protocolink/core
 
+## 0.2.8
+
+### Patch Changes
+
+- b63c048: add polygon, arbitrum, zksync addresses
+
 ## 0.2.7
 
 ### Patch Changes
