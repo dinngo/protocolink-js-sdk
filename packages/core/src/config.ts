@@ -4,8 +4,8 @@ type ContractNames = 'Router' | 'AgentImplementation';
 
 export const contractAddressMap: Record<number, Record<ContractNames, string>> = {
   [common.ChainId.mainnet]: {
-    Router: '',
-    AgentImplementation: '',
+    Router: '0xdAAe399e32e3F6cE47cA96E3A5db09f65cAa575a',
+    AgentImplementation: '0x57643471E23430E2FD6334CBA6aEd85c5cc57281',
   },
   [common.ChainId.polygon]: {
     Router: '0xdAAe399e32e3F6cE47cA96E3A5db09f65cAa575a',
