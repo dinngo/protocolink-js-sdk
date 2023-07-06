@@ -1,5 +1,11 @@
 # @protocolink/core
 
+## 0.2.10
+
+### Patch Changes
+
+- 82c146a: regenerate Router contract types
+
 ## 0.2.9
 
 ### Patch Changes
