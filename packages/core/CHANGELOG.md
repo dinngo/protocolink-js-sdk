@@ -1,5 +1,11 @@
 # @protocolink/core
 
+## 0.2.9
+
+### Patch Changes
+
+- 6c594e1: update Router contract bytecode
+
 ## 0.2.8
 
 ### Patch Changes
