@@ -1080,21 +1080,21 @@
     node-addon-api "^3.2.1"
     node-gyp-build "^4.3.0"
 
-"@protocolink/logics@^0.2.3":
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/@protocolink/logics/-/logics-0.2.3.tgz#a28b504b086b3500a07d5274659ce693788423db"
-  integrity sha512-PXXw2Wf3PgVxbwzo4vWlDjkJ8y156cPtVbhaPBv3ta3f6VnLVTMJ0ow0qNlp5AaacZVLOfRF97ZKFdXWYCeVXA==
+"@protocolink/logics@^0.2.5":
+  version "0.2.5"
+  resolved "https://registry.yarnpkg.com/@protocolink/logics/-/logics-0.2.5.tgz#ca3e8898b7365992ce9c9a04918500a2e406ca29"
+  integrity sha512-OJTtWPVXumGzQ62rfPma1Fqr4iC2C1CMrQjNAcfGpOO7zPAKlEv8iD0yNhq6+fKp/5PixX5Nz0rhDBn2yQPC0w==
   dependencies:
     "@paraswap/sdk" "^6.2.1"
     "@protocolink/common" "^0.2.10"
-    "@protocolink/core" "^0.2.7"
+    "@protocolink/core" "^0.2.11"
     "@types/lodash" "^4.14.195"
     "@uniswap/permit2-sdk" "^1.2.0"
     "@uniswap/sdk-core" "^3.2.6"
     "@uniswap/token-lists" "^1.0.0-beta.31"
     "@uniswap/v3-sdk" "^3.9.0"
     axios "^1.3.6"
-    axios-retry "^3.5.0"
+    axios-retry "^3.5.1"
     bignumber.js "^9.1.1"
     ethers "^5.7.2"
     lodash "^4.17.21"
@@ -1757,14 +1757,6 @@ available-typed-arrays@^1.0.5:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/available-typed-arrays/-/available-typed-arrays-1.0.5.tgz#92f95616501069d07d10edb2fc37d3e1c65123b7"
   integrity sha512-DMD0KiN46eipeziST1LPP/STfDU0sufISXmjSgvVsoU2tqxctQeASejWcfNtxYKqETM1UxQ8sp2OrSBWpHY6sw==
-
-axios-retry@^3.5.0:
-  version "3.5.0"
-  resolved "https://registry.yarnpkg.com/axios-retry/-/axios-retry-3.5.0.tgz#32206b3e6555169488eded232527e36c8ce6e545"
-  integrity sha512-g48qNrLX30VU6ECWltpFCPegKK6dWzMDYv2o83W2zUL/Zh/SLXbT6ksGoKqYZHtghzqeeXhZBcSXJkO1fPbCcw==
-  dependencies:
-    "@babel/runtime" "^7.15.4"
-    is-retry-allowed "^2.2.0"
 
 axios-retry@^3.5.1:
   version "3.5.1"
