@@ -1,5 +1,5 @@
 import { BigNumber, BigNumberish, utils } from 'ethers';
-import { ToBigUnitOptions, calcSlippage, toBigUnit, toSmallUnit } from './bignumber';
+import { RoundingMode, ToBigUnitOptions, calcSlippage, formatBigUnit, toBigUnit, toSmallUnit } from './bignumber';
 import { expect } from 'chai';
 
 describe('Test toSmallUnit', function () {
@@ -171,6 +171,68 @@ describe('Test toBigUnit', function () {
   testCases.forEach(({ title, amountWei, decimals, options, expected }) => {
     it(title, function () {
       expect(toBigUnit(amountWei, decimals, options)).to.eq(expected);
+    });
+  });
+});
+
+describe('Test formatBigUnit', function () {
+  const testCases: {
+    amount: string;
+    displayDecimals: number;
+    mode?: RoundingMode;
+    expected: string;
+  }[] = [
+    {
+      amount: '1.23456789',
+      displayDecimals: 4,
+      expected: '1.2346',
+    },
+    {
+      amount: '1.23451234',
+      displayDecimals: 4,
+      expected: '1.2345',
+    },
+    {
+      amount: '1.23456789',
+      displayDecimals: 4,
+      mode: 'floor',
+      expected: '1.2345',
+    },
+    {
+      amount: '1.23451234',
+      displayDecimals: 4,
+      mode: 'floor',
+      expected: '1.2345',
+    },
+    {
+      amount: '1.23456789',
+      displayDecimals: 4,
+      mode: 'round',
+      expected: '1.2346',
+    },
+    {
+      amount: '1.23451234',
+      displayDecimals: 4,
+      mode: 'round',
+      expected: '1.2345',
+    },
+    {
+      amount: '1.23456789',
+      displayDecimals: 4,
+      mode: 'ceil',
+      expected: '1.2346',
+    },
+    {
+      amount: '1.23451234',
+      displayDecimals: 4,
+      mode: 'ceil',
+      expected: '1.2346',
+    },
+  ];
+
+  testCases.forEach(({ amount, displayDecimals, mode, expected }, i) => {
+    it(`case ${i + 1}`, function () {
+      expect(formatBigUnit(amount, displayDecimals, mode)).to.eq(expected);
     });
   });
 });
