@@ -1,5 +1,11 @@
 # @furucombo/composable-router-api
 
+## 0.2.5
+
+### Patch Changes
+
+- 026eb7f: update estimateRouterData and buildRouterTransactionRequest endpoints
+
 ## 0.2.4
 
 ### Patch Changes
