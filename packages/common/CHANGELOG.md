@@ -1,5 +1,11 @@
 # @protocolink/common
 
+## 0.2.12
+
+### Patch Changes
+
+- 3a2a1ff: update arbitrum rpc url to https://arb1.arbitrum.io/rpc
+
 ## 0.2.11
 
 ### Patch Changes
