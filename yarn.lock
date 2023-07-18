@@ -1080,14 +1080,14 @@
     node-addon-api "^3.2.1"
     node-gyp-build "^4.3.0"
 
-"@protocolink/logics@^0.2.5":
-  version "0.2.5"
-  resolved "https://registry.yarnpkg.com/@protocolink/logics/-/logics-0.2.5.tgz#ca3e8898b7365992ce9c9a04918500a2e406ca29"
-  integrity sha512-OJTtWPVXumGzQ62rfPma1Fqr4iC2C1CMrQjNAcfGpOO7zPAKlEv8iD0yNhq6+fKp/5PixX5Nz0rhDBn2yQPC0w==
+"@protocolink/logics@^0.2.7":
+  version "0.2.7"
+  resolved "https://registry.yarnpkg.com/@protocolink/logics/-/logics-0.2.7.tgz#1344ed0b2da7608160217d4e33f9ad857501db0f"
+  integrity sha512-9XopvT+j1N5ZuumZ7jZGU3K3TUTCnsTnGVlkPZ3nRU9IA1vabIAfPxTdSqwzFyd/4iSgNW4ADONq4K+Qdk9TlA==
   dependencies:
     "@paraswap/sdk" "^6.2.1"
-    "@protocolink/common" "^0.2.10"
-    "@protocolink/core" "^0.2.11"
+    "@protocolink/common" "^0.2.11"
+    "@protocolink/core" "^0.2.12"
     "@types/lodash" "^4.14.195"
     "@uniswap/permit2-sdk" "^1.2.0"
     "@uniswap/sdk-core" "^3.2.6"
@@ -1098,9 +1098,6 @@
     bignumber.js "^9.1.1"
     ethers "^5.7.2"
     lodash "^4.17.21"
-    tiny-invariant "^1.3.1"
-    type-fest "^3.12.0"
-    zksync-web3 "^0.14.3"
 
 "@scure/base@~1.1.0":
   version "1.1.1"
