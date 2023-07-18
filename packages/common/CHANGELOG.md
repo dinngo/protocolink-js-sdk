@@ -1,5 +1,11 @@
 # @protocolink/common
 
+## 0.2.11
+
+### Patch Changes
+
+- 7b48f46: add formatBigUnit func
+
 ## 0.2.10
 
 ### Patch Changes
