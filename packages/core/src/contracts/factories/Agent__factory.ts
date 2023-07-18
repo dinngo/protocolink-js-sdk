@@ -306,7 +306,7 @@ const _abi = [
         type: 'address[]',
       },
     ],
-    name: 'executeWithSignature',
+    name: 'executeWithSignerFee',
     outputs: [],
     stateMutability: 'payable',
     type: 'function',

@@ -66,7 +66,7 @@ export interface AgentInterface extends utils.Interface {
   functions: {
     'execute((address,bytes,(address,uint256,uint256)[],uint8,address,address)[],address[])': FunctionFragment;
     'executeByCallback((address,bytes,(address,uint256,uint256)[],uint8,address,address)[])': FunctionFragment;
-    'executeWithSignature((address,bytes,(address,uint256,uint256)[],uint8,address,address)[],(address,uint256,bytes32)[],address[])': FunctionFragment;
+    'executeWithSignerFee((address,bytes,(address,uint256,uint256)[],uint8,address,address)[],(address,uint256,bytes32)[],address[])': FunctionFragment;
     'initialize()': FunctionFragment;
     'onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)': FunctionFragment;
     'onERC1155Received(address,address,uint256,uint256,bytes)': FunctionFragment;
@@ -80,7 +80,7 @@ export interface AgentInterface extends utils.Interface {
     nameOrSignatureOrTopic:
       | 'execute'
       | 'executeByCallback'
-      | 'executeWithSignature'
+      | 'executeWithSignerFee'
       | 'initialize'
       | 'onERC1155BatchReceived'
       | 'onERC1155Received'
@@ -93,7 +93,7 @@ export interface AgentInterface extends utils.Interface {
   encodeFunctionData(functionFragment: 'execute', values: [IParam.LogicStruct[], string[]]): string;
   encodeFunctionData(functionFragment: 'executeByCallback', values: [IParam.LogicStruct[]]): string;
   encodeFunctionData(
-    functionFragment: 'executeWithSignature',
+    functionFragment: 'executeWithSignerFee',
     values: [IParam.LogicStruct[], IParam.FeeStruct[], string[]]
   ): string;
   encodeFunctionData(functionFragment: 'initialize', values?: undefined): string;
@@ -112,7 +112,7 @@ export interface AgentInterface extends utils.Interface {
 
   decodeFunctionResult(functionFragment: 'execute', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'executeByCallback', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'executeWithSignature', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'executeWithSignerFee', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'initialize', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'onERC1155BatchReceived', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'onERC1155Received', data: BytesLike): Result;
@@ -182,7 +182,7 @@ export interface Agent extends BaseContract {
       overrides?: PayableOverrides & { from?: string }
     ): Promise<ContractTransaction>;
 
-    executeWithSignature(
+    executeWithSignerFee(
       logics: IParam.LogicStruct[],
       fees: IParam.FeeStruct[],
       tokensReturn: string[],
@@ -235,7 +235,7 @@ export interface Agent extends BaseContract {
     overrides?: PayableOverrides & { from?: string }
   ): Promise<ContractTransaction>;
 
-  executeWithSignature(
+  executeWithSignerFee(
     logics: IParam.LogicStruct[],
     fees: IParam.FeeStruct[],
     tokensReturn: string[],
@@ -281,7 +281,7 @@ export interface Agent extends BaseContract {
 
     executeByCallback(logics: IParam.LogicStruct[], overrides?: CallOverrides): Promise<void>;
 
-    executeWithSignature(
+    executeWithSignerFee(
       logics: IParam.LogicStruct[],
       fees: IParam.FeeStruct[],
       tokensReturn: string[],
@@ -343,7 +343,7 @@ export interface Agent extends BaseContract {
       overrides?: PayableOverrides & { from?: string }
     ): Promise<BigNumber>;
 
-    executeWithSignature(
+    executeWithSignerFee(
       logics: IParam.LogicStruct[],
       fees: IParam.FeeStruct[],
       tokensReturn: string[],
@@ -397,7 +397,7 @@ export interface Agent extends BaseContract {
       overrides?: PayableOverrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
-    executeWithSignature(
+    executeWithSignerFee(
       logics: IParam.LogicStruct[],
       fees: IParam.FeeStruct[],
       tokensReturn: string[],

@@ -83,7 +83,7 @@ export interface RouterInterface extends utils.Interface {
     'currentUser()': FunctionFragment;
     'domainSeparator()': FunctionFragment;
     'execute((address,bytes,(address,uint256,uint256)[],uint8,address,address)[],address[],uint256)': FunctionFragment;
-    'executeWithSignature(((address,bytes,(address,uint256,uint256)[],uint8,address,address)[],(address,uint256,bytes32)[],uint256),address,bytes,address[],uint256)': FunctionFragment;
+    'executeWithSignerFee(((address,bytes,(address,uint256,uint256)[],uint8,address,address)[],(address,uint256,bytes32)[],uint256),address,bytes,address[],uint256)': FunctionFragment;
     'feeCalculators(bytes4,address)': FunctionFragment;
     'feeCollector()': FunctionFragment;
     'getAgent(address)': FunctionFragment;
@@ -119,7 +119,7 @@ export interface RouterInterface extends utils.Interface {
       | 'currentUser'
       | 'domainSeparator'
       | 'execute'
-      | 'executeWithSignature'
+      | 'executeWithSignerFee'
       | 'feeCalculators'
       | 'feeCollector'
       | 'getAgent'
@@ -154,7 +154,7 @@ export interface RouterInterface extends utils.Interface {
   encodeFunctionData(functionFragment: 'domainSeparator', values?: undefined): string;
   encodeFunctionData(functionFragment: 'execute', values: [IParam.LogicStruct[], string[], BigNumberish]): string;
   encodeFunctionData(
-    functionFragment: 'executeWithSignature',
+    functionFragment: 'executeWithSignerFee',
     values: [IParam.LogicBatchStruct, string, BytesLike, string[], BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: 'feeCalculators', values: [BytesLike, string]): string;
@@ -192,7 +192,7 @@ export interface RouterInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: 'currentUser', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'domainSeparator', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'execute', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'executeWithSignature', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'executeWithSignerFee', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'feeCalculators', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'feeCollector', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'getAgent', data: BytesLike): Result;
@@ -357,7 +357,7 @@ export interface Router extends BaseContract {
       overrides?: PayableOverrides & { from?: string }
     ): Promise<ContractTransaction>;
 
-    executeWithSignature(
+    executeWithSignerFee(
       logicBatch: IParam.LogicBatchStruct,
       signer: string,
       signature: BytesLike,
@@ -461,7 +461,7 @@ export interface Router extends BaseContract {
     overrides?: PayableOverrides & { from?: string }
   ): Promise<ContractTransaction>;
 
-  executeWithSignature(
+  executeWithSignerFee(
     logicBatch: IParam.LogicBatchStruct,
     signer: string,
     signature: BytesLike,
@@ -557,7 +557,7 @@ export interface Router extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    executeWithSignature(
+    executeWithSignerFee(
       logicBatch: IParam.LogicBatchStruct,
       signer: string,
       signature: BytesLike,
@@ -691,7 +691,7 @@ export interface Router extends BaseContract {
       overrides?: PayableOverrides & { from?: string }
     ): Promise<BigNumber>;
 
-    executeWithSignature(
+    executeWithSignerFee(
       logicBatch: IParam.LogicBatchStruct,
       signer: string,
       signature: BytesLike,
@@ -788,7 +788,7 @@ export interface Router extends BaseContract {
       overrides?: PayableOverrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
-    executeWithSignature(
+    executeWithSignerFee(
       logicBatch: IParam.LogicBatchStruct,
       signer: string,
       signature: BytesLike,
