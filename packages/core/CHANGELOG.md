@@ -1,5 +1,13 @@
 # @protocolink/core
 
+## 0.2.12
+
+### Patch Changes
+
+- 297c4f7: Updated dependencies
+  - @protocolink/common@0.2.11
+- a2b80b8: update router executeWithSignerFee version
+
 ## 0.2.11
 
 ### Patch Changes
