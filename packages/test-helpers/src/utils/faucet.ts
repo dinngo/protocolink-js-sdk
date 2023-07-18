@@ -2,12 +2,19 @@ import * as common from '@protocolink/common';
 import * as helpers from '@nomicfoundation/hardhat-network-helpers';
 
 export const faucetMap: Record<number, { default: string; specified: Record<string, string> }> = {
-  1: {
+  [common.ChainId.mainnet]: {
     default: '0x0D0707963952f2fBA59dD06f2b425ace40b492Fe',
     specified: {
       '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48': '0x47ac0Fb4F2D84898e4D9E7b4DaB3C24507a6D503', // USDC
       '0xBe9895146f7AF43049ca1c1AE358B0541Ea49704': '0xA9D1e08C7793af67e9d92fe308d5697FB81d3E43', // cbETH
       '0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0': '0x5fEC2f34D80ED82370F733043B6A536d7e9D7f8d', // wstETH
+    },
+  },
+  [common.ChainId.polygon]: {
+    default: '0xF977814e90dA44bFA03b6295A0616a897441aceC',
+    specified: {
+      '0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619': '0x1eED63EfBA5f81D95bfe37d82C8E736b974F477b', // WETH
+      '0x1BFD67037B42Cf73acF2047067bd4F2C47D9BfD6': '0x0AFF6665bB45bF349489B20E225A6c5D78E2280F', // WBTC
     },
   },
 };

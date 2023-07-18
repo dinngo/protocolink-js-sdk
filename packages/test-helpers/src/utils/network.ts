@@ -1,6 +1,6 @@
 export async function getChainId() {
   const hre = await import('hardhat');
-  const network = await hre.ethers.getDefaultProvider().getNetwork();
+  const network = await hre.ethers.provider.getNetwork();
   return network.chainId;
 }
 
