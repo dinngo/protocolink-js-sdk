@@ -48,7 +48,7 @@
     "chainId": 42161,
     "name": "Arbitrum",
     "explorerUrl": "https://arbiscan.io/",
-    "rpcUrl": "https://rpc.ankr.com/arbitrum",
+    "rpcUrl": "https://arb1.arbitrum.io/rpc",
     "nativeToken": {
       "chainId": 42161,
       "address": "0x0000000000000000000000000000000000000000",
