@@ -1,5 +1,11 @@
 # @protocolink/test-helpers
 
+## 0.2.8
+
+### Patch Changes
+
+- 2722b9f: add polygon tokens and faucet
+
 ## 0.2.7
 
 ### Patch Changes
