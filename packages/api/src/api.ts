@@ -31,11 +31,11 @@ export async function quote(chainId: number, rid: string, data: any) {
 }
 
 export async function estimateRouterData(routerData: RouterData): Promise<RouterDataEstimateResult> {
-  const resp = await client.post('/v1/transactions?isEstimate=true', routerData);
+  const resp = await client.post('/v1/transactions/estimate', routerData);
   return classifying(resp.data);
 }
 
 export async function buildRouterTransactionRequest(routerData: RouterData): Promise<common.TransactionRequest> {
-  const resp = await client.post('/v1/transactions', routerData);
+  const resp = await client.post('/v1/transactions/build', routerData);
   return resp.data;
 }
