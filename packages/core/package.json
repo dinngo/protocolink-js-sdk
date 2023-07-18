@@ -28,7 +28,7 @@
     "typechain": "rm -rf src/contracts && typechain --target ethers-v5 --out-dir src/contracts src/abis/*.json && pretty-quick"
   },
   "dependencies": {
-    "@protocolink/common": "^0.2.10",
+    "@protocolink/common": "^0.2.11",
     "ethers": "^5.7.2",
     "tiny-invariant": "^1.3.1",
     "zksync-web3": "^0.14.3"
