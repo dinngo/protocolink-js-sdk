@@ -1,5 +1,11 @@
 # @furucombo/composable-router-api
 
+## 0.2.6
+
+### Patch Changes
+
+- 9e6265b: classifying migrate to common package
+
 ## 0.2.5
 
 ### Patch Changes
