@@ -1,8 +1,9 @@
-import { Declasifying, Logic } from 'src/types';
+import { Logic } from 'src/types';
+import * as common from '@protocolink/common';
 import { getProtocolTokenList } from 'src/api';
 import * as logics from '@protocolink/logics';
 
-export type BorrowFields = Declasifying<logics.aavev2.BorrowLogicFields>;
+export type BorrowFields = common.Declasifying<logics.aavev2.BorrowLogicFields>;
 
 export type BorrowLogic = Logic<BorrowFields>;
 

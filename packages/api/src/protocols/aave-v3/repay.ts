@@ -1,10 +1,11 @@
-import { Declasifying, Logic } from 'src/types';
+import { Logic } from 'src/types';
+import * as common from '@protocolink/common';
 import { getProtocolTokenList, quote } from 'src/api';
 import * as logics from '@protocolink/logics';
 
-export type RepayParams = Declasifying<logics.aavev3.RepayLogicParams>;
+export type RepayParams = common.Declasifying<logics.aavev3.RepayLogicParams>;
 
-export type RepayFields = Declasifying<logics.aavev3.RepayLogicFields>;
+export type RepayFields = common.Declasifying<logics.aavev3.RepayLogicFields>;
 
 export type RepayLogic = Logic<RepayFields>;
 

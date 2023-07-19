@@ -1,10 +1,11 @@
-import { Declasifying, Logic } from 'src/types';
+import { Logic } from 'src/types';
+import * as common from '@protocolink/common';
 import { getProtocolTokenList, quote } from 'src/api';
 import * as logics from '@protocolink/logics';
 
-export type DepositParams = Declasifying<logics.aavev2.DepositLogicParams>;
+export type DepositParams = common.Declasifying<logics.aavev2.DepositLogicParams>;
 
-export type DepositFields = Declasifying<logics.aavev2.DepositLogicFields>;
+export type DepositFields = common.Declasifying<logics.aavev2.DepositLogicFields>;
 
 export type DepositLogic = Logic<DepositFields>;
 

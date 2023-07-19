@@ -1,7 +1,8 @@
-import { Declasifying, Logic } from 'src/types';
+import { Logic } from 'src/types';
+import * as common from '@protocolink/common';
 import * as logics from '@protocolink/logics';
 
-export type CustomDataFields = Declasifying<logics.utility.CustomDataLogicFields>;
+export type CustomDataFields = common.Declasifying<logics.utility.CustomDataLogicFields>;
 
 export type CustomDataLogic = Logic<CustomDataFields>;
 

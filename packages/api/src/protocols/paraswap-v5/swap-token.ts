@@ -1,10 +1,11 @@
-import { Declasifying, Logic } from 'src/types';
+import { Logic } from 'src/types';
+import * as common from '@protocolink/common';
 import { getProtocolTokenList, quote } from 'src/api';
 import * as logics from '@protocolink/logics';
 
-export type SwapTokenParams = Declasifying<logics.paraswapv5.SwapTokenLogicParams>;
+export type SwapTokenParams = common.Declasifying<logics.paraswapv5.SwapTokenLogicParams>;
 
-export type SwapTokenFields = Declasifying<logics.paraswapv5.SwapTokenLogicFields>;
+export type SwapTokenFields = common.Declasifying<logics.paraswapv5.SwapTokenLogicFields>;
 
 export type SwapTokenLogic = Logic<SwapTokenFields>;
 

@@ -1,8 +1,9 @@
-import { Declasifying, Logic } from 'src/types';
+import { Logic } from 'src/types';
+import * as common from '@protocolink/common';
 import { getProtocolTokenList } from 'src/api';
 import * as logics from '@protocolink/logics';
 
-export type SupplyCollateralFields = Declasifying<logics.compoundv3.SupplyCollateralLogicFields>;
+export type SupplyCollateralFields = common.Declasifying<logics.compoundv3.SupplyCollateralLogicFields>;
 
 export type SupplyCollateralLogic = Logic<SupplyCollateralFields>;
 

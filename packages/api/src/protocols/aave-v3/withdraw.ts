@@ -1,10 +1,11 @@
-import { Declasifying, Logic } from 'src/types';
+import { Logic } from 'src/types';
+import * as common from '@protocolink/common';
 import { getProtocolTokenList, quote } from 'src/api';
 import * as logics from '@protocolink/logics';
 
-export type WithdrawParams = Declasifying<logics.aavev3.WithdrawLogicParams>;
+export type WithdrawParams = common.Declasifying<logics.aavev3.WithdrawLogicParams>;
 
-export type WithdrawFields = Declasifying<logics.aavev3.WithdrawLogicFields>;
+export type WithdrawFields = common.Declasifying<logics.aavev3.WithdrawLogicFields>;
 
 export type WithdrawLogic = Logic<WithdrawFields>;
 

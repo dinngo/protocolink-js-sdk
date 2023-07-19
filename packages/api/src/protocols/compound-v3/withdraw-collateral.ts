@@ -1,8 +1,9 @@
-import { Declasifying, Logic } from 'src/types';
+import { Logic } from 'src/types';
+import * as common from '@protocolink/common';
 import { getProtocolTokenList } from 'src/api';
 import * as logics from '@protocolink/logics';
 
-export type WithdrawCollateralFields = Declasifying<logics.compoundv3.WithdrawCollateralLogicFields>;
+export type WithdrawCollateralFields = common.Declasifying<logics.compoundv3.WithdrawCollateralLogicFields>;
 
 export type WithdrawCollateralLogic = Logic<WithdrawCollateralFields>;
 

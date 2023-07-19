@@ -1,10 +1,11 @@
-import { Declasifying, Logic } from 'src/types';
+import { Logic } from 'src/types';
+import * as common from '@protocolink/common';
 import { getProtocolTokenList, quote } from 'src/api';
 import * as logics from '@protocolink/logics';
 
-export type WrappedNativeTokenParams = Declasifying<logics.utility.WrappedNativeTokenLogicParams>;
+export type WrappedNativeTokenParams = common.Declasifying<logics.utility.WrappedNativeTokenLogicParams>;
 
-export type WrappedNativeTokenFields = Declasifying<logics.utility.WrappedNativeTokenLogicFields>;
+export type WrappedNativeTokenFields = common.Declasifying<logics.utility.WrappedNativeTokenLogicFields>;
 
 export type WrappedNativeTokenLogic = Logic<WrappedNativeTokenFields>;
 

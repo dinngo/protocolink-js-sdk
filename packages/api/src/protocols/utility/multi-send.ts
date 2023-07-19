@@ -1,8 +1,9 @@
-import { Declasifying, Logic } from 'src/types';
+import { Logic } from 'src/types';
+import * as common from '@protocolink/common';
 import { getProtocolTokenList } from 'src/api';
 import * as logics from '@protocolink/logics';
 
-export type MultiSendFields = Declasifying<logics.utility.MultiSendLogicFields>;
+export type MultiSendFields = common.Declasifying<logics.utility.MultiSendLogicFields>;
 
 export type MultiSendLogic = Logic<MultiSendFields>;
 

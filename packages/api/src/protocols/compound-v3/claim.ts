@@ -1,10 +1,11 @@
-import { Declasifying, Logic } from 'src/types';
+import { Logic } from 'src/types';
+import * as common from '@protocolink/common';
 import { getProtocolTokenList, quote } from 'src/api';
 import * as logics from '@protocolink/logics';
 
-export type ClaimParams = Declasifying<logics.compoundv3.ClaimLogicParams>;
+export type ClaimParams = common.Declasifying<logics.compoundv3.ClaimLogicParams>;
 
-export type ClaimFields = Declasifying<logics.compoundv3.ClaimLogicFields>;
+export type ClaimFields = common.Declasifying<logics.compoundv3.ClaimLogicFields>;
 
 export type ClaimLogic = Logic<ClaimFields>;
 
