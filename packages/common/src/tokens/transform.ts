@@ -27,8 +27,6 @@ export type Classifying<T> = T extends TokenAmountsTypes
 
 export type Declasifying<T> = T extends TokenAmounts
   ? TokenAmountObject[]
-  : T extends TokenAmounts | undefined
-  ? TokenAmountObject[] | undefined
   : T extends TokenAmount
   ? TokenAmountObject
   : T extends Token
