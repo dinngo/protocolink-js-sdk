@@ -17,9 +17,7 @@ export class TokenAmount {
   amount: string;
 
   constructor(token: TokenTypes, amount?: string);
-  constructor(tokenAmountObject: TokenAmountObject);
-  constructor(tokenAmountPair: TokenAmountPair);
-  constructor(tokenAmount: TokenAmount);
+  constructor(tokenAmount: TokenAmount | TokenAmountObject | TokenAmountPair);
   constructor(arg0: any, arg1?: any) {
     if (isTokenTypes(arg0)) {
       this.token = Token.from(arg0);
@@ -36,8 +34,8 @@ export class TokenAmount {
     }
   }
 
-  static from(tokenAmountObject: TokenAmountObject) {
-    return new TokenAmount(tokenAmountObject);
+  static from(tokenAmount: TokenAmountTypes) {
+    return isTokenAmount(tokenAmount) ? tokenAmount : new TokenAmount(tokenAmount);
   }
 
   static precise(amount: string, decimals: number) {
@@ -149,10 +147,6 @@ export function isTokenAmountTypes(v: any): v is TokenAmountTypes {
   return isTokenAmountObject(v) || isTokenAmountPair(v) || isTokenAmount(v);
 }
 
-export function isTokenAmountObjects(v: any): v is TokenAmountObject[] {
-  return Array.isArray(v) && isTokenAmountObject(v[0]);
-}
-
 export class TokenAmounts {
   tokenAmountMap: Record<string, TokenAmount> = {};
 
@@ -173,8 +167,8 @@ export class TokenAmounts {
     }
   }
 
-  static from(tokenAmountObjects: TokenAmountObject[]) {
-    return new TokenAmounts(tokenAmountObjects);
+  static from(tokenAmounts: TokenAmountsTypes) {
+    return isTokenAmounts(tokenAmounts) ? tokenAmounts : new TokenAmounts(tokenAmounts);
   }
 
   get length() {
@@ -321,6 +315,16 @@ export class TokenAmounts {
   }
 }
 
+export type TokenAmountsTypes = TokenAmountObject[] | TokenAmounts;
+
+export function isTokenAmountObjects(v: any): v is TokenAmountObject[] {
+  return Array.isArray(v) && isTokenAmountObject(v[0]);
+}
+
 export function isTokenAmounts(v: any): v is TokenAmounts {
   return v instanceof TokenAmounts;
+}
+
+export function isTokenAmountsTypes(v: any): v is TokenAmountsTypes {
+  return isTokenAmountObjects(v) || isTokenAmounts(v);
 }
