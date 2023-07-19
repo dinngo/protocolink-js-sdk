@@ -1,5 +1,11 @@
 # @protocolink/core
 
+## 0.2.13
+
+### Patch Changes
+
+- cab40df: update balanceBps type to number, amountOffset to number | BigNumber
+
 ## 0.2.12
 
 ### Patch Changes
