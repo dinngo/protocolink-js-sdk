@@ -1,5 +1,11 @@
 # @protocolink/core
 
+## 0.2.14
+
+### Patch Changes
+
+- 9037cf6: revert balanceBps and amountOffset type to BigNumberish
+
 ## 0.2.13
 
 ### Patch Changes
