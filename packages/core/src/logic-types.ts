@@ -1,4 +1,3 @@
-import { BigNumberish } from 'ethers';
 import * as common from '@protocolink/common';
 
 export interface GlobalOptions {
@@ -42,23 +41,23 @@ export function isTokenToTokenExactOutParams<T = object>(v: any): v is TokenToTo
 export type TokenToTokenExactInFields<T = object> = {
   input: common.TokenAmount;
   output: common.TokenAmount;
-  balanceBps?: BigNumberish;
+  balanceBps?: number;
 } & T;
 
 export type TokenToTokenFields<T = object> = {
   tradeType: TradeType;
   input: common.TokenAmount;
   output: common.TokenAmount;
-  balanceBps?: BigNumberish;
+  balanceBps?: number;
 } & T;
 
 export type TokenInParams<T = object> = { tokenIn: common.Token } & T;
 
-export type TokenInFields<T = object> = { input: common.TokenAmount; balanceBps?: BigNumberish } & T;
+export type TokenInFields<T = object> = { input: common.TokenAmount; balanceBps?: number } & T;
 
 export type TokensInFields<T = object> = {
   inputs: common.TokenAmounts;
-  amountsBps?: Record<number, BigNumberish>;
+  amountsBps?: Record<number, number>;
 } & T;
 
 export type TokenOutParams<T = object> = { tokenOut: common.Token } & T;
@@ -70,7 +69,7 @@ export type TokensOutFields<T = object> = { outputs: common.TokenAmounts } & T;
 export type TokenToUserFields<T = object> = {
   input: common.TokenAmount;
   recipient: string;
-  balanceBps?: BigNumberish;
+  balanceBps?: number;
 } & T;
 
 export type RepayParams<T = object> = TokenInParams<{ borrower: string }> & T;

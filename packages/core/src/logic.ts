@@ -4,10 +4,10 @@ import path from 'path';
 
 export abstract class Logic extends common.Web3Toolkit {
   static id: string;
-  static protocol: string;
+  static protocolId: string;
 
   static get rid() {
-    return `${this.protocol}:${this.id}`;
+    return `${this.protocolId}:${this.id}`;
   }
 }
 
@@ -26,7 +26,7 @@ export interface LogicBuilderInterface {
 export interface LogicClassInterface {
   new (...args: any[]): Logic;
   id: string;
-  protocol: string;
+  protocolId: string;
   rid: string;
   supportedChainIds: number[];
 }
@@ -35,6 +35,6 @@ export function LogicDefinitionDecorator() {
   return (logic: LogicClassInterface) => {
     const [, , , logicFilePath] = common.getErrorStackCallerPaths();
     logic.id = path.basename(logicFilePath).split('.')[1];
-    logic.protocol = path.basename(path.dirname(logicFilePath));
+    logic.protocolId = path.basename(path.dirname(logicFilePath));
   };
 }
