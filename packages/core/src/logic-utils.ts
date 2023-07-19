@@ -1,6 +1,6 @@
 import { Agent__factory } from './contracts';
 import { BPS_NOT_USED } from './constants';
-import { BigNumber, constants } from 'ethers';
+import { BigNumberish, constants } from 'ethers';
 import { IParam } from './contracts/Router';
 import { WrapMode } from './logic-types';
 import * as common from '@protocolink/common';
@@ -8,15 +8,15 @@ import invariant from 'tiny-invariant';
 
 export interface NewLogicInputOptions {
   input: common.TokenAmount;
-  balanceBps?: number;
-  amountOffset?: number | BigNumber;
+  balanceBps?: BigNumberish;
+  amountOffset?: BigNumberish;
 }
 
 export function newLogicInput(options: NewLogicInputOptions): IParam.InputStruct {
   const { input } = options;
 
-  let balanceBps: number;
-  let amountOrOffset: number | BigNumber;
+  let balanceBps: BigNumberish;
+  let amountOrOffset: BigNumberish;
   if (options.balanceBps && options.amountOffset !== undefined) {
     invariant(common.validateBps(options.balanceBps), 'balanceBps is invalid');
     balanceBps = options.balanceBps;

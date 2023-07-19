@@ -5,7 +5,6 @@ import path from 'path';
 export abstract class Logic extends common.Web3Toolkit {
   static id: string;
   static protocolId: string;
-
   static get rid() {
     return `${this.protocolId}:${this.id}`;
   }
