@@ -1,5 +1,11 @@
 # @protocolink/common
 
+## 0.2.13
+
+### Patch Changes
+
+- 5858f69: add classifying func
+
 ## 0.2.12
 
 ### Patch Changes
