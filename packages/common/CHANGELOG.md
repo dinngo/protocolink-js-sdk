@@ -1,5 +1,11 @@
 # @protocolink/common
 
+## 0.2.15
+
+### Patch Changes
+
+- d3ce9d1: fix Declasifying type error
+
 ## 0.2.14
 
 ### Patch Changes
