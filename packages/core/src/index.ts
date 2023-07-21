@@ -6,3 +6,4 @@ export * from './logic';
 export * from './logic-types';
 export * from './logic-utils';
 export * from './router';
+export * from './router-utils';
