@@ -1,5 +1,11 @@
 # @protocolink/core
 
+## 0.2.15
+
+### Patch Changes
+
+- d4336d7: update router contract addresses
+
 ## 0.2.14
 
 ### Patch Changes
