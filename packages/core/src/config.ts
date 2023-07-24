@@ -4,28 +4,28 @@ type ContractNames = 'Router' | 'AgentImplementation';
 
 export const contractAddressMap: Record<number, Record<ContractNames, string>> = {
   [common.ChainId.mainnet]: {
-    Router: '0xdAAe399e32e3F6cE47cA96E3A5db09f65cAa575a',
-    AgentImplementation: '0x57643471E23430E2FD6334CBA6aEd85c5cc57281',
+    Router: '0xf4dEf6B4389eAb49dF2a7D67890810e5249B5E70',
+    AgentImplementation: '0xb16889e61Bdbb614fd5D995F5eDf7AEa02641400',
   },
   [common.ChainId.polygon]: {
-    Router: '0xdAAe399e32e3F6cE47cA96E3A5db09f65cAa575a',
-    AgentImplementation: '0x57643471E23430E2FD6334CBA6aEd85c5cc57281',
+    Router: '0xf4dEf6B4389eAb49dF2a7D67890810e5249B5E70',
+    AgentImplementation: '0xb16889e61Bdbb614fd5D995F5eDf7AEa02641400',
   },
   [common.ChainId.arbitrum]: {
-    Router: '0xdAAe399e32e3F6cE47cA96E3A5db09f65cAa575a',
-    AgentImplementation: '0x57643471E23430E2FD6334CBA6aEd85c5cc57281',
+    Router: '0xf4dEf6B4389eAb49dF2a7D67890810e5249B5E70',
+    AgentImplementation: '0xb16889e61Bdbb614fd5D995F5eDf7AEa02641400',
   },
   [common.ChainId.optimism]: {
-    Router: '',
-    AgentImplementation: '',
+    Router: '0xf4dEf6B4389eAb49dF2a7D67890810e5249B5E70',
+    AgentImplementation: '0xb16889e61Bdbb614fd5D995F5eDf7AEa02641400',
   },
   [common.ChainId.avalanche]: {
-    Router: '',
-    AgentImplementation: '',
+    Router: '0xf4dEf6B4389eAb49dF2a7D67890810e5249B5E70',
+    AgentImplementation: '0xb16889e61Bdbb614fd5D995F5eDf7AEa02641400',
   },
   [common.ChainId.fantom]: {
-    Router: '',
-    AgentImplementation: '',
+    Router: '0xf4dEf6B4389eAb49dF2a7D67890810e5249B5E70',
+    AgentImplementation: '0xb16889e61Bdbb614fd5D995F5eDf7AEa02641400',
   },
   [common.ChainId.zksync]: {
     Router: '0x7a750DdEA5efcd9140418515D260B917705F5D1b',
