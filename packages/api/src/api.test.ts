@@ -1,5 +1,5 @@
 import { RouterData } from './types';
-import { buildRouterTransactionRequest, estimateRouterData, getProtocolTokenList, quote } from './api';
+import { buildRouterTransactionRequest, estimateRouterData, getProtocolTokenList, getProtocols, quote } from './api';
 import * as common from '@protocolink/common';
 import { expect } from 'chai';
 import * as logics from '@protocolink/logics';
@@ -7,6 +7,18 @@ import { mainnetTokens } from '@protocolink/test-helpers';
 import * as utility from 'src/protocols/utility';
 
 describe('API client', function () {
+  it('Test getProtocols', async function () {
+    const protocols = await getProtocols();
+    expect(protocols).to.have.lengthOf.above(0);
+    for (const protocol of protocols) {
+      expect(protocol).to.include.all.keys('id', 'logics');
+      expect(protocol.logics).to.have.lengthOf.above(0);
+      for (const logic of protocol.logics) {
+        expect(logic).to.include.all.keys('id', 'supportedChainIds');
+      }
+    }
+  });
+
   it('Test getProtocolTokenList', async function () {
     const tokenList = await getProtocolTokenList(common.ChainId.mainnet, logics.uniswapv3.SwapTokenLogic.rid);
     expect(tokenList).to.have.lengthOf.above(0);

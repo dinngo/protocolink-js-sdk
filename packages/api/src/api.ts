@@ -19,6 +19,16 @@ export function init(options: InitOptions) {
 
 export { client };
 
+export interface Protocol {
+  id: string;
+  logics: { id: string; supportedChainIds: number[] }[];
+}
+
+export async function getProtocols(): Promise<Protocol[]> {
+  const resp = await client.get('/v1/protocols');
+  return resp.data.protocols;
+}
+
 export async function getProtocolTokenList(chainId: number, rid: string) {
   const resp = await client.get(`/v1/protocols/${chainId}/${rid.replace(/:/, '/')}/tokens`);
   return common.classifying(resp.data.tokens);
