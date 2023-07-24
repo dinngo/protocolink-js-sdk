@@ -1,5 +1,11 @@
 # @furucombo/composable-router-api
 
+## 0.2.9
+
+### Patch Changes
+
+- 6ed8de1: add getProtocols func
+
 ## 0.2.8
 
 ### Patch Changes
