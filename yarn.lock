@@ -1080,14 +1080,14 @@
     node-addon-api "^3.2.1"
     node-gyp-build "^4.3.0"
 
-"@protocolink/logics@^0.2.8":
-  version "0.2.8"
-  resolved "https://registry.yarnpkg.com/@protocolink/logics/-/logics-0.2.8.tgz#321d5c670b68fe8468c90f3c4e6b989f9c59a7a7"
-  integrity sha512-7gjRYMw0xjYq+5GiWGRSQvG3IsN0Qzuw3+umn+3Ep0LrcZk/iioJ67TY93D1RD8lUYm32QrXS4JiYz2C7d69/w==
+"@protocolink/logics@^0.2.9":
+  version "0.2.9"
+  resolved "https://registry.yarnpkg.com/@protocolink/logics/-/logics-0.2.9.tgz#a6242523404392c8efd4035d6b15b7edd877576d"
+  integrity sha512-b5VTw8OIwS9s5F+CFIyIntEf3pHyprQDFzCSw41AxZia+aFVIqH4v9M0JAk09bam3sRAAjxzpWSE1QtK12cIJw==
   dependencies:
     "@paraswap/sdk" "^6.2.1"
     "@protocolink/common" "^0.2.15"
-    "@protocolink/core" "^0.2.14"
+    "@protocolink/core" "^0.2.15"
     "@types/lodash" "^4.14.195"
     "@uniswap/permit2-sdk" "^1.2.0"
     "@uniswap/sdk-core" "^3.2.6"
