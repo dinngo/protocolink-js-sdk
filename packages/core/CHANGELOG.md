@@ -1,5 +1,11 @@
 # @protocolink/core
 
+## 0.2.16
+
+### Patch Changes
+
+- 3af93b6: Support executeWithSignerFee
+
 ## 0.2.15
 
 ### Patch Changes
