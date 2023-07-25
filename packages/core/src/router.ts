@@ -1,4 +1,4 @@
-import { BigNumberish, utils } from 'ethers';
+import { BigNumberish, BytesLike, utils } from 'ethers';
 import { IParam } from './contracts/Router';
 import { Router__factory } from './contracts';
 import * as common from '@protocolink/common';
@@ -36,6 +36,32 @@ export function newRouterExecuteTransactionRequest(
   const { chainId, routerLogics, tokensReturn = [], value = 0, referralCode = 0 } = options;
   const iface = Router__factory.createInterface();
   const data = iface.encodeFunctionData('execute', [routerLogics, tokensReturn, referralCode]);
+
+  return { to: getContractAddress(chainId, 'Router'), data, value };
+}
+
+export interface NewRouterExecuteWithSignerFeeTransactionOptions {
+  chainId: number;
+  routerBatchLogics: IParam.LogicBatchStruct;
+  signer: string;
+  signature: BytesLike;
+  tokensReturn?: string[];
+  value?: BigNumberish;
+  referralCode?: number;
+}
+
+export function newRouterExecuteWithSignerFeeTransactionRequest(
+  options: NewRouterExecuteWithSignerFeeTransactionOptions
+): common.TransactionRequest {
+  const { chainId, routerBatchLogics, signer, signature, tokensReturn = [], value = 0, referralCode = 0 } = options;
+  const iface = Router__factory.createInterface();
+  const data = iface.encodeFunctionData('executeWithSignerFee', [
+    routerBatchLogics,
+    signer,
+    signature,
+    tokensReturn,
+    referralCode,
+  ]);
 
   return { to: getContractAddress(chainId, 'Router'), data, value };
 }
