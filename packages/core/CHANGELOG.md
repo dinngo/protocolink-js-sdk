@@ -1,5 +1,11 @@
 # @protocolink/core
 
+## 0.2.17
+
+### Patch Changes
+
+- 0f0cf07: update zksync router contract addresses
+
 ## 0.2.16
 
 ### Patch Changes
