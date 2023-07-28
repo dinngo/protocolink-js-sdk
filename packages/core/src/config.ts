@@ -28,8 +28,8 @@ export const contractAddressMap: Record<number, Record<ContractNames, string>> =
     AgentImplementation: '0xb16889e61Bdbb614fd5D995F5eDf7AEa02641400',
   },
   [common.ChainId.zksync]: {
-    Router: '0x7a750DdEA5efcd9140418515D260B917705F5D1b',
-    AgentImplementation: '0xfB79f9F8EC6EC0A891Eb87Ca4E1BeedfD8918a33',
+    Router: '0x9A179815c2A93684bfd249dE127f4019FBaEd689',
+    AgentImplementation: '0xD65c1dE2BC556dC7c73bF0E6a928582E681797eb',
   },
 };
 

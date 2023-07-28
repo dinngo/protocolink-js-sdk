@@ -27,12 +27,12 @@ describe('Test calcAccountAgent', function () {
     {
       chainId: common.ChainId.zksync,
       account: '0x5cb738DAe833Ec21fe65ae1719fAd8ab8cE7f23D',
-      expected: '0xC055Cc1AFe2563C72A9b5fBbFc191730d19a7275',
+      expected: '0x8B7A74AeF587f57E254FDA3BC971b70F566EC498',
     },
     {
       chainId: common.ChainId.zksync,
       account: '0xa3C1C91403F0026b9dd086882aDbC8Cdbc3b3cfB',
-      expected: '0x7Ae1cdB4cA3C4D3C753d3d7Dc1A8FAe3596332A0',
+      expected: '0x0Bd775964ea7194679A9D5854e4CaC3a0d457187',
     },
   ];
 
