@@ -22,6 +22,10 @@ export interface LogicBuilderInterface {
   build(fields: any, options?: any): Promise<IParam.LogicStruct>;
 }
 
+export interface LogicMultiBuilderInterface {
+  build(fields: any, options?: any): Promise<IParam.LogicStruct[]>;
+}
+
 export interface LogicClassInterface {
   new (...args: any[]): Logic;
   id: string;
