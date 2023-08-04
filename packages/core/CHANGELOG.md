@@ -1,5 +1,11 @@
 # @protocolink/core
 
+## 0.2.19
+
+### Patch Changes
+
+- 43f1f5a: add LogicMultiBuilderInterface
+
 ## 0.2.18
 
 ### Patch Changes
