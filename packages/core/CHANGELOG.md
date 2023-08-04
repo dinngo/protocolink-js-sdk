@@ -1,5 +1,11 @@
 # @protocolink/core
 
+## 0.2.18
+
+### Patch Changes
+
+- efcc250: add flash loan params and quotation types
+
 ## 0.2.17
 
 ### Patch Changes
