@@ -6,7 +6,9 @@ import { v4 as uuid } from 'uuid';
 
 export type FlashLoanAggregatorParams = common.Declasifying<logics.utility.FlashLoanAggregatorLogicParams>;
 
-export type FlashLoanAggregatorFields = common.Declasifying<FlashLoanFields & { protocolId: string }>;
+export type FlashLoanAggregatorLogicFields = FlashLoanFields & { protocolId: string };
+
+export type FlashLoanAggregatorFields = common.Declasifying<FlashLoanAggregatorLogicFields>;
 
 export type FlashLoanAggregatorLogic = Logic<FlashLoanAggregatorFields>;
 
