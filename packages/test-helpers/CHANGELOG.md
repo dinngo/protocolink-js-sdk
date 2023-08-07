@@ -1,5 +1,11 @@
 # @protocolink/test-helpers
 
+## 0.2.9
+
+### Patch Changes
+
+- a0f41e4: update claimToken with custom faucet
+
 ## 0.2.8
 
 ### Patch Changes
