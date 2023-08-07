@@ -1,5 +1,12 @@
 # @furucombo/composable-router-api
 
+## 0.2.11
+
+### Patch Changes
+
+- 1925bf7: add utility flash loan aggregator logic api funcs
+- d91e8a6: add aave v2, aave v3, balancer v2 flash loan get quotation func
+
 ## 0.2.10
 
 ### Patch Changes
