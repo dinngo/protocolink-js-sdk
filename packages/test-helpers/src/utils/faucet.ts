@@ -23,7 +23,8 @@ export async function claimToken(
   chainId: number,
   recepient: string,
   tokenOrAddress: common.TokenOrAddress,
-  amount: string
+  amount: string,
+  faucet?: string
 ) {
   const hre = await import('hardhat');
 
@@ -31,12 +32,13 @@ export async function claimToken(
   const token = await web3Toolkit.getToken(tokenOrAddress);
   const tokenAmount = new common.TokenAmount(token, amount);
 
-  let faucet: string;
   if (token.isNative || token.isWrapped) {
     const signers = await hre.ethers.getSigners();
     faucet = signers[signers.length - 1].address;
   } else {
-    faucet = faucetMap[chainId]?.specified?.[token.address] ?? faucetMap[chainId].default;
+    if (!faucet) {
+      faucet = faucetMap[chainId]?.specified?.[token.address] ?? faucetMap[chainId].default;
+    }
     await helpers.impersonateAccount(faucet);
   }
 

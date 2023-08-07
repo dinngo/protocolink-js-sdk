@@ -18,16 +18,19 @@ describe('mainnet: Test faucet claim', function () {
 
   snapshotAndRevertEach();
 
-  const testCases: { tokenOrAddress: common.TokenOrAddress; amount: string }[] = [
+  const testCases: { tokenOrAddress: common.TokenOrAddress; amount: string; faucet?: string }[] = [
     { tokenOrAddress: mainnetTokens.ETH, amount: '1' },
     { tokenOrAddress: mainnetTokens.WETH, amount: '1' },
     { tokenOrAddress: '0xBe9895146f7AF43049ca1c1AE358B0541Ea49704', amount: '1' }, // cbETH
     { tokenOrAddress: '0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0', amount: '1' }, // wstETH
+    { tokenOrAddress: mainnetTokens.COMBO, amount: '1', faucet: '0x0D0707963952f2fBA59dD06f2b425ace40b492Fe' },
   ];
 
-  testCases.forEach(({ tokenOrAddress, amount }) => {
-    it(`claim ${common.isTokenTypes(tokenOrAddress) ? tokenOrAddress.symbol : tokenOrAddress}`, async function () {
-      await claimToken(chainId, user.address, tokenOrAddress, amount);
+  testCases.forEach(({ tokenOrAddress, amount, faucet }) => {
+    it(`claim ${common.isTokenTypes(tokenOrAddress) ? tokenOrAddress.symbol : tokenOrAddress}${
+      faucet ? ' with custom faucet' : ''
+    }`, async function () {
+      await claimToken(chainId, user.address, tokenOrAddress, amount, faucet);
       await expect(user.address).to.changeBalance(tokenOrAddress, amount);
     });
   });
