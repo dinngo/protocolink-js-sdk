@@ -1,5 +1,11 @@
 # @furucombo/composable-router-api
 
+## 0.2.12
+
+### Patch Changes
+
+- 7b205de: utility add FlashLoanAggregatorLogicFields type
+
 ## 0.2.11
 
 ### Patch Changes
