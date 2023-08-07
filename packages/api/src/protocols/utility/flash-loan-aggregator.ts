@@ -1,4 +1,4 @@
-import { FlashLoanFields, Logic } from 'src/types';
+import { FlashLoanLogicFields, Logic } from 'src/types';
 import * as common from '@protocolink/common';
 import { getProtocolTokenList, quote } from 'src/api';
 import * as logics from '@protocolink/logics';
@@ -6,7 +6,7 @@ import { v4 as uuid } from 'uuid';
 
 export type FlashLoanAggregatorParams = common.Declasifying<logics.utility.FlashLoanAggregatorLogicParams>;
 
-export type FlashLoanAggregatorLogicFields = FlashLoanFields & { protocolId: string };
+export type FlashLoanAggregatorLogicFields = FlashLoanLogicFields & { protocolId: string };
 
 export type FlashLoanAggregatorFields = common.Declasifying<FlashLoanAggregatorLogicFields>;
 
