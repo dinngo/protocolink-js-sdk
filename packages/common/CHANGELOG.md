@@ -1,5 +1,11 @@
 # @protocolink/common
 
+## 0.2.16
+
+### Patch Changes
+
+- 32824a4: fix classifying issue with TokenAmount item
+
 ## 0.2.15
 
 ### Patch Changes
