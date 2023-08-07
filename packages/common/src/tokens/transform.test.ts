@@ -1,7 +1,7 @@
+import { TokenAmount, isTokenAmount, isTokenAmounts } from './token-amount';
 import { classifying } from './transform';
 import { expect } from 'chai';
 import { isToken } from './token';
-import { isTokenAmount, isTokenAmounts } from './token-amount';
 import { mainnetTokens } from 'test/fixtures/tokens';
 
 describe('Test classifying', function () {
@@ -148,5 +148,27 @@ describe('Test classifying', function () {
         expect(isToken(collateral.asset)).to.be.true;
       }
     }
+  });
+
+  it('TokenAmountFields', function () {
+    const fieldsObject = {
+      id: '0383748f-cb39-4d4b-8082-3cebb126a0d4',
+      protocolId: 'balancer-v2',
+      outputs: [
+        TokenAmount.from({
+          token: {
+            chainId: 1,
+            address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+            decimals: 18,
+            symbol: 'WETH',
+            name: 'Wrapped Ether',
+          },
+          amount: '1',
+        }),
+      ],
+      isLoan: true,
+    };
+    const fields = classifying(fieldsObject);
+    expect(isTokenAmounts(fields.outputs)).to.be.true;
   });
 });

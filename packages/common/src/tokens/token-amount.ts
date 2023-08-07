@@ -315,16 +315,12 @@ export class TokenAmounts {
   }
 }
 
-export type TokenAmountsTypes = TokenAmountObject[] | TokenAmounts;
-
-export function isTokenAmountObjects(v: any): v is TokenAmountObject[] {
-  return Array.isArray(v) && isTokenAmountObject(v[0]);
-}
+export type TokenAmountsTypes = TokenAmountTypes[] | TokenAmounts;
 
 export function isTokenAmounts(v: any): v is TokenAmounts {
   return v instanceof TokenAmounts;
 }
 
 export function isTokenAmountsTypes(v: any): v is TokenAmountsTypes {
-  return isTokenAmountObjects(v) || isTokenAmounts(v);
+  return (Array.isArray(v) && isTokenAmountTypes(v[0])) || isTokenAmounts(v);
 }
