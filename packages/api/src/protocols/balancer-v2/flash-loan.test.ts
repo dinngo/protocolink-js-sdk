@@ -1,7 +1,8 @@
+import { FlashLoanParams, getFlashLoanQuotation, getFlashLoanTokenList } from './flash-loan';
 import * as common from '@protocolink/common';
 import { expect } from 'chai';
-import { getFlashLoanTokenList } from './flash-loan';
 import * as logics from '@protocolink/logics';
+import { mainnetTokens } from '@protocolink/test-helpers';
 
 describe('BalancerV2 FlashLoanLogic', function () {
   context('Test getTokenList', async function () {
@@ -9,6 +10,32 @@ describe('BalancerV2 FlashLoanLogic', function () {
       it(`network: ${common.toNetworkId(chainId)}`, async function () {
         const tokenList = await getFlashLoanTokenList(chainId);
         expect(tokenList).to.have.lengthOf.above(0);
+      });
+    });
+  });
+
+  context('Test getQuotation', async function () {
+    const chainId = common.ChainId.mainnet;
+
+    const testCases: FlashLoanParams[] = [
+      {
+        outputs: [
+          { token: mainnetTokens.WETH, amount: '1' },
+          { token: mainnetTokens.USDC, amount: '1' },
+        ],
+      },
+      {
+        outputs: [
+          { token: mainnetTokens.WBTC, amount: '1' },
+          { token: mainnetTokens.DAI, amount: '1' },
+        ],
+      },
+    ];
+
+    testCases.forEach((params, i) => {
+      it(`case ${i + 1}`, async function () {
+        const quotation = await getFlashLoanQuotation(chainId, params);
+        expect(quotation).to.include.all.keys('loans', 'repays', 'fees', 'feeBps');
       });
     });
   });
