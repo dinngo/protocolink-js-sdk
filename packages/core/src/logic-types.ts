@@ -80,13 +80,24 @@ export type ClaimParams<T = object> = { owner: string } & T;
 
 export type ClaimFields<T = object> = TokenOutFields<{ owner: string }> & T;
 
-export type FlashLoanParams<T = object> = TokensOutFields & T;
+export type FlashLoanLoanParams<T = object> = { loans: common.TokenAmounts } & T;
+
+export type FlashLoanRepayParams<T = object> = { repays: common.TokenAmounts } & T;
+
+export type FlashLoanParams<T = object> = (FlashLoanLoanParams | FlashLoanRepayParams) & T;
+
+export function isFlashLoanLoanParams<T = object>(v: any): v is FlashLoanLoanParams<T> {
+  return !!v.loans;
+}
+
+export function isFlashLoanRepayParams<T = object>(v: any): v is FlashLoanRepayParams<T> {
+  return !!v.repays;
+}
 
 export type FlashLoanQuotation<T = object> = {
   loans: common.TokenAmounts;
   repays: common.TokenAmounts;
-  fees: common.TokenAmounts;
   feeBps: number;
 } & T;
 
-export type FlashLoanFields<T = object> = TokensOutFields<{ params: string }> & T;
+export type FlashLoanFields<T = object> = { loans: common.TokenAmounts; params: string } & T;
