@@ -1,5 +1,11 @@
 # @protocolink/core
 
+## 0.2.20
+
+### Patch Changes
+
+- fa56a35: add FlashLoanRepayParams type
+
 ## 0.2.19
 
 ### Patch Changes
