@@ -1,4 +1,4 @@
-import { calcBps, validateBps } from './bps';
+import { calcBps, calcFee, reverseAmountWithFee, validateBps } from './bps';
 import { constants } from 'ethers';
 import { expect } from 'chai';
 
@@ -32,6 +32,34 @@ describe('Test validateBps', function () {
   testCases.forEach(({ bps, expected }, i) => {
     it(`case ${i + 1}`, function () {
       expect(validateBps(bps)).to.eq(expected);
+    });
+  });
+});
+
+describe('Test calcFee', function () {
+  const testCases = [
+    { amountWei: 999500, feeBps: 5, expected: 500 },
+    { amountWei: '999500249875062468', feeBps: 5, expected: '499750124937531' },
+    { amountWei: 99950024, feeBps: 5, expected: 49975 },
+  ];
+
+  testCases.forEach(({ amountWei, feeBps, expected }, i) => {
+    it(`case ${i + 1}`, function () {
+      expect(calcFee(amountWei, feeBps)).to.eq(expected);
+    });
+  });
+});
+
+describe('Test reverseFee', function () {
+  const testCases = [
+    { amountWithFeeWei: 1000000, feeBps: 5, expected: 999500 },
+    { amountWithFeeWei: '1000000000000000000', feeBps: 5, expected: '999500249875062468' },
+    { amountWithFeeWei: 100000000, feeBps: 5, expected: 99950024 },
+  ];
+
+  testCases.forEach(({ amountWithFeeWei, feeBps, expected }, i) => {
+    it(`case ${i + 1}`, function () {
+      expect(reverseAmountWithFee(amountWithFeeWei, feeBps)).to.eq(expected);
     });
   });
 });

@@ -39,7 +39,3 @@ export function calcSlippage(amountWei: BigNumberish, slippage: number, base = 1
   amountWei = BigNumber.from(amountWei);
   return amountWei.isZero() ? amountWei : amountWei.mul(base - slippage).div(base);
 }
-
-export function calcFee(amountWei: BigNumberish, premium: number, base = 10000) {
-  return BigNumber.from(amountWei).mul(premium).div(base);
-}
