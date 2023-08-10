@@ -1,5 +1,11 @@
 # @protocolink/common
 
+## 0.2.17
+
+### Patch Changes
+
+- 2498001: update calcFee with round half up and add reverseAmountWithFee
+
 ## 0.2.16
 
 ### Patch Changes
