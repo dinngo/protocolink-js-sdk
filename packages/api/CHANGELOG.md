@@ -1,5 +1,11 @@
 # @furucombo/composable-router-api
 
+## 0.2.14
+
+### Patch Changes
+
+- f681a1d: update flash loans quote with repays
+
 ## 0.2.13
 
 ### Patch Changes
