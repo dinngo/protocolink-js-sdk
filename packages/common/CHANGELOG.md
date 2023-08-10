@@ -1,5 +1,11 @@
 # @protocolink/common
 
+## 0.2.18
+
+### Patch Changes
+
+- d5eceb0: calcFee add rounding mode - round, floor
+
 ## 0.2.17
 
 ### Patch Changes
