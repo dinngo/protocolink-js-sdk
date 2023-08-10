@@ -1,5 +1,5 @@
-import { calcBps, calcFee, reverseAmountWithFee, validateBps } from './bps';
-import { constants } from 'ethers';
+import { BigNumberish, constants } from 'ethers';
+import { FeeRoundingMode, calcBps, calcFee, reverseAmountWithFee, validateBps } from './bps';
 import { expect } from 'chai';
 
 describe('Test calcBps', function () {
@@ -37,24 +37,34 @@ describe('Test validateBps', function () {
 });
 
 describe('Test calcFee', function () {
-  const testCases = [
-    { amountWei: 999500, feeBps: 5, expected: 500 },
-    { amountWei: '999500249875062468', feeBps: 5, expected: '499750124937531' },
-    { amountWei: 99950024, feeBps: 5, expected: 49975 },
+  const testCases: { amountWei: BigNumberish; feeBps: number; mode: FeeRoundingMode; expected: BigNumberish }[] = [
+    // aave v2
+    { amountWei: 999100, feeBps: 9, mode: 'floor', expected: 899 },
+    { amountWei: 99910080, feeBps: 9, mode: 'floor', expected: 89919 },
+    { amountWei: '999100809271655510', feeBps: 9, mode: 'floor', expected: '899190728344489' },
+    // aave v3
+    { amountWei: 999500, feeBps: 5, mode: 'round', expected: 500 },
+    { amountWei: 99950024, feeBps: 5, mode: 'round', expected: 49975 },
+    { amountWei: '999500249875062468', feeBps: 5, mode: 'round', expected: '499750124937531' },
   ];
 
-  testCases.forEach(({ amountWei, feeBps, expected }, i) => {
+  testCases.forEach(({ amountWei, feeBps, mode, expected }, i) => {
     it(`case ${i + 1}`, function () {
-      expect(calcFee(amountWei, feeBps)).to.eq(expected);
+      expect(calcFee(amountWei, feeBps, mode)).to.eq(expected);
     });
   });
 });
 
 describe('Test reverseFee', function () {
   const testCases = [
+    // aave v2
+    { amountWithFeeWei: 1000000, feeBps: 9, expected: 999100 },
+    { amountWithFeeWei: 100000000, feeBps: 9, expected: 99910080 },
+    { amountWithFeeWei: '1000000000000000000', feeBps: 9, expected: '999100809271655510' },
+    // aave v3
     { amountWithFeeWei: 1000000, feeBps: 5, expected: 999500 },
-    { amountWithFeeWei: '1000000000000000000', feeBps: 5, expected: '999500249875062468' },
     { amountWithFeeWei: 100000000, feeBps: 5, expected: 99950024 },
+    { amountWithFeeWei: '1000000000000000000', feeBps: 5, expected: '999500249875062468' },
   ];
 
   testCases.forEach(({ amountWithFeeWei, feeBps, expected }, i) => {
