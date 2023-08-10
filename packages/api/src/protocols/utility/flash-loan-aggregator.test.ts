@@ -22,19 +22,37 @@ describe('Utility FlashLoanAggregatorLogic', function () {
 
     const testCases: FlashLoanAggregatorParams[] = [
       {
-        outputs: [
+        loans: [
           { token: logics.aavev2.mainnetTokens.WETH, amount: '1' },
           { token: logics.aavev2.mainnetTokens.USDC, amount: '1' },
         ],
       },
       {
-        outputs: [
+        repays: [
+          { token: logics.aavev2.mainnetTokens.WETH, amount: '1' },
+          { token: logics.aavev2.mainnetTokens.USDC, amount: '1' },
+        ],
+      },
+      {
+        loans: [
           { token: logics.aavev2.mainnetTokens.WBTC, amount: '1' },
           { token: logics.aavev2.mainnetTokens.DAI, amount: '1' },
         ],
       },
       {
-        outputs: [
+        repays: [
+          { token: logics.aavev2.mainnetTokens.WBTC, amount: '1' },
+          { token: logics.aavev2.mainnetTokens.DAI, amount: '1' },
+        ],
+      },
+      {
+        loans: [
+          { token: logics.aavev3.mainnetTokens['1INCH'], amount: '1' },
+          { token: logics.aavev3.mainnetTokens.AAVE, amount: '1' },
+        ],
+      },
+      {
+        repays: [
           { token: logics.aavev3.mainnetTokens['1INCH'], amount: '1' },
           { token: logics.aavev3.mainnetTokens.AAVE, amount: '1' },
         ],
@@ -44,7 +62,7 @@ describe('Utility FlashLoanAggregatorLogic', function () {
     testCases.forEach((params, i) => {
       it(`case ${i + 1}`, async function () {
         const quotation = await getFlashLoanAggregatorQuotation(chainId, params);
-        expect(quotation).to.include.all.keys('loans', 'repays', 'fees', 'feeBps');
+        expect(quotation).to.include.all.keys('loans', 'repays', 'feeBps');
       });
     });
   });

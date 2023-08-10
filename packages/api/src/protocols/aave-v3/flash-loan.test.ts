@@ -18,13 +18,25 @@ describe('AaveV3 FlashLoanLogic', function () {
 
     const testCases: FlashLoanParams[] = [
       {
-        outputs: [
+        loans: [
           { token: logics.aavev3.mainnetTokens.WETH, amount: '1' },
           { token: logics.aavev3.mainnetTokens.USDC, amount: '1' },
         ],
       },
       {
-        outputs: [
+        repays: [
+          { token: logics.aavev3.mainnetTokens.WETH, amount: '1' },
+          { token: logics.aavev3.mainnetTokens.USDC, amount: '1' },
+        ],
+      },
+      {
+        loans: [
+          { token: logics.aavev3.mainnetTokens.WBTC, amount: '1' },
+          { token: logics.aavev3.mainnetTokens.DAI, amount: '1' },
+        ],
+      },
+      {
+        repays: [
           { token: logics.aavev3.mainnetTokens.WBTC, amount: '1' },
           { token: logics.aavev3.mainnetTokens.DAI, amount: '1' },
         ],
@@ -34,7 +46,7 @@ describe('AaveV3 FlashLoanLogic', function () {
     testCases.forEach((params, i) => {
       it(`case ${i + 1}`, async function () {
         const quotation = await getFlashLoanQuotation(chainId, params);
-        expect(quotation).to.include.all.keys('loans', 'repays', 'fees', 'feeBps');
+        expect(quotation).to.include.all.keys('loans', 'repays', 'feeBps');
       });
     });
   });

@@ -31,11 +31,11 @@ export function newFlashLoanAggregatorLogic(fields: FlashLoanAggregatorFields): 
 
 export function newFlashLoanAggregatorLogicPair(
   protocolId: string,
-  outputs: FlashLoanAggregatorFields['outputs']
+  loans: FlashLoanAggregatorFields['loans']
 ): [FlashLoanAggregatorLogic, FlashLoanAggregatorLogic] {
   const id = uuid();
   return [
-    newFlashLoanAggregatorLogic({ id, protocolId, outputs, isLoan: true }),
-    newFlashLoanAggregatorLogic({ id, protocolId, outputs, isLoan: false }),
+    newFlashLoanAggregatorLogic({ id, protocolId, loans, isLoan: true }),
+    newFlashLoanAggregatorLogic({ id, protocolId, loans, isLoan: false }),
   ];
 }

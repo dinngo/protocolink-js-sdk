@@ -21,7 +21,7 @@ export function newFlashLoanLogic(fields: FlashLoanFields): FlashLoanLogic {
   return { rid: logics.aavev3.FlashLoanLogic.rid, fields };
 }
 
-export function newFlashLoanLogicPair(outputs: FlashLoanFields['outputs']): [FlashLoanLogic, FlashLoanLogic] {
+export function newFlashLoanLogicPair(loans: FlashLoanFields['loans']): [FlashLoanLogic, FlashLoanLogic] {
   const id = uuid();
-  return [newFlashLoanLogic({ id, outputs, isLoan: true }), newFlashLoanLogic({ id, outputs, isLoan: false })];
+  return [newFlashLoanLogic({ id, loans, isLoan: true }), newFlashLoanLogic({ id, loans, isLoan: false })];
 }

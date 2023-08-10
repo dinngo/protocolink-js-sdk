@@ -19,13 +19,25 @@ describe('BalancerV2 FlashLoanLogic', function () {
 
     const testCases: FlashLoanParams[] = [
       {
-        outputs: [
+        loans: [
           { token: mainnetTokens.WETH, amount: '1' },
           { token: mainnetTokens.USDC, amount: '1' },
         ],
       },
       {
-        outputs: [
+        repays: [
+          { token: mainnetTokens.WETH, amount: '1' },
+          { token: mainnetTokens.USDC, amount: '1' },
+        ],
+      },
+      {
+        loans: [
+          { token: mainnetTokens.WBTC, amount: '1' },
+          { token: mainnetTokens.DAI, amount: '1' },
+        ],
+      },
+      {
+        repays: [
           { token: mainnetTokens.WBTC, amount: '1' },
           { token: mainnetTokens.DAI, amount: '1' },
         ],
@@ -35,7 +47,7 @@ describe('BalancerV2 FlashLoanLogic', function () {
     testCases.forEach((params, i) => {
       it(`case ${i + 1}`, async function () {
         const quotation = await getFlashLoanQuotation(chainId, params);
-        expect(quotation).to.include.all.keys('loans', 'repays', 'fees', 'feeBps');
+        expect(quotation).to.include.all.keys('loans', 'repays', 'feeBps');
       });
     });
   });

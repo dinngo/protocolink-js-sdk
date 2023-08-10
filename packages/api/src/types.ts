@@ -1,6 +1,6 @@
 import { PermitBatchData, PermitSingleData } from '@uniswap/permit2-sdk';
-import { TokensOutFields } from '@protocolink/core';
 import * as common from '@protocolink/common';
+import * as core from '@protocolink/core';
 
 export interface Logic<TFields = any> {
   rid: string;
@@ -23,7 +23,7 @@ export interface RouterDataEstimateResult {
   permitData?: PermitSingleData | PermitBatchData;
 }
 
-export type FlashLoanLogicFields = TokensOutFields<{ id: string; isLoan: boolean }>;
+export type FlashLoanLogicFields = Pick<core.FlashLoanFields, 'loans'> & { id: string; isLoan: boolean };
 
 export type FlashLoanFields = common.Declasifying<FlashLoanLogicFields>;
 
