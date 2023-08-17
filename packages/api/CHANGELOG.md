@@ -1,5 +1,11 @@
 # @furucombo/composable-router-api
 
+## 0.2.16
+
+### Patch Changes
+
+- 8f5b7f5: add fee type
+
 ## 0.2.15
 
 ### Patch Changes
