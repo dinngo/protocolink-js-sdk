@@ -48,7 +48,7 @@ describe('API client', function () {
 
   it('Test estimateRouterData', async function () {
     const estimateResult = await estimateRouterData(routerData);
-    expect(estimateResult).to.include.all.keys('funds', 'balances', 'approvals', 'permitData');
+    expect(estimateResult).to.include.all.keys('funds', 'balances', 'fees', 'approvals', 'permitData');
   });
 
   it('Test buildRouterTransactionRequest', async function () {

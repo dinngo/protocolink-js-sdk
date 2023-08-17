@@ -16,9 +16,15 @@ export interface RouterData {
   referralCode?: number;
 }
 
+export interface Fee {
+  rid: string;
+  feeAmount: common.TokenAmount;
+}
+
 export interface RouterDataEstimateResult {
   funds: common.TokenAmounts;
   balances: common.TokenAmounts;
+  fees: Fee[];
   approvals: common.TransactionRequest[];
   permitData?: PermitSingleData | PermitBatchData;
 }
