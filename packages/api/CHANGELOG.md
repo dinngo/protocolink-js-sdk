@@ -1,5 +1,11 @@
 # @furucombo/composable-router-api
 
+## 0.2.17
+
+### Patch Changes
+
+- 95997d2: estimate router data api add permit2 type param
+
 ## 0.2.16
 
 ### Patch Changes
