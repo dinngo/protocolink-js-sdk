@@ -1,4 +1,4 @@
-import { RouterData, RouterDataEstimateResult } from './types';
+import { Permit2Type, RouterData, RouterDataEstimateResult } from './types';
 import axios from 'axios';
 import axiosRetry from 'axios-retry';
 import * as common from '@protocolink/common';
@@ -39,8 +39,14 @@ export async function quote(chainId: number, rid: string, data: any) {
   return common.classifying(resp.data);
 }
 
-export async function estimateRouterData(routerData: RouterData): Promise<RouterDataEstimateResult> {
-  const resp = await client.post('/v1/transactions/estimate', routerData);
+export async function estimateRouterData(
+  routerData: RouterData,
+  permit2Type?: Permit2Type
+): Promise<RouterDataEstimateResult> {
+  const resp = await client.post(
+    `/v1/transactions/estimate${permit2Type ? `?permit2Type=${permit2Type}` : ''}`,
+    routerData
+  );
   return common.classifying(resp.data);
 }
 

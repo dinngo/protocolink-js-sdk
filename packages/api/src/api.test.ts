@@ -51,6 +51,11 @@ describe('API client', function () {
     expect(estimateResult).to.include.all.keys('funds', 'balances', 'fees', 'approvals', 'permitData');
   });
 
+  it('Test estimateRouterData with approve permit2Type', async function () {
+    const estimateResult = await estimateRouterData(routerData, 'approve');
+    expect(estimateResult).to.include.all.keys('funds', 'balances', 'fees', 'approvals');
+  });
+
   it('Test buildRouterTransactionRequest', async function () {
     const transactionRequest = await buildRouterTransactionRequest(routerData);
     expect(transactionRequest).to.include.all.keys('to', 'data', 'value');

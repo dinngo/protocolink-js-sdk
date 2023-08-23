@@ -7,6 +7,8 @@ export interface Logic<TFields = any> {
   fields: TFields;
 }
 
+export type Permit2Type = 'permit' | 'approve';
+
 export interface RouterData {
   chainId: number;
   account: string;
