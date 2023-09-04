@@ -21,6 +21,7 @@ export interface Network {
     name: string;
   };
   multicall2Address: string;
+  multicall3Address: string;
 }
 
 export const networks: Network[] = data;
