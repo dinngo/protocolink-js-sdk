@@ -1,5 +1,13 @@
 # @protocolink/common
 
+## 0.3.0
+
+### Minor Changes
+
+- 36cc5f5: remove unsupported networks: optimism, avalanche, fantom
+- 5100cc8: refine token amount comparisions
+- 6e174d8: add multicall3
+
 ## 0.2.18
 
 ### Patch Changes
