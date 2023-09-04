@@ -132,6 +132,44 @@ describe('TokenAmount', function () {
     });
   });
 
+  context('Test comparison', function () {
+    const testCases = [
+      {
+        tokenAmountA: new TokenAmount(mainnetTokens.ETH, '1'),
+        tokenAmountB: new TokenAmount(mainnetTokens.ETH, '1'),
+        stringB: '1',
+        expected: { eq: true, gt: false, gte: true, lt: false, lte: true },
+      },
+      {
+        tokenAmountA: new TokenAmount(mainnetTokens.ETH, '1'),
+        tokenAmountB: new TokenAmount(mainnetTokens.ETH, '0.9'),
+        stringB: '0.9',
+        expected: { eq: false, gt: true, gte: true, lt: false, lte: false },
+      },
+      {
+        tokenAmountA: new TokenAmount(mainnetTokens.ETH, '1'),
+        tokenAmountB: new TokenAmount(mainnetTokens.ETH, '1.1'),
+        stringB: '1.1',
+        expected: { eq: false, gt: false, gte: false, lt: true, lte: true },
+      },
+    ];
+
+    testCases.forEach(({ tokenAmountA, tokenAmountB, stringB, expected }, i) => {
+      it(`case ${i + 1}`, function () {
+        expect(tokenAmountA.eq(tokenAmountB)).to.eq(expected.eq);
+        expect(tokenAmountA.eq(stringB)).to.eq(expected.eq);
+        expect(tokenAmountA.gt(tokenAmountB)).to.eq(expected.gt);
+        expect(tokenAmountA.gt(stringB)).to.eq(expected.gt);
+        expect(tokenAmountA.gte(tokenAmountB)).to.eq(expected.gte);
+        expect(tokenAmountA.gte(stringB)).to.eq(expected.gte);
+        expect(tokenAmountA.lt(tokenAmountB)).to.eq(expected.lt);
+        expect(tokenAmountA.lt(stringB)).to.eq(expected.lt);
+        expect(tokenAmountA.lte(tokenAmountB)).to.eq(expected.lte);
+        expect(tokenAmountA.lte(stringB)).to.eq(expected.lte);
+      });
+    });
+  });
+
   context('Test toJSON', function () {
     const testCases = [
       {

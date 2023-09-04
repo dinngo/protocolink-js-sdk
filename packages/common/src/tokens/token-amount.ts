@@ -96,24 +96,54 @@ export class TokenAmount {
     return BigNumberJS(this.amount).isZero();
   }
 
-  eq(tokenAmount: TokenAmount) {
-    return this.amountWei.eq(tokenAmount.amountWei);
+  eq(amount: string): boolean;
+  eq(tokenAmount: TokenAmount): boolean;
+  eq(arg0: any) {
+    if (isTokenAmount(arg0)) {
+      return this.amountWei.eq(arg0.amountWei);
+    } else {
+      return BigNumberJS(this.amount).eq(arg0);
+    }
   }
 
-  gt(tokenAmount: TokenAmount) {
-    return this.amountWei.gt(tokenAmount.amountWei);
+  gt(amount: string): boolean;
+  gt(tokenAmount: TokenAmount): boolean;
+  gt(arg0: any) {
+    if (isTokenAmount(arg0)) {
+      return this.amountWei.gt(arg0.amountWei);
+    } else {
+      return BigNumberJS(this.amount).gt(arg0);
+    }
   }
 
-  gte(tokenAmount: TokenAmount) {
-    return this.amountWei.gte(tokenAmount.amountWei);
+  gte(amount: string): boolean;
+  gte(tokenAmount: TokenAmount): boolean;
+  gte(arg0: any) {
+    if (isTokenAmount(arg0)) {
+      return this.amountWei.gte(arg0.amountWei);
+    } else {
+      return BigNumberJS(this.amount).gte(arg0);
+    }
   }
 
-  lt(tokenAmount: TokenAmount) {
-    return this.amountWei.lt(tokenAmount.amountWei);
+  lt(amount: string): boolean;
+  lt(tokenAmount: TokenAmount): boolean;
+  lt(arg0: any) {
+    if (isTokenAmount(arg0)) {
+      return this.amountWei.lt(arg0.amountWei);
+    } else {
+      return BigNumberJS(this.amount).lt(arg0);
+    }
   }
 
-  lte(tokenAmount: TokenAmount) {
-    return this.amountWei.lte(tokenAmount.amountWei);
+  lte(amount: string): boolean;
+  lte(tokenAmount: TokenAmount): boolean;
+  lte(arg0: any) {
+    if (isTokenAmount(arg0)) {
+      return this.amountWei.lte(arg0.amountWei);
+    } else {
+      return BigNumberJS(this.amount).lte(arg0);
+    }
   }
 
   toObject(): TokenAmountObject {
