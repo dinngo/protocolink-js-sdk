@@ -37,6 +37,6 @@
     "zksync-web3": "^0.14.3"
   },
   "devDependencies": {
-    "@protocolink/test-helpers": "^0.2.8"
+    "@protocolink/test-helpers": "*"
   }
 }
