@@ -1080,6 +1080,19 @@
     node-addon-api "^3.2.1"
     node-gyp-build "^4.3.0"
 
+"@protocolink/common@^0.2.16", "@protocolink/common@^0.2.18":
+  version "0.2.18"
+  resolved "https://registry.yarnpkg.com/@protocolink/common/-/common-0.2.18.tgz#7b522f766b012c18e35106cd5491ada5247e66ff"
+  integrity sha512-KGGE/1zr8ExOPexIV0aiyFIa6VYMizro/YuPyfoagDRdK3tD2WVd001kUqOWkgMSLKi/SCUu4b42Fq3W794k0A==
+  dependencies:
+    "@types/lodash" "^4.14.195"
+    bignumber.js "^9.1.1"
+    ethers "^5.7.2"
+    lodash "^4.17.21"
+    tiny-invariant "^1.3.1"
+    type-fest "^3.12.0"
+    zksync-web3 "^0.14.3"
+
 "@protocolink/logics@^0.2.16":
   version "0.2.16"
   resolved "https://registry.yarnpkg.com/@protocolink/logics/-/logics-0.2.16.tgz#5668b896f54107c4b0953d03676cc48d3b367df5"

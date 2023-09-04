@@ -2,4 +2,5 @@
 /* tslint:disable */
 /* eslint-disable */
 export { Agent__factory } from './Agent__factory';
+export { Permit2__factory } from './Permit2__factory';
 export { Router__factory } from './Router__factory';

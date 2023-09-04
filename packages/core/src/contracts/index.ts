@@ -2,7 +2,9 @@
 /* tslint:disable */
 /* eslint-disable */
 export type { Agent } from './Agent';
+export type { Permit2 } from './Permit2';
 export type { Router } from './Router';
 export * as factories from './factories';
 export { Agent__factory } from './factories/Agent__factory';
+export { Permit2__factory } from './factories/Permit2__factory';
 export { Router__factory } from './factories/Router__factory';

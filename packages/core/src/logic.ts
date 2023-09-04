@@ -1,13 +1,15 @@
 import { IParam } from './contracts/Router';
+import { RouterToolkit } from './router-toolkit';
 import * as common from '@protocolink/common';
 import path from 'path';
 
-export abstract class Logic extends common.Web3Toolkit {
+export abstract class Logic extends RouterToolkit {
   static id: string;
   static protocolId: string;
   static get rid() {
     return `${this.protocolId}:${this.id}`;
   }
+  static supportedChainIds: number[] = [];
 }
 
 export interface LogicTokenListInterface {

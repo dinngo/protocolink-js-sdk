@@ -14,6 +14,11 @@ const _abi = [
         name: 'wrappedNative_',
         type: 'address',
       },
+      {
+        internalType: 'address',
+        name: 'permit2_',
+        type: 'address',
+      },
     ],
     stateMutability: 'nonpayable',
     type: 'constructor',
@@ -26,6 +31,22 @@ const _abi = [
   {
     inputs: [],
     name: 'InvalidBps',
+    type: 'error',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'bytes4',
+        name: 'selector',
+        type: 'bytes4',
+      },
+    ],
+    name: 'InvalidPermit2Data',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'InvalidPermitCall',
     type: 'error',
   },
   {
@@ -95,6 +116,11 @@ const _abi = [
   },
   {
     inputs: [
+      {
+        internalType: 'bytes[]',
+        name: 'permit2Datas',
+        type: 'bytes[]',
+      },
       {
         components: [
           {
@@ -225,6 +251,11 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: 'bytes[]',
+        name: 'permit2Datas',
+        type: 'bytes[]',
+      },
+      {
         components: [
           {
             internalType: 'address',
@@ -316,6 +347,19 @@ const _abi = [
     name: 'initialize',
     outputs: [],
     stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'isCharging',
+    outputs: [
+      {
+        internalType: 'bool',
+        name: '',
+        type: 'bool',
+      },
+    ],
+    stateMutability: 'view',
     type: 'function',
   },
   {
@@ -428,6 +472,19 @@ const _abi = [
       },
     ],
     stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'permit2',
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'view',
     type: 'function',
   },
   {

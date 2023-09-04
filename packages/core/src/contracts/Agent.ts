@@ -64,13 +64,15 @@ export declare namespace IParam {
 
 export interface AgentInterface extends utils.Interface {
   functions: {
-    'execute((address,bytes,(address,uint256,uint256)[],uint8,address,address)[],address[])': FunctionFragment;
+    'execute(bytes[],(address,bytes,(address,uint256,uint256)[],uint8,address,address)[],address[])': FunctionFragment;
     'executeByCallback((address,bytes,(address,uint256,uint256)[],uint8,address,address)[])': FunctionFragment;
-    'executeWithSignerFee((address,bytes,(address,uint256,uint256)[],uint8,address,address)[],(address,uint256,bytes32)[],address[])': FunctionFragment;
+    'executeWithSignerFee(bytes[],(address,bytes,(address,uint256,uint256)[],uint8,address,address)[],(address,uint256,bytes32)[],address[])': FunctionFragment;
     'initialize()': FunctionFragment;
+    'isCharging()': FunctionFragment;
     'onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)': FunctionFragment;
     'onERC1155Received(address,address,uint256,uint256,bytes)': FunctionFragment;
     'onERC721Received(address,address,uint256,bytes)': FunctionFragment;
+    'permit2()': FunctionFragment;
     'router()': FunctionFragment;
     'supportsInterface(bytes4)': FunctionFragment;
     'wrappedNative()': FunctionFragment;
@@ -82,21 +84,24 @@ export interface AgentInterface extends utils.Interface {
       | 'executeByCallback'
       | 'executeWithSignerFee'
       | 'initialize'
+      | 'isCharging'
       | 'onERC1155BatchReceived'
       | 'onERC1155Received'
       | 'onERC721Received'
+      | 'permit2'
       | 'router'
       | 'supportsInterface'
       | 'wrappedNative'
   ): FunctionFragment;
 
-  encodeFunctionData(functionFragment: 'execute', values: [IParam.LogicStruct[], string[]]): string;
+  encodeFunctionData(functionFragment: 'execute', values: [BytesLike[], IParam.LogicStruct[], string[]]): string;
   encodeFunctionData(functionFragment: 'executeByCallback', values: [IParam.LogicStruct[]]): string;
   encodeFunctionData(
     functionFragment: 'executeWithSignerFee',
-    values: [IParam.LogicStruct[], IParam.FeeStruct[], string[]]
+    values: [BytesLike[], IParam.LogicStruct[], IParam.FeeStruct[], string[]]
   ): string;
   encodeFunctionData(functionFragment: 'initialize', values?: undefined): string;
+  encodeFunctionData(functionFragment: 'isCharging', values?: undefined): string;
   encodeFunctionData(
     functionFragment: 'onERC1155BatchReceived',
     values: [string, string, BigNumberish[], BigNumberish[], BytesLike]
@@ -106,6 +111,7 @@ export interface AgentInterface extends utils.Interface {
     values: [string, string, BigNumberish, BigNumberish, BytesLike]
   ): string;
   encodeFunctionData(functionFragment: 'onERC721Received', values: [string, string, BigNumberish, BytesLike]): string;
+  encodeFunctionData(functionFragment: 'permit2', values?: undefined): string;
   encodeFunctionData(functionFragment: 'router', values?: undefined): string;
   encodeFunctionData(functionFragment: 'supportsInterface', values: [BytesLike]): string;
   encodeFunctionData(functionFragment: 'wrappedNative', values?: undefined): string;
@@ -114,9 +120,11 @@ export interface AgentInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: 'executeByCallback', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'executeWithSignerFee', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'initialize', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'isCharging', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'onERC1155BatchReceived', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'onERC1155Received', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'onERC721Received', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'permit2', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'router', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'supportsInterface', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'wrappedNative', data: BytesLike): Result;
@@ -172,6 +180,7 @@ export interface Agent extends BaseContract {
 
   functions: {
     execute(
+      permit2Datas: BytesLike[],
       logics: IParam.LogicStruct[],
       tokensReturn: string[],
       overrides?: PayableOverrides & { from?: string }
@@ -183,6 +192,7 @@ export interface Agent extends BaseContract {
     ): Promise<ContractTransaction>;
 
     executeWithSignerFee(
+      permit2Datas: BytesLike[],
       logics: IParam.LogicStruct[],
       fees: IParam.FeeStruct[],
       tokensReturn: string[],
@@ -190,6 +200,8 @@ export interface Agent extends BaseContract {
     ): Promise<ContractTransaction>;
 
     initialize(overrides?: Overrides & { from?: string }): Promise<ContractTransaction>;
+
+    isCharging(overrides?: CallOverrides): Promise<[boolean]>;
 
     onERC1155BatchReceived(
       arg0: string,
@@ -217,6 +229,8 @@ export interface Agent extends BaseContract {
       overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
+    permit2(overrides?: CallOverrides): Promise<[string]>;
+
     router(overrides?: CallOverrides): Promise<[string]>;
 
     supportsInterface(interfaceId: BytesLike, overrides?: CallOverrides): Promise<[boolean]>;
@@ -225,6 +239,7 @@ export interface Agent extends BaseContract {
   };
 
   execute(
+    permit2Datas: BytesLike[],
     logics: IParam.LogicStruct[],
     tokensReturn: string[],
     overrides?: PayableOverrides & { from?: string }
@@ -236,6 +251,7 @@ export interface Agent extends BaseContract {
   ): Promise<ContractTransaction>;
 
   executeWithSignerFee(
+    permit2Datas: BytesLike[],
     logics: IParam.LogicStruct[],
     fees: IParam.FeeStruct[],
     tokensReturn: string[],
@@ -243,6 +259,8 @@ export interface Agent extends BaseContract {
   ): Promise<ContractTransaction>;
 
   initialize(overrides?: Overrides & { from?: string }): Promise<ContractTransaction>;
+
+  isCharging(overrides?: CallOverrides): Promise<boolean>;
 
   onERC1155BatchReceived(
     arg0: string,
@@ -270,6 +288,8 @@ export interface Agent extends BaseContract {
     overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
+  permit2(overrides?: CallOverrides): Promise<string>;
+
   router(overrides?: CallOverrides): Promise<string>;
 
   supportsInterface(interfaceId: BytesLike, overrides?: CallOverrides): Promise<boolean>;
@@ -277,11 +297,17 @@ export interface Agent extends BaseContract {
   wrappedNative(overrides?: CallOverrides): Promise<string>;
 
   callStatic: {
-    execute(logics: IParam.LogicStruct[], tokensReturn: string[], overrides?: CallOverrides): Promise<void>;
+    execute(
+      permit2Datas: BytesLike[],
+      logics: IParam.LogicStruct[],
+      tokensReturn: string[],
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     executeByCallback(logics: IParam.LogicStruct[], overrides?: CallOverrides): Promise<void>;
 
     executeWithSignerFee(
+      permit2Datas: BytesLike[],
       logics: IParam.LogicStruct[],
       fees: IParam.FeeStruct[],
       tokensReturn: string[],
@@ -289,6 +315,8 @@ export interface Agent extends BaseContract {
     ): Promise<void>;
 
     initialize(overrides?: CallOverrides): Promise<void>;
+
+    isCharging(overrides?: CallOverrides): Promise<boolean>;
 
     onERC1155BatchReceived(
       arg0: string,
@@ -315,6 +343,8 @@ export interface Agent extends BaseContract {
       arg3: BytesLike,
       overrides?: CallOverrides
     ): Promise<string>;
+
+    permit2(overrides?: CallOverrides): Promise<string>;
 
     router(overrides?: CallOverrides): Promise<string>;
 
@@ -333,6 +363,7 @@ export interface Agent extends BaseContract {
 
   estimateGas: {
     execute(
+      permit2Datas: BytesLike[],
       logics: IParam.LogicStruct[],
       tokensReturn: string[],
       overrides?: PayableOverrides & { from?: string }
@@ -344,6 +375,7 @@ export interface Agent extends BaseContract {
     ): Promise<BigNumber>;
 
     executeWithSignerFee(
+      permit2Datas: BytesLike[],
       logics: IParam.LogicStruct[],
       fees: IParam.FeeStruct[],
       tokensReturn: string[],
@@ -351,6 +383,8 @@ export interface Agent extends BaseContract {
     ): Promise<BigNumber>;
 
     initialize(overrides?: Overrides & { from?: string }): Promise<BigNumber>;
+
+    isCharging(overrides?: CallOverrides): Promise<BigNumber>;
 
     onERC1155BatchReceived(
       arg0: string,
@@ -377,6 +411,8 @@ export interface Agent extends BaseContract {
       arg3: BytesLike,
       overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
+
+    permit2(overrides?: CallOverrides): Promise<BigNumber>;
 
     router(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -387,6 +423,7 @@ export interface Agent extends BaseContract {
 
   populateTransaction: {
     execute(
+      permit2Datas: BytesLike[],
       logics: IParam.LogicStruct[],
       tokensReturn: string[],
       overrides?: PayableOverrides & { from?: string }
@@ -398,6 +435,7 @@ export interface Agent extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     executeWithSignerFee(
+      permit2Datas: BytesLike[],
       logics: IParam.LogicStruct[],
       fees: IParam.FeeStruct[],
       tokensReturn: string[],
@@ -405,6 +443,8 @@ export interface Agent extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     initialize(overrides?: Overrides & { from?: string }): Promise<PopulatedTransaction>;
+
+    isCharging(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     onERC1155BatchReceived(
       arg0: string,
@@ -431,6 +471,8 @@ export interface Agent extends BaseContract {
       arg3: BytesLike,
       overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
+
+    permit2(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     router(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
