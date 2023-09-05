@@ -1,5 +1,11 @@
 # @protocolink/core
 
+## 0.3.1
+
+### Patch Changes
+
+- c8f5dce: rename RouterToolkit to RouterKit and update multicall2 to multicall3
+
 ## 0.3.0
 
 ### Minor Changes
