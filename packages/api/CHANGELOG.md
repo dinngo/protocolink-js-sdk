@@ -1,5 +1,14 @@
 # @furucombo/composable-router-api
 
+## 0.3.0
+
+### Minor Changes
+
+- cdc8b04: Updated dependencies
+  - @protocolink/common@0.3.0
+  - @protocolink/core@0.3.2
+  - @protocolink/logics@0.3.0
+
 ## 0.2.17
 
 ### Patch Changes
