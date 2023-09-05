@@ -1,5 +1,11 @@
 # @protocolink/core
 
+## 0.3.2
+
+### Patch Changes
+
+- 75a3b72: update common.Multicall2.CallStruct to common.Multicall3.CallStruct
+
 ## 0.3.1
 
 ### Patch Changes
