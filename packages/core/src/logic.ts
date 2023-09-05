@@ -1,9 +1,9 @@
 import { IParam } from './contracts/Router';
-import { RouterToolkit } from './router-toolkit';
+import { RouterKit } from './router-kit';
 import * as common from '@protocolink/common';
 import path from 'path';
 
-export abstract class Logic extends RouterToolkit {
+export abstract class Logic extends RouterKit {
   static id: string;
   static protocolId: string;
   static get rid() {

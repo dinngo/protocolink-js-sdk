@@ -1,10 +1,10 @@
-import { RouterToolkit } from './router-toolkit';
+import { RouterKit } from './router-kit';
 import { WrapMode } from './logic-types';
 import * as common from '@protocolink/common';
 import { expect } from 'chai';
 import { mainnetTokens } from '@protocolink/test-helpers';
 
-describe('RouterToolkit', function () {
+describe('RouterKit', function () {
   context('Test getAgentImplementationAddress', function () {
     const testCases = [
       {
@@ -27,7 +27,7 @@ describe('RouterToolkit', function () {
 
     testCases.forEach(({ chainId, expected }, i) => {
       it(`case ${i + 1}`, async () => {
-        const routerToolkit = new RouterToolkit(chainId);
+        const routerToolkit = new RouterKit(chainId);
         const agentImplementationAddress = await routerToolkit.getAgentImplementationAddress();
         expect(agentImplementationAddress).to.eq(expected);
       });
@@ -56,7 +56,7 @@ describe('RouterToolkit', function () {
 
     testCases.forEach(({ chainId, expected }, i) => {
       it(`case ${i + 1}`, async () => {
-        const routerToolkit = new RouterToolkit(chainId);
+        const routerToolkit = new RouterKit(chainId);
         const permit2Address = await routerToolkit.getPermit2Address();
         expect(permit2Address).to.eq(expected);
       });
@@ -109,7 +109,7 @@ describe('RouterToolkit', function () {
 
     testCases.forEach(({ chainId, account, expected }, i) => {
       it(`case ${i + 1}`, async () => {
-        const routerToolkit = new RouterToolkit(chainId);
+        const routerToolkit = new RouterKit(chainId);
         const accountAgent = await routerToolkit.calcAgent(account);
         expect(accountAgent).to.eq(expected);
       });
@@ -192,7 +192,7 @@ describe('RouterToolkit', function () {
 
     testCases.forEach(({ chainId, values, expected }, i) => {
       it(`case ${i + 1}`, async function () {
-        const routerToolkit = new RouterToolkit(chainId);
+        const routerToolkit = new RouterKit(chainId);
         expect(routerToolkit.buildLogicBatchTypedData(values)).to.deep.eq(expected);
       });
     });

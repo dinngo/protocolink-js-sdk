@@ -13,7 +13,7 @@ const agentImplementationAddressMap: Record<number, string> = {};
 const permit2AddressMap: Record<number, string> = {};
 const agentMap: Record<number, Record<string, string>> = {};
 
-export class RouterToolkit extends common.Web3Toolkit {
+export class RouterKit extends common.Web3Toolkit {
   private _routerIface?: RouterInterface;
 
   get routerIface() {
@@ -83,7 +83,7 @@ export class RouterToolkit extends common.Web3Toolkit {
         target: permit2Address,
         callData: this.permit2Iface.encodeFunctionData('allowance', [account, fund.token.address, agent]),
       }));
-      const { returnData } = await this.multicall2.callStatic.aggregate(calls);
+      const { returnData } = await this.multicall3.callStatic.aggregate(calls);
 
       inputs.forEach((fund, i) => {
         const [amount, expiration, nonce] = this.permit2Iface.decodeFunctionResult('allowance', returnData[i]);
@@ -118,7 +118,7 @@ export class RouterToolkit extends common.Web3Toolkit {
         target: permit2Address,
         callData: this.permit2Iface.encodeFunctionData('allowance', [account, fund.token.address, agent]),
       }));
-      const { returnData } = await this.multicall2.callStatic.aggregate(calls);
+      const { returnData } = await this.multicall3.callStatic.aggregate(calls);
 
       inputs.forEach((fund, i) => {
         const [amount, expiration] = this.permit2Iface.decodeFunctionResult('allowance', returnData[i]);

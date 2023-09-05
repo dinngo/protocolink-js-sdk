@@ -5,5 +5,5 @@ export * from './contracts/Router';
 export * from './logic';
 export * from './logic-types';
 export * from './logic-utils';
-export * from './router-toolkit';
+export * from './router-kit';
 export * from './router-utils';
