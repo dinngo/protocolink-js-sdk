@@ -1093,6 +1093,16 @@
     type-fest "^3.12.0"
     zksync-web3 "^0.14.3"
 
+"@protocolink/core@^0.2.20":
+  version "0.2.20"
+  resolved "https://registry.yarnpkg.com/@protocolink/core/-/core-0.2.20.tgz#c83b1102c6bc1d9085f4661a5f238ffc5e348237"
+  integrity sha512-B+4F8LxBfgsWyGboObqh0ImX8vO/mxs2oNYegWC42OpzMVHUM7zr+g8MMkLLSfbzjvYPjvfnvqm6JQ5e0QBZhw==
+  dependencies:
+    "@protocolink/common" "^0.2.16"
+    ethers "^5.7.2"
+    tiny-invariant "^1.3.1"
+    zksync-web3 "^0.14.3"
+
 "@protocolink/logics@^0.2.16":
   version "0.2.16"
   resolved "https://registry.yarnpkg.com/@protocolink/logics/-/logics-0.2.16.tgz#5668b896f54107c4b0953d03676cc48d3b367df5"

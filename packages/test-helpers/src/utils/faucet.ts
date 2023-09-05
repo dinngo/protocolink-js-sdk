@@ -1,7 +1,7 @@
 import * as common from '@protocolink/common';
 import * as helpers from '@nomicfoundation/hardhat-network-helpers';
 
-export const faucetMap: Record<number, { default: string; specified: Record<string, string> }> = {
+export const faucetMap: Record<number, { default: string; specified?: Record<string, string> }> = {
   [common.ChainId.mainnet]: {
     default: '0x0D0707963952f2fBA59dD06f2b425ace40b492Fe',
     specified: {
@@ -16,6 +16,9 @@ export const faucetMap: Record<number, { default: string; specified: Record<stri
       '0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619': '0x1eED63EfBA5f81D95bfe37d82C8E736b974F477b', // WETH
       '0x1BFD67037B42Cf73acF2047067bd4F2C47D9BfD6': '0x0AFF6665bB45bF349489B20E225A6c5D78E2280F', // WBTC
     },
+  },
+  [common.ChainId.arbitrum]: {
+    default: '0x489ee077994B6658eAfA855C308275EAd8097C4A',
   },
 };
 

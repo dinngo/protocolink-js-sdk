@@ -22,15 +22,16 @@
     "format": "yarn sort-package-json",
     "lint": "eslint --fix src",
     "prepublishOnly": "yarn build",
-    "test:e2e": "yarn run test:e2e:mainnet && yarn run test:e2e:polygon",
+    "test:e2e": "yarn run test:e2e:mainnet && yarn run test:e2e:polygon && yarn run test:e2e:arbitrum",
     "test:e2e:mainnet": "env-cmd -f .env.mainnet hardhat test --grep 'common|mainnet'",
-    "test:e2e:polygon": "env-cmd -f .env.polygon hardhat test --grep 'common|polygon'"
+    "test:e2e:polygon": "env-cmd -f .env.polygon hardhat test --grep 'common|polygon'",
+    "test:e2e:arbitrum": "env-cmd -f .env.arbitrum hardhat test --grep 'common|arbitrum'"
   },
   "dependencies": {
     "@nomicfoundation/hardhat-chai-matchers": "^1.0.6",
     "@nomicfoundation/hardhat-network-helpers": "^1.0.8",
     "@nomiclabs/hardhat-ethers": "^2.2.3",
-    "@protocolink/common": "^0.2.16",
+    "@protocolink/common": "^0.3.0",
     "@types/chai": "^4.3.5",
     "@types/mocha": "^10.0.1",
     "chai": "^4.3.7",

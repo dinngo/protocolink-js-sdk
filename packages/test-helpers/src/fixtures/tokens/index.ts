@@ -1,3 +1,4 @@
+import arbitrumTokensJSON from './arbitrum.json';
 import * as common from '@protocolink/common';
 import mainnetTokensJSON from './mainnet.json';
 import polygonTokensJSON from './polygon.json';
@@ -10,6 +11,10 @@ export const mainnetTokens = common.toTokenMap<MainnetTokenSymbols>(mainnetToken
 type PolygonTokenSymbols = keyof typeof polygonTokensJSON;
 
 export const polygonTokens = common.toTokenMap<PolygonTokenSymbols>(polygonTokensJSON);
+
+type ArbitrumTokenSymbols = keyof typeof arbitrumTokensJSON;
+
+export const arbitrumTokens = common.toTokenMap<ArbitrumTokenSymbols>(arbitrumTokensJSON);
 
 type ZkSyncTokenSymbols = keyof typeof zksyncTokensJSON;
 
