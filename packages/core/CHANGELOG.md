@@ -1,5 +1,11 @@
 # @protocolink/core
 
+## 0.3.0
+
+### Minor Changes
+
+- 2d1d914: update for new router contract
+
 ## 0.2.20
 
 ### Patch Changes
