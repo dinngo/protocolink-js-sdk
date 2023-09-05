@@ -79,7 +79,7 @@ export class RouterKit extends common.Web3Toolkit {
 
     const details: PermitDetails[] = [];
     if (!inputs.isEmpty) {
-      const calls: common.Multicall2.CallStruct[] = inputs.map((fund) => ({
+      const calls: common.Multicall3.CallStruct[] = inputs.map((fund) => ({
         target: permit2Address,
         callData: this.permit2Iface.encodeFunctionData('allowance', [account, fund.token.address, agent]),
       }));
@@ -114,7 +114,7 @@ export class RouterKit extends common.Web3Toolkit {
       const agent = await this.calcAgent(account);
       const permit2Address = await this.getPermit2Address();
 
-      const calls: common.Multicall2.CallStruct[] = inputs.map((fund) => ({
+      const calls: common.Multicall3.CallStruct[] = inputs.map((fund) => ({
         target: permit2Address,
         callData: this.permit2Iface.encodeFunctionData('allowance', [account, fund.token.address, agent]),
       }));
