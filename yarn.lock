@@ -1063,10 +1063,10 @@
   resolved "https://registry.yarnpkg.com/@paraswap/core/-/core-1.1.0.tgz#5ec7415be69dc657a9d82b0fde4e20f632cca1b6"
   integrity sha512-ecnX8ezlhYWFwolZxYEz+K+RfLr8xaxQqiJKlxJ8Yf00tXTGxDGn6/Acy00t4+9Kv0apewd7++J33eJt9yNfwg==
 
-"@paraswap/sdk@^6.2.1":
-  version "6.2.1"
-  resolved "https://registry.yarnpkg.com/@paraswap/sdk/-/sdk-6.2.1.tgz#cbac091ae1a8f080edd64234465ef127fdbd21f6"
-  integrity sha512-PW0pw676Oyy6129gqLKU/o7JNFVurCnA6AJ3NAKmZ6zAbPrYLWJV+zl/pWqja5MZkst2QzbDhd40gGjIeEKaPg==
+"@paraswap/sdk@^6.2.2":
+  version "6.2.2"
+  resolved "https://registry.yarnpkg.com/@paraswap/sdk/-/sdk-6.2.2.tgz#c34eef61ab4cb8e0ad284f2259a25b9a61b4bb9a"
+  integrity sha512-W0sAIf/T4zAmI7Yp4TcAuQr68NtaopeuYOWop20piAGoko4K9eLY4DYwWgkXf9fw9bAeeGofwP+GYJJC8Q24xg==
   dependencies:
     "@paraswap/core" "1.1.0"
     bignumber.js "^9.0.2"
@@ -1080,16 +1080,15 @@
     node-addon-api "^3.2.1"
     node-gyp-build "^4.3.0"
 
-"@protocolink/logics@^0.3.0":
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/@protocolink/logics/-/logics-0.3.0.tgz#d2a0097d9eccf98952850aa567212e061246ff6c"
-  integrity sha512-g+S6IU791tyTR2++QbW8QnKzQNmZKVXNgQQPU/K6xCwqeLybNGzPbhWbGUN76/41xjEgioK3i7ba0T3XmIz5UQ==
+"@protocolink/logics@^0.3.1":
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/@protocolink/logics/-/logics-0.3.1.tgz#fee76c847a8657cbb11af74caff6d086b5318747"
+  integrity sha512-Jk3PMAQexsql6RzgUvsciiFsOnkkMgmqRUW0TxMBozd/g1VkHmIEYN7CjvKgFkJakfURwFfvgnsQ6kNkM/BbMA==
   dependencies:
-    "@paraswap/sdk" "^6.2.1"
+    "@paraswap/sdk" "^6.2.2"
     "@protocolink/common" "^0.3.0"
     "@protocolink/core" "^0.3.2"
     "@types/lodash" "^4.14.195"
-    "@uniswap/permit2-sdk" "^1.2.0"
     "@uniswap/sdk-core" "^3.2.6"
     "@uniswap/token-lists" "^1.0.0-beta.31"
     "@uniswap/v3-sdk" "^3.9.0"
