@@ -1,5 +1,11 @@
 # @furucombo/composable-router-api
 
+## 0.4.0
+
+### Minor Changes
+
+- 344171f: RouterData type add referral and referrals
+
 ## 0.3.1
 
 ### Patch Changes
