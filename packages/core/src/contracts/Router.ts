@@ -18,7 +18,7 @@ import type { FunctionFragment, Result, EventFragment } from '@ethersproject/abi
 import type { Listener, Provider } from '@ethersproject/providers';
 import type { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from './common';
 
-export declare namespace IParam {
+export declare namespace DataType {
   export type DelegationDetailsStruct = {
     delegatee: string;
     expiry: BigNumberish;
@@ -48,16 +48,16 @@ export declare namespace IParam {
   export type LogicStruct = {
     to: string;
     data: BytesLike;
-    inputs: IParam.InputStruct[];
+    inputs: DataType.InputStruct[];
     wrapMode: BigNumberish;
     approveTo: string;
     callback: string;
   };
 
-  export type LogicStructOutput = [string, string, IParam.InputStructOutput[], number, string, string] & {
+  export type LogicStructOutput = [string, string, DataType.InputStructOutput[], number, string, string] & {
     to: string;
     data: string;
-    inputs: IParam.InputStructOutput[];
+    inputs: DataType.InputStructOutput[];
     wrapMode: number;
     approveTo: string;
     callback: string;
@@ -65,25 +65,22 @@ export declare namespace IParam {
 
   export type ExecutionDetailsStruct = {
     permit2Datas: BytesLike[];
-    logics: IParam.LogicStruct[];
+    logics: DataType.LogicStruct[];
     tokensReturn: string[];
-    referralCode: BigNumberish;
     nonce: BigNumberish;
     deadline: BigNumberish;
   };
 
   export type ExecutionDetailsStructOutput = [
     string[],
-    IParam.LogicStructOutput[],
+    DataType.LogicStructOutput[],
     string[],
-    BigNumber,
     BigNumber,
     BigNumber
   ] & {
     permit2Datas: string[];
-    logics: IParam.LogicStructOutput[];
+    logics: DataType.LogicStructOutput[];
     tokensReturn: string[];
-    referralCode: BigNumber;
     nonce: BigNumber;
     deadline: BigNumber;
   };
@@ -101,38 +98,42 @@ export declare namespace IParam {
   };
 
   export type LogicBatchStruct = {
-    logics: IParam.LogicStruct[];
-    fees: IParam.FeeStruct[];
+    logics: DataType.LogicStruct[];
+    fees: DataType.FeeStruct[];
+    referrals: BytesLike[];
     deadline: BigNumberish;
   };
 
-  export type LogicBatchStructOutput = [IParam.LogicStructOutput[], IParam.FeeStructOutput[], BigNumber] & {
-    logics: IParam.LogicStructOutput[];
-    fees: IParam.FeeStructOutput[];
+  export type LogicBatchStructOutput = [
+    DataType.LogicStructOutput[],
+    DataType.FeeStructOutput[],
+    string[],
+    BigNumber
+  ] & {
+    logics: DataType.LogicStructOutput[];
+    fees: DataType.FeeStructOutput[];
+    referrals: string[];
     deadline: BigNumber;
   };
 
   export type ExecutionBatchDetailsStruct = {
     permit2Datas: BytesLike[];
-    logicBatch: IParam.LogicBatchStruct;
+    logicBatch: DataType.LogicBatchStruct;
     tokensReturn: string[];
-    referralCode: BigNumberish;
     nonce: BigNumberish;
     deadline: BigNumberish;
   };
 
   export type ExecutionBatchDetailsStructOutput = [
     string[],
-    IParam.LogicBatchStructOutput,
+    DataType.LogicBatchStructOutput,
     string[],
-    BigNumber,
     BigNumber,
     BigNumber
   ] & {
     permit2Datas: string[];
-    logicBatch: IParam.LogicBatchStructOutput;
+    logicBatch: DataType.LogicBatchStructOutput;
     tokensReturn: string[];
-    referralCode: BigNumber;
     nonce: BigNumber;
     deadline: BigNumber;
   };
@@ -147,17 +148,18 @@ export interface RouterInterface extends utils.Interface {
     'allowBySig((address,uint128,uint128,uint256),address,bytes)': FunctionFragment;
     'calcAgent(address)': FunctionFragment;
     'currentUser()': FunctionFragment;
+    'defaultCollector()': FunctionFragment;
+    'defaultReferral()': FunctionFragment;
     'delegations(address,address)': FunctionFragment;
     'disallow(address)': FunctionFragment;
     'domainSeparator()': FunctionFragment;
-    'execute(bytes[],(address,bytes,(address,uint256,uint256)[],uint8,address,address)[],address[],uint256)': FunctionFragment;
-    'executeBySig((bytes[],(address,bytes,(address,uint256,uint256)[],uint8,address,address)[],address[],uint256,uint256,uint256),address,bytes)': FunctionFragment;
-    'executeBySigWithSignerFee((bytes[],((address,bytes,(address,uint256,uint256)[],uint8,address,address)[],(address,uint256,bytes32)[],uint256),address[],uint256,uint256,uint256),address,bytes,address,bytes)': FunctionFragment;
-    'executeFor(address,bytes[],(address,bytes,(address,uint256,uint256)[],uint8,address,address)[],address[],uint256)': FunctionFragment;
-    'executeForWithSignerFee(address,bytes[],((address,bytes,(address,uint256,uint256)[],uint8,address,address)[],(address,uint256,bytes32)[],uint256),address,bytes,address[],uint256)': FunctionFragment;
-    'executeWithSignerFee(bytes[],((address,bytes,(address,uint256,uint256)[],uint8,address,address)[],(address,uint256,bytes32)[],uint256),address,bytes,address[],uint256)': FunctionFragment;
+    'execute(bytes[],(address,bytes,(address,uint256,uint256)[],uint8,address,address)[],address[])': FunctionFragment;
+    'executeBySig((bytes[],(address,bytes,(address,uint256,uint256)[],uint8,address,address)[],address[],uint256,uint256),address,bytes)': FunctionFragment;
+    'executeBySigWithSignerFee((bytes[],((address,bytes,(address,uint256,uint256)[],uint8,address,address)[],(address,uint256,bytes32)[],bytes32[],uint256),address[],uint256,uint256),address,bytes,address,bytes)': FunctionFragment;
+    'executeFor(address,bytes[],(address,bytes,(address,uint256,uint256)[],uint8,address,address)[],address[])': FunctionFragment;
+    'executeForWithSignerFee(address,bytes[],((address,bytes,(address,uint256,uint256)[],uint8,address,address)[],(address,uint256,bytes32)[],bytes32[],uint256),address,bytes,address[])': FunctionFragment;
+    'executeWithSignerFee(bytes[],((address,bytes,(address,uint256,uint256)[],uint8,address,address)[],(address,uint256,bytes32)[],bytes32[],uint256),address,bytes,address[])': FunctionFragment;
     'executionNonces(address)': FunctionFragment;
-    'feeCollector()': FunctionFragment;
     'feeRate()': FunctionFragment;
     'getAgent(address)': FunctionFragment;
     'getCurrentUserAgent()': FunctionFragment;
@@ -188,6 +190,8 @@ export interface RouterInterface extends utils.Interface {
       | 'allowBySig'
       | 'calcAgent'
       | 'currentUser'
+      | 'defaultCollector'
+      | 'defaultReferral'
       | 'delegations'
       | 'disallow'
       | 'domainSeparator'
@@ -198,7 +202,6 @@ export interface RouterInterface extends utils.Interface {
       | 'executeForWithSignerFee'
       | 'executeWithSignerFee'
       | 'executionNonces'
-      | 'feeCollector'
       | 'feeRate'
       | 'getAgent'
       | 'getCurrentUserAgent'
@@ -226,39 +229,37 @@ export interface RouterInterface extends utils.Interface {
   encodeFunctionData(functionFragment: 'allow', values: [string, BigNumberish]): string;
   encodeFunctionData(
     functionFragment: 'allowBySig',
-    values: [IParam.DelegationDetailsStruct, string, BytesLike]
+    values: [DataType.DelegationDetailsStruct, string, BytesLike]
   ): string;
   encodeFunctionData(functionFragment: 'calcAgent', values: [string]): string;
   encodeFunctionData(functionFragment: 'currentUser', values?: undefined): string;
+  encodeFunctionData(functionFragment: 'defaultCollector', values?: undefined): string;
+  encodeFunctionData(functionFragment: 'defaultReferral', values?: undefined): string;
   encodeFunctionData(functionFragment: 'delegations', values: [string, string]): string;
   encodeFunctionData(functionFragment: 'disallow', values: [string]): string;
   encodeFunctionData(functionFragment: 'domainSeparator', values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: 'execute',
-    values: [BytesLike[], IParam.LogicStruct[], string[], BigNumberish]
-  ): string;
+  encodeFunctionData(functionFragment: 'execute', values: [BytesLike[], DataType.LogicStruct[], string[]]): string;
   encodeFunctionData(
     functionFragment: 'executeBySig',
-    values: [IParam.ExecutionDetailsStruct, string, BytesLike]
+    values: [DataType.ExecutionDetailsStruct, string, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'executeBySigWithSignerFee',
-    values: [IParam.ExecutionBatchDetailsStruct, string, BytesLike, string, BytesLike]
+    values: [DataType.ExecutionBatchDetailsStruct, string, BytesLike, string, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'executeFor',
-    values: [string, BytesLike[], IParam.LogicStruct[], string[], BigNumberish]
+    values: [string, BytesLike[], DataType.LogicStruct[], string[]]
   ): string;
   encodeFunctionData(
     functionFragment: 'executeForWithSignerFee',
-    values: [string, BytesLike[], IParam.LogicBatchStruct, string, BytesLike, string[], BigNumberish]
+    values: [string, BytesLike[], DataType.LogicBatchStruct, string, BytesLike, string[]]
   ): string;
   encodeFunctionData(
     functionFragment: 'executeWithSignerFee',
-    values: [BytesLike[], IParam.LogicBatchStruct, string, BytesLike, string[], BigNumberish]
+    values: [BytesLike[], DataType.LogicBatchStruct, string, BytesLike, string[]]
   ): string;
   encodeFunctionData(functionFragment: 'executionNonces', values: [string]): string;
-  encodeFunctionData(functionFragment: 'feeCollector', values?: undefined): string;
   encodeFunctionData(functionFragment: 'feeRate', values?: undefined): string;
   encodeFunctionData(functionFragment: 'getAgent', values: [string]): string;
   encodeFunctionData(functionFragment: 'getCurrentUserAgent', values?: undefined): string;
@@ -286,6 +287,8 @@ export interface RouterInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: 'allowBySig', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'calcAgent', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'currentUser', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'defaultCollector', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'defaultReferral', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'delegations', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'disallow', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'domainSeparator', data: BytesLike): Result;
@@ -296,7 +299,6 @@ export interface RouterInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: 'executeForWithSignerFee', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'executeWithSignerFee', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'executionNonces', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'feeCollector', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'feeRate', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'getAgent', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'getCurrentUserAgent', data: BytesLike): Result;
@@ -321,9 +323,10 @@ export interface RouterInterface extends utils.Interface {
     'AgentCreated(address,address)': EventFragment;
     'Delegated(address,address,uint128)': EventFragment;
     'DelegationNonceInvalidation(address,address,uint128,uint128)': EventFragment;
-    'Execute(address,address,uint256)': EventFragment;
+    'Executed(address,address)': EventFragment;
     'ExecutionNonceInvalidation(address,uint256,uint256)': EventFragment;
     'FeeCollectorSet(address)': EventFragment;
+    'FeeRateSet(uint256)': EventFragment;
     'OwnershipTransferred(address,address)': EventFragment;
     'Paused()': EventFragment;
     'PauserSet(address)': EventFragment;
@@ -335,9 +338,10 @@ export interface RouterInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: 'AgentCreated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Delegated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'DelegationNonceInvalidation'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'Execute'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'Executed'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'ExecutionNonceInvalidation'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'FeeCollectorSet'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'FeeRateSet'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'OwnershipTransferred'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Paused'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'PauserSet'): EventFragment;
@@ -376,14 +380,13 @@ export type DelegationNonceInvalidationEvent = TypedEvent<
 
 export type DelegationNonceInvalidationEventFilter = TypedEventFilter<DelegationNonceInvalidationEvent>;
 
-export interface ExecuteEventObject {
+export interface ExecutedEventObject {
   user: string;
   agent: string;
-  referralCode: BigNumber;
 }
-export type ExecuteEvent = TypedEvent<[string, string, BigNumber], ExecuteEventObject>;
+export type ExecutedEvent = TypedEvent<[string, string], ExecutedEventObject>;
 
-export type ExecuteEventFilter = TypedEventFilter<ExecuteEvent>;
+export type ExecutedEventFilter = TypedEventFilter<ExecutedEvent>;
 
 export interface ExecutionNonceInvalidationEventObject {
   user: string;
@@ -403,6 +406,13 @@ export interface FeeCollectorSetEventObject {
 export type FeeCollectorSetEvent = TypedEvent<[string], FeeCollectorSetEventObject>;
 
 export type FeeCollectorSetEventFilter = TypedEventFilter<FeeCollectorSetEvent>;
+
+export interface FeeRateSetEventObject {
+  feeRate_: BigNumber;
+}
+export type FeeRateSetEvent = TypedEvent<[BigNumber], FeeRateSetEventObject>;
+
+export type FeeRateSetEventFilter = TypedEventFilter<FeeRateSetEvent>;
 
 export interface OwnershipTransferredEventObject {
   previousOwner: string;
@@ -479,7 +489,7 @@ export interface Router extends BaseContract {
     ): Promise<ContractTransaction>;
 
     allowBySig(
-      details: IParam.DelegationDetailsStruct,
+      details: DataType.DelegationDetailsStruct,
       delegator: string,
       signature: BytesLike,
       overrides?: Overrides & { from?: string }
@@ -488,6 +498,10 @@ export interface Router extends BaseContract {
     calcAgent(user: string, overrides?: CallOverrides): Promise<[string]>;
 
     currentUser(overrides?: CallOverrides): Promise<[string]>;
+
+    defaultCollector(overrides?: CallOverrides): Promise<[string]>;
+
+    defaultReferral(overrides?: CallOverrides): Promise<[string]>;
 
     delegations(
       user: string,
@@ -501,21 +515,20 @@ export interface Router extends BaseContract {
 
     execute(
       permit2Datas: BytesLike[],
-      logics: IParam.LogicStruct[],
+      logics: DataType.LogicStruct[],
       tokensReturn: string[],
-      referralCode: BigNumberish,
       overrides?: PayableOverrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     executeBySig(
-      details: IParam.ExecutionDetailsStruct,
+      details: DataType.ExecutionDetailsStruct,
       user: string,
       signature: BytesLike,
       overrides?: PayableOverrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     executeBySigWithSignerFee(
-      details: IParam.ExecutionBatchDetailsStruct,
+      details: DataType.ExecutionBatchDetailsStruct,
       user: string,
       userSignature: BytesLike,
       signer: string,
@@ -526,36 +539,31 @@ export interface Router extends BaseContract {
     executeFor(
       user: string,
       permit2Datas: BytesLike[],
-      logics: IParam.LogicStruct[],
+      logics: DataType.LogicStruct[],
       tokensReturn: string[],
-      referralCode: BigNumberish,
       overrides?: PayableOverrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     executeForWithSignerFee(
       user: string,
       permit2Datas: BytesLike[],
-      logicBatch: IParam.LogicBatchStruct,
+      logicBatch: DataType.LogicBatchStruct,
       signer: string,
       signature: BytesLike,
       tokensReturn: string[],
-      referralCode: BigNumberish,
       overrides?: PayableOverrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     executeWithSignerFee(
       permit2Datas: BytesLike[],
-      logicBatch: IParam.LogicBatchStruct,
+      logicBatch: DataType.LogicBatchStruct,
       signer: string,
       signature: BytesLike,
       tokensReturn: string[],
-      referralCode: BigNumberish,
       overrides?: PayableOverrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     executionNonces(user: string, overrides?: CallOverrides): Promise<[BigNumber] & { nonce: BigNumber }>;
-
-    feeCollector(overrides?: CallOverrides): Promise<[string]>;
 
     feeRate(overrides?: CallOverrides): Promise<[BigNumber]>;
 
@@ -621,7 +629,7 @@ export interface Router extends BaseContract {
   ): Promise<ContractTransaction>;
 
   allowBySig(
-    details: IParam.DelegationDetailsStruct,
+    details: DataType.DelegationDetailsStruct,
     delegator: string,
     signature: BytesLike,
     overrides?: Overrides & { from?: string }
@@ -630,6 +638,10 @@ export interface Router extends BaseContract {
   calcAgent(user: string, overrides?: CallOverrides): Promise<string>;
 
   currentUser(overrides?: CallOverrides): Promise<string>;
+
+  defaultCollector(overrides?: CallOverrides): Promise<string>;
+
+  defaultReferral(overrides?: CallOverrides): Promise<string>;
 
   delegations(
     user: string,
@@ -643,21 +655,20 @@ export interface Router extends BaseContract {
 
   execute(
     permit2Datas: BytesLike[],
-    logics: IParam.LogicStruct[],
+    logics: DataType.LogicStruct[],
     tokensReturn: string[],
-    referralCode: BigNumberish,
     overrides?: PayableOverrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   executeBySig(
-    details: IParam.ExecutionDetailsStruct,
+    details: DataType.ExecutionDetailsStruct,
     user: string,
     signature: BytesLike,
     overrides?: PayableOverrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   executeBySigWithSignerFee(
-    details: IParam.ExecutionBatchDetailsStruct,
+    details: DataType.ExecutionBatchDetailsStruct,
     user: string,
     userSignature: BytesLike,
     signer: string,
@@ -668,36 +679,31 @@ export interface Router extends BaseContract {
   executeFor(
     user: string,
     permit2Datas: BytesLike[],
-    logics: IParam.LogicStruct[],
+    logics: DataType.LogicStruct[],
     tokensReturn: string[],
-    referralCode: BigNumberish,
     overrides?: PayableOverrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   executeForWithSignerFee(
     user: string,
     permit2Datas: BytesLike[],
-    logicBatch: IParam.LogicBatchStruct,
+    logicBatch: DataType.LogicBatchStruct,
     signer: string,
     signature: BytesLike,
     tokensReturn: string[],
-    referralCode: BigNumberish,
     overrides?: PayableOverrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   executeWithSignerFee(
     permit2Datas: BytesLike[],
-    logicBatch: IParam.LogicBatchStruct,
+    logicBatch: DataType.LogicBatchStruct,
     signer: string,
     signature: BytesLike,
     tokensReturn: string[],
-    referralCode: BigNumberish,
     overrides?: PayableOverrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   executionNonces(user: string, overrides?: CallOverrides): Promise<BigNumber>;
-
-  feeCollector(overrides?: CallOverrides): Promise<string>;
 
   feeRate(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -759,7 +765,7 @@ export interface Router extends BaseContract {
     allow(delegatee: string, expiry: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
     allowBySig(
-      details: IParam.DelegationDetailsStruct,
+      details: DataType.DelegationDetailsStruct,
       delegator: string,
       signature: BytesLike,
       overrides?: CallOverrides
@@ -768,6 +774,10 @@ export interface Router extends BaseContract {
     calcAgent(user: string, overrides?: CallOverrides): Promise<string>;
 
     currentUser(overrides?: CallOverrides): Promise<string>;
+
+    defaultCollector(overrides?: CallOverrides): Promise<string>;
+
+    defaultReferral(overrides?: CallOverrides): Promise<string>;
 
     delegations(
       user: string,
@@ -781,21 +791,20 @@ export interface Router extends BaseContract {
 
     execute(
       permit2Datas: BytesLike[],
-      logics: IParam.LogicStruct[],
+      logics: DataType.LogicStruct[],
       tokensReturn: string[],
-      referralCode: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
     executeBySig(
-      details: IParam.ExecutionDetailsStruct,
+      details: DataType.ExecutionDetailsStruct,
       user: string,
       signature: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
 
     executeBySigWithSignerFee(
-      details: IParam.ExecutionBatchDetailsStruct,
+      details: DataType.ExecutionBatchDetailsStruct,
       user: string,
       userSignature: BytesLike,
       signer: string,
@@ -806,36 +815,31 @@ export interface Router extends BaseContract {
     executeFor(
       user: string,
       permit2Datas: BytesLike[],
-      logics: IParam.LogicStruct[],
+      logics: DataType.LogicStruct[],
       tokensReturn: string[],
-      referralCode: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
     executeForWithSignerFee(
       user: string,
       permit2Datas: BytesLike[],
-      logicBatch: IParam.LogicBatchStruct,
+      logicBatch: DataType.LogicBatchStruct,
       signer: string,
       signature: BytesLike,
       tokensReturn: string[],
-      referralCode: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
     executeWithSignerFee(
       permit2Datas: BytesLike[],
-      logicBatch: IParam.LogicBatchStruct,
+      logicBatch: DataType.LogicBatchStruct,
       signer: string,
       signature: BytesLike,
       tokensReturn: string[],
-      referralCode: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
     executionNonces(user: string, overrides?: CallOverrides): Promise<BigNumber>;
-
-    feeCollector(overrides?: CallOverrides): Promise<string>;
 
     feeRate(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -900,12 +904,8 @@ export interface Router extends BaseContract {
       oldNonce?: null
     ): DelegationNonceInvalidationEventFilter;
 
-    'Execute(address,address,uint256)'(
-      user?: string | null,
-      agent?: string | null,
-      referralCode?: BigNumberish | null
-    ): ExecuteEventFilter;
-    Execute(user?: string | null, agent?: string | null, referralCode?: BigNumberish | null): ExecuteEventFilter;
+    'Executed(address,address)'(user?: string | null, agent?: string | null): ExecutedEventFilter;
+    Executed(user?: string | null, agent?: string | null): ExecutedEventFilter;
 
     'ExecutionNonceInvalidation(address,uint256,uint256)'(
       user?: string | null,
@@ -920,6 +920,9 @@ export interface Router extends BaseContract {
 
     'FeeCollectorSet(address)'(feeCollector_?: string | null): FeeCollectorSetEventFilter;
     FeeCollectorSet(feeCollector_?: string | null): FeeCollectorSetEventFilter;
+
+    'FeeRateSet(uint256)'(feeRate_?: null): FeeRateSetEventFilter;
+    FeeRateSet(feeRate_?: null): FeeRateSetEventFilter;
 
     'OwnershipTransferred(address,address)'(
       previousOwner?: string | null,
@@ -953,7 +956,7 @@ export interface Router extends BaseContract {
     allow(delegatee: string, expiry: BigNumberish, overrides?: Overrides & { from?: string }): Promise<BigNumber>;
 
     allowBySig(
-      details: IParam.DelegationDetailsStruct,
+      details: DataType.DelegationDetailsStruct,
       delegator: string,
       signature: BytesLike,
       overrides?: Overrides & { from?: string }
@@ -963,6 +966,10 @@ export interface Router extends BaseContract {
 
     currentUser(overrides?: CallOverrides): Promise<BigNumber>;
 
+    defaultCollector(overrides?: CallOverrides): Promise<BigNumber>;
+
+    defaultReferral(overrides?: CallOverrides): Promise<BigNumber>;
+
     delegations(user: string, delegatee: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     disallow(delegatee: string, overrides?: Overrides & { from?: string }): Promise<BigNumber>;
@@ -971,21 +978,20 @@ export interface Router extends BaseContract {
 
     execute(
       permit2Datas: BytesLike[],
-      logics: IParam.LogicStruct[],
+      logics: DataType.LogicStruct[],
       tokensReturn: string[],
-      referralCode: BigNumberish,
       overrides?: PayableOverrides & { from?: string }
     ): Promise<BigNumber>;
 
     executeBySig(
-      details: IParam.ExecutionDetailsStruct,
+      details: DataType.ExecutionDetailsStruct,
       user: string,
       signature: BytesLike,
       overrides?: PayableOverrides & { from?: string }
     ): Promise<BigNumber>;
 
     executeBySigWithSignerFee(
-      details: IParam.ExecutionBatchDetailsStruct,
+      details: DataType.ExecutionBatchDetailsStruct,
       user: string,
       userSignature: BytesLike,
       signer: string,
@@ -996,36 +1002,31 @@ export interface Router extends BaseContract {
     executeFor(
       user: string,
       permit2Datas: BytesLike[],
-      logics: IParam.LogicStruct[],
+      logics: DataType.LogicStruct[],
       tokensReturn: string[],
-      referralCode: BigNumberish,
       overrides?: PayableOverrides & { from?: string }
     ): Promise<BigNumber>;
 
     executeForWithSignerFee(
       user: string,
       permit2Datas: BytesLike[],
-      logicBatch: IParam.LogicBatchStruct,
+      logicBatch: DataType.LogicBatchStruct,
       signer: string,
       signature: BytesLike,
       tokensReturn: string[],
-      referralCode: BigNumberish,
       overrides?: PayableOverrides & { from?: string }
     ): Promise<BigNumber>;
 
     executeWithSignerFee(
       permit2Datas: BytesLike[],
-      logicBatch: IParam.LogicBatchStruct,
+      logicBatch: DataType.LogicBatchStruct,
       signer: string,
       signature: BytesLike,
       tokensReturn: string[],
-      referralCode: BigNumberish,
       overrides?: PayableOverrides & { from?: string }
     ): Promise<BigNumber>;
 
     executionNonces(user: string, overrides?: CallOverrides): Promise<BigNumber>;
-
-    feeCollector(overrides?: CallOverrides): Promise<BigNumber>;
 
     feeRate(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1089,7 +1090,7 @@ export interface Router extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     allowBySig(
-      details: IParam.DelegationDetailsStruct,
+      details: DataType.DelegationDetailsStruct,
       delegator: string,
       signature: BytesLike,
       overrides?: Overrides & { from?: string }
@@ -1099,6 +1100,10 @@ export interface Router extends BaseContract {
 
     currentUser(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    defaultCollector(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    defaultReferral(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     delegations(user: string, delegatee: string, overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     disallow(delegatee: string, overrides?: Overrides & { from?: string }): Promise<PopulatedTransaction>;
@@ -1107,21 +1112,20 @@ export interface Router extends BaseContract {
 
     execute(
       permit2Datas: BytesLike[],
-      logics: IParam.LogicStruct[],
+      logics: DataType.LogicStruct[],
       tokensReturn: string[],
-      referralCode: BigNumberish,
       overrides?: PayableOverrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     executeBySig(
-      details: IParam.ExecutionDetailsStruct,
+      details: DataType.ExecutionDetailsStruct,
       user: string,
       signature: BytesLike,
       overrides?: PayableOverrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     executeBySigWithSignerFee(
-      details: IParam.ExecutionBatchDetailsStruct,
+      details: DataType.ExecutionBatchDetailsStruct,
       user: string,
       userSignature: BytesLike,
       signer: string,
@@ -1132,36 +1136,31 @@ export interface Router extends BaseContract {
     executeFor(
       user: string,
       permit2Datas: BytesLike[],
-      logics: IParam.LogicStruct[],
+      logics: DataType.LogicStruct[],
       tokensReturn: string[],
-      referralCode: BigNumberish,
       overrides?: PayableOverrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     executeForWithSignerFee(
       user: string,
       permit2Datas: BytesLike[],
-      logicBatch: IParam.LogicBatchStruct,
+      logicBatch: DataType.LogicBatchStruct,
       signer: string,
       signature: BytesLike,
       tokensReturn: string[],
-      referralCode: BigNumberish,
       overrides?: PayableOverrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     executeWithSignerFee(
       permit2Datas: BytesLike[],
-      logicBatch: IParam.LogicBatchStruct,
+      logicBatch: DataType.LogicBatchStruct,
       signer: string,
       signature: BytesLike,
       tokensReturn: string[],
-      referralCode: BigNumberish,
       overrides?: PayableOverrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     executionNonces(user: string, overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    feeCollector(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     feeRate(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 

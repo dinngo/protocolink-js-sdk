@@ -1,8 +1,8 @@
 import { Agent__factory, Permit2__factory, Router as RouterContract, Router__factory } from './contracts';
 import { AllowanceTransfer, MaxUint160, PermitBatch, PermitDetails, PermitSingle } from '@uniswap/permit2-sdk';
 import { BigNumberish, BytesLike } from 'ethers';
+import { DataType, RouterInterface } from './contracts/Router';
 import { IAllowanceTransfer, Permit2Interface } from './contracts/Permit2';
-import { IParam, RouterInterface } from './contracts/Router';
 import { LOGIC_BATCH_TYPED_DATA_TYPES, PERMIT_EXPIRATION, PERMIT_SIG_DEADLINE } from './constants';
 import { TypedDataDomain, TypedDataField } from '@ethersproject/abstract-signer';
 import * as common from '@protocolink/common';
@@ -10,6 +10,8 @@ import { getContractAddress } from './configs';
 import { getDeadline, isPermitSingle } from './router-utils';
 
 const agentImplementationAddressMap: Record<number, string> = {};
+const defaultCollectorMap: Record<number, string> = {};
+const defaultReferralMap: Record<number, string> = {};
 const permit2AddressMap: Record<number, string> = {};
 const agentMap: Record<number, Record<string, string>> = {};
 
@@ -38,6 +40,22 @@ export class RouterKit extends common.Web3Toolkit {
     }
 
     return agentImplementationAddressMap[this.chainId];
+  }
+
+  async getDefaultCollector() {
+    if (!defaultCollectorMap[this.chainId]) {
+      defaultCollectorMap[this.chainId] = await this.router.defaultCollector();
+    }
+
+    return defaultCollectorMap[this.chainId];
+  }
+
+  async getDefaultReferral() {
+    if (!defaultReferralMap[this.chainId]) {
+      defaultReferralMap[this.chainId] = await this.router.defaultReferral();
+    }
+
+    return defaultReferralMap[this.chainId];
   }
 
   async getPermit2Address() {
@@ -181,11 +199,11 @@ export class RouterKit extends common.Web3Toolkit {
     return data;
   }
 
-  buildLogicBatchTypedData(values: IParam.LogicBatchStruct) {
+  buildLogicBatchTypedData(values: DataType.LogicBatchStruct) {
     const typedData: {
       domain: TypedDataDomain;
       types: Record<string, TypedDataField[]>;
-      values: IParam.LogicBatchStruct;
+      values: DataType.LogicBatchStruct;
     } = {
       domain: { name: 'Protocolink', version: '1', chainId: this.chainId, verifyingContract: this.router.address },
       types: LOGIC_BATCH_TYPED_DATA_TYPES,
@@ -197,47 +215,32 @@ export class RouterKit extends common.Web3Toolkit {
 
   buildExecuteTransactionRequest(options: {
     permit2Datas?: string[];
-    routerLogics: IParam.LogicStruct[];
+    routerLogics: DataType.LogicStruct[];
     tokensReturn?: string[];
     value?: BigNumberish;
-    referralCode?: number;
   }): common.TransactionRequest {
-    const { permit2Datas = [], routerLogics, tokensReturn = [], value = 0, referralCode = 0 } = options;
-    const data = this.routerIface.encodeFunctionData('execute', [
-      permit2Datas,
-      routerLogics,
-      tokensReturn,
-      referralCode,
-    ]);
+    const { permit2Datas = [], routerLogics, tokensReturn = [], value = 0 } = options;
+    const data = this.routerIface.encodeFunctionData('execute', [permit2Datas, routerLogics, tokensReturn]);
 
     return { to: this.router.address, data, value };
   }
 
   buildExecuteWithSignerFeeTransactionRequest(options: {
     permit2Datas?: string[];
-    routerBatchLogics: IParam.LogicBatchStruct;
+    routerBatchLogics: DataType.LogicBatchStruct;
     signer: string;
     signature: BytesLike;
     tokensReturn?: string[];
     value?: BigNumberish;
     referralCode?: number;
   }): common.TransactionRequest {
-    const {
-      permit2Datas = [],
-      routerBatchLogics,
-      signer,
-      signature,
-      tokensReturn = [],
-      value = 0,
-      referralCode = 0,
-    } = options;
+    const { permit2Datas = [], routerBatchLogics, signer, signature, tokensReturn = [], value = 0 } = options;
     const data = this.routerIface.encodeFunctionData('executeWithSignerFee', [
       permit2Datas,
       routerBatchLogics,
       signer,
       signature,
       tokensReturn,
-      referralCode,
     ]);
 
     return { to: this.router.address, data, value };

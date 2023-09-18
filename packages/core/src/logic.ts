@@ -1,4 +1,4 @@
-import { IParam } from './contracts/Router';
+import { DataType } from './contracts/Router';
 import { RouterKit } from './router-kit';
 import * as common from '@protocolink/common';
 import path from 'path';
@@ -21,11 +21,11 @@ export interface LogicOracleInterface {
 }
 
 export interface LogicBuilderInterface {
-  build(fields: any, options?: any): Promise<IParam.LogicStruct>;
+  build(fields: any, options?: any): Promise<DataType.LogicStruct>;
 }
 
 export interface LogicMultiBuilderInterface {
-  build(fields: any, options?: any): Promise<IParam.LogicStruct[]>;
+  build(fields: any, options?: any): Promise<DataType.LogicStruct[]>;
 }
 
 export interface LogicClassInterface {

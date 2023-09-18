@@ -97,13 +97,19 @@
         "type": "uint256"
       },
       {
+        "indexed": true,
+        "internalType": "address",
+        "name": "collector",
+        "type": "address"
+      },
+      {
         "indexed": false,
         "internalType": "bytes32",
         "name": "metadata",
         "type": "bytes32"
       }
     ],
-    "name": "FeeCharged",
+    "name": "Charged",
     "type": "event"
   },
   {
@@ -143,12 +149,12 @@
                 "type": "uint256"
               }
             ],
-            "internalType": "struct IParam.Input[]",
+            "internalType": "struct DataType.Input[]",
             "name": "inputs",
             "type": "tuple[]"
           },
           {
-            "internalType": "enum IParam.WrapMode",
+            "internalType": "enum DataType.WrapMode",
             "name": "wrapMode",
             "type": "uint8"
           },
@@ -163,7 +169,7 @@
             "type": "address"
           }
         ],
-        "internalType": "struct IParam.Logic[]",
+        "internalType": "struct DataType.Logic[]",
         "name": "logics",
         "type": "tuple[]"
       },
@@ -210,12 +216,12 @@
                 "type": "uint256"
               }
             ],
-            "internalType": "struct IParam.Input[]",
+            "internalType": "struct DataType.Input[]",
             "name": "inputs",
             "type": "tuple[]"
           },
           {
-            "internalType": "enum IParam.WrapMode",
+            "internalType": "enum DataType.WrapMode",
             "name": "wrapMode",
             "type": "uint8"
           },
@@ -230,7 +236,7 @@
             "type": "address"
           }
         ],
-        "internalType": "struct IParam.Logic[]",
+        "internalType": "struct DataType.Logic[]",
         "name": "logics",
         "type": "tuple[]"
       }
@@ -277,12 +283,12 @@
                 "type": "uint256"
               }
             ],
-            "internalType": "struct IParam.Input[]",
+            "internalType": "struct DataType.Input[]",
             "name": "inputs",
             "type": "tuple[]"
           },
           {
-            "internalType": "enum IParam.WrapMode",
+            "internalType": "enum DataType.WrapMode",
             "name": "wrapMode",
             "type": "uint8"
           },
@@ -297,7 +303,7 @@
             "type": "address"
           }
         ],
-        "internalType": "struct IParam.Logic[]",
+        "internalType": "struct DataType.Logic[]",
         "name": "logics",
         "type": "tuple[]"
       },
@@ -319,9 +325,14 @@
             "type": "bytes32"
           }
         ],
-        "internalType": "struct IParam.Fee[]",
+        "internalType": "struct DataType.Fee[]",
         "name": "fees",
         "type": "tuple[]"
+      },
+      {
+        "internalType": "bytes32[]",
+        "name": "referrals",
+        "type": "bytes32[]"
       },
       {
         "internalType": "address[]",

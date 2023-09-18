@@ -4,16 +4,16 @@ type ContractNames = 'Router';
 
 export const contractAddressMap: Record<number, Record<ContractNames, string>> = {
   [common.ChainId.mainnet]: {
-    Router: '0x4E744c3E6973D34ee130B7E668Abc14CD49ca16e',
+    Router: '0x3fa3B62F0c9c13733245A778DE4157E47Cf5bA21',
   },
   [common.ChainId.polygon]: {
-    Router: '0x4E744c3E6973D34ee130B7E668Abc14CD49ca16e',
+    Router: '0x3fa3B62F0c9c13733245A778DE4157E47Cf5bA21',
   },
   [common.ChainId.arbitrum]: {
-    Router: '0x4E744c3E6973D34ee130B7E668Abc14CD49ca16e',
+    Router: '0x3fa3B62F0c9c13733245A778DE4157E47Cf5bA21',
   },
   [common.ChainId.zksync]: {
-    Router: '0xcfBdd89768f16125b48eE3FcD2BAb902ce0C447f',
+    Router: '0xa8350893B36e0425B50917125d9603F81F2D3C87',
   },
 };
 

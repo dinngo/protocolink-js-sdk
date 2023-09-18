@@ -1,7 +1,7 @@
 import { Agent__factory } from './contracts';
 import { BPS_NOT_USED } from './constants';
 import { BigNumberish, constants } from 'ethers';
-import { IParam } from './contracts/Router';
+import { DataType } from './contracts/Router';
 import { WrapMode } from './logic-types';
 import * as common from '@protocolink/common';
 import invariant from 'tiny-invariant';
@@ -12,7 +12,7 @@ export interface NewLogicInputOptions {
   amountOffset?: BigNumberish;
 }
 
-export function newLogicInput(options: NewLogicInputOptions): IParam.InputStruct {
+export function newLogicInput(options: NewLogicInputOptions): DataType.InputStruct {
   const { input } = options;
 
   let balanceBps: BigNumberish;
@@ -32,7 +32,7 @@ export function newLogicInput(options: NewLogicInputOptions): IParam.InputStruct
 export interface NewLogicOptions {
   to: string;
   data: string;
-  inputs?: IParam.InputStruct[];
+  inputs?: DataType.InputStruct[];
   wrapMode?: number;
   approveTo?: string;
   callback?: string;
@@ -50,6 +50,6 @@ export function newLogic(options: NewLogicOptions) {
   return { to, data, inputs, wrapMode, approveTo, callback };
 }
 
-export function newCallbackParams(logics: IParam.LogicStruct[]) {
+export function newCallbackParams(logics: DataType.LogicStruct[]) {
   return `0x${Agent__factory.createInterface().encodeFunctionData('executeByCallback', [logics]).substring(10)}`;
 }
