@@ -9,13 +9,19 @@ export interface Logic<TFields = any> {
 
 export type Permit2Type = 'permit' | 'approve';
 
+export interface Referral {
+  collector: string;
+  rate: number;
+}
+
 export interface RouterData {
   chainId: number;
   account: string;
   logics: Logic[];
   permitData?: PermitSingleData | PermitBatchData;
   permitSig?: string;
-  referralCode?: number;
+  referral?: string;
+  referrals?: Referral[];
 }
 
 export interface Fee {
