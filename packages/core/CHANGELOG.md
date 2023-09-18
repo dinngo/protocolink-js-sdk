@@ -1,5 +1,11 @@
 # @protocolink/core
 
+## 0.4.0
+
+### Minor Changes
+
+- a56ab01: Update for new router contract
+
 ## 0.3.2
 
 ### Patch Changes
