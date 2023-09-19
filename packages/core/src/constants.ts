@@ -10,6 +10,7 @@ export const LOGIC_BATCH_TYPED_DATA_TYPES = {
   LogicBatch: [
     { name: 'logics', type: 'Logic[]' },
     { name: 'fees', type: 'Fee[]' },
+    { name: 'referrals', type: 'bytes32[]' },
     { name: 'deadline', type: 'uint256' },
   ],
   Logic: [
