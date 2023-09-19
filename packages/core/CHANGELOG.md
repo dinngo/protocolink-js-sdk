@@ -1,5 +1,11 @@
 # @protocolink/core
 
+## 0.4.1
+
+### Patch Changes
+
+- fd7a989: add referrals type to LOGIC_BATCH_TYPED_DATA_TYPES LogicBatch
+
 ## 0.4.0
 
 ### Minor Changes
