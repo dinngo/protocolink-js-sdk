@@ -1,5 +1,11 @@
 # @furucombo/composable-router-api
 
+## 0.4.1
+
+### Patch Changes
+
+- eea398a: add radiant v2, skip radiant v2 test
+
 ## 0.4.0
 
 ### Minor Changes
