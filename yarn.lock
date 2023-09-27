@@ -1080,10 +1080,10 @@
     node-addon-api "^3.2.1"
     node-gyp-build "^4.3.0"
 
-"@protocolink/logics@^0.4.1":
-  version "0.4.1"
-  resolved "https://registry.yarnpkg.com/@protocolink/logics/-/logics-0.4.1.tgz#cdc9f7e2b7c4fba66c260231d447cc58b5984cd6"
-  integrity sha512-RQf8sYWuefsxU5Nk/euFASR3UTa61IMqKllRZZSk+9L1/megh4swnyFWyBbx13XjAe3wcaXF5SGjzlNVp4EZfQ==
+"@protocolink/logics@^0.4.2":
+  version "0.4.2"
+  resolved "https://registry.yarnpkg.com/@protocolink/logics/-/logics-0.4.2.tgz#2657cc1ea8131b65a46a74e3fccc2a2d48542cc9"
+  integrity sha512-hKlPy266nztLEYiC7lraXP1o4/6W9C1QkPxjRrgKAdSIkNigawlFWtfh9iZcPXUk8tJfntR14HdYeKoTTcCsYA==
   dependencies:
     "@paraswap/sdk" "^6.2.2"
     "@protocolink/common" "^0.3.0"
