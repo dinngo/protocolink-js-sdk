@@ -64,16 +64,24 @@ export function toChainId(networkId: string) {
 
 export enum ChainId {
   mainnet = 1,
+  optimism = 10,
   polygon = 137,
-  arbitrum = 42161,
   zksync = 324,
+  metis = 1088,
+  base = 8453,
+  arbitrum = 42161,
+  avalanche = 43114,
 }
 
 export enum NetworkId {
   mainnet = 'mainnet',
+  optimism = 'optimism',
   polygon = 'polygon',
-  arbitrum = 'arbitrum',
   zksync = 'zksync',
+  metis = 'metis',
+  base = 'base',
+  arbitrum = 'arbitrum',
+  avalanche = 'avalanche',
 }
 
 export function isSupportedChainId(chainId: number) {

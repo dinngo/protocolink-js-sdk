@@ -23,6 +23,29 @@
     "multicall3Address": "0xcA11bde05977b3631167028862bE2a173976CA11"
   },
   {
+    "id": "optimism",
+    "chainId": 10,
+    "name": "Optimism",
+    "explorerUrl": "https://optimistic.etherscan.io/",
+    "rpcUrl": "https://rpc.ankr.com/optimism",
+    "nativeToken": {
+      "chainId": 10,
+      "address": "0x0000000000000000000000000000000000000000",
+      "decimals": 18,
+      "symbol": "ETH",
+      "name": "Ethereum"
+    },
+    "wrappedNativeToken": {
+      "chainId": 10,
+      "address": "0x4200000000000000000000000000000000000006",
+      "decimals": 18,
+      "symbol": "WETH",
+      "name": "Wrapped Ether"
+    },
+    "multicall2Address": "0x5BA1e12693Dc8F9c48aAD8770482f4739bEeD696",
+    "multicall3Address": "0xcA11bde05977b3631167028862bE2a173976CA11"
+  },
+  {
     "id": "polygon",
     "chainId": 137,
     "name": "Polygon",
@@ -43,6 +66,76 @@
       "name": "Wrapped Matic Token"
     },
     "multicall2Address": "0x275617327c958bD06b5D6b871E7f491D76113dd8",
+    "multicall3Address": "0xcA11bde05977b3631167028862bE2a173976CA11"
+  },
+  {
+    "id": "zksync",
+    "chainId": 324,
+    "name": "zkSync",
+    "explorerUrl": "https://explorer.zksync.io/",
+    "rpcUrl": "https://mainnet.era.zksync.io/",
+    "nativeToken": {
+      "chainId": 324,
+      "address": "0x0000000000000000000000000000000000000000",
+      "decimals": 18,
+      "symbol": "ETH",
+      "name": "Ethereum"
+    },
+    "wrappedNativeToken": {
+      "chainId": 324,
+      "address": "0x5AEa5775959fBC2557Cc8789bC1bf90A239D9a91",
+      "decimals": 18,
+      "symbol": "WETH",
+      "name": "Wrapped Ether"
+    },
+    "multicall2Address": "0x1fCD733705ec1CF534dD19ecF627F013352e776F",
+    "multicall3Address": "0xF9cda624FBC7e059355ce98a31693d299FACd963"
+  },
+  {
+    "id": "metis",
+    "chainId": 1088,
+    "name": "Metis",
+    "explorerUrl": "https://andromeda-explorer.metis.io/",
+    "rpcUrl": "https://metis-mainnet.public.blastapi.io",
+    "nativeToken": {
+      "chainId": 1088,
+      "address": "0xDeadDeAddeAddEAddeadDEaDDEAdDeaDDeAD0000",
+      "decimals": 18,
+      "symbol": "METIS",
+      "name": "Metis"
+    },
+    "wrappedNativeToken": {
+      "chainId": 1088,
+      "address": "0x71802e8F394BB9d05a1b8E9d0562917609FD7325",
+      "decimals": 18,
+      "symbol": "WMETIS",
+      "name": "Wrapped METIS"
+    },
+
+    "multicall2Address": "0xc39aBB6c4451089dE48Cffb013c39d3110530e5C",
+    "multicall3Address": "0xcA11bde05977b3631167028862bE2a173976CA11"
+  },
+  {
+    "id": "base",
+    "chainId": 8453,
+    "name": "Base",
+    "explorerUrl": "https://basescan.org/",
+    "rpcUrl": "https://rpc.ankr.com/base",
+    "nativeToken": {
+      "chainId": 8453,
+      "address": "0x0000000000000000000000000000000000000000",
+      "decimals": 18,
+      "symbol": "ETH",
+      "name": "Ethereum"
+    },
+    "wrappedNativeToken": {
+      "chainId": 8453,
+      "address": "0x4200000000000000000000000000000000000006",
+      "decimals": 18,
+      "symbol": "WETH",
+      "name": "Wrapped Ether"
+    },
+    "multicall2Address": "0x091e99cb1C49331a94dD62755D168E941AbD0693",
     "multicall3Address": "0xcA11bde05977b3631167028862bE2a173976CA11"
   },
   {
@@ -69,26 +162,26 @@
     "multicall3Address": "0xcA11bde05977b3631167028862bE2a173976CA11"
   },
   {
-    "id": "zksync",
-    "chainId": 324,
-    "name": "zkSync",
-    "explorerUrl": "https://explorer.zksync.io/",
-    "rpcUrl": "https://mainnet.era.zksync.io/",
+    "id": "avalanche",
+    "chainId": 43114,
+    "name": "Avalanche",
+    "explorerUrl": "https://snowtrace.io/",
+    "rpcUrl": "https://rpc.ankr.com/avalanche",
     "nativeToken": {
-      "chainId": 324,
-      "symbol": "ETH",
-      "name": "Ethereum",
+      "chainId": 43114,
       "address": "0x0000000000000000000000000000000000000000",
-      "decimals": 18
+      "decimals": 18,
+      "symbol": "AVAX",
+      "name": "Avalanche"
     },
     "wrappedNativeToken": {
-      "chainId": 324,
-      "symbol": "WETH",
-      "name": "Wrapped Ether",
-      "address": "0x5AEa5775959fBC2557Cc8789bC1bf90A239D9a91",
-      "decimals": 18
+      "chainId": 43114,
+      "address": "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
+      "decimals": 18,
+      "symbol": "WAVAX",
+      "name": "Wrapped AVAX"
     },
-    "multicall2Address": "0x1fCD733705ec1CF534dD19ecF627F013352e776F",
-    "multicall3Address": "0xF9cda624FBC7e059355ce98a31693d299FACd963"
+    "multicall2Address": "0xF2FD8219609E28C61A998cc534681f95D2740f61",
+    "multicall3Address": "0xcA11bde05977b3631167028862bE2a173976CA11"
   }
 ]
