@@ -1,5 +1,11 @@
 # @protocolink/common
 
+## 0.3.1
+
+### Patch Changes
+
+- bb9cc3b: add Optimism, Base, Metis, Avalanche information
+
 ## 0.3.0
 
 ### Minor Changes
