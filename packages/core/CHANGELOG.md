@@ -1,5 +1,13 @@
 # @protocolink/core
 
+## 0.4.2
+
+### Patch Changes
+
+- 12ea0d9: add Router address for Optimism, Base, Metis and Avalanche network
+- Updated dependencies [bb9cc3b]
+  - @protocolink/common@0.3.1
+
 ## 0.4.1
 
 ### Patch Changes
