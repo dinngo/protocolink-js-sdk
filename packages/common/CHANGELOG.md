@@ -1,5 +1,11 @@
 # @protocolink/common
 
+## 0.3.3
+
+### Patch Changes
+
+- dc18a3a: change Metis wrapped native token address
+
 ## 0.3.2
 
 ### Patch Changes
