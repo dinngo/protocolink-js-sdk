@@ -106,7 +106,7 @@
     },
     "wrappedNativeToken": {
       "chainId": 1088,
-      "address": "0x71802e8F394BB9d05a1b8E9d0562917609FD7325",
+      "address": "0x75cb093E4D61d2A2e65D8e0BBb01DE8d89b53481",
       "decimals": 18,
       "symbol": "WMETIS",
       "name": "Wrapped METIS"
