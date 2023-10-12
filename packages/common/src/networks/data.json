@@ -99,7 +99,7 @@
     "rpcUrl": "https://metis-mainnet.public.blastapi.io",
     "nativeToken": {
       "chainId": 1088,
-      "address": "0xDeadDeAddeAddEAddeadDEaDDEAdDeaDDeAD0000",
+      "address": "0x0000000000000000000000000000000000000000",
       "decimals": 18,
       "symbol": "METIS",
       "name": "Metis"
