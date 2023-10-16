@@ -1,5 +1,15 @@
 # @furucombo/composable-router-api
 
+## 0.4.3
+
+### Patch Changes
+
+- 650106d: Updated dependencies
+  - @protocolink/common@0.3.3
+  - @protocolink/core@0.4.2
+  - @protocolink/logics@0.4.3
+- 6c0b2f1: add radiant v2 test
+
 ## 0.4.2
 
 ### Patch Changes
