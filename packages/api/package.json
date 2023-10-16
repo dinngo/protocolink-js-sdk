@@ -26,9 +26,9 @@
     "test:unit": "mocha --recursive src examples"
   },
   "dependencies": {
-    "@protocolink/common": "^0.3.0",
-    "@protocolink/core": "^0.4.1",
-    "@protocolink/logics": "^0.4.2",
+    "@protocolink/common": "^0.3.3",
+    "@protocolink/core": "^0.4.2",
+    "@protocolink/logics": "^0.4.3",
     "@types/lodash": "^4.14.195",
     "@types/uuid": "^9.0.2",
     "@uniswap/permit2-sdk": "^1.2.0",
