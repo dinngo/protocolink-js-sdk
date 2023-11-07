@@ -1,5 +1,11 @@
 # @protocolink/test-helpers
 
+## 0.3.1
+
+### Patch Changes
+
+- a303bc5: add Polygon USDC faucet
+
 ## 0.3.0
 
 ### Minor Changes
