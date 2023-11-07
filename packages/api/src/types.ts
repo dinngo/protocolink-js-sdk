@@ -22,6 +22,7 @@ export interface RouterData {
   permitSig?: string;
   referral?: string;
   referrals?: Referral[];
+  customFees?: Fee[];
 }
 
 export interface Fee {

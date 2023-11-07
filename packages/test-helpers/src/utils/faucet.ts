@@ -15,6 +15,7 @@ export const faucetMap: Record<number, { default: string; specified?: Record<str
     specified: {
       '0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619': '0x1eED63EfBA5f81D95bfe37d82C8E736b974F477b', // WETH
       '0x1BFD67037B42Cf73acF2047067bd4F2C47D9BfD6': '0x0AFF6665bB45bF349489B20E225A6c5D78E2280F', // WBTC
+      '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174': '0xe7804c37c13166fF0b37F5aE0BB07A3aEbb6e245', // USDC
     },
   },
   [common.ChainId.arbitrum]: {
