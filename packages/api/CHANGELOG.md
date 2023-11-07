@@ -1,5 +1,11 @@
 # @furucombo/composable-router-api
 
+## 0.4.5
+
+### Patch Changes
+
+- 881f5b6: add customFees in RouterData
+
 ## 0.4.4
 
 ### Patch Changes
