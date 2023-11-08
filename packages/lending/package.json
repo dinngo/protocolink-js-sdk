@@ -1,0 +1,40 @@
+{
+  "name": "@protocolink/lending",
+  "version": "0.0.1",
+  "description": "Protocolink Lending SDK",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dinngo/protocolink-js-sdk.git",
+    "directory": "packages/lending"
+  },
+  "license": "MIT",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/**/*"
+  ],
+  "scripts": {
+    "build": "rm -rf dist && tsc -p tsconfig.build.json && tsc-alias -p tsconfig.build.json",
+    "format": "yarn sort-package-json",
+    "lint": "eslint --fix src",
+    "prepublishOnly": "yarn build",
+    "test": "mocha",
+    "test:e2e": "hardhat test",
+    "test:unit": "mocha --recursive src examples"
+  },
+  "dependencies": {
+    "@aave/math-utils": "^1.21.0",
+    "@nomicfoundation/hardhat-chai-matchers": "^1.0.6",
+    "@nomicfoundation/hardhat-network-helpers": "^1.0.8",
+    "@nomiclabs/hardhat-ethers": "^2.2.3",
+    "@protocolink/api": "^0.4.4",
+    "@protocolink/common": "^0.3.3",
+    "@protocolink/core": "^0.4.2",
+    "@protocolink/logics": "^0.4.4",
+    "decimal.js-light": "^2.5.1",
+    "hardhat": "^2.15.0"
+  },
+  "devDependencies": {
+    "@protocolink/test-helpers": "*"
+  }
+}
