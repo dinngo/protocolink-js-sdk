@@ -1,5 +1,11 @@
 # @protocolink/test-helpers
 
+## 0.3.3
+
+### Patch Changes
+
+- 8f99e78: fix Metis token index
+
 ## 0.3.2
 
 ### Patch Changes
