@@ -1,5 +1,11 @@
 # @protocolink/test-helpers
 
+## 0.3.2
+
+### Patch Changes
+
+- 7602098: add Metis token info
+
 ## 0.3.1
 
 ### Patch Changes
