@@ -1,5 +1,11 @@
 # @furucombo/composable-router-api
 
+## 0.4.6
+
+### Patch Changes
+
+- 8bf75e2: add OpenOcean v2, skip OpenOcean v2 test
+
 ## 0.4.5
 
 ### Patch Changes
