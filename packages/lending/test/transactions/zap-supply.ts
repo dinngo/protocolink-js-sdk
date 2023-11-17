@@ -14,33 +14,32 @@ describe('Transaction: Zap Supply', function () {
 
   const chainId = 1;
   const protocolId = 'aavev3';
-  const testCases: ZapSupplyParams[] = [
-    {
-      srcToken: mainnetTokens.USDC,
-      srcAmount: '1',
-      destToken: mainnetTokens.WBTC,
-    },
-  ];
-  const aEthWBTC = {
-    chainId: 1,
-    address: '0x5Ee5bf7ae06D1Be5997A1A72006FE6C607eC6DE8',
-    decimals: 8,
-    symbol: 'aEthWBTC',
-    name: 'Aave Ethereum WBTC',
-  };
 
   before(async function () {
     adapter = new Adapter(chainId, hre.ethers.provider);
     [, user] = await hre.ethers.getSigners();
 
     await claimToken(chainId, user.address, mainnetTokens.USDC, '100');
-    const portfolio = await adapter.getPortfolio(user.address, protocolId);
-    console.log('portfolios', portfolio);
   });
 
   snapshotAndRevertEach();
 
   context('Test ZapSupply', function () {
+    const testCases: ZapSupplyParams[] = [
+      {
+        srcToken: mainnetTokens.USDC,
+        srcAmount: '1',
+        destToken: mainnetTokens.WBTC,
+      },
+    ];
+    const aEthWBTC = {
+      chainId: 1,
+      address: '0x5Ee5bf7ae06D1Be5997A1A72006FE6C607eC6DE8',
+      decimals: 8,
+      symbol: 'aEthWBTC',
+      name: 'Aave Ethereum WBTC',
+    };
+
     testCases.forEach((params, i) => {
       it(`case ${i + 1}`, async function () {
         const zapDepositInfo = await adapter.getZapSupplyQuotationAndLogics(
@@ -69,18 +68,12 @@ describe('Transaction: Zap Supply', function () {
           await expect(user.sendTransaction(approval)).to.not.be.reverted;
         }
 
-        console.log('routerData', routerData);
-
         const transactionRequest = await api.buildRouterTransactionRequest(routerData);
         expect(transactionRequest).to.include.all.keys('to', 'data', 'value');
-        console.log('transactionRequest', transactionRequest);
 
         const tx = await user.sendTransaction(transactionRequest);
-        console.log('tx', tx);
-        expect(tx).to.not.be.reverted;
 
-        const portfolios = await adapter.getPortfolios(user.address);
-        console.log('after-portfolios', portfolios);
+        expect(tx).to.not.be.reverted;
       });
     });
   });

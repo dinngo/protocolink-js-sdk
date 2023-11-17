@@ -6,6 +6,13 @@ export interface Market {
   id: string;
   chainId: number;
 }
+export declare enum InterestRateMode {
+  none = 0,
+  stable = 1,
+  variable = 2,
+}
+export const defaultInterestRateMode = 2;
+export const defaultSlippage = 100;
 
 export type Operation =
   | 'deposit'
@@ -68,14 +75,20 @@ export type SupplyLogic = Logic<SupplyFields>;
 export type WithdrawFields = common.Declasifying<core.TokenToTokenExactInFields>;
 export type WithdrawLogic = Logic<WithdrawFields>;
 
-export type BorrowFields = common.Declasifying<core.TokenOutFields>;
+export type BorrowFields = common.Declasifying<
+  core.TokenOutFields<{
+    interestRateMode: InterestRateMode;
+  }>
+>;
 export type BorrowLogic = Logic<BorrowFields>;
 
-export type RepayFields = common.Declasifying<core.RepayFields>;
+export type RepayFields = common.Declasifying<
+  core.RepayFields<{
+    interestRateMode: InterestRateMode;
+  }>
+>;
 export type RepayLogic = Logic<RepayFields>;
 
-// export type CollateralSwapFields = common.Declasifying<core.TokenToTokenExactInParams>;
-// export type CollateralSwapLogics = Logic<CollateralSwapFields>;
 export type CollateralSwapFields = {
   fields: common.Declasifying<core.TokenToTokenExactInFields>;
   logics: any[];

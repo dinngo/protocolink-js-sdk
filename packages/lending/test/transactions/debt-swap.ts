@@ -42,8 +42,6 @@ describe.skip('Transaction: Debt Swap', function () {
     account = user.address;
 
     const portfolios = await adapter.getPortfolios(account);
-    console.log('portfolios', portfolios);
-    portfolio = portfolios.find((portfolio) => portfolio.protocolId === protocolId)!;
   });
 
   snapshotAndRevertEach();

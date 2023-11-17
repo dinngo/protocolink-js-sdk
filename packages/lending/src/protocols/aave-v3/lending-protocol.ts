@@ -10,7 +10,15 @@ import {
 import { AaveOracleInterface } from './contracts/AaveOracle';
 import { BigNumber, providers } from 'ethers';
 import BigNumberJS from 'bignumber.js';
-import { BorrowObject, Market, RepayParams, SupplyObject, SupplyParams, WithdrawParams } from 'src/protocol.types';
+import {
+  BorrowObject,
+  InterestRateMode,
+  Market,
+  RepayParams,
+  SupplyObject,
+  SupplyParams,
+  WithdrawParams,
+} from 'src/protocol.types';
 import { PoolDataProviderInterface } from './contracts/PoolDataProvider';
 import { Portfolio } from 'src/protocol.portfolio';
 import { Protocol } from 'src/protocol';
@@ -139,7 +147,7 @@ export class LendingProtocol extends Protocol {
           callData: this.poolDataProviderIface.encodeFunctionData('getDebtCeiling', [wrappedToken.address]),
         });
       }
-      const { returnData } = await this.multicall2.callStatic.aggregate(calls);
+      const { returnData } = await this.multicall3.callStatic.aggregate(calls);
 
       this.reserveDataMap = {};
       let j = 0;
@@ -208,7 +216,7 @@ export class LendingProtocol extends Protocol {
       });
     }
 
-    const { returnData } = await this.multicall2.callStatic.aggregate(calls);
+    const { returnData } = await this.multicall3.callStatic.aggregate(calls);
 
     const reserveDataMap = await this.getReserveDataMap();
     const userBalancesMap: Record<

@@ -18,9 +18,9 @@ import { Protocol, ProtocolClass } from './protocol';
 import { Swaper, SwaperClass } from './swaper';
 import * as common from '@protocolink/common';
 import { configMap } from './adapter.config';
+import { defaultInterestRateMode, defaultSlippage } from './protocol.types';
 import flatten from 'lodash/flatten';
 import { isSameToken, wrapToken } from './helper';
-import * as logics from '@protocolink/logics';
 import { protocols } from '@protocolink/api';
 import { providers } from 'ethers';
 import { toAToken } from './protocols/aave-v3/configs';
@@ -227,7 +227,11 @@ export class Adapter extends common.Web3Toolkit {
 
     // ---------- swap ----------
     const swaper = this.findSwaper([wrappedSrcToken, wrappedDestToken]);
-    const swapQuotation = await swaper.quote({ input: flashLoanTokenAmount, tokenOut: wrappedDestToken });
+    const swapQuotation = await swaper.quote({
+      input: flashLoanTokenAmount,
+      tokenOut: wrappedDestToken,
+      slippage: defaultSlippage,
+    });
 
     const swapTokenLogic = swaper.newSwapTokenLogic(swapQuotation);
     collateralSwapLogics.push(swapTokenLogic);
@@ -315,9 +319,10 @@ export class Adapter extends common.Web3Toolkit {
     let swapQuotation = await swaper.quote({
       tokenIn: wrappedDestToken,
       output: { token: wrappedSrcToken, amount: srcAmount },
+      slippage: defaultSlippage,
     });
     // convert swap type to exact in
-    swapQuotation = await swaper.quote({ input: swapQuotation.input, tokenOut: srcToken });
+    swapQuotation = await swaper.quote({ input: swapQuotation.input, tokenOut: srcToken, slippage: defaultSlippage });
 
     // ---------- flashloan ----------
     const flashloaner = this.findFlashLoaner(wrappedSrcToken);
@@ -335,7 +340,7 @@ export class Adapter extends common.Web3Toolkit {
     const repayQuotation = await protocol.getRepayQuotation({
       tokenIn: swapQuotation.output.token,
       borrower: account,
-      interestRateMode: logics.aavev3.InterestRateMode.variable,
+      interestRateMode: defaultInterestRateMode,
     });
     const repayLogic = protocol.newRepayLogic(repayQuotation);
     debtSwapLogics.push(repayLogic);
@@ -345,6 +350,7 @@ export class Adapter extends common.Web3Toolkit {
     const borrowTokenAmount = flashloanQuotation.repays.tokenAmountMap[wrappedDestToken.address];
     const borrowLogic = protocol.newBorrowLogic({
       output: borrowTokenAmount,
+      interestRateMode: defaultInterestRateMode,
     });
     debtSwapLogics.push(borrowLogic);
     portfolio.borrow(borrowTokenAmount.token, borrowTokenAmount.amount);
@@ -404,11 +410,13 @@ export class Adapter extends common.Web3Toolkit {
     let swapQuotation = await swaper.quote({
       tokenIn: wrappedDestToken,
       output: { token: wrappedSrcToken, amount: srcAmount },
+      slippage: defaultSlippage,
     });
     // convert swap type to exact in
     swapQuotation = await swaper.quote({
       input: swapQuotation.input,
       tokenOut: wrappedSrcToken,
+      slippage: defaultSlippage,
     });
 
     // ---------- flashloan ----------
@@ -445,6 +453,7 @@ export class Adapter extends common.Web3Toolkit {
     const borrowTokenAmount = flashloanQuotation.repays.tokenAmountMap[swapQuotation.input.token.address];
     const borrowLogic = protocol.newBorrowLogic({
       output: borrowTokenAmount,
+      interestRateMode: defaultInterestRateMode,
     });
     leverageLonglogics.push(borrowLogic);
 
@@ -506,6 +515,7 @@ export class Adapter extends common.Web3Toolkit {
     const swapQuotation = await swaper.quote({
       input: flashLoanTokenAmount,
       tokenOut: wrappedDestToken,
+      slippage: defaultSlippage,
     });
     const swapTokenLogic = swaper.newSwapTokenLogic(swapQuotation);
     leverageShortlogics.push(swapTokenLogic);
@@ -531,6 +541,7 @@ export class Adapter extends common.Web3Toolkit {
     const borrowTokenAmount = flashloanQuotation.repays.tokenAmountMap[wrappedSrcToken.address];
     const borrowLogic = protocol.newBorrowLogic({
       output: borrowTokenAmount,
+      interestRateMode: defaultInterestRateMode,
     });
     leverageShortlogics.push(borrowLogic);
 
@@ -586,9 +597,14 @@ export class Adapter extends common.Web3Toolkit {
     let swapQuotation = await swaper.quote({
       tokenIn: wrappedDestToken,
       output: { token: wrappedSrcToken, amount: srcAmount },
+      slippage: defaultSlippage,
     });
     // convert swap type to exact in
-    swapQuotation = await swaper.quote({ input: swapQuotation.input, tokenOut: wrappedSrcToken });
+    swapQuotation = await swaper.quote({
+      input: swapQuotation.input,
+      tokenOut: wrappedSrcToken,
+      slippage: defaultSlippage,
+    });
 
     // ---------- flashloan ----------
     const flashloaner = this.findFlashLoaner(wrappedDestToken);
@@ -605,7 +621,7 @@ export class Adapter extends common.Web3Toolkit {
     const repayQuotation = await protocol.getRepayQuotation({
       tokenIn: swapQuotation.output.token,
       borrower: account,
-      interestRateMode: logics.aavev3.InterestRateMode.variable,
+      interestRateMode: defaultInterestRateMode,
     });
     const repayLogic = protocol.newRepayLogic(repayQuotation);
     deleveragelogics.push(repayLogic);
@@ -665,7 +681,7 @@ export class Adapter extends common.Web3Toolkit {
     const swapQuotation = await swaper.quote({
       input: { token: srcToken, amount: srcAmount },
       tokenOut: destToken,
-      slippage: 100,
+      slippage: defaultSlippage,
     });
     const swapTokenLogic = swaper.newSwapTokenLogic(swapQuotation);
     zapSupplylogics.push(swapTokenLogic);
@@ -708,10 +724,7 @@ export class Adapter extends common.Web3Toolkit {
     const zapWithdrawlogics = [];
     const protocol = this.getProtocol(protocolId);
 
-    if (!portfolio) {
-      portfolio = await protocol.getPortfolio(account);
-    }
-
+    portfolio = portfolio || (await protocol.getPortfolio(account));
     const healthRate = portfolio.healthRate;
     const netAPY = portfolio.netAPY;
     const utilization = portfolio.utilization;
@@ -732,6 +745,7 @@ export class Adapter extends common.Web3Toolkit {
     const swapQuotation = await swaper.quote({
       input: withdrawQuotation.output,
       tokenOut: destToken,
+      slippage: defaultSlippage,
     });
     const swapTokenLogic = swaper.newSwapTokenLogic(swapQuotation);
     zapWithdrawlogics.push(swapTokenLogic);
@@ -772,6 +786,7 @@ export class Adapter extends common.Web3Toolkit {
     // ---------- borrow ----------
     const borrowLogic = protocol.newBorrowLogic({
       output: { token: srcToken, amount: srcAmount },
+      interestRateMode: defaultInterestRateMode,
     });
     zapBorrowlogics.push(borrowLogic);
     portfolio.borrow(srcToken, srcAmount);
@@ -781,7 +796,9 @@ export class Adapter extends common.Web3Toolkit {
     const swapQuotation = await swaper.quote({
       input: { token: srcToken, amount: srcAmount },
       tokenOut: destToken,
+      slippage: defaultSlippage,
     });
+
     const swapTokenLogic = swaper.newSwapTokenLogic(swapQuotation);
     zapBorrowlogics.push(swapTokenLogic);
 
@@ -820,17 +837,25 @@ export class Adapter extends common.Web3Toolkit {
     const utilization = portfolio.utilization;
 
     // ---------- swap ----------
-    const swaper = this.findSwaper([destToken, srcToken]);
-    const swapQuotation = await swaper.quote({ tokenIn: destToken, output: { token: srcToken, amount: srcAmount } });
+    const swaper = this.findSwaper([srcToken, destToken]);
+    const swapQuotation = await swaper.quote({
+      input: { token: srcToken, amount: srcAmount },
+      tokenOut: destToken,
+      slippage: defaultSlippage,
+    });
     const swapTokenLogic = swaper.newSwapTokenLogic(swapQuotation);
     zapRepaylogics.push(swapTokenLogic);
 
     // ---------- repay ----------
-    const repayQuotation = await protocol.getRepayQuotation({
-      tokenIn: swapQuotation.output.token,
+    const repayQuotation = {
       borrower: account,
-      interestRateMode: logics.aavev3.InterestRateMode.variable,
-    });
+      interestRateMode: defaultInterestRateMode,
+      input: {
+        token: swapQuotation.output.token,
+        amount: swapQuotation.output.amount,
+      },
+    };
+
     const repayLogic = protocol.newRepayLogic(repayQuotation);
     zapRepaylogics.push(repayLogic);
     portfolio.repay(swapQuotation.output.token, swapQuotation.output.amount);
