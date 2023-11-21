@@ -10,15 +10,7 @@ import {
 import { AaveOracleInterface } from './contracts/AaveOracle';
 import { BigNumber, providers } from 'ethers';
 import BigNumberJS from 'bignumber.js';
-import {
-  BorrowObject,
-  InterestRateMode,
-  Market,
-  RepayParams,
-  SupplyObject,
-  SupplyParams,
-  WithdrawParams,
-} from 'src/protocol.types';
+import { BorrowObject, Market, RepayParams, SupplyObject, SupplyParams, WithdrawParams } from 'src/protocol.type';
 import { PoolDataProviderInterface } from './contracts/PoolDataProvider';
 import { Portfolio } from 'src/protocol.portfolio';
 import { Protocol } from 'src/protocol';
@@ -28,6 +20,7 @@ import {
   configMap,
   getContractAddress,
   hasNativeToken,
+  isAToken,
   toAToken,
   toToken,
   tokensForBorrowMap,
@@ -35,7 +28,6 @@ import {
 } from './configs';
 import * as common from '@protocolink/common';
 import { isWrappedNativeToken, wrapToken } from 'src/helper';
-import * as logics from '@protocolink/logics';
 import { protocols } from '@protocolink/api';
 
 const NAME = 'aavev3';
@@ -339,20 +331,39 @@ export class LendingProtocol extends Protocol {
     return toAToken(this.chainId, underlyingToken);
   }
 
-  async getSupplyQuotation(params: SupplyParams): Promise<logics.aavev3.SupplyLogicFields> {
-    return protocols.aavev3.getSupplyQuotation(this.chainId, params);
+  isProtocolToken(token: common.Token) {
+    return isAToken(this.chainId, token);
   }
-  newSupplyLogic = protocols.aavev3.newSupplyLogic;
 
-  async getWithdrawQuotation(params: WithdrawParams): Promise<logics.aavev3.WithdrawLogicFields> {
-    return protocols.aavev3.getWithdrawQuotation(this.chainId, params);
+  async newSupplyLogic(params: SupplyParams) {
+    const supplyQuotation = await protocols.aavev3.getSupplyQuotation(this.chainId, {
+      input: params.input,
+      tokenOut: toAToken(this.chainId, params.input.token),
+    });
+    return protocols.aavev3.newSupplyLogic({ ...supplyQuotation, balanceBps: common.BPS_BASE });
   }
-  newWithdrawLogic = protocols.aavev3.newWithdrawLogic;
+
+  async newWithdrawLogic(params: WithdrawParams) {
+    const withdrawQuotation = await protocols.aavev3.getWithdrawQuotation(this.chainId, {
+      input: {
+        token: toAToken(this.chainId, params.output.token),
+        amount: params.output.amount,
+      },
+      tokenOut: params.output.token,
+    });
+    return protocols.aavev3.newWithdrawLogic(withdrawQuotation);
+  }
 
   newBorrowLogic = protocols.aavev3.newBorrowLogic;
 
-  async getRepayQuotation(params: RepayParams): Promise<logics.aavev3.RepayLogicFields> {
-    return protocols.aavev3.getRepayQuotation(this.chainId, params);
+  async newRepayLogic(params: RepayParams) {
+    if (!params.borrower || !params.interestRateMode) throw new Error('missing requied params');
+    const repayQuotation = await protocols.aavev3.getRepayQuotation(this.chainId, {
+      tokenIn: params.input.token,
+      borrower: params.borrower,
+      interestRateMode: params.interestRateMode,
+    });
+    repayQuotation.input.amount = params.input.amount;
+    return protocols.aavev3.newRepayLogic(repayQuotation);
   }
-  newRepayLogic = protocols.aavev3.newRepayLogic;
 }

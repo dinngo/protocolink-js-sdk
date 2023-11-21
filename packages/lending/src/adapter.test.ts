@@ -6,8 +6,8 @@ import {
   LeverageLongParams,
   LeverageShortParams,
   ZapBorrowParams,
-  ZapSupplyParams,
   ZapRepayParams,
+  ZapSupplyParams,
   ZapWithdrawParams,
 } from './adapter.type';
 import { LendingFlashLoaner } from './protocols/aave-v3/lending-flashloaner';
@@ -114,15 +114,11 @@ describe('Lending AaveV3 SDK', function () {
     expect(portfolio.borrows).to.have.lengthOf.above(0);
   });
 
+  const marketId = '';
   context('Test CollateralSwap', function () {
     collateralSwapTestCases.forEach((params, i) => {
       it(`case ${i + 1}`, async function () {
-        const collateralSwapInfo = await adapter.getCollateralSwapQuotationAndLogics(
-          protocolId,
-          params,
-          account,
-          portfolio
-        );
+        const collateralSwapInfo = await adapter.getCollateralSwap(protocolId, marketId, params, account, portfolio);
 
         expect(collateralSwapInfo).to.include.all.keys('fields', 'logics');
         expect(parseFloat(collateralSwapInfo.fields.destAmount)).above(0);
@@ -134,7 +130,7 @@ describe('Lending AaveV3 SDK', function () {
   context('Test DebtSwap', function () {
     debtSwapTestCases.forEach((params, i) => {
       it(`case ${i + 1}`, async function () {
-        const debtSwapInfo = await adapter.getDebtSwapQuotationAndLogics(protocolId, params, account, portfolio);
+        const debtSwapInfo = await adapter.getDebtSwap(protocolId, params, account, portfolio);
 
         expect(debtSwapInfo).to.include.all.keys('fields', 'logics');
         expect(parseFloat(debtSwapInfo.fields.destAmount)).above(0);
@@ -146,12 +142,7 @@ describe('Lending AaveV3 SDK', function () {
   context('Test LeverageLong', function () {
     leverageLongTestCases.forEach((params, i) => {
       it(`case ${i + 1}`, async function () {
-        const leverageLongInfo = await adapter.getLeverageLongQuotationAndLogics(
-          protocolId,
-          params,
-          account,
-          portfolio
-        );
+        const leverageLongInfo = await adapter.getLeverageLong(protocolId, params, account, portfolio);
 
         expect(leverageLongInfo).to.include.all.keys('fields', 'logics');
         expect(leverageLongInfo.logics).to.have.lengthOf(6);
@@ -162,12 +153,7 @@ describe('Lending AaveV3 SDK', function () {
   context('Test LeverageShort', function () {
     leverageShortTestCases.forEach((params, i) => {
       it(`case ${i + 1}`, async function () {
-        const leverageShortInfo = await adapter.getLeverageShortQuotationAndLogics(
-          protocolId,
-          params,
-          account,
-          portfolio
-        );
+        const leverageShortInfo = await adapter.getLeverageShort(protocolId, params, account, portfolio);
 
         expect(leverageShortInfo).to.include.all.keys('fields', 'logics');
         expect(leverageShortInfo.logics).to.have.lengthOf(6);
@@ -178,7 +164,7 @@ describe('Lending AaveV3 SDK', function () {
   context('Test Deleverage', function () {
     deleverageTestCases.forEach((params, i) => {
       it(`case ${i + 1}`, async function () {
-        const deleverageInfo = await adapter.getDeleverageQuotationAndLogics(protocolId, params, account, portfolio);
+        const deleverageInfo = await adapter.getDeleverage(protocolId, params, account, portfolio);
 
         expect(deleverageInfo).to.include.all.keys('fields', 'logics');
         expect(parseFloat(deleverageInfo.fields.destAmount)).above(0);
@@ -190,7 +176,7 @@ describe('Lending AaveV3 SDK', function () {
   context('Test ZapSupply', function () {
     zapSupplyTestCases.forEach((params, i) => {
       it(`case ${i + 1}`, async function () {
-        const zapSupplyInfo = await adapter.getZapSupplyQuotationAndLogics(protocolId, params, account, portfolio);
+        const zapSupplyInfo = await adapter.getZapSupply(protocolId, params, account, portfolio);
 
         expect(zapSupplyInfo).to.include.all.keys('fields', 'logics');
         expect(parseFloat(zapSupplyInfo.fields.destAmount)).above(0);
@@ -202,7 +188,7 @@ describe('Lending AaveV3 SDK', function () {
   context('Test ZapWithdraw', function () {
     zapWithdrawTestCases.forEach((params, i) => {
       it(`case ${i + 1}`, async function () {
-        const zapWithdrawInfo = await adapter.getZapWithdrawQuotationAndLogics(protocolId, params, account, portfolio);
+        const zapWithdrawInfo = await adapter.getZapWithdraw(protocolId, params, account, portfolio);
 
         expect(zapWithdrawInfo).to.include.all.keys('fields', 'logics');
         expect(parseFloat(zapWithdrawInfo.fields.destAmount)).above(0);
@@ -214,7 +200,7 @@ describe('Lending AaveV3 SDK', function () {
   context('Test ZapBorrow', function () {
     zapBorrowTestCases.forEach((params, i) => {
       it(`case ${i + 1}`, async function () {
-        const ZapBorrowInfo = await adapter.getZapBorrowQuotationAndLogics(protocolId, params, account, portfolio);
+        const ZapBorrowInfo = await adapter.getZapBorrow(protocolId, params, account, portfolio);
 
         expect(ZapBorrowInfo).to.include.all.keys('fields', 'logics');
         expect(parseFloat(ZapBorrowInfo.fields.destAmount)).above(0);
@@ -226,7 +212,7 @@ describe('Lending AaveV3 SDK', function () {
   context('Test ZapRepay', function () {
     zapRepayTestCases.forEach((params, i) => {
       it(`case ${i + 1}`, async function () {
-        const zapRepayInfo = await adapter.getZapRepayQuotationAndLogics(protocolId, params, account, portfolio);
+        const zapRepayInfo = await adapter.getZapRepay(protocolId, params, account, portfolio);
 
         expect(zapRepayInfo).to.include.all.keys('fields', 'logics');
         expect(parseFloat(zapRepayInfo.fields.destAmount)).above(0);

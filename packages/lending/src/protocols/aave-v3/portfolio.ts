@@ -1,23 +1,16 @@
-import { BigNumber, providers, utils } from 'ethers';
-
-import { RAY_DECIMALS, SECONDS_PER_YEAR, calculateCompoundedRate, normalize } from '@aave/math-utils';
-import * as common from '@protocolink/common';
-
-import * as logics from '@protocolink/logics';
 import {
   AToken__factory,
-  AaveOracle,
   AaveOracle__factory,
-  PoolDataProvider,
-  PoolDataProvider__factory,
-  Multicall3__factory,
-  RewardsController,
-  RewardsController__factory,
   Multicall3,
+  Multicall3__factory,
+  PoolDataProvider__factory,
 } from './contracts';
-import { configs } from './configs';
+import { BigNumber, providers } from 'ethers';
+import { BorrowObject, SupplyObject } from 'src/protocol.type';
 import { Portfolio } from 'src/protocol.portfolio';
-import { SupplyObject, BorrowObject } from 'src/protocol.types';
+import { RAY_DECIMALS, SECONDS_PER_YEAR, calculateCompoundedRate, normalize } from '@aave/math-utils';
+import * as common from '@protocolink/common';
+import { configs } from './configs';
 
 const { chainId, contractMap, reserves } = configs[0];
 const poolDataProviderAddress = contractMap.PoolDataProvider;

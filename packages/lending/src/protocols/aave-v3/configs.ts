@@ -277,3 +277,8 @@ export function getDebtTokenAddress(chainId: number, token: common.Token, rateMo
 export function hasNativeToken(chainId: number) {
   return hasNativeTokenMap[chainId];
 }
+
+export function isAToken(chainId: number, token: common.Token): boolean {
+  const aToken = reserveMap[chainId][token.address].aToken;
+  return aToken.is(token);
+}

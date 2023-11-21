@@ -1,8 +1,8 @@
-import { providers } from 'ethers';
-import { TokenToTokenParams } from './swaper.types';
-import * as common from '@protocolink/common';
+import { TokenToTokenParams } from './swaper.type';
 import * as api from '@protocolink/api';
+import * as common from '@protocolink/common';
 import * as logics from '@protocolink/logics';
+import { providers } from 'ethers';
 
 export abstract class Swaper extends common.Web3Toolkit {
   static readonly supportedChainIds: number[];

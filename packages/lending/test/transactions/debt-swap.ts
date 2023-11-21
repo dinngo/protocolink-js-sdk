@@ -22,7 +22,6 @@ const debtSwapTestCases: any[] = [
 
 describe.skip('Transaction: Debt Swap', function () {
   Adapter.registerProtocol(LendingProtocol as any);
-  Adapter.registerFlashLoaner(LendingFlashLoaner as any);
   Adapter.registerSwaper(LendingSwaper as any);
 
   const srcToken = mainnetTokens.USDT;
@@ -49,7 +48,7 @@ describe.skip('Transaction: Debt Swap', function () {
   context('Test DebtSwap', function () {
     debtSwapTestCases.forEach((params, i) => {
       it(`case ${i + 1}`, async function () {
-        const debtSwapInfo = await adapter.getDebtSwapQuotationAndLogics(protocolId, params, account, portfolio);
+        const debtSwapInfo = await adapter.getDebtSwap(protocolId, params, account, portfolio);
 
         expect(debtSwapInfo).to.include.all.keys('field', 'logics');
         expect(parseFloat(debtSwapInfo.fields.destAmount)).above(0);

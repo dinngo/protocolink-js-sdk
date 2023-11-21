@@ -1,20 +1,14 @@
 import {
-  BorrowFields,
-  BorrowLogic,
   Market,
-  RepayFields,
   RepayLogic,
   RepayParams,
-  SupplyFields,
   SupplyLogic,
   SupplyParams,
-  WithdrawFields,
   WithdrawLogic,
   WithdrawParams,
-} from './protocol.types';
+} from './protocol.type';
 import { Portfolio } from './protocol.portfolio';
 import * as common from '@protocolink/common';
-import * as logics from '@protocolink/logics';
 import { providers } from 'ethers';
 
 export abstract class Protocol extends common.Web3Toolkit {
@@ -28,7 +22,7 @@ export abstract class Protocol extends common.Web3Toolkit {
 
   abstract getMarketName(id: string): string;
 
-  abstract getPortfolio(account: string, marketId?: string): Promise<Portfolio>;
+  abstract getPortfolio(account: string, marketId: string): Promise<Portfolio>;
 
   abstract getPortfolios(account: string): Promise<Portfolio[]>;
 
@@ -54,22 +48,22 @@ export abstract class Protocol extends common.Web3Toolkit {
 
   toProtocolToken?(underlyingToken: common.Token): common.Token;
 
+  abstract isProtocolToken(token: common.Token): boolean;
+
   isAaveLike = false;
 
   isUsingWrappedNativeToken = true;
 
   preferredFlashLoanerId?: string;
 
-  abstract getSupplyQuotation(params: SupplyParams): Promise<logics.aavev3.SupplyLogicFields>;
-  abstract newSupplyLogic(fields: SupplyFields): SupplyLogic;
+  abstract newSupplyLogic(params: SupplyParams): Promise<SupplyLogic>;
 
-  abstract getWithdrawQuotation(params: WithdrawParams): Promise<logics.aavev3.WithdrawLogicFields>;
-  abstract newWithdrawLogic(fields: WithdrawFields): WithdrawLogic;
+  abstract newWithdrawLogic(params: WithdrawParams): Promise<WithdrawLogic>;
 
-  abstract newBorrowLogic(fields: BorrowFields): BorrowLogic;
+  // abstract newBorrowLogic(fields: BorrowFields): BorrowLogic;
+  abstract newBorrowLogic(fields: any): any;
 
-  abstract getRepayQuotation(params: RepayParams): Promise<logics.aavev3.RepayLogicFields>;
-  abstract newRepayLogic(fields: RepayFields): RepayLogic;
+  abstract newRepayLogic(params: RepayParams): Promise<RepayLogic>;
 }
 
 export interface ProtocolClass {

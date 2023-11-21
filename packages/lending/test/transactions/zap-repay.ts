@@ -1,8 +1,6 @@
 import { Adapter } from 'src/adapter';
 import { Portfolio } from 'src/protocol.portfolio';
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
-import { ZapRepayParams } from 'src/adapter.type';
-import * as api from '@protocolink/api';
 import { expect } from 'chai';
 import hre from 'hardhat';
 import { mainnetTokens, snapshotAndRevertEach } from '@protocolink/test-helpers';
@@ -13,37 +11,48 @@ describe('Transaction: Zap Repay', function () {
   let adapter: Adapter;
 
   const chainId = 1;
-  const protocolId = 'aavev3';
 
   before(async function () {
-    adapter = new Adapter(chainId, hre.ethers.provider);
-    user = await hre.ethers.getImpersonatedSigner('0x06e4Cb4f3ba9A2916B6384aCbdeAa74dAAF91550');
-
-    portfolio = await adapter.getPortfolio(user.address, protocolId);
+    adapter = new Adapter(chainId, hre.ethers.provider, { permitType: 'approve' });
   });
 
   snapshotAndRevertEach();
 
   context('Test ZapRepay', function () {
-    const testCases: ZapRepayParams[] = [
+    const testCases = [
       {
-        srcToken: mainnetTokens.WBTC,
-        srcAmount: '0.0001',
-        destToken: mainnetTokens.USDC,
+        skip: false,
+        protocolId: 'aavev3',
+        marketId: 'mainnet',
+        testingAccount: '0x06e4Cb4f3ba9A2916B6384aCbdeAa74dAAF91550',
+        params: {
+          srcToken: mainnetTokens.WBTC,
+          srcAmount: '0.0001',
+          destToken: mainnetTokens.USDC,
+        },
+      },
+      {
+        skip: false,
+        protocolId: 'compoundv3',
+        marketId: 'USDC',
+        testingAccount: '0x53fb0162bC8d5EEc2fB1532923C4f8997BAce111',
+        params: {
+          srcToken: mainnetTokens.ETH,
+          srcAmount: '1',
+          destToken: mainnetTokens.USDC,
+        },
       },
     ];
 
-    testCases.forEach((params, i) => {
-      it(`case ${i + 1}`, async function () {
-        const zapRepayInfo = await adapter.getZapRepayQuotationAndLogics(protocolId, params, user.address, portfolio);
+    for (const [i, { skip, protocolId, marketId, testingAccount, params }] of testCases.entries()) {
+      if (skip) continue;
+      it.only(`case ${i + 1}`, async function () {
+        user = await hre.ethers.getImpersonatedSigner(testingAccount);
+        portfolio = await adapter.getPortfolio(user.address, protocolId, marketId);
 
-        const routerData: api.RouterData = {
-          chainId,
-          account: user.address,
-          logics: zapRepayInfo.logics,
-        };
+        const zapRepayInfo = await adapter.getZapRepay(protocolId, marketId, params, user.address, portfolio);
 
-        const estimateResult = await api.estimateRouterData(routerData, 'approve');
+        const estimateResult = await zapRepayInfo.estimateResult;
 
         expect(estimateResult).to.include.all.keys('funds', 'balances', 'approvals');
 
@@ -51,13 +60,13 @@ describe('Transaction: Zap Repay', function () {
           await expect(user.sendTransaction(approval)).to.not.be.reverted;
         }
 
-        const transactionRequest = await api.buildRouterTransactionRequest(routerData);
+        const transactionRequest = await zapRepayInfo.buildRouterTransactionRequest();
         expect(transactionRequest).to.include.all.keys('to', 'data', 'value');
 
         const tx = await user.sendTransaction(transactionRequest);
 
         expect(tx).to.not.be.reverted;
       });
-    });
+    }
   });
 });

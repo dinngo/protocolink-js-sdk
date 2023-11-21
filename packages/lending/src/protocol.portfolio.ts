@@ -1,16 +1,15 @@
+import { AssetInfo, BorrowObject, SupplyObject } from './protocol.type';
 import BigNumberJS from 'bignumber.js';
-
 import {
+  abbreviateUSD,
   calcHealthRate,
   calcNetAPY,
   calcUtilization,
   formatPercentage,
-  abbreviateUSD,
-  toSignificantDigits,
   toLessThanString,
+  toSignificantDigits,
 } from './protocol.utils';
 import * as common from '@protocolink/common';
-import { AssetInfo, SupplyObject, BorrowObject } from './protocol.types';
 
 export class Supply implements AssetInfo {
   token: common.Token;

@@ -69,31 +69,31 @@ export interface Logic<TFields = any> {
   rid: string;
   fields: TFields;
 }
-export type SupplyFields = common.Declasifying<core.TokenToTokenExactInFields>;
-export type SupplyLogic = Logic<SupplyFields>;
 
-export type WithdrawFields = common.Declasifying<core.TokenToTokenExactInFields>;
-export type WithdrawLogic = Logic<WithdrawFields>;
+export type SupplyParams = core.TokenInFields<{ marketId: string }>;
+export type SupplyLogic = Logic<common.Declasifying<core.TokenInFields<{ output?: common.TokenAmount }>>>;
 
-export type BorrowFields = common.Declasifying<
+export type WithdrawParams = core.TokenOutFields<{ marketId: string }>;
+export type WithdrawLogic = Logic<common.Declasifying<core.TokenOutFields<{ input?: common.TokenAmount }>>>;
+
+export type BorrowParams = common.Declasifying<
   core.TokenOutFields<{
     interestRateMode: InterestRateMode;
   }>
 >;
-export type BorrowLogic = Logic<BorrowFields>;
+export type BorrowLogic = Logic<BorrowParams>;
 
-export type RepayFields = common.Declasifying<
-  core.RepayFields<{
-    interestRateMode: InterestRateMode;
-  }>
+export type RepayParams = core.TokenInFields<{
+  marketId: string;
+  borrower: string;
+  interestRateMode?: InterestRateMode;
+}>;
+export type RepayLogic = Logic<
+  common.Declasifying<
+    core.TokenInFields<{
+      marketId?: string;
+      borrower: string;
+      interestRateMode?: InterestRateMode;
+    }>
+  >
 >;
-export type RepayLogic = Logic<RepayFields>;
-
-export type CollateralSwapFields = {
-  fields: common.Declasifying<core.TokenToTokenExactInFields>;
-  logics: any[];
-};
-
-export type SupplyParams = common.Declasifying<logics.aavev3.SupplyLogicParams>;
-export type WithdrawParams = common.Declasifying<logics.aavev3.WithdrawLogicParams>;
-export type RepayParams = common.Declasifying<logics.aavev3.RepayLogicParams>;

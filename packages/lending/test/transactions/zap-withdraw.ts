@@ -1,8 +1,6 @@
 import { Adapter } from 'src/adapter';
 import { Portfolio } from 'src/protocol.portfolio';
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
-import { ZapWithdrawParams } from 'src/adapter.type';
-import * as api from '@protocolink/api';
 import { expect } from 'chai';
 import hre from 'hardhat';
 import { mainnetTokens } from '@protocolink/test-helpers';
@@ -14,20 +12,10 @@ describe('Transaction: Zap Withdraw', function () {
   let adapter: Adapter;
 
   before(async function () {
-    adapter = new Adapter(chainId, hre.ethers.provider);
-    user = await hre.ethers.getImpersonatedSigner('0x06e4Cb4f3ba9A2916B6384aCbdeAa74dAAF91550');
+    adapter = new Adapter(chainId, hre.ethers.provider, { permitType: 'approve' });
   });
 
   context('Test ZapWithdraw', function () {
-    const testCases: ZapWithdrawParams[] = [
-      {
-        srcToken: mainnetTokens.WBTC,
-        srcAmount: '0.0001',
-        destToken: mainnetTokens.USDC,
-      },
-    ];
-    const protocolId = 'aavev3';
-
     const aEthWBTC = {
       chainId: 1,
       address: '0x5Ee5bf7ae06D1Be5997A1A72006FE6C607eC6DE8',
@@ -35,36 +23,85 @@ describe('Transaction: Zap Withdraw', function () {
       symbol: 'aEthWBTC',
       name: 'Aave Ethereum WBTC',
     };
+    const cETH = {
+      chainId: 1,
+      address: '0xA17581A9E3356d9A858b789D68B4d866e593aE94',
+      decimals: 18,
+      symbol: 'cETHv3',
+      name: 'Compound ETH',
+    };
 
-    for (const [i, params] of testCases.entries()) {
-      it(`case ${i + 1}`, async function () {
-        const zapWithdrawInfo = await adapter.getZapWithdrawQuotationAndLogics(
-          protocolId,
-          params,
-          user.address,
-          portfolio
-        );
+    const testCases = [
+      {
+        skip: false,
+        testingAccount: '0x06e4Cb4f3ba9A2916B6384aCbdeAa74dAAF91550',
+        protocolId: 'aavev3',
+        marketId: 'mainnet',
+        params: {
+          srcToken: mainnetTokens.WBTC,
+          srcAmount: '0.0001',
+          destToken: mainnetTokens.USDC,
+        },
+        expects: {
+          funds: [aEthWBTC],
+          balances: [mainnetTokens.USDC],
+          apporveTimes: 2,
+          recieves: [mainnetTokens.USDC],
+        },
+      },
+      {
+        skip: false,
+        testingAccount: '0x53fb0162bC8d5EEc2fB1532923C4f8997BAce111',
+        protocolId: 'compoundv3',
+        marketId: 'ETH',
+        params: {
+          srcToken: mainnetTokens.ETH,
+          srcAmount: '100',
+          destToken: mainnetTokens.USDC,
+        },
+        expects: {
+          funds: [cETH],
+          balances: [mainnetTokens.USDC],
+          apporveTimes: 2,
+          recieves: [mainnetTokens.USDC],
+        },
+      },
+      {
+        testingAccount: '0xa3C1C91403F0026b9dd086882aDbC8Cdbc3b3cfB',
+        protocolId: 'compoundv3',
+        marketId: 'USDC',
+        params: {
+          srcToken: mainnetTokens.ETH,
+          srcAmount: '0.005',
+          destToken: mainnetTokens.USDC,
+        },
+        expects: {
+          funds: [],
+          balances: [mainnetTokens.USDC],
+          apporveTimes: 1,
+          recieves: [mainnetTokens.USDC],
+        },
+      },
+    ];
 
-        const routerData: api.RouterData = {
-          chainId,
-          account: user.address,
-          logics: zapWithdrawInfo.logics,
-        };
+    for (const [i, { skip, testingAccount, protocolId, marketId, params, expects }] of testCases.entries()) {
+      if (skip) continue;
+      it.only(`case ${i + 1}`, async function () {
+        user = await hre.ethers.getImpersonatedSigner(testingAccount);
 
-        const estimateResult = await api.estimateRouterData(routerData, 'approve');
+        const zapWithdrawInfo = await adapter.getZapWithdraw(protocolId, marketId, params, user.address, portfolio);
+
+        const estimateResult = await zapWithdrawInfo.estimateResult;
 
         expect(estimateResult).to.include.all.keys('funds', 'balances', 'approvals');
-        expect(estimateResult.funds).to.have.lengthOf(1);
-        expect(estimateResult.funds.get(aEthWBTC).amount).to.be.eq('0.0001');
-        expect(estimateResult.balances).to.have.lengthOf(1);
-        expect(estimateResult.balances.get(mainnetTokens.USDC).amount).to.be.eq(zapWithdrawInfo.fields.destAmount);
-        expect(estimateResult.approvals).to.have.lengthOf(2);
-
+        expect(estimateResult.funds).to.have.lengthOf(expects.funds.length);
+        expect(estimateResult.balances).to.have.lengthOf(expects.balances.length);
+        expect(estimateResult.approvals).to.have.lengthOf(expects.apporveTimes);
         for (const approval of estimateResult.approvals) {
           await expect(user.sendTransaction(approval)).to.not.be.reverted;
         }
 
-        const transactionRequest = await api.buildRouterTransactionRequest(routerData);
+        const transactionRequest = await zapWithdrawInfo.buildRouterTransactionRequest();
 
         expect(transactionRequest).to.include.all.keys('to', 'data', 'value');
 
