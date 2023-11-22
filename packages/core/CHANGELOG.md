@@ -1,5 +1,11 @@
 # @protocolink/core
 
+## 0.4.4
+
+### Patch Changes
+
+- 7f862cb: add setContractAddress in configs.ts
+
 ## 0.4.3
 
 ### Patch Changes
