@@ -1,5 +1,15 @@
 # @furucombo/composable-router-api
 
+## 0.4.7
+
+### Patch Changes
+
+- 44f7969: add OpenOcean v2 test
+- Updated dependencies [b3eec5b]
+- Updated dependencies [9d75bec]
+  - @protocolink/common@0.3.4
+  - @protocolink/core@0.4.3
+
 ## 0.4.6
 
 ### Patch Changes
