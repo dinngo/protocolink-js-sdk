@@ -1,5 +1,11 @@
 # @furucombo/composable-router-api
 
+## 0.4.8
+
+### Patch Changes
+
+- 73d43f3: add Permit2, skip Permit2 test
+
 ## 0.4.7
 
 ### Patch Changes
