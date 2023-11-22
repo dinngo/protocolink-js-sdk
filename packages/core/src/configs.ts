@@ -35,3 +35,7 @@ export const contractAddressMap: Record<number, Record<ContractNames, string>> =
 export function getContractAddress(chainId: number, name: ContractNames) {
   return contractAddressMap[chainId][name];
 }
+
+export function setContractAddress(chainId: number, name: ContractNames, address: string) {
+  contractAddressMap[chainId][name] = address;
+}
