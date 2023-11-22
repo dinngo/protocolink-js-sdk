@@ -15,6 +15,7 @@ describe('Test isSupportedChainId', function () {
   const testCases = [
     { chainId: ChainId.mainnet, expected: true },
     { chainId: ChainId.optimism, expected: true },
+    { chainId: ChainId.gnosis, expected: true },
     { chainId: ChainId.polygon, expected: true },
     { chainId: ChainId.zksync, expected: true },
     { chainId: ChainId.metis, expected: true },
@@ -35,6 +36,7 @@ describe('Test isSupportedNetworkId', function () {
   const testCases = [
     { networkId: NetworkId.mainnet, expected: true },
     { networkId: NetworkId.optimism, expected: true },
+    { networkId: NetworkId.gnosis, expected: true },
     { networkId: NetworkId.polygon, expected: true },
     { networkId: NetworkId.zksync, expected: true },
     { networkId: NetworkId.metis, expected: true },
@@ -88,6 +90,24 @@ describe('Test newExplorerUrl', function () {
       type: ExplorerType.token,
       data: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
       expected: 'https://optimistic.etherscan.io/token/0xdAC17F958D2ee523a2206206994597C13D831ec7',
+    },
+    {
+      chainId: ChainId.gnosis,
+      type: ExplorerType.tx,
+      data: '0xc371ef1ef7f36da374c9d1dbbf124bc0fc137245377d6acbf0d392addb6620dc',
+      expected: 'https://gnosisscan.io/tx/0xc371ef1ef7f36da374c9d1dbbf124bc0fc137245377d6acbf0d392addb6620dc',
+    },
+    {
+      chainId: ChainId.gnosis,
+      type: ExplorerType.address,
+      data: '0x157253E7012bf08b24dDA7Fc16229d14d9f9833D',
+      expected: 'https://gnosisscan.io/address/0x157253E7012bf08b24dDA7Fc16229d14d9f9833D',
+    },
+    {
+      chainId: ChainId.gnosis,
+      type: ExplorerType.token,
+      data: '0xe91D153E0b41518A2Ce8Dd3D7944Fa863463a97d',
+      expected: 'https://gnosisscan.io/token/0xe91D153E0b41518A2Ce8Dd3D7944Fa863463a97d',
     },
     {
       chainId: ChainId.polygon,
