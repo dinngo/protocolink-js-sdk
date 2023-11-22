@@ -1,5 +1,13 @@
 # @protocolink/core
 
+## 0.4.3
+
+### Patch Changes
+
+- 9d75bec: feat: update router addresses for production use
+- Updated dependencies [b3eec5b]
+  - @protocolink/common@0.3.4
+
 ## 0.4.2
 
 ### Patch Changes
