@@ -4,6 +4,7 @@ export * as balancerv2 from './balancer-v2';
 export * as compoundv3 from './compound-v3';
 export * as openoceanv2 from './openocean-v2';
 export * as paraswapv5 from './paraswap-v5';
+export * as permit2 from './permit2';
 export * as radiantv2 from './radiant-v2';
 export * as syncswap from './syncswap';
 export * as uniswapv3 from './uniswap-v3';
