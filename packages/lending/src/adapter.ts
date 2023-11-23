@@ -749,24 +749,29 @@ export class Adapter extends common.Web3Toolkit {
     const netAPY = portfolio.netAPY;
     const utilization = portfolio.utilization;
 
+    let supplyTokenAmount = new common.TokenAmount(srcToken, srcAmount);
+
     // ---------- swap ----------
-    const swaper = this.findSwaper([srcToken, destToken]);
-    const swapQuotation = await swaper.quote({
-      input: { token: srcToken, amount: srcAmount },
-      tokenOut: destToken,
-      slippage: defaultSlippage,
-    });
-    const swapTokenLogic = swaper.newSwapTokenLogic(swapQuotation);
-    zapSupplylogics.push(swapTokenLogic);
+    if (!srcToken.wrapped.is(destToken.wrapped)) {
+      const swaper = this.findSwaper([srcToken, destToken]);
+      const swapQuotation = await swaper.quote({
+        input: { token: srcToken, amount: srcAmount },
+        tokenOut: destToken,
+        slippage: defaultSlippage,
+      });
+      const swapTokenLogic = swaper.newSwapTokenLogic(swapQuotation);
+      supplyTokenAmount = swapQuotation.output;
+      zapSupplylogics.push(swapTokenLogic);
+    }
 
     // ---------- supply ----------
     const supplyLogic = await protocol.newSupplyLogic({
-      input: swapQuotation.output,
+      input: supplyTokenAmount,
       marketId,
     });
     zapSupplylogics.push(supplyLogic);
 
-    portfolio.supply(swapQuotation.output.token, swapQuotation.output.amount);
+    portfolio.supply(supplyTokenAmount.token, supplyTokenAmount.amount);
 
     // ---------- tx related ----------
     const estimateResult = await api.estimateRouterData(
@@ -788,7 +793,7 @@ export class Adapter extends common.Web3Toolkit {
         srcToken,
         srcAmount,
         destToken,
-        destAmount: swapQuotation.output.amount,
+        destAmount: supplyTokenAmount.amount,
         before: { healthRate, netAPY, utilization },
         after: {
           healthRate: portfolio.healthRate,
@@ -818,6 +823,9 @@ export class Adapter extends common.Web3Toolkit {
     const netAPY = portfolio.netAPY;
     const utilization = portfolio.utilization;
 
+    // init with withdraw token amount
+    let outputTokenAmount = new common.TokenAmount(srcToken, srcAmount);
+
     // ---------- withdraw ----------
     const withdrawLogic = await protocol.newWithdrawLogic({
       output: new common.TokenAmount(srcToken, srcAmount),
@@ -828,14 +836,17 @@ export class Adapter extends common.Web3Toolkit {
     portfolio.withdraw(srcToken, withdrawLogic.fields.output.amount);
 
     // ---------- swap ----------
-    const swaper = this.findSwaper([srcToken, destToken]);
-    const swapQuotation = await swaper.quote({
-      input: withdrawLogic.fields.output,
-      tokenOut: destToken,
-      slippage: defaultSlippage,
-    });
-    const swapTokenLogic = swaper.newSwapTokenLogic(swapQuotation);
-    zapWithdrawlogics.push(swapTokenLogic);
+    if (!srcToken.is(destToken)) {
+      const swaper = this.findSwaper([srcToken, destToken]);
+      const swapQuotation = await swaper.quote({
+        input: withdrawLogic.fields.output,
+        tokenOut: destToken,
+        slippage: defaultSlippage,
+      });
+      outputTokenAmount = swapQuotation.output;
+      const swapTokenLogic = swaper.newSwapTokenLogic(swapQuotation);
+      zapWithdrawlogics.push(swapTokenLogic);
+    }
 
     // ---------- tx related ----------
     const estimateResult = await api.estimateRouterData(
@@ -857,7 +868,7 @@ export class Adapter extends common.Web3Toolkit {
         srcToken,
         srcAmount,
         destToken,
-        destAmount: swapQuotation.output.amount,
+        destAmount: outputTokenAmount.amount,
         before: { healthRate, netAPY, utilization },
         after: {
           healthRate: portfolio.healthRate,
@@ -888,6 +899,9 @@ export class Adapter extends common.Web3Toolkit {
     const totalBorrowUSD = portfolio.totalBorrowUSD.toString();
     const utilization = portfolio.utilization;
 
+    // init with borrow token amount
+    let outputTokenAmount = new common.TokenAmount(srcToken, srcAmount);
+
     // ---------- borrow ----------
     const borrowLogic = protocol.newBorrowLogic({
       output: { token: srcToken, amount: srcAmount },
@@ -898,16 +912,17 @@ export class Adapter extends common.Web3Toolkit {
     portfolio.borrow(srcToken, srcAmount);
 
     // ---------- swap ----------
-    const swaper = this.findSwaper([srcToken, destToken]);
-    const swapQuotation = await swaper.quote({
-      input: { token: srcToken, amount: srcAmount },
-      tokenOut: destToken,
-      slippage: defaultSlippage,
-    });
-
-    const swapTokenLogic = swaper.newSwapTokenLogic(swapQuotation);
-    zapBorrowlogics.push(swapTokenLogic);
-
+    if (!srcToken.is(destToken)) {
+      const swaper = this.findSwaper([srcToken, destToken]);
+      const swapQuotation = await swaper.quote({
+        input: { token: srcToken, amount: srcAmount },
+        tokenOut: destToken,
+        slippage: defaultSlippage,
+      });
+      outputTokenAmount = swapQuotation.output;
+      const swapTokenLogic = swaper.newSwapTokenLogic(swapQuotation);
+      zapBorrowlogics.push(swapTokenLogic);
+    }
     // ---------- tx related ----------
     const estimateResult = await api.estimateRouterData(
       {
@@ -928,7 +943,7 @@ export class Adapter extends common.Web3Toolkit {
         srcToken,
         srcAmount,
         destToken,
-        destAmount: swapQuotation.output.amount,
+        destAmount: outputTokenAmount.amount,
         before: { healthRate, netAPY, utilization, totalBorrowUSD },
         after: {
           healthRate: portfolio.healthRate,
@@ -960,26 +975,31 @@ export class Adapter extends common.Web3Toolkit {
     const totalBorrowUSD = portfolio.totalBorrowUSD.toString();
     const utilization = portfolio.utilization;
 
-    // ---------- swap ----------
-    const swaper = this.findSwaper([srcToken, destToken]);
-    const swapQuotation = await swaper.quote({
-      input: { token: srcToken, amount: srcAmount },
-      tokenOut: destToken,
-      slippage: defaultSlippage,
-    });
-    const swapTokenLogic = swaper.newSwapTokenLogic(swapQuotation);
-    zapRepaylogics.push(swapTokenLogic);
+    // init with token in
+    let repayTokenAmount = new common.TokenAmount(srcToken, srcAmount);
 
+    // ---------- swap ----------
+    if (!srcToken.wrapped.is(destToken.wrapped)) {
+      const swaper = this.findSwaper([srcToken, destToken]);
+      const swapQuotation = await swaper.quote({
+        input: { token: srcToken, amount: srcAmount },
+        tokenOut: destToken,
+        slippage: defaultSlippage,
+      });
+      repayTokenAmount = swapQuotation.output;
+      const swapTokenLogic = swaper.newSwapTokenLogic(swapQuotation);
+      zapRepaylogics.push(swapTokenLogic);
+    }
     // ---------- repay ----------
     const repayLogic = await protocol.newRepayLogic({
       borrower: account,
       interestRateMode: defaultInterestRateMode,
-      input: new common.TokenAmount(swapQuotation.output.token, swapQuotation.output.amount),
+      input: new common.TokenAmount(repayTokenAmount.token, repayTokenAmount.amount),
       marketId,
     });
 
     zapRepaylogics.push(repayLogic);
-    portfolio.repay(swapQuotation.output.token, swapQuotation.output.amount);
+    portfolio.repay(repayTokenAmount.token, repayTokenAmount.amount);
 
     // ---------- tx related ----------
     const estimateResult = await api.estimateRouterData(
@@ -1001,7 +1021,7 @@ export class Adapter extends common.Web3Toolkit {
         srcToken,
         srcAmount,
         destToken,
-        destAmount: swapQuotation.output.amount,
+        destAmount: repayTokenAmount.amount,
         before: { healthRate, netAPY, utilization, totalBorrowUSD },
         after: {
           healthRate: portfolio.healthRate,

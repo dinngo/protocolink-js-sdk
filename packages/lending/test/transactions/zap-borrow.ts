@@ -39,6 +39,17 @@ describe('Transaction: Zap Borrow', function () {
           destToken: mainnetTokens.WBTC,
         },
       },
+      {
+        skip: false,
+        testingAccount: '0x53fb0162bC8d5EEc2fB1532923C4f8997BAce111',
+        protocolId: 'compoundv3',
+        marketId: 'USDC',
+        params: {
+          srcToken: mainnetTokens.USDC,
+          srcAmount: '1000',
+          destToken: mainnetTokens.USDC,
+        },
+      },
     ];
 
     for (const [i, { skip, testingAccount, protocolId, marketId, params }] of testCases.entries()) {

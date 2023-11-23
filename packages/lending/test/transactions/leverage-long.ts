@@ -82,8 +82,8 @@ describe('Transaction: Leverage Long', function () {
         const tx = await user.sendTransaction(transactionRequest);
 
         expect(tx).to.not.be.reverted;
-        const after = await adapter.getPortfolio(testingAccount, protocolId, marketId);
-        console.log('after  :>> ', JSON.stringify(after, null, 2));
+        // const after = await adapter.getPortfolio(testingAccount, protocolId, marketId);
+        // console.log('after  :>> ', JSON.stringify(after, null, 2));
       });
     }
   });

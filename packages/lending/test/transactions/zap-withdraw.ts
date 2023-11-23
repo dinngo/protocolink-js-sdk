@@ -72,7 +72,7 @@ describe('Transaction: Zap Withdraw', function () {
         marketId: 'USDC',
         params: {
           srcToken: mainnetTokens.ETH,
-          srcAmount: '0.005',
+          srcAmount: '0.0025',
           destToken: mainnetTokens.USDC,
         },
         expects: {
@@ -80,6 +80,22 @@ describe('Transaction: Zap Withdraw', function () {
           balances: [mainnetTokens.USDC],
           apporveTimes: 1,
           recieves: [mainnetTokens.USDC],
+        },
+      },
+      {
+        testingAccount: '0xa3C1C91403F0026b9dd086882aDbC8Cdbc3b3cfB',
+        protocolId: 'compoundv3',
+        marketId: 'USDC',
+        params: {
+          srcToken: mainnetTokens.ETH,
+          srcAmount: '0.0025',
+          destToken: mainnetTokens.ETH,
+        },
+        expects: {
+          funds: [],
+          balances: [mainnetTokens.USDC],
+          apporveTimes: 1,
+          recieves: [mainnetTokens.ETH],
         },
       },
     ];

@@ -15,7 +15,7 @@ describe('Transaction: Zap Supply', function () {
     [, user] = await hre.ethers.getSigners();
 
     await claimToken(chainId, user.address, mainnetTokens.USDC, '1');
-    await claimToken(chainId, user.address, mainnetTokens.WETH, '0.2');
+    await claimToken(chainId, user.address, mainnetTokens.WETH, '0.3');
   });
 
   snapshotAndRevertEach();
@@ -75,6 +75,21 @@ describe('Transaction: Zap Supply', function () {
           srcToken: mainnetTokens.WETH,
           srcAmount: '0.1',
           destToken: mainnetTokens.WBTC,
+        },
+        expects: {
+          funds: [mainnetTokens.WETH],
+          balances: [],
+          apporveTimes: 2,
+          recieves: [],
+        },
+      },
+      {
+        protocolId: 'compoundv3',
+        marketId: 'USDC',
+        params: {
+          srcToken: mainnetTokens.WETH,
+          srcAmount: '0.1',
+          destToken: mainnetTokens.WETH,
         },
         expects: {
           funds: [mainnetTokens.WETH],

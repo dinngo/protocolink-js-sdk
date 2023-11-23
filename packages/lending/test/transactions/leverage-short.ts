@@ -58,13 +58,13 @@ describe('Transaction: Leverage Short', function () {
       it.only(`case ${i + 1}`, async function () {
         user = await hre.ethers.getImpersonatedSigner(testingAccount);
 
-        const before = await adapter.getPortfolio(testingAccount, protocolId, marketId);
-        console.log('before  :>> ', JSON.stringify(before, null, 2));
+        // const before = await adapter.getPortfolio(testingAccount, protocolId, marketId);
+        // console.log('before  :>> ', JSON.stringify(before, null, 2));
 
         const sdkInfo = await adapter.getLeverageShort(protocolId, marketId, params, user.address, portfolio);
 
-        console.log('sdkInfo beftore :>> ', JSON.stringify(sdkInfo.fields.before, null, 2));
-        console.log('sdkInfo after :>> ', JSON.stringify(sdkInfo.fields.after, null, 2));
+        // console.log('sdkInfo beftore :>> ', JSON.stringify(sdkInfo.fields.before, null, 2));
+        // console.log('sdkInfo after :>> ', JSON.stringify(sdkInfo.fields.after, null, 2));
 
         const estimateResult = await sdkInfo.estimateResult;
 
@@ -82,8 +82,8 @@ describe('Transaction: Leverage Short', function () {
         const tx = await user.sendTransaction(transactionRequest);
 
         expect(tx).to.not.be.reverted;
-        const after = await adapter.getPortfolio(testingAccount, protocolId, marketId);
-        console.log('after  :>> ', JSON.stringify(after, null, 2));
+        // const after = await adapter.getPortfolio(testingAccount, protocolId, marketId);
+        // console.log('after  :>> ', JSON.stringify(after, null, 2));
       });
     }
   });

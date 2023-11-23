@@ -261,8 +261,6 @@ export function getContractAddress(chainId: number, name: ContractName) {
 }
 
 export function toAToken(chainId: number, token: common.Token) {
-  console.log(JSON.stringify(reserveMap[chainId], null, 2));
-  console.log('wrapToken(chainId, token).address: ', wrapToken(chainId, token).address);
   return reserveMap[chainId][wrapToken(chainId, token).address].aToken;
 }
 
