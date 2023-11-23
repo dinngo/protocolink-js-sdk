@@ -4,17 +4,10 @@ import { expect } from 'chai';
 import hre from 'hardhat';
 import { mainnetTokens } from '@protocolink/test-helpers';
 
-const account = '0xa3C1C91403F0026b9dd086882aDbC8Cdbc3b3cfB';
 const chainId = 1;
 
 describe('Compound V3 LendingProtocol', () => {
   context('new Compound Lending Protocol', async () => {
-    it.skip('getPortfolios', async () => {
-      const compoundv3 = new LendingProtocol(chainId, hre.ethers.provider);
-      const portfolios = await compoundv3.getPortfolios(account);
-      console.log(portfolios);
-    });
-
     it.only('isProtocolToken', () => {
       const cUSDC = {
         chainId: 1,

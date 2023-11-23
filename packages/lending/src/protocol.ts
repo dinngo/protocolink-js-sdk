@@ -44,9 +44,9 @@ export abstract class Protocol extends common.Web3Toolkit {
     return true;
   }
 
-  toUnderlyingToken?(protocolToken: common.Token): common.Token;
+  abstract toUnderlyingToken(protocolToken: common.Token): common.Token;
 
-  toProtocolToken?(underlyingToken: common.Token): common.Token;
+  abstract toProtocolToken(underlyingToken: common.Token): common.Token;
 
   abstract isProtocolToken(token: common.Token): boolean;
 

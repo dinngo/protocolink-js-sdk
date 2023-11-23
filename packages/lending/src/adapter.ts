@@ -221,7 +221,10 @@ export class Adapter extends common.Web3Toolkit {
       collateralSwapLogics.push(returnLogic);
 
       // ---------- add funds ----------
-      // collateralSwapLogics.push(addLogic);
+      const addLogic = protocols.permit2.newPullTokenLogic({
+        input: new common.TokenAmount(protocol.toProtocolToken(wrappedSrcToken), srcAmount),
+      });
+      collateralSwapLogics.push(addLogic);
     }
 
     // ---------- withdraw ----------
@@ -684,9 +687,13 @@ export class Adapter extends common.Web3Toolkit {
     deleveragelogics.push(repayLogic);
     portfolio.repay(swapQuotation.output.token, swapQuotation.output.amount);
 
-    // TODO:
     // ---------- add funds ----------
-    // deleveragelogics.push(addLogic);
+    if (protocolId !== 'compoundv3') {
+      const addLogic = protocols.permit2.newPullTokenLogic({
+        input: swapQuotation.input,
+      });
+      deleveragelogics.push(addLogic);
+    }
 
     // ---------- withdraw ----------
     const withdrawTokenAmount = flashLoanAggregatorQuotation.repays.tokenAmountMap[wrappedDestToken.address];

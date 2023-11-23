@@ -5,7 +5,7 @@ import { expect } from 'chai';
 import hre from 'hardhat';
 import { mainnetTokens } from '@protocolink/test-helpers';
 
-describe('Transaction: Leverage Short', function () {
+describe('Transaction: Deleverage', function () {
   const chainId = 1;
   let portfolio: Portfolio;
   let user: SignerWithAddress;
@@ -15,7 +15,7 @@ describe('Transaction: Leverage Short', function () {
     adapter = new Adapter(chainId, hre.ethers.provider, { permitType: 'approve' });
   });
 
-  context('Test Leverage Short', function () {
+  context('Test Deleverage', function () {
     const testCases = [
       {
         skip: false,
@@ -24,13 +24,30 @@ describe('Transaction: Leverage Short', function () {
         marketId: 'mainnet',
         params: {
           srcToken: mainnetTokens.USDC,
-          srcAmount: '9.6',
+          srcAmount: '1.4',
           destToken: mainnetTokens.ETH,
         },
         expects: {
           funds: [],
           balances: [],
           apporveTimes: 2,
+          recieves: [],
+        },
+      },
+      {
+        skip: false,
+        testingAccount: '0x53fb0162bC8d5EEc2fB1532923C4f8997BAce111',
+        protocolId: 'compoundv3',
+        marketId: 'USDC',
+        params: {
+          srcToken: mainnetTokens.USDC,
+          srcAmount: '5000',
+          destToken: mainnetTokens.WBTC,
+        },
+        expects: {
+          funds: [],
+          balances: [],
+          apporveTimes: 0,
           recieves: [],
         },
       },
@@ -41,7 +58,7 @@ describe('Transaction: Leverage Short', function () {
       it.only(`case ${i + 1}`, async function () {
         user = await hre.ethers.getImpersonatedSigner(testingAccount);
 
-        const sdkInfo = await adapter.getLeverageShort(protocolId, marketId, params, user.address, portfolio);
+        const sdkInfo = await adapter.getDeleverage(protocolId, marketId, params, user.address, portfolio);
 
         const estimateResult = await sdkInfo.estimateResult;
 

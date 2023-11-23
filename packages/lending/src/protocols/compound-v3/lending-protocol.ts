@@ -25,6 +25,22 @@ export class LendingProtocol extends Protocol {
   readonly id = NAME;
   readonly market: Market;
 
+  toUnderlyingToken(protocolToken: common.Token): common.Token {
+    const { baseToken } = marketMap[this.chainId][protocolToken.address];
+    return baseToken;
+  }
+
+  toProtocolToken(underlyingToken: common.Token): common.Token {
+    const { cometAddress } = getMarketBaseConfig(this.chainId, underlyingToken.unwrapped.symbol);
+    return new common.Token(
+      this.chainId,
+      cometAddress,
+      underlyingToken.decimals,
+      `c${underlyingToken.wrapped.symbol}V3`,
+      `Compound V3 ${underlyingToken.wrapped.symbol}`
+    );
+  }
+
   private marketMap: Record<number, Record<string, MarketConfig>> = supportedChainIds.reduce((accumulator, chainId) => {
     accumulator[chainId] = {};
     return accumulator;
@@ -81,9 +97,7 @@ export class LendingProtocol extends Protocol {
   }
 
   isProtocolToken(token: common.Token): boolean {
-    console.log('token :>> ', token);
     const marketConfigs = configMap[this.chainId];
-    marketConfigs.markets.forEach(({ cometAddress }) => console.log('cometAddress :>> ', cometAddress));
     return !!marketConfigs.markets.find(({ cometAddress }) => {
       return cometAddress === token.address;
     });
@@ -287,7 +301,7 @@ export class LendingProtocol extends Protocol {
   async newSupplyLogic(params: SupplyParams) {
     const { cometAddress, baseToken } = getMarketBaseConfig(this.chainId, params.marketId);
     const cToken = await this.getToken(cometAddress);
-    if (params.input.token.unwrapped.is(baseToken)) {
+    if (params.input.token.unwrapped.is(baseToken.unwrapped)) {
       const supplyQuotation = await protocols.compoundv3.getSupplyBaseQuotation(this.chainId, {
         input: params.input,
         tokenOut: cToken,

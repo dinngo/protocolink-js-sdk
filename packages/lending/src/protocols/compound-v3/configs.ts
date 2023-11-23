@@ -1,7 +1,7 @@
 import { arbitrumTokens, mainnetTokens, polygonTokens } from '@protocolink/test-helpers';
 // import { SUPPLY_ETH_NAME, SUPPLY_USDC_NAME, WITHDRAW_ETH_NAME, WITHDRAW_USDC_NAME } from '../compoundv3/constants';
 import * as common from '@protocolink/common';
-import { unwrapToken } from 'src/helper';
+import { unwrapToken, wrapToken } from 'src/helper';
 
 export interface AssetConfig {
   token: common.Token;
@@ -81,6 +81,7 @@ export const [supportedChainIds, configMap, marketMap] = configs.reduce(
     accumulator[2][config.chainId] = {};
     for (const market of config.markets) {
       accumulator[2][config.chainId][unwrapToken(config.chainId, market.baseToken).symbol] = market;
+      accumulator[2][config.chainId][market.cometAddress] = market;
     }
 
     return accumulator;

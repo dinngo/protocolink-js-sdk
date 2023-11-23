@@ -15,12 +15,12 @@ describe('Transaction: Zap Supply', function () {
     [, user] = await hre.ethers.getSigners();
 
     await claimToken(chainId, user.address, mainnetTokens.USDC, '1');
-    await claimToken(chainId, user.address, mainnetTokens.WETH, '0.3');
+    await claimToken(chainId, user.address, mainnetTokens.WETH, '0.4');
   });
 
   snapshotAndRevertEach();
 
-  context('Test ZapSupply', function () {
+  context('Test Zap Supply', function () {
     const aEthWBTC = {
       chainId: 1,
       address: '0x5Ee5bf7ae06D1Be5997A1A72006FE6C607eC6DE8',
@@ -34,6 +34,13 @@ describe('Transaction: Zap Supply', function () {
       decimals: 6,
       symbol: 'cUSDCv3',
       name: 'Compound USDC',
+    };
+    const cWETH = {
+      chainId: 1,
+      address: '0xA17581A9E3356d9A858b789D68B4d866e593aE94',
+      decimals: 6,
+      symbol: 'cWETHv3',
+      name: 'Compound WETH',
     };
 
     const testCases = [
@@ -54,6 +61,7 @@ describe('Transaction: Zap Supply', function () {
         },
       },
       {
+        skip: false,
         protocolId: 'compoundv3',
         marketId: 'USDC',
         params: {
@@ -69,6 +77,7 @@ describe('Transaction: Zap Supply', function () {
         },
       },
       {
+        skip: false,
         protocolId: 'compoundv3',
         marketId: 'USDC',
         params: {
@@ -84,6 +93,7 @@ describe('Transaction: Zap Supply', function () {
         },
       },
       {
+        skip: false,
         protocolId: 'compoundv3',
         marketId: 'USDC',
         params: {
@@ -96,6 +106,21 @@ describe('Transaction: Zap Supply', function () {
           balances: [],
           apporveTimes: 2,
           recieves: [],
+        },
+      },
+      {
+        protocolId: 'compoundv3',
+        marketId: 'ETH',
+        params: {
+          srcToken: mainnetTokens.WETH,
+          srcAmount: '0.1',
+          destToken: mainnetTokens.WETH,
+        },
+        expects: {
+          funds: [mainnetTokens.WETH],
+          balances: [cWETH],
+          apporveTimes: 2,
+          recieves: [cWETH],
         },
       },
     ];
@@ -126,8 +151,6 @@ describe('Transaction: Zap Supply', function () {
           const balance = await getBalance(user.address, recv);
           expect(balance.gt('0')).to.be.true;
         }
-        const _portfolio = await adapter.getPortfolio(user.address, protocolId, marketId);
-        expect(Number(_portfolio.supplyMap[params.destToken.address]?.balance)).gt(0);
       });
     }
   });

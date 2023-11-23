@@ -1,9 +1,9 @@
 import { Adapter } from 'src/adapter';
 import { Portfolio } from 'src/protocol.portfolio';
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
-import { claimToken, mainnetTokens } from '@protocolink/test-helpers';
 import { expect } from 'chai';
 import hre from 'hardhat';
+import { mainnetTokens } from '@protocolink/test-helpers';
 
 describe('Transaction: Collateral swap', function () {
   const chainId = 1;
@@ -59,10 +59,8 @@ describe('Transaction: Collateral swap', function () {
         user = await hre.ethers.getImpersonatedSigner(testingAccount);
 
         const sdkInfo = await adapter.getCollateralSwap(protocolId, marketId, params, user.address, portfolio);
-        // console.log('object :>> ', JSON.stringify(sdkInfo.logics, null, 2));
 
         const estimateResult = await sdkInfo.estimateResult;
-        // console.log('estimateResult :>> ', JSON.stringify(estimateResult, null, 2));
 
         expect(estimateResult).to.include.all.keys('funds', 'balances', 'approvals');
         // expect(estimateResult.approvals).to.have.lengthOf(expects.apporveTimes);
