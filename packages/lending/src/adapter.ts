@@ -307,7 +307,6 @@ export class Adapter extends common.Web3Toolkit {
     swapQuotation = await swaper.quote({ input: swapQuotation.input, tokenOut: srcToken, slippage: defaultSlippage });
 
     // ---------- flashloan ----------
-
     const flashLoanAggregatorQuotation = await protocols.utility.getFlashLoanAggregatorQuotation(this.chainId, {
       loans: [swapQuotation.input],
     });
@@ -388,6 +387,15 @@ export class Adapter extends common.Web3Toolkit {
   // 6. flashloan repay USDC
   // * srcToken => depositToken, collateralToken
   // * destToken => flashloanToken, borrowToken
+  /**
+   * params' srcToken is which user want to long(collateral token), destToken is flashloan token(borrow token)
+   * @param protocolId
+   * @param marketId
+   * @param params
+   * @param account
+   * @param portfolio
+   * @returns
+   */
   async getLeverageLong(
     protocolId: string,
     marketId: string,
@@ -439,28 +447,25 @@ export class Adapter extends common.Web3Toolkit {
     leverageLonglogics.push(swapTokenLogic);
 
     // ---------- supply ----------
-    // const aToken = toAToken(this.chainId, swapQuotation.output.token);
-    // const supplyQuotation = await protocol.getSupplyQuotation({
-    //   input: swapQuotation.output,
-    //   tokenOut: aToken,
-    // });
-
     const supplyLogic = await protocol.newSupplyLogic({ input: swapQuotation.output, marketId });
     leverageLonglogics.push(supplyLogic);
     portfolio.supply(swapQuotation.output.token, swapQuotation.output.amount);
 
     // ---------- return funds ----------
-    // const returnLogic = protocols.utility.newSendTokenLogic({
-    //   input: supplyQuotation.output,
-    //   recipient: account,
-    // });
-    // leverageLonglogics.push(returnLogic);
+    if (supplyLogic.fields.output) {
+      const returnLogic = protocols.utility.newSendTokenLogic({
+        input: supplyLogic.fields.output,
+        recipient: account,
+      });
+      leverageLonglogics.push(returnLogic);
+    }
 
     // ---------- borrow ----------
     const borrowTokenAmount = flashLoanAggregatorQuotation.repays.tokenAmountMap[swapQuotation.input.token.address];
     const borrowLogic = protocol.newBorrowLogic({
       output: borrowTokenAmount,
       interestRateMode: defaultInterestRateMode,
+      marketId,
     });
     leverageLonglogics.push(borrowLogic);
 
@@ -558,17 +563,20 @@ export class Adapter extends common.Web3Toolkit {
     portfolio.supply(swapQuotation.output.token, swapQuotation.output.amount);
 
     // ---------- return funds ----------
-    // const returnLogic = protocols.utility.newSendTokenLogic({
-    //   input: supplyQuotation.output,
-    //   recipient: account,
-    // });
-    // leverageShortlogics.push(returnLogic);
+    if (supplyLogic.fields.output) {
+      const returnLogic = protocols.utility.newSendTokenLogic({
+        input: supplyLogic.fields.output,
+        recipient: account,
+      });
+      leverageShortlogics.push(returnLogic);
+    }
 
     // ---------- borrow ----------
     const borrowTokenAmount = flashLoanAggregatorQuotation.repays.tokenAmountMap[wrappedSrcToken.address];
     const borrowLogic = protocol.newBorrowLogic({
       output: borrowTokenAmount,
       interestRateMode: defaultInterestRateMode,
+      marketId,
     });
     leverageShortlogics.push(borrowLogic);
 
@@ -667,11 +675,6 @@ export class Adapter extends common.Web3Toolkit {
     deleveragelogics.push(swapTokenLogic);
 
     // ---------- repay ----------
-    // const repayQuotation = await protocol.getRepayQuotation({
-    //   tokenIn: swapQuotation.output.token,
-    //   borrower: account,
-    //   interestRateMode: defaultInterestRateMode,
-    // });
     const repayLogic = await protocol.newRepayLogic({
       input: swapQuotation.output,
       borrower: account,
@@ -687,11 +690,6 @@ export class Adapter extends common.Web3Toolkit {
 
     // ---------- withdraw ----------
     const withdrawTokenAmount = flashLoanAggregatorQuotation.repays.tokenAmountMap[wrappedDestToken.address];
-    // const withdrawQuotation = await protocol.getWithdrawQuotation({
-    //   input: { token: toAToken(this.chainId, wrappedDestToken), amount: withdrawTokenAmount.amount },
-    //   tokenOut: wrappedDestToken,
-    // });
-
     const withdrawLogic = await protocol.newWithdrawLogic({
       output: new common.TokenAmount(wrappedDestToken, withdrawTokenAmount.amount),
       marketId,

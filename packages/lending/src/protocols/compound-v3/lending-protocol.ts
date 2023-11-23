@@ -7,9 +7,9 @@ import { Portfolio } from 'src/protocol.portfolio';
 import { Protocol } from 'src/protocol';
 import { calcAPR } from './utils';
 import * as common from '@protocolink/common';
-import { isWrappedNativeToken, unwrapToken, wrapToken } from 'src/helper';
 import * as logics from '@protocolink/logics';
 import { protocols } from '@protocolink/api';
+import { unwrapToken, wrapToken } from 'src/helper';
 
 const NAME = 'compoundv3';
 const displayName = 'Compound V3';
@@ -83,10 +83,8 @@ export class LendingProtocol extends Protocol {
   isProtocolToken(token: common.Token): boolean {
     console.log('token :>> ', token);
     const marketConfigs = configMap[this.chainId];
-    // console.log('marketConfigs.markets :>> ', marketConfigs.markets);
     marketConfigs.markets.forEach(({ cometAddress }) => console.log('cometAddress :>> ', cometAddress));
     return !!marketConfigs.markets.find(({ cometAddress }) => {
-      // console.log('cometAddress === token.address :>> ', cometAddress, token.address);
       return cometAddress === token.address;
     });
   }
@@ -252,7 +250,7 @@ export class LendingProtocol extends Protocol {
       },
     ];
     for (const { token } of assets) {
-      if (isWrappedNativeToken(this.chainId, token)) continue;
+      // if (isWrappedNativeToken(this.chainId, token)) continue;
 
       const { borrowCollateralFactor, liquidateCollateralFactor } = assetInfoMap[token.address];
       supplies.push({
