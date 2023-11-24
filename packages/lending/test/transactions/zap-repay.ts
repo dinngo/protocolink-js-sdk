@@ -1,9 +1,9 @@
 import { Adapter } from 'src/adapter';
 import { Portfolio } from 'src/protocol.portfolio';
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
+import { claimToken, mainnetTokens, snapshotAndRevertEach } from '@protocolink/test-helpers';
 import { expect } from 'chai';
 import hre from 'hardhat';
-import { mainnetTokens, snapshotAndRevertEach } from '@protocolink/test-helpers';
 
 describe('Transaction: Zap Repay', function () {
   let portfolio: Portfolio;
@@ -14,6 +14,7 @@ describe('Transaction: Zap Repay', function () {
 
   before(async function () {
     adapter = new Adapter(chainId, hre.ethers.provider, { permitType: 'approve' });
+    await claimToken(chainId, '0x7F67F6A09bcb2159b094B64B4acc53D5193AEa2E', mainnetTokens.USDC, '1000');
   });
 
   snapshotAndRevertEach();
@@ -39,6 +40,17 @@ describe('Transaction: Zap Repay', function () {
         params: {
           srcToken: mainnetTokens.ETH,
           srcAmount: '1',
+          destToken: mainnetTokens.USDC,
+        },
+      },
+      {
+        skip: false,
+        protocolId: 'aavev2',
+        marketId: 'mainnet',
+        testingAccount: '0x7F67F6A09bcb2159b094B64B4acc53D5193AEa2E',
+        params: {
+          srcToken: mainnetTokens.USDC,
+          srcAmount: '1000',
           destToken: mainnetTokens.USDC,
         },
       },

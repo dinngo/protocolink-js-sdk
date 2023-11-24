@@ -3,6 +3,7 @@ import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 import { claimToken, getBalance, mainnetTokens, snapshotAndRevertEach } from '@protocolink/test-helpers';
 import { expect } from 'chai';
 import hre from 'hardhat';
+import * as logics from '@protocolink/logics';
 
 describe('Transaction: Zap Supply', function () {
   let user: SignerWithAddress;
@@ -14,7 +15,7 @@ describe('Transaction: Zap Supply', function () {
     adapter = new Adapter(chainId, hre.ethers.provider, { permitType: 'approve' });
     [, user] = await hre.ethers.getSigners();
 
-    await claimToken(chainId, user.address, mainnetTokens.USDC, '1');
+    await claimToken(chainId, user.address, mainnetTokens.USDC, '2');
     await claimToken(chainId, user.address, mainnetTokens.WETH, '0.4');
   });
 
@@ -109,6 +110,7 @@ describe('Transaction: Zap Supply', function () {
         },
       },
       {
+        skip: false,
         protocolId: 'compoundv3',
         marketId: 'ETH',
         params: {
@@ -121,6 +123,22 @@ describe('Transaction: Zap Supply', function () {
           balances: [cWETH],
           apporveTimes: 2,
           recieves: [cWETH],
+        },
+      },
+      {
+        skip: false,
+        protocolId: 'aavev2',
+        marketId: 'mainnet',
+        params: {
+          srcToken: mainnetTokens.USDC,
+          srcAmount: '1',
+          destToken: mainnetTokens.WBTC,
+        },
+        expects: {
+          funds: [mainnetTokens.USDC],
+          balances: [logics.aavev2.mainnetTokens.aWBTC],
+          apporveTimes: 2,
+          recieves: [logics.aavev2.mainnetTokens.aWBTC],
         },
       },
     ];

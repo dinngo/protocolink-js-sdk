@@ -3,6 +3,7 @@ import { Portfolio } from 'src/protocol.portfolio';
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 import { expect } from 'chai';
 import hre from 'hardhat';
+import * as logics from '@protocolink/logics';
 import { mainnetTokens } from '@protocolink/test-helpers';
 
 describe('Transaction: Zap Withdraw', function () {
@@ -67,6 +68,7 @@ describe('Transaction: Zap Withdraw', function () {
         },
       },
       {
+        skip: false,
         testingAccount: '0xa3C1C91403F0026b9dd086882aDbC8Cdbc3b3cfB',
         protocolId: 'compoundv3',
         marketId: 'USDC',
@@ -83,6 +85,7 @@ describe('Transaction: Zap Withdraw', function () {
         },
       },
       {
+        skip: false,
         testingAccount: '0xa3C1C91403F0026b9dd086882aDbC8Cdbc3b3cfB',
         protocolId: 'compoundv3',
         marketId: 'USDC',
@@ -96,6 +99,23 @@ describe('Transaction: Zap Withdraw', function () {
           balances: [mainnetTokens.USDC],
           apporveTimes: 1,
           recieves: [mainnetTokens.ETH],
+        },
+      },
+      {
+        skip: false,
+        testingAccount: '0x7F67F6A09bcb2159b094B64B4acc53D5193AEa2E',
+        protocolId: 'aavev2',
+        marketId: 'mainnet',
+        params: {
+          srcToken: mainnetTokens.WBTC,
+          srcAmount: '2',
+          destToken: mainnetTokens.USDC,
+        },
+        expects: {
+          funds: [logics.aavev2.mainnetTokens.aWBTC],
+          balances: [mainnetTokens.USDC],
+          apporveTimes: 2,
+          recieves: [mainnetTokens.USDC],
         },
       },
     ];

@@ -1,7 +1,7 @@
 import { arbitrumTokens, mainnetTokens, polygonTokens } from '@protocolink/test-helpers';
 // import { SUPPLY_ETH_NAME, SUPPLY_USDC_NAME, WITHDRAW_ETH_NAME, WITHDRAW_USDC_NAME } from '../compoundv3/constants';
 import * as common from '@protocolink/common';
-import { unwrapToken, wrapToken } from 'src/helper';
+import { unwrapToken } from 'src/helper';
 
 export interface AssetConfig {
   token: common.Token;

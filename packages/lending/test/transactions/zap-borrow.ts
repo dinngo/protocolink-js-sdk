@@ -3,6 +3,7 @@ import { Portfolio } from 'src/protocol.portfolio';
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 import { expect } from 'chai';
 import hre from 'hardhat';
+import * as logics from '@protocolink/logics';
 import { mainnetTokens } from '@protocolink/test-helpers';
 
 describe('Transaction: Zap Borrow', function () {
@@ -44,6 +45,17 @@ describe('Transaction: Zap Borrow', function () {
         testingAccount: '0x53fb0162bC8d5EEc2fB1532923C4f8997BAce111',
         protocolId: 'compoundv3',
         marketId: 'USDC',
+        params: {
+          srcToken: mainnetTokens.USDC,
+          srcAmount: '1000',
+          destToken: mainnetTokens.USDC,
+        },
+      },
+      {
+        skip: false,
+        protocolId: 'aavev2',
+        marketId: 'mainnet',
+        testingAccount: '0x7F67F6A09bcb2159b094B64B4acc53D5193AEa2E',
         params: {
           srcToken: mainnetTokens.USDC,
           srcAmount: '1000',

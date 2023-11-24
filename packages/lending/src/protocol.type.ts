@@ -1,6 +1,5 @@
 import * as common from '@protocolink/common';
 import * as core from '@protocolink/core';
-import * as logics from '@protocolink/logics';
 
 export interface Market {
   id: string;
