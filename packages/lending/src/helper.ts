@@ -1,5 +1,5 @@
-import { arbitrumTokens, mainnetTokens, polygonTokens } from '@protocolink/test-helpers';
 // TODO: all helper, and maybe move to test-helpers
+import { arbitrumTokens, mainnetTokens, polygonTokens } from './tokens';
 import * as common from '@protocolink/common';
 
 const nativeTokenMap: Record<number, common.Token> = {

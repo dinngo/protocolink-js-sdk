@@ -24,17 +24,17 @@
   },
   "dependencies": {
     "@aave/math-utils": "^1.21.0",
+    "@protocolink/api": "0.4.8",
+    "@protocolink/common": "0.3.4",
+    "@protocolink/core": "0.4.4",
+    "@protocolink/logics": "^0.4.4",
+    "decimal.js-light": "^2.5.1"
+  },
+  "devDependencies": {
     "@nomicfoundation/hardhat-chai-matchers": "^1.0.6",
     "@nomicfoundation/hardhat-network-helpers": "^1.0.8",
     "@nomiclabs/hardhat-ethers": "^2.2.3",
-    "@protocolink/api": "^0.4.8",
-    "@protocolink/common": "^0.3.4",
-    "@protocolink/core": "^0.4.4",
-    "@protocolink/logics": "^1.0.0",
-    "decimal.js-light": "^2.5.1",
+    "@protocolink/test-helpers": "*",
     "hardhat": "^2.15.0"
-  },
-  "devDependencies": {
-    "@protocolink/test-helpers": "*"
   }
 }

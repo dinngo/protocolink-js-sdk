@@ -4,12 +4,11 @@ import { Protocol, ProtocolClass } from './protocol';
 import { Swaper, SwaperClass } from './swaper';
 import * as api from '@protocolink/api';
 import * as common from '@protocolink/common';
-import { configMap } from './adapter.config';
 import { defaultInterestRateMode, defaultSlippage } from './protocol.type';
 import flatten from 'lodash/flatten';
-import { isSameToken, wrapToken } from './helper';
 import { protocols } from '@protocolink/api';
 import { providers } from 'ethers';
+import { wrapToken } from './helper';
 
 type Options = {
   permitType: api.Permit2Type | undefined;
@@ -46,58 +45,6 @@ export class Adapter extends common.Web3Toolkit {
         this.swapers.push(new Swaper(chainId, provider));
       }
     }
-  }
-
-  get primaryStablecoin() {
-    return configMap[this.chainId].primaryStablecoin;
-  }
-
-  get secondaryStablecoin() {
-    return configMap[this.chainId].secondaryStablecoin;
-  }
-
-  get primaryNonstablecoin() {
-    return configMap[this.chainId].primaryNonstablecoin;
-  }
-
-  get wrappedPrimaryNonstablecoin() {
-    return wrapToken(this.chainId, this.primaryNonstablecoin);
-  }
-
-  chooseSuitableToken(options: {
-    tokens: common.Token[];
-    priorityToken?: common.Token;
-    excludedToken?: common.Token;
-    preferredTokens?: common.Token[];
-  }) {
-    const {
-      tokens,
-      priorityToken,
-      excludedToken,
-      preferredTokens = [
-        this.primaryStablecoin,
-        this.primaryNonstablecoin,
-        this.wrappedPrimaryNonstablecoin,
-        this.secondaryStablecoin,
-      ],
-    } = options;
-
-    const tokenMap: Record<string, common.Token> = {};
-    for (const token of tokens) {
-      if (excludedToken && isSameToken(token, excludedToken)) continue;
-      if (priorityToken && isSameToken(token, priorityToken)) {
-        return token;
-      }
-      tokenMap[token.address] = token;
-    }
-
-    for (const token of preferredTokens) {
-      if (tokenMap[token.address]) {
-        return token;
-      }
-    }
-
-    return Object.values(tokenMap)[0];
   }
 
   get protocolIds() {
@@ -171,9 +118,7 @@ export class Adapter extends common.Web3Toolkit {
     const protocol = this.getProtocol(protocolId);
 
     portfolio = portfolio || (await protocol.getPortfolio(account, marketId));
-    const healthRate = portfolio.healthRate;
-    const netAPY = portfolio.netAPY;
-    const liquidationThreshold = portfolio.liquidationThreshold;
+    const afterPortfolio = portfolio.clone();
 
     // ---------- flashloan ----------
     const flashLoanAggregatorQuotation = await protocols.utility.getFlashLoanAggregatorQuotation(this.chainId, {
@@ -204,7 +149,7 @@ export class Adapter extends common.Web3Toolkit {
 
     collateralSwapLogics.push(supplyLogic);
 
-    portfolio.supply(swapQuotation.output.token, swapQuotation.output.amount);
+    afterPortfolio.supply(swapQuotation.output.token, swapQuotation.output.amount);
 
     // compound v3 base token supplied not support collateral swap
     if (protocolId === 'compoundv3' && supplyLogic.fields.output)
@@ -234,7 +179,7 @@ export class Adapter extends common.Web3Toolkit {
     });
     collateralSwapLogics.push(withdrawLogic);
 
-    portfolio.withdraw(wrappedSrcToken, srcAmount);
+    afterPortfolio.withdraw(wrappedSrcToken, srcAmount);
 
     // ---------- flashloan repay ----------
     collateralSwapLogics.push(flashLoanRepayLogic);
@@ -260,12 +205,8 @@ export class Adapter extends common.Web3Toolkit {
         srcAmount: srcAmount,
         destToken: destToken,
         destAmount: withdrawLogic.fields.output.amount,
-        before: { healthRate, netAPY, liquidationThreshold },
-        after: {
-          healthRate: portfolio.healthRate,
-          netAPY: portfolio.netAPY,
-          liquidationThreshold: portfolio.liquidationThreshold,
-        },
+        portfolio,
+        afterPortfolio,
       },
       estimateResult,
       buildRouterTransactionRequest,
@@ -294,9 +235,7 @@ export class Adapter extends common.Web3Toolkit {
     const protocol = this.getProtocol(protocolId);
 
     portfolio = portfolio || (await protocol.getPortfolio(account, marketId));
-    const healthRate = portfolio.healthRate;
-    const netAPY = portfolio.netAPY;
-    const liquidationThreshold = portfolio.liquidationThreshold;
+    const afterPortfolio = portfolio.clone();
 
     // ---------- Pre-calc quotation ----------
     const swaper = this.findSwaper([wrappedSrcToken, wrappedDestToken]);
@@ -331,7 +270,7 @@ export class Adapter extends common.Web3Toolkit {
       marketId,
     });
     debtSwapLogics.push(repayLogic);
-    portfolio.repay(swapQuotation.output.token, swapQuotation.output.amount);
+    afterPortfolio.repay(swapQuotation.output.token, swapQuotation.output.amount);
 
     // ---------- borrow ----------
     const borrowTokenAmount = flashLoanAggregatorQuotation.repays.tokenAmountMap[wrappedDestToken.address];
@@ -340,7 +279,7 @@ export class Adapter extends common.Web3Toolkit {
       interestRateMode: defaultInterestRateMode,
     });
     debtSwapLogics.push(borrowLogic);
-    portfolio.borrow(borrowTokenAmount.token, borrowTokenAmount.amount);
+    afterPortfolio.borrow(borrowTokenAmount.token, borrowTokenAmount.amount);
 
     // ---------- flashloan repay ----------
     debtSwapLogics.push(flashLoanRepayLogic);
@@ -366,12 +305,8 @@ export class Adapter extends common.Web3Toolkit {
         srcAmount: srcAmount,
         destToken: destToken,
         destAmount: borrowTokenAmount.amount,
-        before: { healthRate, netAPY, liquidationThreshold },
-        after: {
-          healthRate: portfolio.healthRate,
-          netAPY: portfolio.netAPY,
-          liquidationThreshold: portfolio.liquidationThreshold,
-        },
+        portfolio,
+        afterPortfolio,
       },
       estimateResult,
       buildRouterTransactionRequest,
@@ -414,9 +349,7 @@ export class Adapter extends common.Web3Toolkit {
     const protocol = this.getProtocol(protocolId);
 
     portfolio = portfolio || (await protocol.getPortfolio(account, marketId));
-    const healthRate = portfolio.healthRate;
-    const netAPY = portfolio.netAPY;
-    const liquidationThreshold = portfolio.liquidationThreshold;
+    const afterPortfolio = portfolio.clone();
 
     // ---------- Pre-calc quotation ----------
     const swaper = this.findSwaper([wrappedDestToken, wrappedSrcToken]);
@@ -452,7 +385,7 @@ export class Adapter extends common.Web3Toolkit {
     // ---------- supply ----------
     const supplyLogic = await protocol.newSupplyLogic({ input: swapQuotation.output, marketId });
     leverageLonglogics.push(supplyLogic);
-    portfolio.supply(swapQuotation.output.token, swapQuotation.output.amount);
+    afterPortfolio.supply(swapQuotation.output.token, swapQuotation.output.amount);
 
     // ---------- return funds ----------
     if (supplyLogic.fields.output) {
@@ -472,7 +405,7 @@ export class Adapter extends common.Web3Toolkit {
     });
     leverageLonglogics.push(borrowLogic);
 
-    portfolio.borrow(borrowTokenAmount.token, borrowTokenAmount.amount);
+    afterPortfolio.borrow(borrowTokenAmount.token, borrowTokenAmount.amount);
 
     // ---------- flashloan repay ----------
     leverageLonglogics.push(flashLoanRepayLogic);
@@ -496,12 +429,8 @@ export class Adapter extends common.Web3Toolkit {
       fields: {
         srcToken,
         srcAmount,
-        before: { healthRate, netAPY, liquidationThreshold },
-        after: {
-          healthRate: portfolio.healthRate,
-          netAPY: portfolio.netAPY,
-          liquidationThreshold: portfolio.liquidationThreshold,
-        },
+        portfolio,
+        afterPortfolio,
       },
       estimateResult,
       buildRouterTransactionRequest,
@@ -532,9 +461,7 @@ export class Adapter extends common.Web3Toolkit {
     const protocol = this.getProtocol(protocolId);
 
     portfolio = portfolio || (await protocol.getPortfolio(account, marketId));
-    const healthRate = portfolio.healthRate;
-    const netAPY = portfolio.netAPY;
-    const liquidationThreshold = portfolio.liquidationThreshold;
+    const afterPortfolio = portfolio.clone();
 
     // ---------- flashloan ----------
     const flashLoanAggregatorQuotation = await protocols.utility.getFlashLoanAggregatorQuotation(this.chainId, {
@@ -563,7 +490,7 @@ export class Adapter extends common.Web3Toolkit {
     const supplyLogic = await protocol.newSupplyLogic({ input: swapQuotation.output, marketId });
     leverageShortlogics.push(supplyLogic);
 
-    portfolio.supply(swapQuotation.output.token, swapQuotation.output.amount);
+    afterPortfolio.supply(swapQuotation.output.token, swapQuotation.output.amount);
 
     // ---------- return funds ----------
     if (supplyLogic.fields.output) {
@@ -583,7 +510,7 @@ export class Adapter extends common.Web3Toolkit {
     });
     leverageShortlogics.push(borrowLogic);
 
-    portfolio.borrow(borrowTokenAmount.token, borrowTokenAmount.amount);
+    afterPortfolio.borrow(borrowTokenAmount.token, borrowTokenAmount.amount);
 
     // ---------- flashloan repay ----------
     leverageShortlogics.push(flashLoanRepayLogic);
@@ -607,12 +534,8 @@ export class Adapter extends common.Web3Toolkit {
       fields: {
         srcToken,
         srcAmount,
-        before: { healthRate, netAPY, liquidationThreshold },
-        after: {
-          healthRate: portfolio.healthRate,
-          netAPY: portfolio.netAPY,
-          liquidationThreshold: portfolio.liquidationThreshold,
-        },
+        portfolio,
+        afterPortfolio,
       },
       estimateResult,
       buildRouterTransactionRequest,
@@ -643,9 +566,7 @@ export class Adapter extends common.Web3Toolkit {
     const protocol = this.getProtocol(protocolId);
 
     portfolio = portfolio || (await protocol.getPortfolio(account, marketId));
-    const healthRate = portfolio.healthRate;
-    const netAPY = portfolio.netAPY;
-    const liquidationThreshold = portfolio.liquidationThreshold;
+    const afterPortfolio = portfolio.clone();
 
     // ---------- Pre-calc quotation ----------
     const swaper = this.findSwaper([wrappedDestToken, wrappedSrcToken]);
@@ -685,7 +606,7 @@ export class Adapter extends common.Web3Toolkit {
       marketId,
     });
     deleveragelogics.push(repayLogic);
-    portfolio.repay(swapQuotation.output.token, swapQuotation.output.amount);
+    afterPortfolio.repay(swapQuotation.output.token, swapQuotation.output.amount);
 
     // ---------- add funds ----------
     if (protocolId !== 'compoundv3') {
@@ -727,12 +648,8 @@ export class Adapter extends common.Web3Toolkit {
         srcAmount,
         destToken,
         destAmount: withdrawLogic.fields.output.amount,
-        before: { healthRate, netAPY, liquidationThreshold },
-        after: {
-          healthRate: portfolio.healthRate,
-          netAPY: portfolio.netAPY,
-          liquidationThreshold: portfolio.liquidationThreshold,
-        },
+        portfolio,
+        afterPortfolio,
       },
       estimateResult,
       buildRouterTransactionRequest,
@@ -752,9 +669,7 @@ export class Adapter extends common.Web3Toolkit {
     const protocol = this.getProtocol(protocolId);
 
     portfolio = portfolio || (await protocol.getPortfolio(account, marketId));
-    const healthRate = portfolio.healthRate;
-    const netAPY = portfolio.netAPY;
-    const utilization = portfolio.utilization;
+    const afterPortfolio = portfolio.clone();
 
     let supplyTokenAmount = new common.TokenAmount(srcToken, srcAmount);
 
@@ -778,7 +693,7 @@ export class Adapter extends common.Web3Toolkit {
     });
     zapSupplylogics.push(supplyLogic);
 
-    portfolio.supply(supplyTokenAmount.token, supplyTokenAmount.amount);
+    afterPortfolio.supply(supplyTokenAmount.token, supplyTokenAmount.amount);
 
     // ---------- tx related ----------
     const estimateResult = await api.estimateRouterData(
@@ -801,12 +716,8 @@ export class Adapter extends common.Web3Toolkit {
         srcAmount,
         destToken,
         destAmount: supplyTokenAmount.amount,
-        before: { healthRate, netAPY, utilization },
-        after: {
-          healthRate: portfolio.healthRate,
-          netAPY: portfolio.netAPY,
-          utilization: portfolio.utilization,
-        },
+        portfolio,
+        afterPortfolio,
       },
       logics: zapSupplylogics,
       estimateResult,
@@ -826,9 +737,7 @@ export class Adapter extends common.Web3Toolkit {
     const protocol = this.getProtocol(protocolId);
 
     portfolio = portfolio || (await protocol.getPortfolio(account, marketId));
-    const healthRate = portfolio.healthRate;
-    const netAPY = portfolio.netAPY;
-    const utilization = portfolio.utilization;
+    const afterPortfolio = portfolio.clone();
 
     // init with withdraw token amount
     let outputTokenAmount = new common.TokenAmount(srcToken, srcAmount);
@@ -840,7 +749,7 @@ export class Adapter extends common.Web3Toolkit {
     });
     zapWithdrawlogics.push(withdrawLogic);
 
-    portfolio.withdraw(srcToken, withdrawLogic.fields.output.amount);
+    afterPortfolio.withdraw(srcToken, withdrawLogic.fields.output.amount);
 
     // ---------- swap ----------
     if (!srcToken.is(destToken)) {
@@ -876,12 +785,8 @@ export class Adapter extends common.Web3Toolkit {
         srcAmount,
         destToken,
         destAmount: outputTokenAmount.amount,
-        before: { healthRate, netAPY, utilization },
-        after: {
-          healthRate: portfolio.healthRate,
-          netAPY: portfolio.netAPY,
-          utilization: portfolio.utilization,
-        },
+        portfolio,
+        afterPortfolio,
       },
       estimateResult,
       buildRouterTransactionRequest,
@@ -901,10 +806,7 @@ export class Adapter extends common.Web3Toolkit {
     const protocol = this.getProtocol(protocolId);
 
     portfolio = portfolio || (await protocol.getPortfolio(account, marketId));
-    const healthRate = portfolio.healthRate;
-    const netAPY = portfolio.netAPY;
-    const totalBorrowUSD = portfolio.totalBorrowUSD.toString();
-    const utilization = portfolio.utilization;
+    const afterPortfolio = portfolio.clone();
 
     // init with borrow token amount
     let outputTokenAmount = new common.TokenAmount(srcToken, srcAmount);
@@ -916,7 +818,8 @@ export class Adapter extends common.Web3Toolkit {
       marketId,
     });
     zapBorrowlogics.push(borrowLogic);
-    portfolio.borrow(srcToken, srcAmount);
+
+    afterPortfolio.borrow(srcToken, srcAmount);
 
     // ---------- swap ----------
     if (!srcToken.is(destToken)) {
@@ -950,14 +853,10 @@ export class Adapter extends common.Web3Toolkit {
         srcToken,
         srcAmount,
         destToken,
+
         destAmount: outputTokenAmount.amount,
-        before: { healthRate, netAPY, utilization, totalBorrowUSD },
-        after: {
-          healthRate: portfolio.healthRate,
-          netAPY: portfolio.netAPY,
-          utilization: portfolio.utilization,
-          totalBorrowUSD: portfolio.totalBorrowUSD.toString(),
-        },
+        portfolio,
+        afterPortfolio,
       },
       estimateResult,
       buildRouterTransactionRequest,
@@ -977,10 +876,7 @@ export class Adapter extends common.Web3Toolkit {
     const protocol = this.getProtocol(protocolId);
 
     portfolio = portfolio || (await protocol.getPortfolio(account, marketId));
-    const healthRate = portfolio.healthRate;
-    const netAPY = portfolio.netAPY;
-    const totalBorrowUSD = portfolio.totalBorrowUSD.toString();
-    const utilization = portfolio.utilization;
+    const afterPortfolio = portfolio.clone();
 
     // init with token in
     let repayTokenAmount = new common.TokenAmount(srcToken, srcAmount);
@@ -1006,7 +902,8 @@ export class Adapter extends common.Web3Toolkit {
     });
 
     zapRepaylogics.push(repayLogic);
-    portfolio.repay(repayTokenAmount.token, repayTokenAmount.amount);
+
+    afterPortfolio.repay(repayTokenAmount.token, repayTokenAmount.amount);
 
     // ---------- tx related ----------
     const estimateResult = await api.estimateRouterData(
@@ -1029,13 +926,8 @@ export class Adapter extends common.Web3Toolkit {
         srcAmount,
         destToken,
         destAmount: repayTokenAmount.amount,
-        before: { healthRate, netAPY, utilization, totalBorrowUSD },
-        after: {
-          healthRate: portfolio.healthRate,
-          netAPY: portfolio.netAPY,
-          utilization: portfolio.utilization,
-          totalBorrowUSD: portfolio.totalBorrowUSD.toString(),
-        },
+        portfolio,
+        afterPortfolio,
       },
       estimateResult,
       buildRouterTransactionRequest,

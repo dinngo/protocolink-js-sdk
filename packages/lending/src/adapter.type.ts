@@ -1,10 +1,7 @@
 import { Logic } from './protocol.type';
+import { Portfolio } from './protocol.portfolio';
 import * as api from '@protocolink/api';
 import * as common from '@protocolink/common';
-
-type LendingInfo = Partial<
-  Record<'healthRate' | 'netAPY' | 'liquidationThreshold' | 'utilization' | 'totalBorrowUSD', string>
->;
 
 export type BaseFields = {
   fields: {
@@ -12,8 +9,9 @@ export type BaseFields = {
     srcAmount: string;
     destToken?: common.Token;
     destAmount?: string;
-    before: LendingInfo;
-    after: LendingInfo;
+    portfolio?: Portfolio;
+    afterPortfolio?: Portfolio;
+
   };
   estimateResult: api.RouterDataEstimateResult;
   buildRouterTransactionRequest: (
