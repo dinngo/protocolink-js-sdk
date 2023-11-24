@@ -1,5 +1,15 @@
 # @furucombo/composable-router-api
 
+## 1.0.0
+
+### Major Changes
+
+- 4c97590: add Spark api, skip Spark test
+
+### Patch Changes
+
+- d941078: add Permit2 getPullTokenTokenList
+
 ## 0.4.8
 
 ### Patch Changes
