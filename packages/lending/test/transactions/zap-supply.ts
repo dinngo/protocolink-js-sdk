@@ -1,9 +1,12 @@
 import { Adapter } from 'src/adapter';
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
-import { claimToken, getBalance, mainnetTokens, snapshotAndRevertEach } from '@protocolink/test-helpers';
+import * as aaveV2 from 'src/protocols/aave-v2/tokens';
+import * as aaveV3 from 'src/protocols/aave-v3/tokens';
+import { claimToken, getBalance, snapshotAndRevertEach } from '@protocolink/test-helpers';
+import * as compoundV3 from 'src/protocols/compound-v3/tokens';
 import { expect } from 'chai';
 import hre from 'hardhat';
-import * as logics from '@protocolink/logics';
+import * as radiantV2 from 'src/protocols/radiant-v2/tokens';
 
 describe('Transaction: Zap Supply', function () {
   let user: SignerWithAddress;
@@ -15,50 +18,44 @@ describe('Transaction: Zap Supply', function () {
     adapter = new Adapter(chainId, hre.ethers.provider, { permitType: 'approve' });
     [, user] = await hre.ethers.getSigners();
 
-    await claimToken(chainId, user.address, mainnetTokens.USDC, '2');
-    await claimToken(chainId, user.address, mainnetTokens.WETH, '0.4');
+    await claimToken(chainId, user.address, aaveV3.mainnetTokens.USDC, '2');
+    await claimToken(chainId, user.address, aaveV3.mainnetTokens.WETH, '0.4');
   });
 
   snapshotAndRevertEach();
 
   context('Test Zap Supply', function () {
-    const aEthWBTC = {
-      chainId: 1,
-      address: '0x5Ee5bf7ae06D1Be5997A1A72006FE6C607eC6DE8',
-      decimals: 8,
-      symbol: 'aEthWBTC',
-      name: 'Aave Ethereum WBTC',
-    };
-    const cUSDC = {
-      chainId: 1,
-      address: '0xc3d688B66703497DAA19211EEdff47f25384cdc3',
-      decimals: 6,
-      symbol: 'cUSDCv3',
-      name: 'Compound USDC',
-    };
-    const cWETH = {
-      chainId: 1,
-      address: '0xA17581A9E3356d9A858b789D68B4d866e593aE94',
-      decimals: 6,
-      symbol: 'cWETHv3',
-      name: 'Compound WETH',
-    };
-
     const testCases = [
+      {
+        skip: false,
+        protocolId: 'radiantv2',
+        marketId: 'mainnet',
+        params: {
+          srcToken: radiantV2.mainnetTokens.USDC,
+          srcAmount: '1',
+          destToken: radiantV2.mainnetTokens.WBTC,
+        },
+        expects: {
+          funds: [radiantV2.mainnetTokens.USDC],
+          balances: [radiantV2.mainnetTokens.rWBTC],
+          apporveTimes: 2,
+          recieves: [radiantV2.mainnetTokens.rWBTC],
+        },
+      },
       {
         skip: false,
         protocolId: 'aavev3',
         marketId: 'mainnet',
         params: {
-          srcToken: mainnetTokens.USDC,
+          srcToken: aaveV3.mainnetTokens.USDC,
           srcAmount: '1',
-          destToken: mainnetTokens.WBTC,
+          destToken: aaveV3.mainnetTokens.WBTC,
         },
         expects: {
-          funds: [mainnetTokens.USDC],
-          balances: [aEthWBTC],
+          funds: [aaveV3.mainnetTokens.USDC],
+          balances: [aaveV3.mainnetTokens.aEthWBTC],
           apporveTimes: 2,
-          recieves: [aEthWBTC],
+          recieves: [aaveV3.mainnetTokens.aEthWBTC],
         },
       },
       {
@@ -66,15 +63,15 @@ describe('Transaction: Zap Supply', function () {
         protocolId: 'compoundv3',
         marketId: 'USDC',
         params: {
-          srcToken: mainnetTokens.WETH,
+          srcToken: compoundV3.mainnetTokens.WETH,
           srcAmount: '0.1',
-          destToken: mainnetTokens.USDC,
+          destToken: compoundV3.mainnetTokens.USDC,
         },
         expects: {
-          funds: [mainnetTokens.WETH],
-          balances: [cUSDC],
+          funds: [compoundV3.mainnetTokens.WETH],
+          balances: [compoundV3.mainnetTokens.cUSDCv3],
           apporveTimes: 2,
-          recieves: [cUSDC],
+          recieves: [compoundV3.mainnetTokens.cUSDCv3],
         },
       },
       {
@@ -82,12 +79,12 @@ describe('Transaction: Zap Supply', function () {
         protocolId: 'compoundv3',
         marketId: 'USDC',
         params: {
-          srcToken: mainnetTokens.WETH,
+          srcToken: compoundV3.mainnetTokens.WETH,
           srcAmount: '0.1',
-          destToken: mainnetTokens.WBTC,
+          destToken: compoundV3.mainnetTokens.WBTC,
         },
         expects: {
-          funds: [mainnetTokens.WETH],
+          funds: [compoundV3.mainnetTokens.WETH],
           balances: [],
           apporveTimes: 2,
           recieves: [],
@@ -98,12 +95,12 @@ describe('Transaction: Zap Supply', function () {
         protocolId: 'compoundv3',
         marketId: 'USDC',
         params: {
-          srcToken: mainnetTokens.WETH,
+          srcToken: compoundV3.mainnetTokens.WETH,
           srcAmount: '0.1',
-          destToken: mainnetTokens.WETH,
+          destToken: compoundV3.mainnetTokens.WETH,
         },
         expects: {
-          funds: [mainnetTokens.WETH],
+          funds: [compoundV3.mainnetTokens.WETH],
           balances: [],
           apporveTimes: 2,
           recieves: [],
@@ -114,15 +111,15 @@ describe('Transaction: Zap Supply', function () {
         protocolId: 'compoundv3',
         marketId: 'ETH',
         params: {
-          srcToken: mainnetTokens.WETH,
+          srcToken: compoundV3.mainnetTokens.WETH,
           srcAmount: '0.1',
-          destToken: mainnetTokens.WETH,
+          destToken: compoundV3.mainnetTokens.WETH,
         },
         expects: {
-          funds: [mainnetTokens.WETH],
-          balances: [cWETH],
+          funds: [compoundV3.mainnetTokens.WETH],
+          balances: [compoundV3.mainnetTokens.cWETHv3],
           apporveTimes: 2,
-          recieves: [cWETH],
+          recieves: [compoundV3.mainnetTokens.cWETHv3],
         },
       },
       {
@@ -130,24 +127,24 @@ describe('Transaction: Zap Supply', function () {
         protocolId: 'aavev2',
         marketId: 'mainnet',
         params: {
-          srcToken: mainnetTokens.USDC,
+          srcToken: aaveV2.mainnetTokens.USDC,
           srcAmount: '1',
-          destToken: mainnetTokens.WBTC,
+          destToken: aaveV2.mainnetTokens.WBTC,
         },
         expects: {
-          funds: [mainnetTokens.USDC],
-          balances: [logics.aavev2.mainnetTokens.aWBTC],
+          funds: [aaveV2.mainnetTokens.USDC],
+          balances: [aaveV2.mainnetTokens.aWBTC],
           apporveTimes: 2,
-          recieves: [logics.aavev2.mainnetTokens.aWBTC],
+          recieves: [aaveV2.mainnetTokens.aWBTC],
         },
       },
     ];
 
     for (const [i, { skip, protocolId, marketId, params, expects }] of testCases.entries()) {
       if (skip) continue;
+
       it.only(`case ${i + 1} - ${protocolId}:${marketId}`, async function () {
         const zapDepositInfo = await adapter.getZapSupply(protocolId, marketId, params, user.address);
-
         const estimateResult = zapDepositInfo.estimateResult;
 
         expect(estimateResult).to.include.all.keys('funds', 'balances', 'approvals');
@@ -167,6 +164,7 @@ describe('Transaction: Zap Supply', function () {
 
         for (const recv of expects.recieves) {
           const balance = await getBalance(user.address, recv);
+
           expect(balance.gt('0')).to.be.true;
         }
       });

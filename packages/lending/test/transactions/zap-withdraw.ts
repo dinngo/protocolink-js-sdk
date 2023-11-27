@@ -1,10 +1,12 @@
 import { Adapter } from 'src/adapter';
 import { Portfolio } from 'src/protocol.portfolio';
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
+import * as aaveV2 from 'src/protocols/aave-v2/tokens';
+import * as aaveV3 from 'src/protocols/aave-v3/tokens';
+import * as compoundV3 from 'src/protocols/compound-v3/tokens';
 import { expect } from 'chai';
 import hre from 'hardhat';
-import * as logics from '@protocolink/logics';
-import { mainnetTokens } from '@protocolink/test-helpers';
+import * as radiantV2 from 'src/protocols/radiant-v2/tokens';
 
 describe('Transaction: Zap Withdraw', function () {
   const chainId = 1;
@@ -17,21 +19,6 @@ describe('Transaction: Zap Withdraw', function () {
   });
 
   context('Test ZapWithdraw', function () {
-    const aEthWBTC = {
-      chainId: 1,
-      address: '0x5Ee5bf7ae06D1Be5997A1A72006FE6C607eC6DE8',
-      decimals: 8,
-      symbol: 'aEthWBTC',
-      name: 'Aave Ethereum WBTC',
-    };
-    const cETH = {
-      chainId: 1,
-      address: '0xA17581A9E3356d9A858b789D68B4d866e593aE94',
-      decimals: 18,
-      symbol: 'cETHv3',
-      name: 'Compound ETH',
-    };
-
     const testCases = [
       {
         skip: false,
@@ -39,15 +26,15 @@ describe('Transaction: Zap Withdraw', function () {
         protocolId: 'aavev3',
         marketId: 'mainnet',
         params: {
-          srcToken: mainnetTokens.WBTC,
+          srcToken: aaveV3.mainnetTokens.WBTC,
           srcAmount: '0.0001',
-          destToken: mainnetTokens.USDC,
+          destToken: aaveV3.mainnetTokens.USDC,
         },
         expects: {
-          funds: [aEthWBTC],
-          balances: [mainnetTokens.USDC],
+          funds: [aaveV3.mainnetTokens.aEthWBTC],
+          balances: [aaveV3.mainnetTokens.USDC],
           apporveTimes: 2,
-          recieves: [mainnetTokens.USDC],
+          recieves: [aaveV3.mainnetTokens.USDC],
         },
       },
       {
@@ -56,15 +43,15 @@ describe('Transaction: Zap Withdraw', function () {
         protocolId: 'compoundv3',
         marketId: 'ETH',
         params: {
-          srcToken: mainnetTokens.ETH,
+          srcToken: compoundV3.mainnetTokens.ETH,
           srcAmount: '100',
-          destToken: mainnetTokens.USDC,
+          destToken: compoundV3.mainnetTokens.USDC,
         },
         expects: {
-          funds: [cETH],
-          balances: [mainnetTokens.USDC],
+          funds: [compoundV3.mainnetTokens.cWETHv3],
+          balances: [compoundV3.mainnetTokens.USDC],
           apporveTimes: 2,
-          recieves: [mainnetTokens.USDC],
+          recieves: [compoundV3.mainnetTokens.USDC],
         },
       },
       {
@@ -73,15 +60,15 @@ describe('Transaction: Zap Withdraw', function () {
         protocolId: 'compoundv3',
         marketId: 'USDC',
         params: {
-          srcToken: mainnetTokens.ETH,
+          srcToken: compoundV3.mainnetTokens.ETH,
           srcAmount: '0.0025',
-          destToken: mainnetTokens.USDC,
+          destToken: compoundV3.mainnetTokens.USDC,
         },
         expects: {
           funds: [],
-          balances: [mainnetTokens.USDC],
+          balances: [compoundV3.mainnetTokens.USDC],
           apporveTimes: 1,
-          recieves: [mainnetTokens.USDC],
+          recieves: [compoundV3.mainnetTokens.USDC],
         },
       },
       {
@@ -90,15 +77,15 @@ describe('Transaction: Zap Withdraw', function () {
         protocolId: 'compoundv3',
         marketId: 'USDC',
         params: {
-          srcToken: mainnetTokens.ETH,
+          srcToken: compoundV3.mainnetTokens.ETH,
           srcAmount: '0.0025',
-          destToken: mainnetTokens.ETH,
+          destToken: compoundV3.mainnetTokens.ETH,
         },
         expects: {
           funds: [],
-          balances: [mainnetTokens.USDC],
+          balances: [compoundV3.mainnetTokens.USDC],
           apporveTimes: 1,
-          recieves: [mainnetTokens.ETH],
+          recieves: [compoundV3.mainnetTokens.ETH],
         },
       },
       {
@@ -107,27 +94,48 @@ describe('Transaction: Zap Withdraw', function () {
         protocolId: 'aavev2',
         marketId: 'mainnet',
         params: {
-          srcToken: mainnetTokens.WBTC,
-          srcAmount: '2',
-          destToken: mainnetTokens.USDC,
+          srcToken: aaveV2.mainnetTokens.WBTC,
+          srcAmount: '0.01',
+          destToken: aaveV2.mainnetTokens.USDC,
         },
         expects: {
-          funds: [logics.aavev2.mainnetTokens.aWBTC],
-          balances: [mainnetTokens.USDC],
+          funds: [aaveV2.mainnetTokens.aWBTC],
+          balances: [aaveV2.mainnetTokens.USDC],
           apporveTimes: 2,
-          recieves: [mainnetTokens.USDC],
+          recieves: [aaveV2.mainnetTokens.USDC],
+        },
+      },
+      {
+        skip: false,
+        testingAccount: '0xA38D6E3Aa9f3E4F81D4cEf9B8bCdC58aB37d066A',
+        protocolId: 'radiantv2',
+        marketId: 'mainnet',
+        params: {
+          srcToken: radiantV2.mainnetTokens.WBTC,
+          srcAmount: '0.01',
+          destToken: radiantV2.mainnetTokens.USDC,
+        },
+        expects: {
+          funds: [radiantV2.mainnetTokens.rWBTC],
+          balances: [radiantV2.mainnetTokens.USDC],
+          apporveTimes: 2,
+          recieves: [radiantV2.mainnetTokens.USDC],
         },
       },
     ];
 
     for (const [i, { skip, testingAccount, protocolId, marketId, params, expects }] of testCases.entries()) {
       if (skip) continue;
-      it.only(`case ${i + 1}`, async function () {
+      it.only(`case ${i + 1} - ${protocolId}:${marketId}`, async function () {
         user = await hre.ethers.getImpersonatedSigner(testingAccount);
 
-        const zapWithdrawInfo = await adapter.getZapWithdraw(protocolId, marketId, params, user.address, portfolio);
-
-        const estimateResult = await zapWithdrawInfo.estimateResult;
+        const { estimateResult, buildRouterTransactionRequest } = await adapter.getZapWithdraw(
+          protocolId,
+          marketId,
+          params,
+          user.address,
+          portfolio
+        );
 
         expect(estimateResult).to.include.all.keys('funds', 'balances', 'approvals');
         expect(estimateResult.funds).to.have.lengthOf(expects.funds.length);
@@ -137,7 +145,7 @@ describe('Transaction: Zap Withdraw', function () {
           await expect(user.sendTransaction(approval)).to.not.be.reverted;
         }
 
-        const transactionRequest = await zapWithdrawInfo.buildRouterTransactionRequest();
+        const transactionRequest = await buildRouterTransactionRequest();
 
         expect(transactionRequest).to.include.all.keys('to', 'data', 'value');
 

@@ -1,9 +1,11 @@
 import { Adapter } from 'src/adapter';
 import { Portfolio } from 'src/protocol.portfolio';
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
+import * as aaveV2 from 'src/protocols/aave-v2/tokens';
+import * as aaveV3 from 'src/protocols/aave-v3/tokens';
 import { expect } from 'chai';
 import hre from 'hardhat';
-import { mainnetTokens } from '@protocolink/test-helpers';
+import * as radiantV2 from 'src/protocols/radiant-v2/tokens';
 
 describe('Transaction: Debt swap', function () {
   const chainId = 1;
@@ -23,9 +25,43 @@ describe('Transaction: Debt swap', function () {
         protocolId: 'aavev3',
         marketId: 'mainnet',
         params: {
-          srcToken: mainnetTokens.USDC,
-          srcAmount: '2000000',
-          destToken: mainnetTokens.DAI,
+          srcToken: aaveV3.mainnetTokens.USDC,
+          srcAmount: '20000',
+          destToken: aaveV3.mainnetTokens.DAI,
+        },
+        expects: {
+          funds: [],
+          balances: [],
+          apporveTimes: 1, // approveDelegation
+          recieves: [],
+        },
+      },
+      {
+        skip: false,
+        testingAccount: '0x7F67F6A09bcb2159b094B64B4acc53D5193AEa2E',
+        protocolId: 'aavev2',
+        marketId: 'mainnet',
+        params: {
+          srcToken: aaveV2.mainnetTokens.USDC,
+          srcAmount: '1000',
+          destToken: aaveV2.mainnetTokens.DAI,
+        },
+        expects: {
+          funds: [],
+          balances: [],
+          apporveTimes: 1, // approveDelegation
+          recieves: [],
+        },
+      },
+      {
+        skip: false,
+        testingAccount: '0xaf0FDd39e5D92499B0eD9F68693DA99C0ec1e92e',
+        protocolId: 'radiantv2',
+        marketId: 'mainnet',
+        params: {
+          srcToken: radiantV2.mainnetTokens.USDC,
+          srcAmount: '0.1',
+          destToken: radiantV2.mainnetTokens.USDT,
         },
         expects: {
           funds: [],
@@ -38,12 +74,17 @@ describe('Transaction: Debt swap', function () {
 
     for (const [i, { skip, testingAccount, protocolId, marketId, params, expects }] of testCases.entries()) {
       if (skip) continue;
-      it.only(`case ${i + 1}`, async function () {
+      it.only(`case ${i + 1} - ${protocolId}:${marketId}`, async function () {
         user = await hre.ethers.getImpersonatedSigner(testingAccount);
 
-        const sdkInfo = await adapter.getDebtSwap(protocolId, marketId, params, user.address, portfolio);
+        const { estimateResult, buildRouterTransactionRequest } = await adapter.getDebtSwap(
+          protocolId,
+          marketId,
+          params,
+          user.address,
+          portfolio
+        );
 
-        const estimateResult = await sdkInfo.estimateResult;
         expect(estimateResult).to.include.all.keys('funds', 'balances', 'approvals');
         expect(estimateResult.approvals).to.have.lengthOf(expects.apporveTimes);
 
@@ -51,12 +92,10 @@ describe('Transaction: Debt swap', function () {
           await expect(user.sendTransaction(approval)).to.not.be.reverted;
         }
 
-        const transactionRequest = await sdkInfo.buildRouterTransactionRequest();
-
+        const transactionRequest = await buildRouterTransactionRequest();
         expect(transactionRequest).to.include.all.keys('to', 'data', 'value');
 
         const tx = await user.sendTransaction(transactionRequest);
-
         expect(tx).to.not.be.reverted;
       });
     }

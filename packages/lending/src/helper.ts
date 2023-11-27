@@ -1,17 +1,23 @@
 // TODO: all helper, and maybe move to test-helpers
-import { arbitrumTokens, mainnetTokens, polygonTokens } from './tokens';
+import { arbitrumTokens, avalancheTokens, mainnetTokens, metisTokens, optimismTokens, polygonTokens } from './tokens';
 import * as common from '@protocolink/common';
 
 const nativeTokenMap: Record<number, common.Token> = {
   [common.ChainId.mainnet]: mainnetTokens.ETH,
   [common.ChainId.polygon]: polygonTokens.MATIC,
   [common.ChainId.arbitrum]: arbitrumTokens.ETH,
+  [common.ChainId.optimism]: optimismTokens.ETH,
+  [common.ChainId.avalanche]: avalancheTokens.AVAX,
+  [common.ChainId.metis]: metisTokens.METIS,
 };
 
 const wrappedNativeTokenMap: Record<number, common.Token> = {
   [common.ChainId.mainnet]: mainnetTokens.WETH,
   [common.ChainId.polygon]: polygonTokens.WMATIC,
   [common.ChainId.arbitrum]: arbitrumTokens.WETH,
+  [common.ChainId.optimism]: optimismTokens.WETH,
+  [common.ChainId.avalanche]: avalancheTokens.WAVAX,
+  [common.ChainId.metis]: metisTokens['METIS(ERC20)'],
 };
 
 export function isSameToken(tokenA: common.Token, tokenB: common.Token): boolean {

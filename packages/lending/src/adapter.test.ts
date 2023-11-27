@@ -1,3 +1,5 @@
+// TODO: all chain and all protocol adapter.getXXXXX test
+
 import { Adapter } from './adapter';
 import { BaseParams } from './adapter.type';
 import { LendingProtocol } from './protocols/aave-v3/lending-protocol';
@@ -109,7 +111,7 @@ describe('Lending AaveV3 SDK', function () {
 
         expect(collateralSwapInfo).to.include.all.keys('fields', 'logics');
         expect(parseFloat(collateralSwapInfo.fields.destAmount!)).above(0);
-        expect(collateralSwapInfo.logics).to.have.lengthOf(6); // TODO: 7 after implement add fund logic
+        expect(collateralSwapInfo.logics).to.have.lengthOf(7);
       });
     });
   });
@@ -155,7 +157,7 @@ describe('Lending AaveV3 SDK', function () {
 
         expect(deleverageInfo).to.include.all.keys('fields', 'logics');
         expect(parseFloat(deleverageInfo.fields.destAmount!)).above(0);
-        expect(deleverageInfo.logics).to.have.lengthOf(5); // TODO: 6 after implement add fund logic
+        expect(deleverageInfo.logics).to.have.lengthOf(6);
       });
     });
   });

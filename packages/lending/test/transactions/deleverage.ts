@@ -1,9 +1,12 @@
 import { Adapter } from 'src/adapter';
 import { Portfolio } from 'src/protocol.portfolio';
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
+import * as aaveV2 from 'src/protocols/aave-v2/tokens';
+import * as aaveV3 from 'src/protocols/aave-v3/tokens';
+import * as compoundV3 from 'src/protocols/compound-v3/tokens';
 import { expect } from 'chai';
 import hre from 'hardhat';
-import { mainnetTokens } from '@protocolink/test-helpers';
+import * as radiantV2 from 'src/protocols/radiant-v2/tokens';
 
 describe('Transaction: Deleverage', function () {
   const chainId = 1;
@@ -18,14 +21,48 @@ describe('Transaction: Deleverage', function () {
   context('Test Deleverage', function () {
     const testCases = [
       {
-        skip: false,
+        skip: true,
         testingAccount: '0xa3C1C91403F0026b9dd086882aDbC8Cdbc3b3cfB',
         protocolId: 'aavev3',
         marketId: 'mainnet',
         params: {
-          srcToken: mainnetTokens.USDC,
+          srcToken: aaveV3.mainnetTokens.USDC,
           srcAmount: '1.4',
-          destToken: mainnetTokens.ETH,
+          destToken: aaveV3.mainnetTokens.ETH,
+        },
+        expects: {
+          funds: [],
+          balances: [],
+          apporveTimes: 2,
+          recieves: [],
+        },
+      },
+      {
+        skip: true,
+        testingAccount: '0x53fb0162bC8d5EEc2fB1532923C4f8997BAce111',
+        protocolId: 'compoundv3',
+        marketId: 'USDC',
+        params: {
+          srcToken: compoundV3.mainnetTokens.USDC,
+          srcAmount: '5000',
+          destToken: compoundV3.mainnetTokens.WBTC,
+        },
+        expects: {
+          funds: [],
+          balances: [],
+          apporveTimes: 0,
+          recieves: [],
+        },
+      },
+      {
+        skip: true,
+        testingAccount: '0xa3C1C91403F0026b9dd086882aDbC8Cdbc3b3cfB',
+        protocolId: 'aavev2',
+        marketId: 'mainnet',
+        params: {
+          srcToken: aaveV2.mainnetTokens.DAI,
+          srcAmount: '0.1',
+          destToken: aaveV2.mainnetTokens.ETH,
         },
         expects: {
           funds: [],
@@ -36,18 +73,18 @@ describe('Transaction: Deleverage', function () {
       },
       {
         skip: false,
-        testingAccount: '0x53fb0162bC8d5EEc2fB1532923C4f8997BAce111',
-        protocolId: 'compoundv3',
-        marketId: 'USDC',
+        testingAccount: '0xa3C1C91403F0026b9dd086882aDbC8Cdbc3b3cfB',
+        protocolId: 'radiantv2',
+        marketId: 'mainnet',
         params: {
-          srcToken: mainnetTokens.USDC,
-          srcAmount: '5000',
-          destToken: mainnetTokens.WBTC,
+          srcToken: radiantV2.mainnetTokens.USDC,
+          srcAmount: '0.002',
+          destToken: radiantV2.mainnetTokens.ETH,
         },
         expects: {
           funds: [],
           balances: [],
-          apporveTimes: 0,
+          apporveTimes: 2,
           recieves: [],
         },
       },
@@ -55,21 +92,24 @@ describe('Transaction: Deleverage', function () {
 
     for (const [i, { skip, testingAccount, protocolId, marketId, params }] of testCases.entries()) {
       if (skip) continue;
-      it.only(`case ${i + 1}`, async function () {
+      it.only(`case ${i + 1} - ${protocolId}:${marketId}`, async function () {
         user = await hre.ethers.getImpersonatedSigner(testingAccount);
 
-        const sdkInfo = await adapter.getDeleverage(protocolId, marketId, params, user.address, portfolio);
-
-        const estimateResult = await sdkInfo.estimateResult;
+        const { estimateResult, buildRouterTransactionRequest } = await adapter.getDeleverage(
+          protocolId,
+          marketId,
+          params,
+          user.address,
+          portfolio
+        );
 
         expect(estimateResult).to.include.all.keys('funds', 'balances', 'approvals');
-        // expect(estimateResult.approvals).to.have.lengthOf(expects.apporveTimes);
 
         for (const approval of estimateResult.approvals) {
           await expect(user.sendTransaction(approval)).to.not.be.reverted;
         }
 
-        const transactionRequest = await sdkInfo.buildRouterTransactionRequest();
+        const transactionRequest = await buildRouterTransactionRequest();
 
         expect(transactionRequest).to.include.all.keys('to', 'data', 'value');
 

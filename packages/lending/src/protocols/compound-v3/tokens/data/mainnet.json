@@ -1,0 +1,86 @@
+{
+  "cUSDCv3": {
+    "chainId": 1,
+    "address": "0xc3d688B66703497DAA19211EEdff47f25384cdc3",
+    "decimals": 6,
+    "symbol": "cUSDCv3",
+    "name": "Compound USDC"
+  },
+  "USDC": {
+    "chainId": 1,
+    "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+    "decimals": 6,
+    "symbol": "USDC",
+    "name": "USD Coin"
+  },
+  "COMP": {
+    "chainId": 1,
+    "address": "0xc00e94Cb662C3520282E6f5717214004A7f26888",
+    "decimals": 18,
+    "symbol": "COMP",
+    "name": "Compound"
+  },
+  "WBTC": {
+    "chainId": 1,
+    "address": "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
+    "decimals": 8,
+    "symbol": "WBTC",
+    "name": "Wrapped BTC"
+  },
+  "ETH": {
+    "chainId": 1,
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18,
+    "symbol": "ETH",
+    "name": "Ethereum"
+  },
+  "WETH": {
+    "chainId": 1,
+    "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+    "decimals": 18,
+    "symbol": "WETH",
+    "name": "Wrapped Ether"
+  },
+  "UNI": {
+    "chainId": 1,
+    "address": "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984",
+    "decimals": 18,
+    "symbol": "UNI",
+    "name": "Uniswap"
+  },
+  "LINK": {
+    "chainId": 1,
+    "address": "0x514910771AF9Ca656af840dff83E8264EcF986CA",
+    "decimals": 18,
+    "symbol": "LINK",
+    "name": "ChainLink Token"
+  },
+  "cWETHv3": {
+    "chainId": 1,
+    "address": "0xA17581A9E3356d9A858b789D68B4d866e593aE94",
+    "decimals": 18,
+    "symbol": "cWETHv3",
+    "name": "Compound WETH"
+  },
+  "cbETH": {
+    "chainId": 1,
+    "address": "0xBe9895146f7AF43049ca1c1AE358B0541Ea49704",
+    "decimals": 18,
+    "symbol": "cbETH",
+    "name": "Coinbase Wrapped Staked ETH"
+  },
+  "wstETH": {
+    "chainId": 1,
+    "address": "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0",
+    "decimals": 18,
+    "symbol": "wstETH",
+    "name": "Wrapped liquid staked Ether 2.0"
+  },
+  "rETH": {
+    "chainId": 1,
+    "address": "0xae78736Cd615f374D3085123A210448E74Fc6393",
+    "decimals": 18,
+    "symbol": "rETH",
+    "name": "Rocket Pool ETH"
+  }
+}

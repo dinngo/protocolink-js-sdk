@@ -1,8 +1,10 @@
 import arbitrumTokensJSON from './arbitrum.json';
+import avalancheTokensJSON from './avalanche.json';
 import * as common from '@protocolink/common';
 import mainnetTokensJSON from './mainnet.json';
+import metisTokensJSON from './metis.json';
+import optimismTokensJSON from './optimism.json';
 import polygonTokensJSON from './polygon.json';
-import zksyncTokensJSON from './zksync.json';
 
 type MainnetTokenSymbols = keyof typeof mainnetTokensJSON;
 
@@ -16,6 +18,14 @@ type ArbitrumTokenSymbols = keyof typeof arbitrumTokensJSON;
 
 export const arbitrumTokens = common.toTokenMap<ArbitrumTokenSymbols>(arbitrumTokensJSON);
 
-type ZkSyncTokenSymbols = keyof typeof zksyncTokensJSON;
+type avalancheTokenSymbols = keyof typeof avalancheTokensJSON;
 
-export const zksyncTokens = common.toTokenMap<ZkSyncTokenSymbols>(zksyncTokensJSON);
+export const avalancheTokens = common.toTokenMap<avalancheTokenSymbols>(avalancheTokensJSON);
+
+type metisTokenSymbols = keyof typeof metisTokensJSON;
+
+export const metisTokens = common.toTokenMap<metisTokenSymbols>(metisTokensJSON);
+
+type OptimismTokenSymbols = keyof typeof optimismTokensJSON;
+
+export const optimismTokens = common.toTokenMap<OptimismTokenSymbols>(optimismTokensJSON);

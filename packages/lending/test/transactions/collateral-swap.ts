@@ -1,9 +1,13 @@
 import { Adapter } from 'src/adapter';
 import { Portfolio } from 'src/protocol.portfolio';
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
+import * as aaveV2 from 'src/protocols/aave-v2/tokens';
+import * as aaveV3 from 'src/protocols/aave-v3/tokens';
+import { claimToken } from '@protocolink/test-helpers';
+import * as compoundV3 from 'src/protocols/compound-v3/tokens';
 import { expect } from 'chai';
 import hre from 'hardhat';
-import { mainnetTokens } from '@protocolink/test-helpers';
+import * as radiantV2 from 'src/protocols/radiant-v2/tokens';
 
 describe('Transaction: Collateral swap', function () {
   const chainId = 1;
@@ -13,6 +17,9 @@ describe('Transaction: Collateral swap', function () {
 
   before(async function () {
     adapter = new Adapter(chainId, hre.ethers.provider, { permitType: 'approve' });
+
+    await claimToken(chainId, '0x7F67F6A09bcb2159b094B64B4acc53D5193AEa2E', aaveV2.mainnetTokens.USDC, '10000');
+    await claimToken(chainId, '0xA38D6E3Aa9f3E4F81D4cEf9B8bCdC58aB37d066A', radiantV2.mainnetTokens.USDC, '10000');
   });
 
   context('Test Collateral swap', function () {
@@ -23,9 +30,9 @@ describe('Transaction: Collateral swap', function () {
         protocolId: 'aavev3',
         marketId: 'mainnet',
         params: {
-          srcToken: mainnetTokens.WBTC,
+          srcToken: aaveV3.mainnetTokens.WBTC,
           srcAmount: '48',
-          destToken: mainnetTokens.ETH,
+          destToken: aaveV3.mainnetTokens.ETH,
         },
         expects: {
           funds: [],
@@ -40,9 +47,43 @@ describe('Transaction: Collateral swap', function () {
         protocolId: 'compoundv3',
         marketId: 'USDC',
         params: {
-          srcToken: mainnetTokens.WBTC,
+          srcToken: compoundV3.mainnetTokens.WBTC,
           srcAmount: '160',
-          destToken: mainnetTokens.ETH,
+          destToken: compoundV3.mainnetTokens.ETH,
+        },
+        expects: {
+          funds: [],
+          balances: [],
+          apporveTimes: 0,
+          recieves: [],
+        },
+      },
+      {
+        skip: false,
+        testingAccount: '0x7F67F6A09bcb2159b094B64B4acc53D5193AEa2E',
+        protocolId: 'aavev2',
+        marketId: 'mainnet',
+        params: {
+          srcToken: aaveV2.mainnetTokens.WBTC,
+          srcAmount: '0.01',
+          destToken: aaveV2.mainnetTokens.USDC,
+        },
+        expects: {
+          funds: [],
+          balances: [],
+          apporveTimes: 0,
+          recieves: [],
+        },
+      },
+      {
+        skip: false,
+        testingAccount: '0xA38D6E3Aa9f3E4F81D4cEf9B8bCdC58aB37d066A',
+        protocolId: 'radiantv2',
+        marketId: 'mainnet',
+        params: {
+          srcToken: radiantV2.mainnetTokens.WBTC,
+          srcAmount: '0.01',
+          destToken: radiantV2.mainnetTokens.USDC,
         },
         expects: {
           funds: [],
@@ -55,21 +96,24 @@ describe('Transaction: Collateral swap', function () {
 
     for (const [i, { skip, testingAccount, protocolId, marketId, params }] of testCases.entries()) {
       if (skip) continue;
-      it.only(`case ${i + 1}`, async function () {
+      it.only(`case ${i + 1} - ${protocolId}:${marketId}`, async function () {
         user = await hre.ethers.getImpersonatedSigner(testingAccount);
 
-        const sdkInfo = await adapter.getCollateralSwap(protocolId, marketId, params, user.address, portfolio);
-
-        const estimateResult = await sdkInfo.estimateResult;
+        const { estimateResult, buildRouterTransactionRequest } = await adapter.getCollateralSwap(
+          protocolId,
+          marketId,
+          params,
+          user.address,
+          portfolio
+        );
 
         expect(estimateResult).to.include.all.keys('funds', 'balances', 'approvals');
-        // expect(estimateResult.approvals).to.have.lengthOf(expects.apporveTimes);
 
         for (const approval of estimateResult.approvals) {
           await expect(user.sendTransaction(approval)).to.not.be.reverted;
         }
 
-        const transactionRequest = await sdkInfo.buildRouterTransactionRequest();
+        const transactionRequest = await buildRouterTransactionRequest();
 
         expect(transactionRequest).to.include.all.keys('to', 'data', 'value');
 

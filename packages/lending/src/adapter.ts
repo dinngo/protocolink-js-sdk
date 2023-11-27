@@ -3,6 +3,7 @@ import { Portfolio } from './protocol.portfolio';
 import { Protocol, ProtocolClass } from './protocol';
 import { Swaper, SwaperClass } from './swaper';
 import * as api from '@protocolink/api';
+import { classifying } from '@protocolink/common';
 import * as common from '@protocolink/common';
 import { defaultInterestRateMode, defaultSlippage } from './protocol.type';
 import flatten from 'lodash/flatten';
@@ -101,7 +102,7 @@ export class Adapter extends common.Web3Toolkit {
   // 2. swap USDC to USDT
   // 3. deposit USDT, get aUSDT
   // 4. return-funds aUSDT to user
-  // TODO: 5. add-funds aUSDC to router
+  // 5. add-funds aUSDC to router
   // 6. withdraw aUSDC, get USDC
   // 7. flashloan repay USDC
   async getCollateralSwap(
@@ -111,7 +112,9 @@ export class Adapter extends common.Web3Toolkit {
     account: string,
     portfolio?: Portfolio
   ): Promise<BaseFields> {
-    const { srcToken, srcAmount, destToken } = params;
+    const { srcAmount } = params;
+    const srcToken = classifying(params.srcToken);
+    const destToken = classifying(params.destToken);
     const wrappedSrcToken = wrapToken(this.chainId, srcToken);
     const wrappedDestToken = wrapToken(this.chainId, destToken);
     const collateralSwapLogics: api.Logic<any>[] = [];
@@ -227,7 +230,9 @@ export class Adapter extends common.Web3Toolkit {
     account: string,
     portfolio?: Portfolio
   ): Promise<BaseFields> {
-    const { srcToken, srcAmount, destToken } = params;
+    const { srcAmount } = params;
+    const srcToken = classifying(params.srcToken);
+    const destToken = classifying(params.destToken);
     const wrappedSrcToken = wrapToken(this.chainId, srcToken);
     const wrappedDestToken = wrapToken(this.chainId, destToken);
 
@@ -314,7 +319,6 @@ export class Adapter extends common.Web3Toolkit {
     };
   }
 
-  // TODO: new SDK API to get max amount, otherwise user don't know how much he can long/short?
   // Leverage
   // tokenA: WBTC
   // 1. flashloan USDC
@@ -341,7 +345,9 @@ export class Adapter extends common.Web3Toolkit {
     account: string,
     portfolio?: Portfolio
   ): Promise<BaseFields> {
-    const { srcToken, srcAmount, destToken } = params;
+    const { srcAmount } = params;
+    const srcToken = classifying(params.srcToken);
+    const destToken = classifying(params.destToken);
     const wrappedSrcToken = wrapToken(this.chainId, srcToken);
     const wrappedDestToken = wrapToken(this.chainId, destToken);
 
@@ -454,7 +460,9 @@ export class Adapter extends common.Web3Toolkit {
     account: string,
     portfolio?: Portfolio
   ): Promise<BaseFields> {
-    const { srcToken, srcAmount, destToken } = params;
+    const { srcAmount } = params;
+    const srcToken = classifying(params.srcToken);
+    const destToken = classifying(params.destToken);
     const wrappedSrcToken = wrapToken(this.chainId, srcToken);
     const wrappedDestToken = wrapToken(this.chainId, destToken);
     const leverageShortlogics: api.Logic<any>[] = [];
@@ -547,7 +555,7 @@ export class Adapter extends common.Web3Toolkit {
   // 1. flashloan USDC
   // 2. swap USDC to WBTC
   // 3. repay WBTC
-  // TODO: 4. add fund rUSDC
+  // 4. add fund rUSDC
   // 5. withdraw USDC by rUSDC
   // 6. flashloan repay WBTC
   // * srcToken => repayToken
@@ -559,7 +567,9 @@ export class Adapter extends common.Web3Toolkit {
     account: string,
     portfolio?: Portfolio
   ): Promise<BaseFields> {
-    const { srcToken, srcAmount, destToken } = params;
+    const { srcAmount } = params;
+    const srcToken = classifying(params.srcToken);
+    const destToken = classifying(params.destToken);
     const wrappedSrcToken = wrapToken(this.chainId, srcToken);
     const wrappedDestToken = wrapToken(this.chainId, destToken);
     const deleveragelogics: api.Logic<any>[] = [];
@@ -664,11 +674,14 @@ export class Adapter extends common.Web3Toolkit {
     account: string,
     portfolio?: Portfolio
   ): Promise<BaseFields> {
-    const { srcToken, srcAmount, destToken } = params;
+    const { srcAmount } = params;
+    const srcToken = classifying(params.srcToken);
+    const destToken = classifying(params.destToken);
     const zapSupplylogics: api.Logic<any>[] = [];
     const protocol = this.getProtocol(protocolId);
 
     portfolio = portfolio || (await protocol.getPortfolio(account, marketId));
+
     const afterPortfolio = portfolio.clone();
 
     let supplyTokenAmount = new common.TokenAmount(srcToken, srcAmount);
@@ -732,7 +745,9 @@ export class Adapter extends common.Web3Toolkit {
     account: string,
     portfolio?: Portfolio
   ): Promise<BaseFields> {
-    const { srcToken, srcAmount, destToken } = params;
+    const { srcAmount } = params;
+    const srcToken = classifying(params.srcToken);
+    const destToken = classifying(params.destToken);
     const zapWithdrawlogics: api.Logic<any>[] = [];
     const protocol = this.getProtocol(protocolId);
 
@@ -801,7 +816,9 @@ export class Adapter extends common.Web3Toolkit {
     account: string,
     portfolio?: Portfolio
   ): Promise<BaseFields> {
-    const { srcToken, srcAmount, destToken } = params;
+    const { srcAmount } = params;
+    const srcToken = classifying(params.srcToken);
+    const destToken = classifying(params.destToken);
     const zapBorrowlogics: api.Logic<any>[] = [];
     const protocol = this.getProtocol(protocolId);
 
@@ -871,7 +888,9 @@ export class Adapter extends common.Web3Toolkit {
     account: string,
     portfolio?: Portfolio
   ): Promise<BaseFields> {
-    const { srcToken, srcAmount, destToken } = params;
+    const { srcAmount } = params;
+    const srcToken = classifying(params.srcToken);
+    const destToken = classifying(params.destToken);
     const zapRepaylogics: api.Logic<any>[] = [];
     const protocol = this.getProtocol(protocolId);
 

@@ -11,14 +11,10 @@ import {
 import { BigNumber, providers } from 'ethers';
 import { BorrowObject, Market, RepayParams, SupplyObject, SupplyParams, WithdrawParams } from 'src/protocol.type';
 import { ETHPriceFeedInterface } from './contracts/ETHPriceFeed';
-import { Portfolio } from 'src/protocol.portfolio';
-import { PriceOracleInterface } from './contracts/PriceOracle';
-import { Protocol } from 'src/protocol';
-import { ProtocolDataProviderInterface } from './contracts/ProtocolDataProvider';
-import { RAY_DECIMALS, SECONDS_PER_YEAR, calculateCompoundedRate, normalize } from '@aave/math-utils';
-import * as common from '@protocolink/common';
 import {
+  NAME,
   configMap,
+  displayName,
   getContractAddress,
   isAToken,
   supportedChainIds,
@@ -27,11 +23,15 @@ import {
   tokensForBorrowMap,
   tokensForDepositMap,
 } from './configs';
+import { Portfolio } from 'src/protocol.portfolio';
+import { PriceOracleInterface } from './contracts/PriceOracle';
+import { Protocol } from 'src/protocol';
+import { ProtocolDataProviderInterface } from './contracts/ProtocolDataProvider';
+import { RAY_DECIMALS, SECONDS_PER_YEAR, calculateCompoundedRate, normalize } from '@aave/math-utils';
+import * as common from '@protocolink/common';
 import { isWrappedNativeToken, wrapToken } from 'src/helper';
 import { protocols } from '@protocolink/api';
 
-const NAME = 'aavev2';
-const displayName = 'Aave V2';
 // const supportedChainIds = [1];
 
 export class LendingProtocol extends Protocol {

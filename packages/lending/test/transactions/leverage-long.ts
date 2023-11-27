@@ -1,9 +1,12 @@
 import { Adapter } from 'src/adapter';
 import { Portfolio } from 'src/protocol.portfolio';
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
+import * as aaveV2 from 'src/protocols/aave-v2/tokens';
+import * as aaveV3 from 'src/protocols/aave-v3/tokens';
+import * as compoundV3 from 'src/protocols/compound-v3/tokens';
 import { expect } from 'chai';
 import hre from 'hardhat';
-import { mainnetTokens } from '@protocolink/test-helpers';
+import * as radiantV2 from 'src/protocols/radiant-v2/tokens';
 
 describe('Transaction: Leverage Long', function () {
   const chainId = 1;
@@ -23,9 +26,9 @@ describe('Transaction: Leverage Long', function () {
         protocolId: 'aavev3',
         marketId: 'mainnet',
         params: {
-          srcToken: mainnetTokens.ETH,
+          srcToken: aaveV3.mainnetTokens.ETH,
           srcAmount: '0.0045',
-          destToken: mainnetTokens.USDC,
+          destToken: aaveV3.mainnetTokens.USDC,
         },
         expects: {
           funds: [],
@@ -40,9 +43,9 @@ describe('Transaction: Leverage Long', function () {
         protocolId: 'compoundv3',
         marketId: 'USDC',
         params: {
-          srcToken: mainnetTokens.ETH,
+          srcToken: compoundV3.mainnetTokens.ETH,
           srcAmount: '500',
-          destToken: mainnetTokens.USDC,
+          destToken: compoundV3.mainnetTokens.USDC,
         },
         expects: {
           funds: [],
@@ -55,21 +58,25 @@ describe('Transaction: Leverage Long', function () {
 
     for (const [i, { skip, testingAccount, protocolId, marketId, params }] of testCases.entries()) {
       if (skip) continue;
-      it.only(`case ${i + 1}`, async function () {
+
+      it.only(`case ${i + 1} - ${protocolId}:${marketId}`, async function () {
         user = await hre.ethers.getImpersonatedSigner(testingAccount);
 
-        const sdkInfo = await adapter.getLeverageLong(protocolId, marketId, params, user.address, portfolio);
-
-        const estimateResult = await sdkInfo.estimateResult;
+        const { estimateResult, buildRouterTransactionRequest } = await adapter.getLeverageLong(
+          protocolId,
+          marketId,
+          params,
+          user.address,
+          portfolio
+        );
 
         expect(estimateResult).to.include.all.keys('funds', 'balances', 'approvals');
-        // expect(estimateResult.approvals).to.have.lengthOf(expects.apporveTimes);
 
         for (const approval of estimateResult.approvals) {
           await expect(user.sendTransaction(approval)).to.not.be.reverted;
         }
 
-        const transactionRequest = await sdkInfo.buildRouterTransactionRequest();
+        const transactionRequest = await buildRouterTransactionRequest();
 
         expect(transactionRequest).to.include.all.keys('to', 'data', 'value');
 

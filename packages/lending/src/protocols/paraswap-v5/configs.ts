@@ -1,4 +1,1 @@
-import * as logics from '@protocolink/logics';
-import * as common from '@protocolink/common';
-
-export const NAME = 'paraswap';
+export const NAME = 'paraswap-v5';

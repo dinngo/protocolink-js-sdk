@@ -1,5 +1,4 @@
 import { NAME } from './configs';
-import { SwapTokenParams } from '@protocolink/api/dist/protocols/paraswap-v5';
 import { Swaper } from 'src/swaper';
 import * as api from '@protocolink/api';
 import * as common from '@protocolink/common';
@@ -7,7 +6,7 @@ import * as logics from '@protocolink/logics';
 import { quote } from '@protocolink/api';
 
 export class LendingSwaper extends Swaper {
-  static readonly supportedChainIds = [1];
+  static readonly supportedChainIds = [1, 10, 137, 42161, 43114];
 
   readonly id = NAME;
   readonly canCustomToken = false;
@@ -22,10 +21,10 @@ export class LendingSwaper extends Swaper {
     if (!this._tokens) {
       this._tokens = await api.protocols.paraswapv5.getSwapTokenTokenList(this.chainId);
     }
-    return this._tokens;
+    return this._tokens!;
   }
 
-  async quote(params: SwapTokenParams): Promise<logics.paraswapv5.SwapTokenLogicFields> {
+  async quote(params: api.protocols.paraswapv5.SwapTokenParams): Promise<logics.paraswapv5.SwapTokenLogicFields> {
     return await quote(this.chainId, logics.paraswapv5.SwapTokenLogic.rid, params);
   }
 

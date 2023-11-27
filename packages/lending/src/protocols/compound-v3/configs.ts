@@ -1,4 +1,4 @@
-import { arbitrumTokens, mainnetTokens, polygonTokens } from '@protocolink/test-helpers';
+import { arbitrumTokens, mainnetTokens, polygonTokens } from './tokens';
 // import { SUPPLY_ETH_NAME, SUPPLY_USDC_NAME, WITHDRAW_ETH_NAME, WITHDRAW_USDC_NAME } from '../compoundv3/constants';
 import * as common from '@protocolink/common';
 import { unwrapToken } from 'src/helper';
@@ -65,7 +65,7 @@ export const configs: Config[] = [
     markets: [
       {
         cometAddress: '0xA5EDBDD9646f8dFF606d7448e414884C7d905dCA',
-        baseToken: arbitrumTokens['USDC.e'],
+        baseToken: arbitrumTokens.USDC, // USDC.e
         baseTokenPriceFeedAddress: '0x50834f3163758fcc1df9973b6e91f0f0f0434ad3',
         // supplyFeatureName: SUPPLY_USDC_NAME,
         // withdrawFeatureName: WITHDRAW_USDC_NAME,

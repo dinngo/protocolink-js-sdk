@@ -11,28 +11,27 @@ import { AaveOracleInterface } from './contracts/AaveOracle';
 import { BigNumber, providers } from 'ethers';
 import BigNumberJS from 'bignumber.js';
 import { BorrowObject, Market, RepayParams, SupplyObject, SupplyParams, WithdrawParams } from 'src/protocol.type';
-import { PoolDataProviderInterface } from './contracts/PoolDataProvider';
-import { Portfolio } from 'src/protocol.portfolio';
-import { Protocol } from 'src/protocol';
-import { RAY_DECIMALS, SECONDS_PER_YEAR, calculateCompoundedRate, normalize } from '@aave/math-utils';
 import {
+  NAME,
   Reserve,
   configMap,
+  displayName,
   getContractAddress,
   hasNativeToken,
   isAToken,
+  supportedChainIds,
   toAToken,
   toToken,
   tokensForBorrowMap,
   tokensForDepositMap,
 } from './configs';
+import { PoolDataProviderInterface } from './contracts/PoolDataProvider';
+import { Portfolio } from 'src/protocol.portfolio';
+import { Protocol } from 'src/protocol';
+import { RAY_DECIMALS, SECONDS_PER_YEAR, calculateCompoundedRate, normalize } from '@aave/math-utils';
 import * as common from '@protocolink/common';
 import { isWrappedNativeToken, wrapToken } from 'src/helper';
 import { protocols } from '@protocolink/api';
-
-const NAME = 'aavev3';
-const displayName = 'Aave V3';
-const supportedChainIds = [1];
 
 export class LendingProtocol extends Protocol {
   static readonly markets = supportedChainIds.map((chainId) => ({

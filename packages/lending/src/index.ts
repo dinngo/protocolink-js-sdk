@@ -1,3 +1,8 @@
+// TODO: BOOOB
+import * as api from '@protocolink/api';
+
+api.init({ baseURL: 'https://api-beta.protocolink.com' });
+
 export * as adapter from './adapter';
 export * as protocol from './protocol';
 export * as protocols from './protocols';

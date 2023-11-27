@@ -1,10 +1,12 @@
 import { Adapter } from 'src/adapter';
 import { Portfolio } from 'src/protocol.portfolio';
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
+import * as aaveV2 from 'src/protocols/aave-v2/tokens';
+import * as aaveV3 from 'src/protocols/aave-v3/tokens';
+import * as compoundV3 from 'src/protocols/compound-v3/tokens';
 import { expect } from 'chai';
 import hre from 'hardhat';
-import * as logics from '@protocolink/logics';
-import { mainnetTokens } from '@protocolink/test-helpers';
+import * as radiantV2 from 'src/protocols/radiant-v2/tokens';
 
 describe('Transaction: Zap Borrow', function () {
   const chainId = 1;
@@ -24,9 +26,9 @@ describe('Transaction: Zap Borrow', function () {
         protocolId: 'aavev3',
         marketId: 'mainnet',
         params: {
-          srcToken: mainnetTokens.USDC,
+          srcToken: aaveV3.mainnetTokens.USDC,
           srcAmount: '1',
-          destToken: mainnetTokens.WBTC,
+          destToken: aaveV3.mainnetTokens.WBTC,
         },
       },
       {
@@ -35,9 +37,9 @@ describe('Transaction: Zap Borrow', function () {
         protocolId: 'compoundv3',
         marketId: 'USDC',
         params: {
-          srcToken: mainnetTokens.USDC,
+          srcToken: compoundV3.mainnetTokens.USDC,
           srcAmount: '1000',
-          destToken: mainnetTokens.WBTC,
+          destToken: compoundV3.mainnetTokens.WBTC,
         },
       },
       {
@@ -46,9 +48,9 @@ describe('Transaction: Zap Borrow', function () {
         protocolId: 'compoundv3',
         marketId: 'USDC',
         params: {
-          srcToken: mainnetTokens.USDC,
+          srcToken: compoundV3.mainnetTokens.USDC,
           srcAmount: '1000',
-          destToken: mainnetTokens.USDC,
+          destToken: compoundV3.mainnetTokens.USDC,
         },
       },
       {
@@ -57,21 +59,36 @@ describe('Transaction: Zap Borrow', function () {
         marketId: 'mainnet',
         testingAccount: '0x7F67F6A09bcb2159b094B64B4acc53D5193AEa2E',
         params: {
-          srcToken: mainnetTokens.USDC,
+          srcToken: aaveV2.mainnetTokens.USDC,
           srcAmount: '1000',
-          destToken: mainnetTokens.USDC,
+          destToken: aaveV2.mainnetTokens.USDC,
+        },
+      },
+      {
+        skip: false,
+        protocolId: 'radiantv2',
+        marketId: 'mainnet',
+        testingAccount: '0xA38D6E3Aa9f3E4F81D4cEf9B8bCdC58aB37d066A',
+        params: {
+          srcToken: radiantV2.mainnetTokens.USDC,
+          srcAmount: '1000',
+          destToken: radiantV2.mainnetTokens.USDC,
         },
       },
     ];
 
     for (const [i, { skip, testingAccount, protocolId, marketId, params }] of testCases.entries()) {
       if (skip) continue;
-      it.only(`case ${i + 1}`, async function () {
+      it.only(`case ${i + 1} - ${protocolId}:${marketId}`, async function () {
         user = await hre.ethers.getImpersonatedSigner(testingAccount);
 
-        const zapBorrowInfo = await adapter.getZapBorrow(protocolId, marketId, params, user.address, portfolio);
-
-        const estimateResult = await zapBorrowInfo.estimateResult;
+        const { estimateResult, buildRouterTransactionRequest } = await adapter.getZapBorrow(
+          protocolId,
+          marketId,
+          params,
+          user.address,
+          portfolio
+        );
 
         expect(estimateResult).to.include.all.keys('funds', 'balances', 'approvals');
         expect(estimateResult.approvals).to.have.lengthOf(1);
@@ -80,12 +97,10 @@ describe('Transaction: Zap Borrow', function () {
           await expect(user.sendTransaction(approval)).to.not.be.reverted;
         }
 
-        const transactionRequest = await zapBorrowInfo.buildRouterTransactionRequest();
-
+        const transactionRequest = await buildRouterTransactionRequest();
         expect(transactionRequest).to.include.all.keys('to', 'data', 'value');
 
         const tx = await user.sendTransaction(transactionRequest);
-
         expect(tx).to.not.be.reverted;
       });
     }

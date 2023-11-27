@@ -11,7 +11,6 @@ export type BaseFields = {
     destAmount?: string;
     portfolio?: Portfolio;
     afterPortfolio?: Portfolio;
-
   };
   estimateResult: api.RouterDataEstimateResult;
   buildRouterTransactionRequest: (
