@@ -1,5 +1,11 @@
 # @furucombo/composable-router-api
 
+## 1.0.1
+
+### Patch Changes
+
+- 7c6c188: add headers params to api build
+
 ## 1.0.0
 
 ### Major Changes
