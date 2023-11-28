@@ -1,5 +1,5 @@
 import { Permit2Type, RouterData, RouterDataEstimateResult } from './types';
-import axios from 'axios';
+import axios, { AxiosRequestConfig } from 'axios';
 import axiosRetry from 'axios-retry';
 import * as common from '@protocolink/common';
 
@@ -50,7 +50,13 @@ export async function estimateRouterData(
   return common.classifying(resp.data);
 }
 
-export async function buildRouterTransactionRequest(routerData: RouterData): Promise<common.TransactionRequest> {
-  const resp = await client.post('/v1/transactions/build', routerData);
+export async function buildRouterTransactionRequest(
+  routerData: RouterData,
+  headers?: Record<string, string>
+): Promise<common.TransactionRequest> {
+  const config: AxiosRequestConfig = {
+    headers: headers || {},
+  };
+  const resp = await client.post('/v1/transactions/build', routerData, config);
   return resp.data;
 }
