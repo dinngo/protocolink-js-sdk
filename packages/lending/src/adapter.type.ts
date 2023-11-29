@@ -14,7 +14,8 @@ export type BaseFields = {
   };
   estimateResult: api.RouterDataEstimateResult;
   buildRouterTransactionRequest: (
-    args?: Omit<api.RouterData, 'chainId' | 'account' | 'logics'>
+    args?: Omit<api.RouterData, 'chainId' | 'account' | 'logics'>,
+    apiKey?: string
   ) => Promise<common.TransactionRequest>;
   logics: Logic[];
 };

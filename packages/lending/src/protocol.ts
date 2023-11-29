@@ -60,8 +60,7 @@ export abstract class Protocol extends common.Web3Toolkit {
 
   abstract newWithdrawLogic(params: WithdrawParams): Promise<WithdrawLogic>;
 
-  // abstract newBorrowLogic(fields: BorrowFields): BorrowLogic;
-  abstract newBorrowLogic(fields: any): any;
+  abstract newBorrowLogic(params: any): any;
 
   abstract newRepayLogic(params: RepayParams): Promise<RepayLogic>;
 }

@@ -3,16 +3,15 @@ import { Portfolio } from './protocol.portfolio';
 import { Protocol, ProtocolClass } from './protocol';
 import { Swaper, SwaperClass } from './swaper';
 import * as api from '@protocolink/api';
-import { classifying } from '@protocolink/common';
 import * as common from '@protocolink/common';
 import { defaultInterestRateMode, defaultSlippage } from './protocol.type';
 import flatten from 'lodash/flatten';
-import { protocols } from '@protocolink/api';
 import { providers } from 'ethers';
 import { wrapToken } from './helper';
 
 type Options = {
   permitType: api.Permit2Type | undefined;
+  apiKey?: string | undefined;
 };
 export class Adapter extends common.Web3Toolkit {
   static Protocols: ProtocolClass[] = [];
@@ -28,12 +27,18 @@ export class Adapter extends common.Web3Toolkit {
   }
 
   permitType: api.Permit2Type | undefined = 'permit';
+  apiKey: string | undefined;
   protocolMap: Record<string, Protocol> = {};
   swapers: Swaper[] = [];
 
-  constructor(chainId: number, provider: providers.Provider, { permitType }: Options = { permitType: 'permit' }) {
+  constructor(
+    chainId: number,
+    provider: providers.Provider,
+    { permitType, apiKey }: Options = { permitType: 'permit' }
+  ) {
     super(chainId, provider);
     if (permitType) this.permitType = permitType;
+    if (apiKey) this.apiKey = apiKey;
 
     for (const Protocol of Adapter.Protocols) {
       if (Protocol.isSupported(this.chainId)) {
@@ -113,8 +118,8 @@ export class Adapter extends common.Web3Toolkit {
     portfolio?: Portfolio
   ): Promise<BaseFields> {
     const { srcAmount } = params;
-    const srcToken = classifying(params.srcToken);
-    const destToken = classifying(params.destToken);
+    const srcToken = common.classifying(params.srcToken);
+    const destToken = common.classifying(params.destToken);
     const wrappedSrcToken = wrapToken(this.chainId, srcToken);
     const wrappedDestToken = wrapToken(this.chainId, destToken);
     const collateralSwapLogics: api.Logic<any>[] = [];
@@ -124,13 +129,14 @@ export class Adapter extends common.Web3Toolkit {
     const afterPortfolio = portfolio.clone();
 
     // ---------- flashloan ----------
-    const flashLoanAggregatorQuotation = await protocols.utility.getFlashLoanAggregatorQuotation(this.chainId, {
+    const flashLoanAggregatorQuotation = await api.protocols.utility.getFlashLoanAggregatorQuotation(this.chainId, {
       repays: [{ token: wrappedSrcToken, amount: srcAmount }],
+      protocolId: protocolId,
     });
 
     const flashLoanTokenAmount = flashLoanAggregatorQuotation.loans.tokenAmountMap[wrappedSrcToken.address];
 
-    const [flashLoanLoanLogic, flashLoanRepayLogic] = protocols.utility.newFlashLoanAggregatorLogicPair(
+    const [flashLoanLoanLogic, flashLoanRepayLogic] = api.protocols.utility.newFlashLoanAggregatorLogicPair(
       flashLoanAggregatorQuotation.protocolId,
       flashLoanAggregatorQuotation.loans.toArray()
     );
@@ -162,14 +168,14 @@ export class Adapter extends common.Web3Toolkit {
     if (protocolId !== 'compoundv3') {
       if (!supplyLogic.fields.output) throw new Error('incorrect supply result');
       // ---------- return funds ----------
-      const returnLogic = protocols.utility.newSendTokenLogic({
+      const returnLogic = api.protocols.utility.newSendTokenLogic({
         input: supplyLogic.fields.output,
         recipient: account,
       });
       collateralSwapLogics.push(returnLogic);
 
       // ---------- add funds ----------
-      const addLogic = protocols.permit2.newPullTokenLogic({
+      const addLogic = api.protocols.permit2.newPullTokenLogic({
         input: new common.TokenAmount(protocol.toProtocolToken(wrappedSrcToken), srcAmount),
       });
       collateralSwapLogics.push(addLogic);
@@ -198,9 +204,13 @@ export class Adapter extends common.Web3Toolkit {
     );
 
     const buildRouterTransactionRequest = (
-      args?: Omit<api.RouterData, 'chainId' | 'account' | 'logics'>
+      args?: Omit<api.RouterData, 'chainId' | 'account' | 'logics'>,
+      apiKey?: string
     ): Promise<common.TransactionRequest> =>
-      api.buildRouterTransactionRequest({ ...args, chainId: this.chainId, account, logics: collateralSwapLogics });
+      api.buildRouterTransactionRequest(
+        { ...args, chainId: this.chainId, account, logics: collateralSwapLogics },
+        apiKey ? { 'x-api-key': apiKey } : undefined
+      );
 
     return {
       fields: {
@@ -231,8 +241,8 @@ export class Adapter extends common.Web3Toolkit {
     portfolio?: Portfolio
   ): Promise<BaseFields> {
     const { srcAmount } = params;
-    const srcToken = classifying(params.srcToken);
-    const destToken = classifying(params.destToken);
+    const srcToken = common.classifying(params.srcToken);
+    const destToken = common.classifying(params.destToken);
     const wrappedSrcToken = wrapToken(this.chainId, srcToken);
     const wrappedDestToken = wrapToken(this.chainId, destToken);
 
@@ -254,10 +264,10 @@ export class Adapter extends common.Web3Toolkit {
     swapQuotation = await swaper.quote({ input: swapQuotation.input, tokenOut: srcToken, slippage: defaultSlippage });
 
     // ---------- flashloan ----------
-    const flashLoanAggregatorQuotation = await protocols.utility.getFlashLoanAggregatorQuotation(this.chainId, {
+    const flashLoanAggregatorQuotation = await api.protocols.utility.getFlashLoanAggregatorQuotation(this.chainId, {
       loans: [swapQuotation.input],
     });
-    const [flashLoanLoanLogic, flashLoanRepayLogic] = protocols.utility.newFlashLoanAggregatorLogicPair(
+    const [flashLoanLoanLogic, flashLoanRepayLogic] = api.protocols.utility.newFlashLoanAggregatorLogicPair(
       flashLoanAggregatorQuotation.protocolId,
       flashLoanAggregatorQuotation.loans.toArray()
     );
@@ -346,8 +356,8 @@ export class Adapter extends common.Web3Toolkit {
     portfolio?: Portfolio
   ): Promise<BaseFields> {
     const { srcAmount } = params;
-    const srcToken = classifying(params.srcToken);
-    const destToken = classifying(params.destToken);
+    const srcToken = common.classifying(params.srcToken);
+    const destToken = common.classifying(params.destToken);
     const wrappedSrcToken = wrapToken(this.chainId, srcToken);
     const wrappedDestToken = wrapToken(this.chainId, destToken);
 
@@ -373,11 +383,11 @@ export class Adapter extends common.Web3Toolkit {
     });
 
     // ---------- flashloan ----------
-    const flashLoanAggregatorQuotation = await protocols.utility.getFlashLoanAggregatorQuotation(this.chainId, {
+    const flashLoanAggregatorQuotation = await api.protocols.utility.getFlashLoanAggregatorQuotation(this.chainId, {
       loans: [swapQuotation.input],
     });
 
-    const [flashLoanLoanLogic, flashLoanRepayLogic] = protocols.utility.newFlashLoanAggregatorLogicPair(
+    const [flashLoanLoanLogic, flashLoanRepayLogic] = api.protocols.utility.newFlashLoanAggregatorLogicPair(
       flashLoanAggregatorQuotation.protocolId,
       flashLoanAggregatorQuotation.loans.toArray()
     );
@@ -395,7 +405,7 @@ export class Adapter extends common.Web3Toolkit {
 
     // ---------- return funds ----------
     if (supplyLogic.fields.output) {
-      const returnLogic = protocols.utility.newSendTokenLogic({
+      const returnLogic = api.protocols.utility.newSendTokenLogic({
         input: supplyLogic.fields.output,
         recipient: account,
       });
@@ -461,8 +471,8 @@ export class Adapter extends common.Web3Toolkit {
     portfolio?: Portfolio
   ): Promise<BaseFields> {
     const { srcAmount } = params;
-    const srcToken = classifying(params.srcToken);
-    const destToken = classifying(params.destToken);
+    const srcToken = common.classifying(params.srcToken);
+    const destToken = common.classifying(params.destToken);
     const wrappedSrcToken = wrapToken(this.chainId, srcToken);
     const wrappedDestToken = wrapToken(this.chainId, destToken);
     const leverageShortlogics: api.Logic<any>[] = [];
@@ -472,13 +482,13 @@ export class Adapter extends common.Web3Toolkit {
     const afterPortfolio = portfolio.clone();
 
     // ---------- flashloan ----------
-    const flashLoanAggregatorQuotation = await protocols.utility.getFlashLoanAggregatorQuotation(this.chainId, {
+    const flashLoanAggregatorQuotation = await api.protocols.utility.getFlashLoanAggregatorQuotation(this.chainId, {
       loans: [{ token: wrappedSrcToken, amount: srcAmount }],
     });
 
     const flashLoanTokenAmount = flashLoanAggregatorQuotation.loans.tokenAmountMap[wrappedSrcToken.address];
 
-    const [flashLoanLoanLogic, flashLoanRepayLogic] = protocols.utility.newFlashLoanAggregatorLogicPair(
+    const [flashLoanLoanLogic, flashLoanRepayLogic] = api.protocols.utility.newFlashLoanAggregatorLogicPair(
       flashLoanAggregatorQuotation.protocolId,
       flashLoanAggregatorQuotation.loans.toArray()
     );
@@ -502,7 +512,7 @@ export class Adapter extends common.Web3Toolkit {
 
     // ---------- return funds ----------
     if (supplyLogic.fields.output) {
-      const returnLogic = protocols.utility.newSendTokenLogic({
+      const returnLogic = api.protocols.utility.newSendTokenLogic({
         input: supplyLogic.fields.output,
         recipient: account,
       });
@@ -568,8 +578,8 @@ export class Adapter extends common.Web3Toolkit {
     portfolio?: Portfolio
   ): Promise<BaseFields> {
     const { srcAmount } = params;
-    const srcToken = classifying(params.srcToken);
-    const destToken = classifying(params.destToken);
+    const srcToken = common.classifying(params.srcToken);
+    const destToken = common.classifying(params.destToken);
     const wrappedSrcToken = wrapToken(this.chainId, srcToken);
     const wrappedDestToken = wrapToken(this.chainId, destToken);
     const deleveragelogics: api.Logic<any>[] = [];
@@ -594,11 +604,11 @@ export class Adapter extends common.Web3Toolkit {
     });
 
     // ---------- flashloan ----------
-    const flashLoanAggregatorQuotation = await protocols.utility.getFlashLoanAggregatorQuotation(this.chainId, {
+    const flashLoanAggregatorQuotation = await api.protocols.utility.getFlashLoanAggregatorQuotation(this.chainId, {
       loans: [swapQuotation.input],
     });
 
-    const [flashLoanLoanLogic, flashLoanRepayLogic] = protocols.utility.newFlashLoanAggregatorLogicPair(
+    const [flashLoanLoanLogic, flashLoanRepayLogic] = api.protocols.utility.newFlashLoanAggregatorLogicPair(
       flashLoanAggregatorQuotation.protocolId,
       flashLoanAggregatorQuotation.loans.toArray()
     );
@@ -620,7 +630,7 @@ export class Adapter extends common.Web3Toolkit {
 
     // ---------- add funds ----------
     if (protocolId !== 'compoundv3') {
-      const addLogic = protocols.permit2.newPullTokenLogic({
+      const addLogic = api.protocols.permit2.newPullTokenLogic({
         input: swapQuotation.input,
       });
       deleveragelogics.push(addLogic);
@@ -675,8 +685,8 @@ export class Adapter extends common.Web3Toolkit {
     portfolio?: Portfolio
   ): Promise<BaseFields> {
     const { srcAmount } = params;
-    const srcToken = classifying(params.srcToken);
-    const destToken = classifying(params.destToken);
+    const srcToken = common.classifying(params.srcToken);
+    const destToken = common.classifying(params.destToken);
     const zapSupplylogics: api.Logic<any>[] = [];
     const protocol = this.getProtocol(protocolId);
 
@@ -746,8 +756,8 @@ export class Adapter extends common.Web3Toolkit {
     portfolio?: Portfolio
   ): Promise<BaseFields> {
     const { srcAmount } = params;
-    const srcToken = classifying(params.srcToken);
-    const destToken = classifying(params.destToken);
+    const srcToken = common.classifying(params.srcToken);
+    const destToken = common.classifying(params.destToken);
     const zapWithdrawlogics: api.Logic<any>[] = [];
     const protocol = this.getProtocol(protocolId);
 
@@ -817,8 +827,8 @@ export class Adapter extends common.Web3Toolkit {
     portfolio?: Portfolio
   ): Promise<BaseFields> {
     const { srcAmount } = params;
-    const srcToken = classifying(params.srcToken);
-    const destToken = classifying(params.destToken);
+    const srcToken = common.classifying(params.srcToken);
+    const destToken = common.classifying(params.destToken);
     const zapBorrowlogics: api.Logic<any>[] = [];
     const protocol = this.getProtocol(protocolId);
 
@@ -889,8 +899,8 @@ export class Adapter extends common.Web3Toolkit {
     portfolio?: Portfolio
   ): Promise<BaseFields> {
     const { srcAmount } = params;
-    const srcToken = classifying(params.srcToken);
-    const destToken = classifying(params.destToken);
+    const srcToken = common.classifying(params.srcToken);
+    const destToken = common.classifying(params.destToken);
     const zapRepaylogics: api.Logic<any>[] = [];
     const protocol = this.getProtocol(protocolId);
 

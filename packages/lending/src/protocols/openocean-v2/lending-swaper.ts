@@ -36,18 +36,3 @@ export class LendingSwaper extends Swaper {
     return true;
   }
 }
-
-// export async function getSwapTokenTokenList(chainId: number): Promise<logics.openoceanv2.SwapTokenLogicTokenList> {
-//   return getProtocolTokenList(chainId, logics.openoceanv2.SwapTokenLogic.rid);
-// }
-
-// export async function getSwapTokenQuotation(
-//   chainId: number,
-//   params: SwapTokenParams
-// ): Promise<logics.openoceanv2.SwapTokenLogicFields> {
-//   return quote(chainId, logics.openoceanv2.SwapTokenLogic.rid, params);
-// }
-
-// export function newSwapTokenLogic(fields: SwapTokenFields): SwapTokenLogic {
-//   return { rid: logics.openoceanv2.SwapTokenLogic.rid, fields };
-// }

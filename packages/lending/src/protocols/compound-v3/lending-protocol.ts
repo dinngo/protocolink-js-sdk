@@ -2,7 +2,15 @@ import { BigNumber, providers } from 'ethers';
 import { BorrowObject, Market, RepayParams, SupplyObject, SupplyParams, WithdrawParams } from 'src/protocol.type';
 import { CometInterface } from './contracts/Comet';
 import { Comet__factory } from './contracts';
-import { MarketConfig, configMap, getMarketBaseConfig, marketMap, supportedChainIds } from './configs';
+import {
+  DISPLAY_NAME,
+  MarketConfig,
+  NAME,
+  configMap,
+  getMarketBaseConfig,
+  marketMap,
+  supportedChainIds,
+} from './configs';
 import { Portfolio } from 'src/protocol.portfolio';
 import { Protocol } from 'src/protocol';
 import { calcAPR } from './utils';
@@ -10,9 +18,6 @@ import * as common from '@protocolink/common';
 import * as logics from '@protocolink/logics';
 import { protocols } from '@protocolink/api';
 import { unwrapToken, wrapToken } from 'src/helper';
-
-const NAME = 'compoundv3';
-const displayName = 'Compound V3';
 
 export class LendingProtocol extends Protocol {
   static readonly markets = supportedChainIds.reduce((accumulator, chainId) => {
@@ -89,7 +94,7 @@ export class LendingProtocol extends Protocol {
   }
 
   getMarketName(id: string) {
-    return `${displayName} ${id}`;
+    return `${DISPLAY_NAME} ${id}`;
   }
 
   canDebtSwap() {

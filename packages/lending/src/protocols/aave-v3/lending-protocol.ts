@@ -12,10 +12,10 @@ import { BigNumber, providers } from 'ethers';
 import BigNumberJS from 'bignumber.js';
 import { BorrowObject, Market, RepayParams, SupplyObject, SupplyParams, WithdrawParams } from 'src/protocol.type';
 import {
+  DISPLAY_NAME,
   NAME,
   Reserve,
   configMap,
-  displayName,
   getContractAddress,
   hasNativeToken,
   isAToken,
@@ -101,7 +101,7 @@ export class LendingProtocol extends Protocol {
   }
 
   getMarketName() {
-    return displayName;
+    return DISPLAY_NAME;
   }
 
   private reserveDataMap?: Record<
@@ -262,7 +262,6 @@ export class LendingProtocol extends Protocol {
       const userBalances = userBalancesMap[token.address];
       const { supplyBalance: balance } = userBalances;
 
-      // TODO: needs to match the Aave interface
       // https://github.com/aave/interface/blob/release-2023-08-12_03-18/src/components/transactions/utils.ts#L61
       const usageAsCollateralEnabled = debtCeiling.gt(0)
         ? false

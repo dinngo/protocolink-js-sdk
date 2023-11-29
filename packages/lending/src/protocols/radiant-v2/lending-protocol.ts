@@ -7,13 +7,9 @@ import {
   ProtocolDataProvider__factory,
 } from './contracts';
 import { BorrowObject, Market, RepayParams, SupplyObject, SupplyParams, WithdrawParams } from 'src/protocol.type';
-import { Portfolio } from 'src/protocol.portfolio';
-import { PriceOracleInterface } from './contracts/PriceOracle';
-import { Protocol } from 'src/protocol';
-import { ProtocolDataProviderInterface } from './contracts/ProtocolDataProvider';
-import { RAY_DECIMALS, SECONDS_PER_YEAR, calculateCompoundedRate, normalize } from '@aave/math-utils';
-import * as common from '@protocolink/common';
 import {
+  DISPLAY_NAME,
+  NAME,
   configMap,
   getContractAddress,
   isRToken,
@@ -23,12 +19,15 @@ import {
   tokensForBorrowMap,
   tokensForDepositMap,
 } from './configs';
+import { Portfolio } from 'src/protocol.portfolio';
+import { PriceOracleInterface } from './contracts/PriceOracle';
+import { Protocol } from 'src/protocol';
+import { ProtocolDataProviderInterface } from './contracts/ProtocolDataProvider';
+import { RAY_DECIMALS, SECONDS_PER_YEAR, calculateCompoundedRate, normalize } from '@aave/math-utils';
+import * as common from '@protocolink/common';
 import { isWrappedNativeToken, wrapToken } from 'src/helper';
 import { protocols } from '@protocolink/api';
 import { providers } from 'ethers';
-
-const NAME = 'radiantv2';
-const displayName = 'Radiant V2';
 
 export class LendingProtocol extends Protocol {
   static readonly markets = supportedChainIds.map((chainId) => ({
@@ -98,7 +97,7 @@ export class LendingProtocol extends Protocol {
   }
 
   getMarketName() {
-    return displayName;
+    return DISPLAY_NAME;
   }
 
   private reserveDataMap?: Record<

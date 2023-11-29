@@ -2,6 +2,9 @@ import { arbitrumTokens, mainnetTokens } from './tokens';
 import * as common from '@protocolink/common';
 import { isNativeToken, unwrapToken, wrapToken } from 'src/helper';
 
+export const NAME = 'radiant-v2';
+export const DISPLAY_NAME = 'Radiant V2';
+
 export enum RateMode {
   STABLE = 1,
   VARIABLE,

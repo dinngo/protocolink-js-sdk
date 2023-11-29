@@ -10,11 +10,10 @@ import {
 } from './contracts';
 import { BigNumber, providers } from 'ethers';
 import { BorrowObject, Market, RepayParams, SupplyObject, SupplyParams, WithdrawParams } from 'src/protocol.type';
-import { ETHPriceFeedInterface } from './contracts/ETHPriceFeed';
 import {
+  DISPLAY_NAME,
   NAME,
   configMap,
-  displayName,
   getContractAddress,
   isAToken,
   supportedChainIds,
@@ -23,6 +22,7 @@ import {
   tokensForBorrowMap,
   tokensForDepositMap,
 } from './configs';
+import { ETHPriceFeedInterface } from './contracts/ETHPriceFeed';
 import { Portfolio } from 'src/protocol.portfolio';
 import { PriceOracleInterface } from './contracts/PriceOracle';
 import { Protocol } from 'src/protocol';
@@ -31,8 +31,6 @@ import { RAY_DECIMALS, SECONDS_PER_YEAR, calculateCompoundedRate, normalize } fr
 import * as common from '@protocolink/common';
 import { isWrappedNativeToken, wrapToken } from 'src/helper';
 import { protocols } from '@protocolink/api';
-
-// const supportedChainIds = [1];
 
 export class LendingProtocol extends Protocol {
   static readonly markets = supportedChainIds.map((chainId) => ({
@@ -123,7 +121,7 @@ export class LendingProtocol extends Protocol {
   }
 
   getMarketName() {
-    return displayName;
+    return DISPLAY_NAME;
   }
 
   private reserveDataMap?: Record<
