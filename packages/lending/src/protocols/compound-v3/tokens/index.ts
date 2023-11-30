@@ -11,6 +11,6 @@ type PolygonTokenSymbols = keyof typeof polygonTokensJSON;
 
 export const polygonTokens = common.toTokenMap<PolygonTokenSymbols>(polygonTokensJSON);
 
-type ArbitrumTokenSymbols = keyof typeof polygonTokensJSON;
+type ArbitrumTokenSymbols = keyof typeof arbitrumTokensJSON;
 
 export const arbitrumTokens = common.toTokenMap<ArbitrumTokenSymbols>(arbitrumTokensJSON);
