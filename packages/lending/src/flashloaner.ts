@@ -1,5 +1,4 @@
-import { FlashLoanFields, FlashLoanLogic } from '@protocolink/api';
-import * as api from '@protocolink/api';
+import * as apisdk from '@protocolink/api';
 import * as common from '@protocolink/common';
 import * as logics from '@protocolink/logics';
 import { providers } from 'ethers';
@@ -31,9 +30,11 @@ export abstract class FlashLoaner extends common.Web3Toolkit {
     return !!this.tokenMap[token.address];
   }
 
-  abstract quote(params: api.protocols.aavev3.FlashLoanParams): Promise<logics.aavev3.FlashLoanLogicQuotation>;
+  abstract quote(params: apisdk.protocols.aavev3.FlashLoanParams): Promise<logics.aavev3.FlashLoanLogicQuotation>;
 
-  abstract newFlashLoanLogicPair(loans: FlashLoanFields['loans']): [FlashLoanLogic, FlashLoanLogic];
+  abstract newFlashLoanLogicPair(
+    loans: apisdk.FlashLoanFields['loans']
+  ): [apisdk.FlashLoanLogic, apisdk.FlashLoanLogic];
 }
 
 export interface FlashLoanerClass {

@@ -27,7 +27,7 @@ describe('Transaction: Zap Repay', function () {
     const testCases = [
       {
         skip: false,
-        protocolId: 'aavev3',
+        protocolId: 'aave-v3',
         marketId: 'mainnet',
         testingAccount: '0x06e4Cb4f3ba9A2916B6384aCbdeAa74dAAF91550',
         params: {
@@ -38,7 +38,7 @@ describe('Transaction: Zap Repay', function () {
       },
       {
         skip: false,
-        protocolId: 'compoundv3',
+        protocolId: 'compound-v2',
         marketId: 'USDC',
         testingAccount: '0x53fb0162bC8d5EEc2fB1532923C4f8997BAce111',
         params: {
@@ -49,7 +49,7 @@ describe('Transaction: Zap Repay', function () {
       },
       {
         skip: false,
-        protocolId: 'aavev2',
+        protocolId: 'aave-v2',
         marketId: 'mainnet',
         testingAccount: '0x7F67F6A09bcb2159b094B64B4acc53D5193AEa2E',
         params: {
@@ -73,7 +73,7 @@ describe('Transaction: Zap Repay', function () {
 
     for (const [i, { skip, protocolId, marketId, testingAccount, params }] of testCases.entries()) {
       if (skip) continue;
-      it.only(`case ${i + 1} - ${protocolId}:${marketId}`, async function () {
+      it(`case ${i + 1} - ${protocolId}:${marketId}`, async function () {
         user = await hre.ethers.getImpersonatedSigner(testingAccount);
         portfolio = await adapter.getPortfolio(user.address, protocolId, marketId);
 

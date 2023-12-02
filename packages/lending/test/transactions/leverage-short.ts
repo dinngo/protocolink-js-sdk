@@ -23,7 +23,7 @@ describe('Transaction: Leverage Short', function () {
       {
         skip: false,
         testingAccount: '0xa3C1C91403F0026b9dd086882aDbC8Cdbc3b3cfB',
-        protocolId: 'aavev3',
+        protocolId: 'aave-v3',
         marketId: 'mainnet',
         params: {
           srcToken: aaveV3.mainnetTokens.USDC,
@@ -34,7 +34,7 @@ describe('Transaction: Leverage Short', function () {
           funds: [],
           balances: [],
           apporveTimes: 2,
-          recieves: [],
+          receives: [],
         },
       },
     ];
@@ -42,7 +42,7 @@ describe('Transaction: Leverage Short', function () {
     for (const [i, { skip, testingAccount, protocolId, marketId, params }] of testCases.entries()) {
       if (skip) continue;
 
-      it.only(`case ${i + 1} - ${protocolId}:${marketId}`, async function () {
+      it(`case ${i + 1} - ${protocolId}:${marketId}`, async function () {
         user = await hre.ethers.getImpersonatedSigner(testingAccount);
 
         const { estimateResult, buildRouterTransactionRequest } = await adapter.getLeverageShort(

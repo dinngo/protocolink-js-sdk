@@ -1,9 +1,8 @@
 import { NAME } from './configs';
 import { Swaper } from 'src/swaper';
-import * as api from '@protocolink/api';
+import * as apisdk from '@protocolink/api';
 import * as common from '@protocolink/common';
 import * as logics from '@protocolink/logics';
-import { quote } from '@protocolink/api';
 
 export class LendingSwaper extends Swaper {
   static readonly supportedChainIds = [1, 10, 137, 42161, 43114];
@@ -19,17 +18,17 @@ export class LendingSwaper extends Swaper {
 
   async tokens() {
     if (!this._tokens) {
-      this._tokens = await api.protocols.paraswapv5.getSwapTokenTokenList(this.chainId);
+      this._tokens = await apisdk.protocols.paraswapv5.getSwapTokenTokenList(this.chainId);
     }
     return this._tokens!;
   }
 
-  async quote(params: api.protocols.paraswapv5.SwapTokenParams): Promise<logics.paraswapv5.SwapTokenLogicFields> {
-    return await quote(this.chainId, logics.paraswapv5.SwapTokenLogic.rid, params);
+  async quote(params: apisdk.protocols.paraswapv5.SwapTokenParams): Promise<logics.paraswapv5.SwapTokenLogicFields> {
+    return await apisdk.quote(this.chainId, logics.paraswapv5.SwapTokenLogic.rid, params);
   }
 
-  newSwapTokenLogic(fields: api.protocols.paraswapv5.SwapTokenFields): api.protocols.paraswapv5.SwapTokenLogic {
-    return api.protocols.paraswapv5.newSwapTokenLogic(fields);
+  newSwapTokenLogic(fields: apisdk.protocols.paraswapv5.SwapTokenFields): apisdk.protocols.paraswapv5.SwapTokenLogic {
+    return apisdk.protocols.paraswapv5.newSwapTokenLogic(fields);
   }
 
   isExactIn() {

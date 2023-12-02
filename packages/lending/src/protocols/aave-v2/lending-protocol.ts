@@ -28,9 +28,9 @@ import { PriceOracleInterface } from './contracts/PriceOracle';
 import { Protocol } from 'src/protocol';
 import { ProtocolDataProviderInterface } from './contracts/ProtocolDataProvider';
 import { RAY_DECIMALS, SECONDS_PER_YEAR, calculateCompoundedRate, normalize } from '@aave/math-utils';
+import * as apisdk from '@protocolink/api';
 import * as common from '@protocolink/common';
 import { isWrappedNativeToken, wrapToken } from 'src/helper';
-import { protocols } from '@protocolink/api';
 
 export class LendingProtocol extends Protocol {
   static readonly markets = supportedChainIds.map((chainId) => ({
@@ -330,34 +330,34 @@ export class LendingProtocol extends Protocol {
   }
 
   async newSupplyLogic(params: SupplyParams) {
-    const supplyQuotation = await protocols.aavev2.getDepositQuotation(this.chainId, {
+    const supplyQuotation = await apisdk.protocols.aavev2.getDepositQuotation(this.chainId, {
       input: params.input,
       tokenOut: toAToken(this.chainId, params.input.token),
     });
-    return protocols.aavev2.newDepositLogic({ ...supplyQuotation, balanceBps: common.BPS_BASE });
+    return apisdk.protocols.aavev2.newDepositLogic({ ...supplyQuotation, balanceBps: common.BPS_BASE });
   }
 
   async newWithdrawLogic(params: WithdrawParams) {
-    const withdrawQuotation = await protocols.aavev2.getWithdrawQuotation(this.chainId, {
+    const withdrawQuotation = await apisdk.protocols.aavev2.getWithdrawQuotation(this.chainId, {
       input: {
         token: toAToken(this.chainId, params.output.token),
         amount: params.output.amount,
       },
       tokenOut: params.output.token,
     });
-    return protocols.aavev2.newWithdrawLogic(withdrawQuotation);
+    return apisdk.protocols.aavev2.newWithdrawLogic(withdrawQuotation);
   }
 
-  newBorrowLogic = protocols.aavev2.newBorrowLogic;
+  newBorrowLogic = apisdk.protocols.aavev2.newBorrowLogic;
 
   async newRepayLogic(params: RepayParams) {
     if (!params.borrower || !params.interestRateMode) throw new Error('missing requied params');
-    const repayQuotation = await protocols.aavev2.getRepayQuotation(this.chainId, {
+    const repayQuotation = await apisdk.protocols.aavev2.getRepayQuotation(this.chainId, {
       tokenIn: params.input.token,
       borrower: params.borrower,
       interestRateMode: params.interestRateMode,
     });
     repayQuotation.input.amount = params.input.amount;
-    return protocols.aavev2.newRepayLogic(repayQuotation);
+    return apisdk.protocols.aavev2.newRepayLogic(repayQuotation);
   }
 }

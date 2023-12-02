@@ -29,9 +29,9 @@ import { PoolDataProviderInterface } from './contracts/PoolDataProvider';
 import { Portfolio } from 'src/protocol.portfolio';
 import { Protocol } from 'src/protocol';
 import { RAY_DECIMALS, SECONDS_PER_YEAR, calculateCompoundedRate, normalize } from '@aave/math-utils';
+import * as apisdk from '@protocolink/api';
 import * as common from '@protocolink/common';
 import { isWrappedNativeToken, wrapToken } from 'src/helper';
-import { protocols } from '@protocolink/api';
 
 export class LendingProtocol extends Protocol {
   static readonly markets = supportedChainIds.map((chainId) => ({
@@ -334,34 +334,34 @@ export class LendingProtocol extends Protocol {
   }
 
   async newSupplyLogic(params: SupplyParams) {
-    const supplyQuotation = await protocols.aavev3.getSupplyQuotation(this.chainId, {
+    const supplyQuotation = await apisdk.protocols.aavev3.getSupplyQuotation(this.chainId, {
       input: params.input,
       tokenOut: toAToken(this.chainId, params.input.token),
     });
-    return protocols.aavev3.newSupplyLogic({ ...supplyQuotation, balanceBps: common.BPS_BASE });
+    return apisdk.protocols.aavev3.newSupplyLogic({ ...supplyQuotation, balanceBps: common.BPS_BASE });
   }
 
   async newWithdrawLogic(params: WithdrawParams) {
-    const withdrawQuotation = await protocols.aavev3.getWithdrawQuotation(this.chainId, {
+    const withdrawQuotation = await apisdk.protocols.aavev3.getWithdrawQuotation(this.chainId, {
       input: {
         token: toAToken(this.chainId, params.output.token),
         amount: params.output.amount,
       },
       tokenOut: params.output.token,
     });
-    return protocols.aavev3.newWithdrawLogic(withdrawQuotation);
+    return apisdk.protocols.aavev3.newWithdrawLogic(withdrawQuotation);
   }
 
-  newBorrowLogic = protocols.aavev3.newBorrowLogic;
+  newBorrowLogic = apisdk.protocols.aavev3.newBorrowLogic;
 
   async newRepayLogic(params: RepayParams) {
     if (!params.borrower || !params.interestRateMode) throw new Error('missing requied params');
-    const repayQuotation = await protocols.aavev3.getRepayQuotation(this.chainId, {
+    const repayQuotation = await apisdk.protocols.aavev3.getRepayQuotation(this.chainId, {
       tokenIn: params.input.token,
       borrower: params.borrower,
       interestRateMode: params.interestRateMode,
     });
     repayQuotation.input.amount = params.input.amount;
-    return protocols.aavev3.newRepayLogic(repayQuotation);
+    return apisdk.protocols.aavev3.newRepayLogic(repayQuotation);
   }
 }

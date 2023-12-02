@@ -1,6 +1,6 @@
 import { Logic } from './protocol.type';
 import { Portfolio } from './protocol.portfolio';
-import * as api from '@protocolink/api';
+import * as apisdk from '@protocolink/api';
 import * as common from '@protocolink/common';
 
 export type BaseFields = {
@@ -12,9 +12,9 @@ export type BaseFields = {
     portfolio?: Portfolio;
     afterPortfolio?: Portfolio;
   };
-  estimateResult: api.RouterDataEstimateResult;
+  estimateResult: apisdk.RouterDataEstimateResult;
   buildRouterTransactionRequest: (
-    args?: Omit<api.RouterData, 'chainId' | 'account' | 'logics'>,
+    args?: Omit<apisdk.RouterData, 'chainId' | 'account' | 'logics'>,
     apiKey?: string
   ) => Promise<common.TransactionRequest>;
   logics: Logic[];

@@ -23,7 +23,7 @@ describe('Transaction: Deleverage', function () {
       {
         skip: true,
         testingAccount: '0xa3C1C91403F0026b9dd086882aDbC8Cdbc3b3cfB',
-        protocolId: 'aavev3',
+        protocolId: 'aave-v3',
         marketId: 'mainnet',
         params: {
           srcToken: aaveV3.mainnetTokens.USDC,
@@ -34,13 +34,13 @@ describe('Transaction: Deleverage', function () {
           funds: [],
           balances: [],
           apporveTimes: 2,
-          recieves: [],
+          receives: [],
         },
       },
       {
         skip: true,
         testingAccount: '0x53fb0162bC8d5EEc2fB1532923C4f8997BAce111',
-        protocolId: 'compoundv3',
+        protocolId: 'compound-v2',
         marketId: 'USDC',
         params: {
           srcToken: compoundV3.mainnetTokens.USDC,
@@ -51,13 +51,13 @@ describe('Transaction: Deleverage', function () {
           funds: [],
           balances: [],
           apporveTimes: 0,
-          recieves: [],
+          receives: [],
         },
       },
       {
         skip: true,
         testingAccount: '0xa3C1C91403F0026b9dd086882aDbC8Cdbc3b3cfB',
-        protocolId: 'aavev2',
+        protocolId: 'aave-v2',
         marketId: 'mainnet',
         params: {
           srcToken: aaveV2.mainnetTokens.DAI,
@@ -68,7 +68,7 @@ describe('Transaction: Deleverage', function () {
           funds: [],
           balances: [],
           apporveTimes: 2,
-          recieves: [],
+          receives: [],
         },
       },
       {
@@ -85,14 +85,14 @@ describe('Transaction: Deleverage', function () {
           funds: [],
           balances: [],
           apporveTimes: 2,
-          recieves: [],
+          receives: [],
         },
       },
     ];
 
     for (const [i, { skip, testingAccount, protocolId, marketId, params }] of testCases.entries()) {
       if (skip) continue;
-      it.only(`case ${i + 1} - ${protocolId}:${marketId}`, async function () {
+      it(`case ${i + 1} - ${protocolId}:${marketId}`, async function () {
         user = await hre.ethers.getImpersonatedSigner(testingAccount);
 
         const { estimateResult, buildRouterTransactionRequest } = await adapter.getDeleverage(

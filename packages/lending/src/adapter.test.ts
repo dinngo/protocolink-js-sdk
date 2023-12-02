@@ -89,7 +89,7 @@ describe('Lending AaveV3 SDK', function () {
   Adapter.registerProtocol(LendingProtocol);
   Adapter.registerSwaper(LendingSwaper);
   const adapter = new Adapter(1, provider);
-  const protocolId = 'aavev3';
+  const protocolId = 'aave-v3';
 
   let portfolio: Portfolio;
 

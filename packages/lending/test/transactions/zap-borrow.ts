@@ -23,7 +23,7 @@ describe('Transaction: Zap Borrow', function () {
       {
         skip: false,
         testingAccount: '0x06e4Cb4f3ba9A2916B6384aCbdeAa74dAAF91550',
-        protocolId: 'aavev3',
+        protocolId: 'aave-v3',
         marketId: 'mainnet',
         params: {
           srcToken: aaveV3.mainnetTokens.USDC,
@@ -34,7 +34,7 @@ describe('Transaction: Zap Borrow', function () {
       {
         skip: false,
         testingAccount: '0x53fb0162bC8d5EEc2fB1532923C4f8997BAce111',
-        protocolId: 'compoundv3',
+        protocolId: 'compound-v2',
         marketId: 'USDC',
         params: {
           srcToken: compoundV3.mainnetTokens.USDC,
@@ -45,7 +45,7 @@ describe('Transaction: Zap Borrow', function () {
       {
         skip: false,
         testingAccount: '0x53fb0162bC8d5EEc2fB1532923C4f8997BAce111',
-        protocolId: 'compoundv3',
+        protocolId: 'compound-v2',
         marketId: 'USDC',
         params: {
           srcToken: compoundV3.mainnetTokens.USDC,
@@ -55,7 +55,7 @@ describe('Transaction: Zap Borrow', function () {
       },
       {
         skip: false,
-        protocolId: 'aavev2',
+        protocolId: 'aave-v2',
         marketId: 'mainnet',
         testingAccount: '0x7F67F6A09bcb2159b094B64B4acc53D5193AEa2E',
         params: {
@@ -79,7 +79,7 @@ describe('Transaction: Zap Borrow', function () {
 
     for (const [i, { skip, testingAccount, protocolId, marketId, params }] of testCases.entries()) {
       if (skip) continue;
-      it.only(`case ${i + 1} - ${protocolId}:${marketId}`, async function () {
+      it(`case ${i + 1} - ${protocolId}:${marketId}`, async function () {
         user = await hre.ethers.getImpersonatedSigner(testingAccount);
 
         const { estimateResult, buildRouterTransactionRequest } = await adapter.getZapBorrow(

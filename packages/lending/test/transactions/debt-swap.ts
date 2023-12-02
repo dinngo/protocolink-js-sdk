@@ -22,7 +22,7 @@ describe('Transaction: Debt swap', function () {
       {
         skip: false,
         testingAccount: '0x06e4Cb4f3ba9A2916B6384aCbdeAa74dAAF91550',
-        protocolId: 'aavev3',
+        protocolId: 'aave-v3',
         marketId: 'mainnet',
         params: {
           srcToken: aaveV3.mainnetTokens.USDC,
@@ -33,13 +33,13 @@ describe('Transaction: Debt swap', function () {
           funds: [],
           balances: [],
           apporveTimes: 1, // approveDelegation
-          recieves: [],
+          receives: [],
         },
       },
       {
         skip: false,
         testingAccount: '0x7F67F6A09bcb2159b094B64B4acc53D5193AEa2E',
-        protocolId: 'aavev2',
+        protocolId: 'aave-v2',
         marketId: 'mainnet',
         params: {
           srcToken: aaveV2.mainnetTokens.USDC,
@@ -50,7 +50,7 @@ describe('Transaction: Debt swap', function () {
           funds: [],
           balances: [],
           apporveTimes: 1, // approveDelegation
-          recieves: [],
+          receives: [],
         },
       },
       {
@@ -67,14 +67,14 @@ describe('Transaction: Debt swap', function () {
           funds: [],
           balances: [],
           apporveTimes: 1, // approveDelegation
-          recieves: [],
+          receives: [],
         },
       },
     ];
 
     for (const [i, { skip, testingAccount, protocolId, marketId, params, expects }] of testCases.entries()) {
       if (skip) continue;
-      it.only(`case ${i + 1} - ${protocolId}:${marketId}`, async function () {
+      it(`case ${i + 1} - ${protocolId}:${marketId}`, async function () {
         user = await hre.ethers.getImpersonatedSigner(testingAccount);
 
         const { estimateResult, buildRouterTransactionRequest } = await adapter.getDebtSwap(

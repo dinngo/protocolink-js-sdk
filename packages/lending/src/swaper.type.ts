@@ -1,3 +1,4 @@
+import * as apisdk from '@protocolink/api';
 import * as common from '@protocolink/common';
 
 export enum TradeType {
@@ -18,6 +19,10 @@ export interface TokenToTokenExactOutParams {
 }
 
 export type TokenToTokenParams = TokenToTokenExactInParams | TokenToTokenExactOutParams;
+
+export type SwapTokenLogicParams =
+  | apisdk.protocols.openoceanv2.SwapTokenParams
+  | apisdk.protocols.paraswapv5.SwapTokenParams;
 
 export function isTokenToTokenExactInParams(v: any): v is TokenToTokenExactInParams {
   return !!v.input && !!v.tokenOut;

@@ -3,7 +3,7 @@ import { Portfolio } from 'src/protocol.portfolio';
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 import * as aaveV2 from 'src/protocols/aave-v2/tokens';
 import * as aaveV3 from 'src/protocols/aave-v3/tokens';
-import { claimToken } from '@protocolink/test-helpers';
+import { claimToken, getBalance } from '@protocolink/test-helpers';
 import * as compoundV3 from 'src/protocols/compound-v3/tokens';
 import { expect } from 'chai';
 import hre from 'hardhat';
@@ -27,7 +27,7 @@ describe('Transaction: Collateral swap', function () {
       {
         skip: false,
         testingAccount: '0x06e4Cb4f3ba9A2916B6384aCbdeAa74dAAF91550',
-        protocolId: 'aavev3',
+        protocolId: 'aave-v3',
         marketId: 'mainnet',
         params: {
           srcToken: aaveV3.mainnetTokens.WBTC,
@@ -38,13 +38,13 @@ describe('Transaction: Collateral swap', function () {
           funds: [],
           balances: [],
           apporveTimes: 2,
-          recieves: [],
+          receives: [],
         },
       },
       {
-        skip: false,
+        skip: true,
         testingAccount: '0x53fb0162bC8d5EEc2fB1532923C4f8997BAce111',
-        protocolId: 'compoundv3',
+        protocolId: 'compound-v3',
         marketId: 'USDC',
         params: {
           srcToken: compoundV3.mainnetTokens.WBTC,
@@ -55,13 +55,13 @@ describe('Transaction: Collateral swap', function () {
           funds: [],
           balances: [],
           apporveTimes: 0,
-          recieves: [],
+          receives: [],
         },
       },
       {
-        skip: false,
+        skip: true,
         testingAccount: '0x7F67F6A09bcb2159b094B64B4acc53D5193AEa2E',
-        protocolId: 'aavev2',
+        protocolId: 'aave-v2',
         marketId: 'mainnet',
         params: {
           srcToken: aaveV2.mainnetTokens.WBTC,
@@ -72,13 +72,13 @@ describe('Transaction: Collateral swap', function () {
           funds: [],
           balances: [],
           apporveTimes: 0,
-          recieves: [],
+          receives: [],
         },
       },
       {
-        skip: false,
+        skip: true,
         testingAccount: '0xA38D6E3Aa9f3E4F81D4cEf9B8bCdC58aB37d066A',
-        protocolId: 'radiantv2',
+        protocolId: 'radiant-v2',
         marketId: 'mainnet',
         params: {
           srcToken: radiantV2.mainnetTokens.WBTC,
@@ -89,15 +89,20 @@ describe('Transaction: Collateral swap', function () {
           funds: [],
           balances: [],
           apporveTimes: 0,
-          recieves: [],
+          receives: [],
         },
       },
     ];
 
     for (const [i, { skip, testingAccount, protocolId, marketId, params }] of testCases.entries()) {
       if (skip) continue;
-      it.only(`case ${i + 1} - ${protocolId}:${marketId}`, async function () {
+
+      it(`case ${i + 1} - ${protocolId}:${marketId}`, async function () {
         user = await hre.ethers.getImpersonatedSigner(testingAccount);
+
+        // before balance
+        const beforeBalance = await getBalance(user.address, aaveV3.mainnetTokens.aEthWBTC);
+        console.log('before balance', JSON.stringify(beforeBalance.amount.toString(), null, 2));
 
         const { estimateResult, buildRouterTransactionRequest } = await adapter.getCollateralSwap(
           protocolId,
@@ -120,6 +125,10 @@ describe('Transaction: Collateral swap', function () {
         const tx = await user.sendTransaction(transactionRequest);
 
         expect(tx).to.not.be.reverted;
+
+        // after balance
+        const afterBalance = await getBalance(user.address, aaveV3.mainnetTokens.aEthWBTC);
+        console.log('after balance', JSON.stringify(afterBalance.amount.toString(), null, 2));
       });
     }
   });

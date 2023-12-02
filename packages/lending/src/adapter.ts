@@ -2,7 +2,7 @@ import { BaseFields, BaseParams } from './adapter.type';
 import { Portfolio } from './protocol.portfolio';
 import { Protocol, ProtocolClass } from './protocol';
 import { Swaper, SwaperClass } from './swaper';
-import * as api from '@protocolink/api';
+import * as apisdk from '@protocolink/api';
 import * as common from '@protocolink/common';
 import { defaultInterestRateMode, defaultSlippage } from './protocol.type';
 import flatten from 'lodash/flatten';
@@ -10,7 +10,7 @@ import { providers } from 'ethers';
 import { wrapToken } from './helper';
 
 type Options = {
-  permitType: api.Permit2Type | undefined;
+  permitType: apisdk.Permit2Type | undefined;
   apiKey?: string | undefined;
 };
 export class Adapter extends common.Web3Toolkit {
@@ -26,7 +26,7 @@ export class Adapter extends common.Web3Toolkit {
     this.Swapers.push(swaper);
   }
 
-  permitType: api.Permit2Type | undefined = 'permit';
+  permitType: apisdk.Permit2Type | undefined = 'permit';
   apiKey: string | undefined;
   protocolMap: Record<string, Protocol> = {};
   swapers: Swaper[] = [];
@@ -122,21 +122,21 @@ export class Adapter extends common.Web3Toolkit {
     const destToken = common.classifying(params.destToken);
     const wrappedSrcToken = wrapToken(this.chainId, srcToken);
     const wrappedDestToken = wrapToken(this.chainId, destToken);
-    const collateralSwapLogics: api.Logic<any>[] = [];
+    const collateralSwapLogics: apisdk.Logic<any>[] = [];
     const protocol = this.getProtocol(protocolId);
 
     portfolio = portfolio || (await protocol.getPortfolio(account, marketId));
     const afterPortfolio = portfolio.clone();
 
     // ---------- flashloan ----------
-    const flashLoanAggregatorQuotation = await api.protocols.utility.getFlashLoanAggregatorQuotation(this.chainId, {
+    const flashLoanAggregatorQuotation = await apisdk.protocols.utility.getFlashLoanAggregatorQuotation(this.chainId, {
       repays: [{ token: wrappedSrcToken, amount: srcAmount }],
       protocolId: protocolId,
     });
 
     const flashLoanTokenAmount = flashLoanAggregatorQuotation.loans.tokenAmountMap[wrappedSrcToken.address];
 
-    const [flashLoanLoanLogic, flashLoanRepayLogic] = api.protocols.utility.newFlashLoanAggregatorLogicPair(
+    const [flashLoanLoanLogic, flashLoanRepayLogic] = apisdk.protocols.utility.newFlashLoanAggregatorLogicPair(
       flashLoanAggregatorQuotation.protocolId,
       flashLoanAggregatorQuotation.loans.toArray()
     );
@@ -168,14 +168,14 @@ export class Adapter extends common.Web3Toolkit {
     if (protocolId !== 'compoundv3') {
       if (!supplyLogic.fields.output) throw new Error('incorrect supply result');
       // ---------- return funds ----------
-      const returnLogic = api.protocols.utility.newSendTokenLogic({
+      const returnLogic = apisdk.protocols.utility.newSendTokenLogic({
         input: supplyLogic.fields.output,
         recipient: account,
       });
       collateralSwapLogics.push(returnLogic);
 
       // ---------- add funds ----------
-      const addLogic = api.protocols.permit2.newPullTokenLogic({
+      const addLogic = apisdk.protocols.permit2.newPullTokenLogic({
         input: new common.TokenAmount(protocol.toProtocolToken(wrappedSrcToken), srcAmount),
       });
       collateralSwapLogics.push(addLogic);
@@ -194,7 +194,7 @@ export class Adapter extends common.Web3Toolkit {
     collateralSwapLogics.push(flashLoanRepayLogic);
 
     // ---------- tx related ----------
-    const estimateResult = await api.estimateRouterData(
+    const estimateResult = await apisdk.estimateRouterData(
       {
         chainId: this.chainId,
         account,
@@ -204,10 +204,10 @@ export class Adapter extends common.Web3Toolkit {
     );
 
     const buildRouterTransactionRequest = (
-      args?: Omit<api.RouterData, 'chainId' | 'account' | 'logics'>,
+      args?: Omit<apisdk.RouterData, 'chainId' | 'account' | 'logics'>,
       apiKey?: string
     ): Promise<common.TransactionRequest> =>
-      api.buildRouterTransactionRequest(
+      apisdk.buildRouterTransactionRequest(
         { ...args, chainId: this.chainId, account, logics: collateralSwapLogics },
         apiKey ? { 'x-api-key': apiKey } : undefined
       );
@@ -246,7 +246,7 @@ export class Adapter extends common.Web3Toolkit {
     const wrappedSrcToken = wrapToken(this.chainId, srcToken);
     const wrappedDestToken = wrapToken(this.chainId, destToken);
 
-    const debtSwapLogics: api.Logic<any>[] = [];
+    const debtSwapLogics: apisdk.Logic<any>[] = [];
     const protocol = this.getProtocol(protocolId);
 
     portfolio = portfolio || (await protocol.getPortfolio(account, marketId));
@@ -264,10 +264,10 @@ export class Adapter extends common.Web3Toolkit {
     swapQuotation = await swaper.quote({ input: swapQuotation.input, tokenOut: srcToken, slippage: defaultSlippage });
 
     // ---------- flashloan ----------
-    const flashLoanAggregatorQuotation = await api.protocols.utility.getFlashLoanAggregatorQuotation(this.chainId, {
+    const flashLoanAggregatorQuotation = await apisdk.protocols.utility.getFlashLoanAggregatorQuotation(this.chainId, {
       loans: [swapQuotation.input],
     });
-    const [flashLoanLoanLogic, flashLoanRepayLogic] = api.protocols.utility.newFlashLoanAggregatorLogicPair(
+    const [flashLoanLoanLogic, flashLoanRepayLogic] = apisdk.protocols.utility.newFlashLoanAggregatorLogicPair(
       flashLoanAggregatorQuotation.protocolId,
       flashLoanAggregatorQuotation.loans.toArray()
     );
@@ -300,7 +300,7 @@ export class Adapter extends common.Web3Toolkit {
     debtSwapLogics.push(flashLoanRepayLogic);
 
     // ---------- tx related ----------
-    const estimateResult = await api.estimateRouterData(
+    const estimateResult = await apisdk.estimateRouterData(
       {
         chainId: this.chainId,
         account,
@@ -310,9 +310,9 @@ export class Adapter extends common.Web3Toolkit {
     );
 
     const buildRouterTransactionRequest = (
-      args?: Omit<api.RouterData, 'chainId' | 'account' | 'logics'>
+      args?: Omit<apisdk.RouterData, 'chainId' | 'account' | 'logics'>
     ): Promise<common.TransactionRequest> =>
-      api.buildRouterTransactionRequest({ ...args, chainId: this.chainId, account, logics: debtSwapLogics });
+      apisdk.buildRouterTransactionRequest({ ...args, chainId: this.chainId, account, logics: debtSwapLogics });
 
     return {
       fields: {
@@ -361,7 +361,7 @@ export class Adapter extends common.Web3Toolkit {
     const wrappedSrcToken = wrapToken(this.chainId, srcToken);
     const wrappedDestToken = wrapToken(this.chainId, destToken);
 
-    const leverageLonglogics: api.Logic<any>[] = [];
+    const leverageLonglogics: apisdk.Logic<any>[] = [];
     const protocol = this.getProtocol(protocolId);
 
     portfolio = portfolio || (await protocol.getPortfolio(account, marketId));
@@ -383,11 +383,11 @@ export class Adapter extends common.Web3Toolkit {
     });
 
     // ---------- flashloan ----------
-    const flashLoanAggregatorQuotation = await api.protocols.utility.getFlashLoanAggregatorQuotation(this.chainId, {
+    const flashLoanAggregatorQuotation = await apisdk.protocols.utility.getFlashLoanAggregatorQuotation(this.chainId, {
       loans: [swapQuotation.input],
     });
 
-    const [flashLoanLoanLogic, flashLoanRepayLogic] = api.protocols.utility.newFlashLoanAggregatorLogicPair(
+    const [flashLoanLoanLogic, flashLoanRepayLogic] = apisdk.protocols.utility.newFlashLoanAggregatorLogicPair(
       flashLoanAggregatorQuotation.protocolId,
       flashLoanAggregatorQuotation.loans.toArray()
     );
@@ -405,7 +405,7 @@ export class Adapter extends common.Web3Toolkit {
 
     // ---------- return funds ----------
     if (supplyLogic.fields.output) {
-      const returnLogic = api.protocols.utility.newSendTokenLogic({
+      const returnLogic = apisdk.protocols.utility.newSendTokenLogic({
         input: supplyLogic.fields.output,
         recipient: account,
       });
@@ -427,7 +427,7 @@ export class Adapter extends common.Web3Toolkit {
     leverageLonglogics.push(flashLoanRepayLogic);
 
     // ---------- tx related ----------
-    const estimateResult = await api.estimateRouterData(
+    const estimateResult = await apisdk.estimateRouterData(
       {
         chainId: this.chainId,
         account,
@@ -437,9 +437,9 @@ export class Adapter extends common.Web3Toolkit {
     );
 
     const buildRouterTransactionRequest = (
-      args?: Omit<api.RouterData, 'chainId' | 'account' | 'logics'>
+      args?: Omit<apisdk.RouterData, 'chainId' | 'account' | 'logics'>
     ): Promise<common.TransactionRequest> =>
-      api.buildRouterTransactionRequest({ ...args, chainId: this.chainId, account, logics: leverageLonglogics });
+      apisdk.buildRouterTransactionRequest({ ...args, chainId: this.chainId, account, logics: leverageLonglogics });
 
     return {
       fields: {
@@ -458,7 +458,7 @@ export class Adapter extends common.Web3Toolkit {
   // 1. flashloan WBTC
   // 2. swap WBTC to USDC
   // 3. deposit USDC, get aUSDC
-  // 4. return funds aWBTC to user
+  // 4. return funds aUSDC to user
   // 5. borrow WBTC
   // 6. flashloan repay WBTC
   // * srcToken => flashloanToken, borrowToken
@@ -475,20 +475,20 @@ export class Adapter extends common.Web3Toolkit {
     const destToken = common.classifying(params.destToken);
     const wrappedSrcToken = wrapToken(this.chainId, srcToken);
     const wrappedDestToken = wrapToken(this.chainId, destToken);
-    const leverageShortlogics: api.Logic<any>[] = [];
+    const leverageShortlogics: apisdk.Logic<any>[] = [];
     const protocol = this.getProtocol(protocolId);
 
     portfolio = portfolio || (await protocol.getPortfolio(account, marketId));
     const afterPortfolio = portfolio.clone();
 
     // ---------- flashloan ----------
-    const flashLoanAggregatorQuotation = await api.protocols.utility.getFlashLoanAggregatorQuotation(this.chainId, {
+    const flashLoanAggregatorQuotation = await apisdk.protocols.utility.getFlashLoanAggregatorQuotation(this.chainId, {
       loans: [{ token: wrappedSrcToken, amount: srcAmount }],
     });
 
     const flashLoanTokenAmount = flashLoanAggregatorQuotation.loans.tokenAmountMap[wrappedSrcToken.address];
 
-    const [flashLoanLoanLogic, flashLoanRepayLogic] = api.protocols.utility.newFlashLoanAggregatorLogicPair(
+    const [flashLoanLoanLogic, flashLoanRepayLogic] = apisdk.protocols.utility.newFlashLoanAggregatorLogicPair(
       flashLoanAggregatorQuotation.protocolId,
       flashLoanAggregatorQuotation.loans.toArray()
     );
@@ -512,7 +512,7 @@ export class Adapter extends common.Web3Toolkit {
 
     // ---------- return funds ----------
     if (supplyLogic.fields.output) {
-      const returnLogic = api.protocols.utility.newSendTokenLogic({
+      const returnLogic = apisdk.protocols.utility.newSendTokenLogic({
         input: supplyLogic.fields.output,
         recipient: account,
       });
@@ -534,7 +534,7 @@ export class Adapter extends common.Web3Toolkit {
     leverageShortlogics.push(flashLoanRepayLogic);
 
     // ---------- tx related ----------
-    const estimateResult = await api.estimateRouterData(
+    const estimateResult = await apisdk.estimateRouterData(
       {
         chainId: this.chainId,
         account,
@@ -544,9 +544,9 @@ export class Adapter extends common.Web3Toolkit {
     );
 
     const buildRouterTransactionRequest = (
-      args?: Omit<api.RouterData, 'chainId' | 'account' | 'logics'>
+      args?: Omit<apisdk.RouterData, 'chainId' | 'account' | 'logics'>
     ): Promise<common.TransactionRequest> =>
-      api.buildRouterTransactionRequest({ ...args, chainId: this.chainId, account, logics: leverageShortlogics });
+      apisdk.buildRouterTransactionRequest({ ...args, chainId: this.chainId, account, logics: leverageShortlogics });
 
     return {
       fields: {
@@ -582,7 +582,7 @@ export class Adapter extends common.Web3Toolkit {
     const destToken = common.classifying(params.destToken);
     const wrappedSrcToken = wrapToken(this.chainId, srcToken);
     const wrappedDestToken = wrapToken(this.chainId, destToken);
-    const deleveragelogics: api.Logic<any>[] = [];
+    const deleveragelogics: apisdk.Logic<any>[] = [];
     const protocol = this.getProtocol(protocolId);
 
     portfolio = portfolio || (await protocol.getPortfolio(account, marketId));
@@ -599,16 +599,16 @@ export class Adapter extends common.Web3Toolkit {
     // convert swap type to exact in
     swapQuotation = await swaper.quote({
       input: swapQuotation.input,
-      tokenOut: wrappedSrcToken,
+      tokenOut: wrappedDestToken,
       slippage: defaultSlippage,
     });
 
     // ---------- flashloan ----------
-    const flashLoanAggregatorQuotation = await api.protocols.utility.getFlashLoanAggregatorQuotation(this.chainId, {
+    const flashLoanAggregatorQuotation = await apisdk.protocols.utility.getFlashLoanAggregatorQuotation(this.chainId, {
       loans: [swapQuotation.input],
     });
 
-    const [flashLoanLoanLogic, flashLoanRepayLogic] = api.protocols.utility.newFlashLoanAggregatorLogicPair(
+    const [flashLoanLoanLogic, flashLoanRepayLogic] = apisdk.protocols.utility.newFlashLoanAggregatorLogicPair(
       flashLoanAggregatorQuotation.protocolId,
       flashLoanAggregatorQuotation.loans.toArray()
     );
@@ -630,7 +630,7 @@ export class Adapter extends common.Web3Toolkit {
 
     // ---------- add funds ----------
     if (protocolId !== 'compoundv3') {
-      const addLogic = api.protocols.permit2.newPullTokenLogic({
+      const addLogic = apisdk.protocols.permit2.newPullTokenLogic({
         input: swapQuotation.input,
       });
       deleveragelogics.push(addLogic);
@@ -648,7 +648,7 @@ export class Adapter extends common.Web3Toolkit {
     deleveragelogics.push(flashLoanRepayLogic);
 
     // ---------- tx related ----------
-    const estimateResult = await api.estimateRouterData(
+    const estimateResult = await apisdk.estimateRouterData(
       {
         chainId: this.chainId,
         account,
@@ -658,9 +658,9 @@ export class Adapter extends common.Web3Toolkit {
     );
 
     const buildRouterTransactionRequest = (
-      args?: Omit<api.RouterData, 'chainId' | 'account' | 'logics'>
+      args?: Omit<apisdk.RouterData, 'chainId' | 'account' | 'logics'>
     ): Promise<common.TransactionRequest> =>
-      api.buildRouterTransactionRequest({ ...args, chainId: this.chainId, account, logics: deleveragelogics });
+      apisdk.buildRouterTransactionRequest({ ...args, chainId: this.chainId, account, logics: deleveragelogics });
 
     return {
       fields: {
@@ -687,7 +687,7 @@ export class Adapter extends common.Web3Toolkit {
     const { srcAmount } = params;
     const srcToken = common.classifying(params.srcToken);
     const destToken = common.classifying(params.destToken);
-    const zapSupplylogics: api.Logic<any>[] = [];
+    const zapSupplylogics: apisdk.Logic<any>[] = [];
     const protocol = this.getProtocol(protocolId);
 
     portfolio = portfolio || (await protocol.getPortfolio(account, marketId));
@@ -719,7 +719,7 @@ export class Adapter extends common.Web3Toolkit {
     afterPortfolio.supply(supplyTokenAmount.token, supplyTokenAmount.amount);
 
     // ---------- tx related ----------
-    const estimateResult = await api.estimateRouterData(
+    const estimateResult = await apisdk.estimateRouterData(
       {
         chainId: this.chainId,
         account,
@@ -729,9 +729,9 @@ export class Adapter extends common.Web3Toolkit {
     );
 
     const buildRouterTransactionRequest = (
-      args?: Omit<api.RouterData, 'chainId' | 'account' | 'logics'>
+      args?: Omit<apisdk.RouterData, 'chainId' | 'account' | 'logics'>
     ): Promise<common.TransactionRequest> =>
-      api.buildRouterTransactionRequest({ ...args, chainId: this.chainId, account, logics: zapSupplylogics });
+      apisdk.buildRouterTransactionRequest({ ...args, chainId: this.chainId, account, logics: zapSupplylogics });
 
     return {
       fields: {
@@ -758,7 +758,7 @@ export class Adapter extends common.Web3Toolkit {
     const { srcAmount } = params;
     const srcToken = common.classifying(params.srcToken);
     const destToken = common.classifying(params.destToken);
-    const zapWithdrawlogics: api.Logic<any>[] = [];
+    const zapWithdrawlogics: apisdk.Logic<any>[] = [];
     const protocol = this.getProtocol(protocolId);
 
     portfolio = portfolio || (await protocol.getPortfolio(account, marketId));
@@ -769,7 +769,7 @@ export class Adapter extends common.Web3Toolkit {
 
     // ---------- withdraw ----------
     const withdrawLogic = await protocol.newWithdrawLogic({
-      output: new common.TokenAmount(srcToken, srcAmount),
+      output: outputTokenAmount,
       marketId,
     });
     zapWithdrawlogics.push(withdrawLogic);
@@ -790,7 +790,7 @@ export class Adapter extends common.Web3Toolkit {
     }
 
     // ---------- tx related ----------
-    const estimateResult = await api.estimateRouterData(
+    const estimateResult = await apisdk.estimateRouterData(
       {
         chainId: this.chainId,
         account,
@@ -800,9 +800,9 @@ export class Adapter extends common.Web3Toolkit {
     );
 
     const buildRouterTransactionRequest = (
-      args?: Omit<api.RouterData, 'chainId' | 'account' | 'logics'>
+      args?: Omit<apisdk.RouterData, 'chainId' | 'account' | 'logics'>
     ): Promise<common.TransactionRequest> =>
-      api.buildRouterTransactionRequest({ ...args, chainId: this.chainId, account, logics: zapWithdrawlogics });
+      apisdk.buildRouterTransactionRequest({ ...args, chainId: this.chainId, account, logics: zapWithdrawlogics });
 
     return {
       fields: {
@@ -829,7 +829,7 @@ export class Adapter extends common.Web3Toolkit {
     const { srcAmount } = params;
     const srcToken = common.classifying(params.srcToken);
     const destToken = common.classifying(params.destToken);
-    const zapBorrowlogics: api.Logic<any>[] = [];
+    const zapBorrowlogics: apisdk.Logic<any>[] = [];
     const protocol = this.getProtocol(protocolId);
 
     portfolio = portfolio || (await protocol.getPortfolio(account, marketId));
@@ -861,7 +861,7 @@ export class Adapter extends common.Web3Toolkit {
       zapBorrowlogics.push(swapTokenLogic);
     }
     // ---------- tx related ----------
-    const estimateResult = await api.estimateRouterData(
+    const estimateResult = await apisdk.estimateRouterData(
       {
         chainId: this.chainId,
         account,
@@ -871,9 +871,9 @@ export class Adapter extends common.Web3Toolkit {
     );
 
     const buildRouterTransactionRequest = (
-      args?: Omit<api.RouterData, 'chainId' | 'account' | 'logics'>
+      args?: Omit<apisdk.RouterData, 'chainId' | 'account' | 'logics'>
     ): Promise<common.TransactionRequest> =>
-      api.buildRouterTransactionRequest({ ...args, chainId: this.chainId, account, logics: zapBorrowlogics });
+      apisdk.buildRouterTransactionRequest({ ...args, chainId: this.chainId, account, logics: zapBorrowlogics });
 
     return {
       fields: {
@@ -901,7 +901,7 @@ export class Adapter extends common.Web3Toolkit {
     const { srcAmount } = params;
     const srcToken = common.classifying(params.srcToken);
     const destToken = common.classifying(params.destToken);
-    const zapRepaylogics: api.Logic<any>[] = [];
+    const zapRepaylogics: apisdk.Logic<any>[] = [];
     const protocol = this.getProtocol(protocolId);
 
     portfolio = portfolio || (await protocol.getPortfolio(account, marketId));
@@ -935,7 +935,7 @@ export class Adapter extends common.Web3Toolkit {
     afterPortfolio.repay(repayTokenAmount.token, repayTokenAmount.amount);
 
     // ---------- tx related ----------
-    const estimateResult = await api.estimateRouterData(
+    const estimateResult = await apisdk.estimateRouterData(
       {
         chainId: this.chainId,
         account,
@@ -945,9 +945,9 @@ export class Adapter extends common.Web3Toolkit {
     );
 
     const buildRouterTransactionRequest = (
-      args?: Omit<api.RouterData, 'chainId' | 'account' | 'logics'>
+      args?: Omit<apisdk.RouterData, 'chainId' | 'account' | 'logics'>
     ): Promise<common.TransactionRequest> =>
-      api.buildRouterTransactionRequest({ ...args, chainId: this.chainId, account, logics: zapRepaylogics });
+      apisdk.buildRouterTransactionRequest({ ...args, chainId: this.chainId, account, logics: zapRepaylogics });
 
     return {
       fields: {

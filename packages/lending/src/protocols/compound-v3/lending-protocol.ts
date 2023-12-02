@@ -13,10 +13,10 @@ import {
 } from './configs';
 import { Portfolio } from 'src/protocol.portfolio';
 import { Protocol } from 'src/protocol';
+import * as apisdk from '@protocolink/api';
 import { calcAPR } from './utils';
 import * as common from '@protocolink/common';
 import * as logics from '@protocolink/logics';
-import { protocols } from '@protocolink/api';
 import { unwrapToken, wrapToken } from 'src/helper';
 
 export class LendingProtocol extends Protocol {
@@ -307,14 +307,14 @@ export class LendingProtocol extends Protocol {
     const { cometAddress, baseToken } = getMarketBaseConfig(this.chainId, params.marketId);
     const cToken = await this.getToken(cometAddress);
     if (params.input.token.unwrapped.is(baseToken.unwrapped)) {
-      const supplyQuotation = await protocols.compoundv3.getSupplyBaseQuotation(this.chainId, {
+      const supplyQuotation = await apisdk.protocols.compoundv3.getSupplyBaseQuotation(this.chainId, {
         input: params.input,
         tokenOut: cToken,
         marketId: params.marketId,
       });
-      return protocols.compoundv3.newSupplyBaseLogic({ ...supplyQuotation, balanceBps: common.BPS_BASE });
+      return apisdk.protocols.compoundv3.newSupplyBaseLogic({ ...supplyQuotation, balanceBps: common.BPS_BASE });
     } else {
-      return protocols.compoundv3.newSupplyCollateralLogic({
+      return apisdk.protocols.compoundv3.newSupplyCollateralLogic({
         input: params.input,
         marketId: params.marketId,
         balanceBps: common.BPS_BASE,
@@ -329,7 +329,7 @@ export class LendingProtocol extends Protocol {
     const realAmount = new common.TokenAmount(params.output.token, params.output.amount);
     realAmount.subWei(2);
     if (params.output.token.wrapped.is(baseToken)) {
-      const withdrawBaseQuotation = await protocols.compoundv3.getWithdrawBaseQuotation(this.chainId, {
+      const withdrawBaseQuotation = await apisdk.protocols.compoundv3.getWithdrawBaseQuotation(this.chainId, {
         input: {
           token: cToken,
           amount: realAmount.amount,
@@ -337,26 +337,29 @@ export class LendingProtocol extends Protocol {
         tokenOut: params.output.token,
         marketId: params.marketId,
       });
-      const withdrawBaseLogic = await protocols.compoundv3.newWithdrawBaseLogic({
+      const withdrawBaseLogic = await apisdk.protocols.compoundv3.newWithdrawBaseLogic({
         ...withdrawBaseQuotation,
         balanceBps: common.BPS_BASE,
       });
       withdrawBaseLogic.fields.output.amount = realAmount.subWei(1).amount;
       return withdrawBaseLogic;
     } else {
-      return protocols.compoundv3.newWithdrawCollateralLogic({ output: params.output, marketId: params.marketId });
+      return apisdk.protocols.compoundv3.newWithdrawCollateralLogic({
+        output: params.output,
+        marketId: params.marketId,
+      });
     }
   }
 
-  newBorrowLogic = protocols.compoundv3.newBorrowLogic;
+  newBorrowLogic = apisdk.protocols.compoundv3.newBorrowLogic;
 
   async newRepayLogic(params: RepayParams): Promise<any> {
-    const repayQuotation = await protocols.compoundv3.getRepayQuotation(this.chainId, {
+    const repayQuotation = await apisdk.protocols.compoundv3.getRepayQuotation(this.chainId, {
       tokenIn: params.input.token,
       borrower: params.borrower,
       marketId: params.marketId,
     });
     repayQuotation.input.amount = params.input.amount;
-    return protocols.compoundv3.newRepayLogic(repayQuotation);
+    return apisdk.protocols.compoundv3.newRepayLogic(repayQuotation);
   }
 }

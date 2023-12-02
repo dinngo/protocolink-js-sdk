@@ -28,7 +28,7 @@ describe('Transaction: Zap Supply', function () {
     const testCases = [
       {
         skip: false,
-        protocolId: 'radiantv2',
+        protocolId: 'radiant-v2',
         marketId: 'mainnet',
         params: {
           srcToken: radiantV2.mainnetTokens.USDC,
@@ -39,12 +39,12 @@ describe('Transaction: Zap Supply', function () {
           funds: [radiantV2.mainnetTokens.USDC],
           balances: [radiantV2.mainnetTokens.rWBTC],
           apporveTimes: 2,
-          recieves: [radiantV2.mainnetTokens.rWBTC],
+          receives: [radiantV2.mainnetTokens.rWBTC],
         },
       },
       {
         skip: false,
-        protocolId: 'aavev3',
+        protocolId: 'aave-v3',
         marketId: 'mainnet',
         params: {
           srcToken: aaveV3.mainnetTokens.USDC,
@@ -55,12 +55,12 @@ describe('Transaction: Zap Supply', function () {
           funds: [aaveV3.mainnetTokens.USDC],
           balances: [aaveV3.mainnetTokens.aEthWBTC],
           apporveTimes: 2,
-          recieves: [aaveV3.mainnetTokens.aEthWBTC],
+          receives: [aaveV3.mainnetTokens.aEthWBTC],
         },
       },
       {
         skip: false,
-        protocolId: 'compoundv3',
+        protocolId: 'compound-v2',
         marketId: 'USDC',
         params: {
           srcToken: compoundV3.mainnetTokens.WETH,
@@ -71,12 +71,12 @@ describe('Transaction: Zap Supply', function () {
           funds: [compoundV3.mainnetTokens.WETH],
           balances: [compoundV3.mainnetTokens.cUSDCv3],
           apporveTimes: 2,
-          recieves: [compoundV3.mainnetTokens.cUSDCv3],
+          receives: [compoundV3.mainnetTokens.cUSDCv3],
         },
       },
       {
         skip: false,
-        protocolId: 'compoundv3',
+        protocolId: 'compound-v2',
         marketId: 'USDC',
         params: {
           srcToken: compoundV3.mainnetTokens.WETH,
@@ -87,12 +87,12 @@ describe('Transaction: Zap Supply', function () {
           funds: [compoundV3.mainnetTokens.WETH],
           balances: [],
           apporveTimes: 2,
-          recieves: [],
+          receives: [],
         },
       },
       {
         skip: false,
-        protocolId: 'compoundv3',
+        protocolId: 'compound-v2',
         marketId: 'USDC',
         params: {
           srcToken: compoundV3.mainnetTokens.WETH,
@@ -103,12 +103,12 @@ describe('Transaction: Zap Supply', function () {
           funds: [compoundV3.mainnetTokens.WETH],
           balances: [],
           apporveTimes: 2,
-          recieves: [],
+          receives: [],
         },
       },
       {
         skip: false,
-        protocolId: 'compoundv3',
+        protocolId: 'compound-v2',
         marketId: 'ETH',
         params: {
           srcToken: compoundV3.mainnetTokens.WETH,
@@ -119,12 +119,12 @@ describe('Transaction: Zap Supply', function () {
           funds: [compoundV3.mainnetTokens.WETH],
           balances: [compoundV3.mainnetTokens.cWETHv3],
           apporveTimes: 2,
-          recieves: [compoundV3.mainnetTokens.cWETHv3],
+          receives: [compoundV3.mainnetTokens.cWETHv3],
         },
       },
       {
         skip: false,
-        protocolId: 'aavev2',
+        protocolId: 'aave-v2',
         marketId: 'mainnet',
         params: {
           srcToken: aaveV2.mainnetTokens.USDC,
@@ -135,7 +135,7 @@ describe('Transaction: Zap Supply', function () {
           funds: [aaveV2.mainnetTokens.USDC],
           balances: [aaveV2.mainnetTokens.aWBTC],
           apporveTimes: 2,
-          recieves: [aaveV2.mainnetTokens.aWBTC],
+          receives: [aaveV2.mainnetTokens.aWBTC],
         },
       },
     ];
@@ -143,7 +143,7 @@ describe('Transaction: Zap Supply', function () {
     for (const [i, { skip, protocolId, marketId, params, expects }] of testCases.entries()) {
       if (skip) continue;
 
-      it.only(`case ${i + 1} - ${protocolId}:${marketId}`, async function () {
+      it(`case ${i + 1} - ${protocolId}:${marketId}`, async function () {
         const zapDepositInfo = await adapter.getZapSupply(protocolId, marketId, params, user.address);
         const estimateResult = zapDepositInfo.estimateResult;
 
@@ -162,7 +162,7 @@ describe('Transaction: Zap Supply', function () {
         const tx = await user.sendTransaction(transactionRequest);
         expect(tx).to.not.be.reverted;
 
-        for (const recv of expects.recieves) {
+        for (const recv of expects.receives) {
           const balance = await getBalance(user.address, recv);
 
           expect(balance.gt('0')).to.be.true;

@@ -39,14 +39,14 @@ describe.skip('Transaction: Zap Supply Arbitrum', function () {
           funds: [radiantV2ArbitrumTokens.USDC],
           balances: [radiantV2ArbitrumTokens.rWBTC],
           apporveTimes: 2,
-          recieves: [radiantV2ArbitrumTokens.rWBTC],
+          receives: [radiantV2ArbitrumTokens.rWBTC],
         },
       },
     ];
 
     for (const [i, { skip, protocolId, marketId, params, expects }] of testCases.entries()) {
       if (skip) continue;
-      it.only(`case ${i + 1} - ${protocolId}:${marketId}`, async function () {
+      it(`case ${i + 1} - ${protocolId}:${marketId}`, async function () {
         const zapDepositInfo = await adapter.getZapSupply(protocolId, marketId, params, user.address);
 
         const estimateResult = zapDepositInfo.estimateResult;
@@ -66,7 +66,7 @@ describe.skip('Transaction: Zap Supply Arbitrum', function () {
         const tx = await user.sendTransaction(transactionRequest);
         expect(tx).to.not.be.reverted;
 
-        for (const recv of expects.recieves) {
+        for (const recv of expects.receives) {
           const balance = await getBalance(user.address, recv);
           expect(balance.gt('0')).to.be.true;
         }

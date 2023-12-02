@@ -23,7 +23,7 @@ describe('Transaction: Zap Withdraw', function () {
       {
         skip: false,
         testingAccount: '0x06e4Cb4f3ba9A2916B6384aCbdeAa74dAAF91550',
-        protocolId: 'aavev3',
+        protocolId: 'aave-v3',
         marketId: 'mainnet',
         params: {
           srcToken: aaveV3.mainnetTokens.WBTC,
@@ -34,13 +34,13 @@ describe('Transaction: Zap Withdraw', function () {
           funds: [aaveV3.mainnetTokens.aEthWBTC],
           balances: [aaveV3.mainnetTokens.USDC],
           apporveTimes: 2,
-          recieves: [aaveV3.mainnetTokens.USDC],
+          receives: [aaveV3.mainnetTokens.USDC],
         },
       },
       {
         skip: false,
         testingAccount: '0x53fb0162bC8d5EEc2fB1532923C4f8997BAce111',
-        protocolId: 'compoundv3',
+        protocolId: 'compound-v2',
         marketId: 'ETH',
         params: {
           srcToken: compoundV3.mainnetTokens.ETH,
@@ -51,13 +51,13 @@ describe('Transaction: Zap Withdraw', function () {
           funds: [compoundV3.mainnetTokens.cWETHv3],
           balances: [compoundV3.mainnetTokens.USDC],
           apporveTimes: 2,
-          recieves: [compoundV3.mainnetTokens.USDC],
+          receives: [compoundV3.mainnetTokens.USDC],
         },
       },
       {
         skip: false,
         testingAccount: '0xa3C1C91403F0026b9dd086882aDbC8Cdbc3b3cfB',
-        protocolId: 'compoundv3',
+        protocolId: 'compound-v2',
         marketId: 'USDC',
         params: {
           srcToken: compoundV3.mainnetTokens.ETH,
@@ -68,13 +68,13 @@ describe('Transaction: Zap Withdraw', function () {
           funds: [],
           balances: [compoundV3.mainnetTokens.USDC],
           apporveTimes: 1,
-          recieves: [compoundV3.mainnetTokens.USDC],
+          receives: [compoundV3.mainnetTokens.USDC],
         },
       },
       {
         skip: false,
         testingAccount: '0xa3C1C91403F0026b9dd086882aDbC8Cdbc3b3cfB',
-        protocolId: 'compoundv3',
+        protocolId: 'compound-v2',
         marketId: 'USDC',
         params: {
           srcToken: compoundV3.mainnetTokens.ETH,
@@ -85,13 +85,13 @@ describe('Transaction: Zap Withdraw', function () {
           funds: [],
           balances: [compoundV3.mainnetTokens.USDC],
           apporveTimes: 1,
-          recieves: [compoundV3.mainnetTokens.ETH],
+          receives: [compoundV3.mainnetTokens.ETH],
         },
       },
       {
         skip: false,
         testingAccount: '0x7F67F6A09bcb2159b094B64B4acc53D5193AEa2E',
-        protocolId: 'aavev2',
+        protocolId: 'aave-v2',
         marketId: 'mainnet',
         params: {
           srcToken: aaveV2.mainnetTokens.WBTC,
@@ -102,7 +102,7 @@ describe('Transaction: Zap Withdraw', function () {
           funds: [aaveV2.mainnetTokens.aWBTC],
           balances: [aaveV2.mainnetTokens.USDC],
           apporveTimes: 2,
-          recieves: [aaveV2.mainnetTokens.USDC],
+          receives: [aaveV2.mainnetTokens.USDC],
         },
       },
       {
@@ -119,14 +119,14 @@ describe('Transaction: Zap Withdraw', function () {
           funds: [radiantV2.mainnetTokens.rWBTC],
           balances: [radiantV2.mainnetTokens.USDC],
           apporveTimes: 2,
-          recieves: [radiantV2.mainnetTokens.USDC],
+          receives: [radiantV2.mainnetTokens.USDC],
         },
       },
     ];
 
     for (const [i, { skip, testingAccount, protocolId, marketId, params, expects }] of testCases.entries()) {
       if (skip) continue;
-      it.only(`case ${i + 1} - ${protocolId}:${marketId}`, async function () {
+      it(`case ${i + 1} - ${protocolId}:${marketId}`, async function () {
         user = await hre.ethers.getImpersonatedSigner(testingAccount);
 
         const { estimateResult, buildRouterTransactionRequest } = await adapter.getZapWithdraw(

@@ -1,5 +1,5 @@
-import { TokenToTokenParams } from './swaper.type';
-import * as api from '@protocolink/api';
+import { SwapTokenLogicParams } from './swaper.type';
+import * as apisdk from '@protocolink/api';
 import * as common from '@protocolink/common';
 import * as logics from '@protocolink/logics';
 import { providers } from 'ethers';
@@ -20,11 +20,11 @@ export abstract class Swaper extends common.Web3Toolkit {
     return true;
   }
 
-  abstract quote(params: TokenToTokenParams): Promise<logics.paraswapv5.SwapTokenLogicFields>;
+  abstract quote(params: SwapTokenLogicParams): Promise<logics.paraswapv5.SwapTokenLogicFields>;
 
-  abstract newSwapTokenLogic(fields: any): api.protocols.paraswapv5.SwapTokenLogic;
+  abstract newSwapTokenLogic(fields: any): apisdk.protocols.paraswapv5.SwapTokenLogic;
 
-  abstract isExactIn(logic: api.protocols.paraswapv5.SwapTokenLogic): boolean;
+  abstract isExactIn(logic: apisdk.protocols.paraswapv5.SwapTokenLogic): boolean;
 }
 
 export interface SwaperClass {
