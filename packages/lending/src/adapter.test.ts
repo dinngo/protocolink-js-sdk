@@ -3,7 +3,7 @@
 import { Adapter } from './adapter';
 import { BaseParams } from './adapter.type';
 import { LendingProtocol } from './protocols/aave-v3/lending-protocol';
-import { LendingSwaper } from './protocols/paraswap-v5/lending-swaper';
+import { LendingSwapper } from './protocols/paraswap-v5/lending-swapper';
 import { Portfolio } from './protocol.portfolio';
 import { expect } from 'chai';
 import { mainnetTokens } from '@protocolink/test-helpers';
@@ -87,7 +87,7 @@ const zapRepayTestCases: BaseParams[] = [
 
 describe('Lending AaveV3 SDK', function () {
   Adapter.registerProtocol(LendingProtocol);
-  Adapter.registerSwaper(LendingSwaper);
+  Adapter.registerSwapper(LendingSwapper);
   const adapter = new Adapter(1, provider);
   const protocolId = 'aave-v3';
 

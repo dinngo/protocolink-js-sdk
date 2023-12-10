@@ -1,13 +1,12 @@
 import { BaseFields, BaseParams } from './adapter.type';
 import { Portfolio } from './protocol.portfolio';
 import { Protocol, ProtocolClass } from './protocol';
-import { Swaper, SwaperClass } from './swaper';
+import { Swapper, SwapperClass } from './swapper';
 import * as apisdk from '@protocolink/api';
 import * as common from '@protocolink/common';
 import { defaultInterestRateMode, defaultSlippage } from './protocol.type';
 import flatten from 'lodash/flatten';
 import { providers } from 'ethers';
-import { wrapToken } from './helper';
 
 type Options = {
   permitType: apisdk.Permit2Type | undefined;
@@ -20,16 +19,16 @@ export class Adapter extends common.Web3Toolkit {
     this.Protocols.push(protocol);
   }
 
-  static Swapers: SwaperClass[] = [];
+  static Swappers: SwapperClass[] = [];
 
-  static registerSwaper(swaper: SwaperClass) {
-    this.Swapers.push(swaper);
+  static registerSwapper(swapper: SwapperClass) {
+    this.Swappers.push(swapper);
   }
 
   permitType: apisdk.Permit2Type | undefined = 'permit';
   apiKey: string | undefined;
   protocolMap: Record<string, Protocol> = {};
-  swapers: Swaper[] = [];
+  swappers: Swapper[] = [];
 
   constructor(
     chainId: number,
@@ -46,9 +45,9 @@ export class Adapter extends common.Web3Toolkit {
         this.protocolMap[protocol.id] = protocol;
       }
     }
-    for (const Swaper of Adapter.Swapers) {
-      if (Swaper.isSupported(this.chainId)) {
-        this.swapers.push(new Swaper(chainId, provider));
+    for (const Swapper of Adapter.Swappers) {
+      if (Swapper.isSupported(this.chainId)) {
+        this.swappers.push(new Swapper(chainId, provider));
       }
     }
   }
@@ -57,34 +56,34 @@ export class Adapter extends common.Web3Toolkit {
     return Object.keys(this.protocolMap);
   }
 
-  findSwaper(tokenOrTokens: common.Token | common.Token[]) {
-    const canCustomTokenSwappers: Swaper[] = [];
-    const tokensSupportedSwappers: Swaper[] = [];
-    let bestSwaper: Swaper | undefined;
-    for (const swaper of this.swapers) {
-      if (swaper.canCustomToken) {
-        canCustomTokenSwappers.push(swaper);
+  findSwapper(tokenOrTokens: common.Token | common.Token[]) {
+    const canCustomTokenSwappers: Swapper[] = [];
+    const tokensSupportedSwappers: Swapper[] = [];
+    let bestSwapper: Swapper | undefined;
+    for (const swapper of this.swappers) {
+      if (swapper.canCustomToken) {
+        canCustomTokenSwappers.push(swapper);
       }
 
       const isNotSupported = Array.isArray(tokenOrTokens)
-        ? tokenOrTokens.some((token) => !swaper.isSupportedToken(token))
-        : !swaper.isSupportedToken(tokenOrTokens);
+        ? tokenOrTokens.some((token) => !swapper.isSupportedToken(token))
+        : !swapper.isSupportedToken(tokenOrTokens);
       if (isNotSupported) {
         continue;
       }
-      tokensSupportedSwappers.push(swaper);
+      tokensSupportedSwappers.push(swapper);
 
-      bestSwaper = swaper;
+      bestSwapper = swapper;
       break;
     }
-    if (!bestSwaper) {
-      bestSwaper = tokensSupportedSwappers[0] ?? canCustomTokenSwappers[0];
+    if (!bestSwapper) {
+      bestSwapper = tokensSupportedSwappers[0] ?? canCustomTokenSwappers[0];
     }
-    if (!bestSwaper) {
-      bestSwaper = this.swapers[0];
+    if (!bestSwapper) {
+      bestSwapper = this.swappers[0];
     }
 
-    return bestSwaper;
+    return bestSwapper;
   }
 
   async getPortfolios(account: string): Promise<Portfolio[]> {
@@ -120,13 +119,18 @@ export class Adapter extends common.Web3Toolkit {
     const { srcAmount } = params;
     const srcToken = common.classifying(params.srcToken);
     const destToken = common.classifying(params.destToken);
-    const wrappedSrcToken = wrapToken(this.chainId, srcToken);
-    const wrappedDestToken = wrapToken(this.chainId, destToken);
+    const wrappedSrcToken = srcToken.wrapped;
+    const wrappedDestToken = destToken.wrapped;
+
     const collateralSwapLogics: apisdk.Logic<any>[] = [];
     const protocol = this.getProtocol(protocolId);
 
     portfolio = portfolio || (await protocol.getPortfolio(account, marketId));
     const afterPortfolio = portfolio.clone();
+
+    // compound v3 base token supplied not support collateral swap
+    if (protocolId === 'compound-v3' && portfolio?.baseToken?.is(srcToken.unwrapped))
+      throw new Error('Compound V3 does not support the base token for performing collateral swaps');
 
     // ---------- flashloan ----------
     const flashLoanAggregatorQuotation = await apisdk.protocols.utility.getFlashLoanAggregatorQuotation(this.chainId, {
@@ -143,14 +147,14 @@ export class Adapter extends common.Web3Toolkit {
     collateralSwapLogics.push(flashLoanLoanLogic);
 
     // ---------- swap ----------
-    const swaper = this.findSwaper([wrappedSrcToken, wrappedDestToken]);
-    const swapQuotation = await swaper.quote({
+    const swapper = this.findSwapper([wrappedSrcToken, wrappedDestToken]);
+    const swapQuotation = await swapper.quote({
       input: flashLoanTokenAmount,
       tokenOut: wrappedDestToken,
       slippage: defaultSlippage,
     });
 
-    const swapTokenLogic = swaper.newSwapTokenLogic(swapQuotation);
+    const swapTokenLogic = swapper.newSwapTokenLogic(swapQuotation);
     collateralSwapLogics.push(swapTokenLogic);
 
     // ---------- supply ----------
@@ -160,12 +164,8 @@ export class Adapter extends common.Web3Toolkit {
 
     afterPortfolio.supply(swapQuotation.output.token, swapQuotation.output.amount);
 
-    // compound v3 base token supplied not support collateral swap
-    if (protocolId === 'compoundv3' && supplyLogic.fields.output)
-      throw new Error('Compound V3 does not support the base token for performing collateral swaps');
-
     // if not compound v3, compound v3 does not need return and add funds in collateral swap flow
-    if (protocolId !== 'compoundv3') {
+    if (protocolId !== 'compound-v3') {
       if (!supplyLogic.fields.output) throw new Error('incorrect supply result');
       // ---------- return funds ----------
       const returnLogic = apisdk.protocols.utility.newSendTokenLogic({
@@ -243,8 +243,8 @@ export class Adapter extends common.Web3Toolkit {
     const { srcAmount } = params;
     const srcToken = common.classifying(params.srcToken);
     const destToken = common.classifying(params.destToken);
-    const wrappedSrcToken = wrapToken(this.chainId, srcToken);
-    const wrappedDestToken = wrapToken(this.chainId, destToken);
+    const wrappedSrcToken = srcToken.wrapped;
+    const wrappedDestToken = destToken.wrapped;
 
     const debtSwapLogics: apisdk.Logic<any>[] = [];
     const protocol = this.getProtocol(protocolId);
@@ -253,15 +253,15 @@ export class Adapter extends common.Web3Toolkit {
     const afterPortfolio = portfolio.clone();
 
     // ---------- Pre-calc quotation ----------
-    const swaper = this.findSwaper([wrappedSrcToken, wrappedDestToken]);
+    const swapper = this.findSwapper([wrappedSrcToken, wrappedDestToken]);
     // get the quotation for how much dest token is needed to exchange for the src amount
-    let swapQuotation = await swaper.quote({
+    let swapQuotation = await swapper.quote({
       tokenIn: wrappedDestToken,
       output: { token: wrappedSrcToken, amount: srcAmount },
       slippage: defaultSlippage,
     });
     // convert swap type to exact in
-    swapQuotation = await swaper.quote({ input: swapQuotation.input, tokenOut: srcToken, slippage: defaultSlippage });
+    swapQuotation = await swapper.quote({ input: swapQuotation.input, tokenOut: srcToken, slippage: defaultSlippage });
 
     // ---------- flashloan ----------
     const flashLoanAggregatorQuotation = await apisdk.protocols.utility.getFlashLoanAggregatorQuotation(this.chainId, {
@@ -274,7 +274,7 @@ export class Adapter extends common.Web3Toolkit {
     debtSwapLogics.push(flashLoanLoanLogic);
 
     // ---------- swap ----------
-    const swapTokenLogic = swaper.newSwapTokenLogic(swapQuotation);
+    const swapTokenLogic = swapper.newSwapTokenLogic(swapQuotation);
     debtSwapLogics.push(swapTokenLogic);
 
     // ---------- repay ----------
@@ -358,8 +358,8 @@ export class Adapter extends common.Web3Toolkit {
     const { srcAmount } = params;
     const srcToken = common.classifying(params.srcToken);
     const destToken = common.classifying(params.destToken);
-    const wrappedSrcToken = wrapToken(this.chainId, srcToken);
-    const wrappedDestToken = wrapToken(this.chainId, destToken);
+    const wrappedSrcToken = srcToken.wrapped;
+    const wrappedDestToken = destToken.wrapped;
 
     const leverageLonglogics: apisdk.Logic<any>[] = [];
     const protocol = this.getProtocol(protocolId);
@@ -368,15 +368,15 @@ export class Adapter extends common.Web3Toolkit {
     const afterPortfolio = portfolio.clone();
 
     // ---------- Pre-calc quotation ----------
-    const swaper = this.findSwaper([wrappedDestToken, wrappedSrcToken]);
+    const swapper = this.findSwapper([wrappedDestToken, wrappedSrcToken]);
     // retrieve the amount needed to borrow based on the collateral token and amount
-    let swapQuotation = await swaper.quote({
+    let swapQuotation = await swapper.quote({
       tokenIn: wrappedDestToken,
       output: { token: wrappedSrcToken, amount: srcAmount },
       slippage: defaultSlippage,
     });
     // convert swap type to exact in
-    swapQuotation = await swaper.quote({
+    swapQuotation = await swapper.quote({
       input: swapQuotation.input,
       tokenOut: wrappedSrcToken,
       slippage: defaultSlippage,
@@ -395,7 +395,7 @@ export class Adapter extends common.Web3Toolkit {
     leverageLonglogics.push(flashLoanLoanLogic);
 
     // ---------- swap ----------
-    const swapTokenLogic = swaper.newSwapTokenLogic(swapQuotation);
+    const swapTokenLogic = swapper.newSwapTokenLogic(swapQuotation);
     leverageLonglogics.push(swapTokenLogic);
 
     // ---------- supply ----------
@@ -473,8 +473,9 @@ export class Adapter extends common.Web3Toolkit {
     const { srcAmount } = params;
     const srcToken = common.classifying(params.srcToken);
     const destToken = common.classifying(params.destToken);
-    const wrappedSrcToken = wrapToken(this.chainId, srcToken);
-    const wrappedDestToken = wrapToken(this.chainId, destToken);
+    const wrappedSrcToken = srcToken.wrapped;
+    const wrappedDestToken = destToken.wrapped;
+
     const leverageShortlogics: apisdk.Logic<any>[] = [];
     const protocol = this.getProtocol(protocolId);
 
@@ -495,13 +496,13 @@ export class Adapter extends common.Web3Toolkit {
     leverageShortlogics.push(flashLoanLoanLogic);
 
     // ---------- swap ----------
-    const swaper = this.findSwaper([wrappedSrcToken, wrappedDestToken]);
-    const swapQuotation = await swaper.quote({
+    const swapper = this.findSwapper([wrappedSrcToken, wrappedDestToken]);
+    const swapQuotation = await swapper.quote({
       input: flashLoanTokenAmount,
       tokenOut: wrappedDestToken,
       slippage: defaultSlippage,
     });
-    const swapTokenLogic = swaper.newSwapTokenLogic(swapQuotation);
+    const swapTokenLogic = swapper.newSwapTokenLogic(swapQuotation);
     leverageShortlogics.push(swapTokenLogic);
 
     // ---------- supply ----------
@@ -580,8 +581,9 @@ export class Adapter extends common.Web3Toolkit {
     const { srcAmount } = params;
     const srcToken = common.classifying(params.srcToken);
     const destToken = common.classifying(params.destToken);
-    const wrappedSrcToken = wrapToken(this.chainId, srcToken);
-    const wrappedDestToken = wrapToken(this.chainId, destToken);
+    const wrappedSrcToken = srcToken.wrapped;
+    const wrappedDestToken = destToken.wrapped;
+
     const deleveragelogics: apisdk.Logic<any>[] = [];
     const protocol = this.getProtocol(protocolId);
 
@@ -589,15 +591,15 @@ export class Adapter extends common.Web3Toolkit {
     const afterPortfolio = portfolio.clone();
 
     // ---------- Pre-calc quotation ----------
-    const swaper = this.findSwaper([wrappedDestToken, wrappedSrcToken]);
+    const swapper = this.findSwapper([wrappedDestToken, wrappedSrcToken]);
     //  get the quotation for how much collateral token is needed to exchange for the repay amount
-    let swapQuotation = await swaper.quote({
+    let swapQuotation = await swapper.quote({
       tokenIn: wrappedDestToken,
       output: { token: wrappedSrcToken, amount: srcAmount },
       slippage: defaultSlippage,
     });
     // convert swap type to exact in
-    swapQuotation = await swaper.quote({
+    swapQuotation = await swapper.quote({
       input: swapQuotation.input,
       tokenOut: wrappedDestToken,
       slippage: defaultSlippage,
@@ -615,7 +617,7 @@ export class Adapter extends common.Web3Toolkit {
     deleveragelogics.push(flashLoanLoanLogic);
 
     // ---------- swap ----------
-    const swapTokenLogic = swaper.newSwapTokenLogic(swapQuotation);
+    const swapTokenLogic = swapper.newSwapTokenLogic(swapQuotation);
     deleveragelogics.push(swapTokenLogic);
 
     // ---------- repay ----------
@@ -629,7 +631,7 @@ export class Adapter extends common.Web3Toolkit {
     afterPortfolio.repay(swapQuotation.output.token, swapQuotation.output.amount);
 
     // ---------- add funds ----------
-    if (protocolId !== 'compoundv3') {
+    if (protocolId !== 'compound-v3') {
       const addLogic = apisdk.protocols.permit2.newPullTokenLogic({
         input: swapQuotation.input,
       });
@@ -687,6 +689,7 @@ export class Adapter extends common.Web3Toolkit {
     const { srcAmount } = params;
     const srcToken = common.classifying(params.srcToken);
     const destToken = common.classifying(params.destToken);
+
     const zapSupplylogics: apisdk.Logic<any>[] = [];
     const protocol = this.getProtocol(protocolId);
 
@@ -698,13 +701,13 @@ export class Adapter extends common.Web3Toolkit {
 
     // ---------- swap ----------
     if (!srcToken.wrapped.is(destToken.wrapped)) {
-      const swaper = this.findSwaper([srcToken, destToken]);
-      const swapQuotation = await swaper.quote({
+      const swapper = this.findSwapper([srcToken, destToken]);
+      const swapQuotation = await swapper.quote({
         input: { token: srcToken, amount: srcAmount },
         tokenOut: destToken,
         slippage: defaultSlippage,
       });
-      const swapTokenLogic = swaper.newSwapTokenLogic(swapQuotation);
+      const swapTokenLogic = swapper.newSwapTokenLogic(swapQuotation);
       supplyTokenAmount = swapQuotation.output;
       zapSupplylogics.push(swapTokenLogic);
     }
@@ -758,6 +761,7 @@ export class Adapter extends common.Web3Toolkit {
     const { srcAmount } = params;
     const srcToken = common.classifying(params.srcToken);
     const destToken = common.classifying(params.destToken);
+
     const zapWithdrawlogics: apisdk.Logic<any>[] = [];
     const protocol = this.getProtocol(protocolId);
 
@@ -777,15 +781,15 @@ export class Adapter extends common.Web3Toolkit {
     afterPortfolio.withdraw(srcToken, withdrawLogic.fields.output.amount);
 
     // ---------- swap ----------
-    if (!srcToken.is(destToken)) {
-      const swaper = this.findSwaper([srcToken, destToken]);
-      const swapQuotation = await swaper.quote({
+    if (!srcToken.unwrapped.is(destToken.unwrapped)) {
+      const swapper = this.findSwapper([srcToken, destToken]);
+      const swapQuotation = await swapper.quote({
         input: withdrawLogic.fields.output,
         tokenOut: destToken,
         slippage: defaultSlippage,
       });
       outputTokenAmount = swapQuotation.output;
-      const swapTokenLogic = swaper.newSwapTokenLogic(swapQuotation);
+      const swapTokenLogic = swapper.newSwapTokenLogic(swapQuotation);
       zapWithdrawlogics.push(swapTokenLogic);
     }
 
@@ -829,6 +833,7 @@ export class Adapter extends common.Web3Toolkit {
     const { srcAmount } = params;
     const srcToken = common.classifying(params.srcToken);
     const destToken = common.classifying(params.destToken);
+
     const zapBorrowlogics: apisdk.Logic<any>[] = [];
     const protocol = this.getProtocol(protocolId);
 
@@ -849,15 +854,15 @@ export class Adapter extends common.Web3Toolkit {
     afterPortfolio.borrow(srcToken, srcAmount);
 
     // ---------- swap ----------
-    if (!srcToken.is(destToken)) {
-      const swaper = this.findSwaper([srcToken, destToken]);
-      const swapQuotation = await swaper.quote({
+    if (!srcToken.unwrapped.is(destToken.unwrapped)) {
+      const swapper = this.findSwapper([srcToken, destToken]);
+      const swapQuotation = await swapper.quote({
         input: { token: srcToken, amount: srcAmount },
         tokenOut: destToken,
         slippage: defaultSlippage,
       });
       outputTokenAmount = swapQuotation.output;
-      const swapTokenLogic = swaper.newSwapTokenLogic(swapQuotation);
+      const swapTokenLogic = swapper.newSwapTokenLogic(swapQuotation);
       zapBorrowlogics.push(swapTokenLogic);
     }
     // ---------- tx related ----------
@@ -901,6 +906,7 @@ export class Adapter extends common.Web3Toolkit {
     const { srcAmount } = params;
     const srcToken = common.classifying(params.srcToken);
     const destToken = common.classifying(params.destToken);
+
     const zapRepaylogics: apisdk.Logic<any>[] = [];
     const protocol = this.getProtocol(protocolId);
 
@@ -911,15 +917,15 @@ export class Adapter extends common.Web3Toolkit {
     let repayTokenAmount = new common.TokenAmount(srcToken, srcAmount);
 
     // ---------- swap ----------
-    if (!srcToken.wrapped.is(destToken.wrapped)) {
-      const swaper = this.findSwaper([srcToken, destToken]);
-      const swapQuotation = await swaper.quote({
+    if (!srcToken.unwrapped.is(destToken.unwrapped)) {
+      const swapper = this.findSwapper([srcToken, destToken]);
+      const swapQuotation = await swapper.quote({
         input: { token: srcToken, amount: srcAmount },
         tokenOut: destToken,
         slippage: defaultSlippage,
       });
       repayTokenAmount = swapQuotation.output;
-      const swapTokenLogic = swaper.newSwapTokenLogic(swapQuotation);
+      const swapTokenLogic = swapper.newSwapTokenLogic(swapQuotation);
       zapRepaylogics.push(swapTokenLogic);
     }
     // ---------- repay ----------

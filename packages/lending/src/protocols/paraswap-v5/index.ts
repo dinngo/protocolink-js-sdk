@@ -1,2 +1,2 @@
 export * from './configs';
-export * from './lending-swaper';
+export * from './lending-swapper';

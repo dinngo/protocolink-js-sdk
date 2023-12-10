@@ -1,10 +1,10 @@
-import { SwapTokenLogicParams } from './swaper.type';
+import { SwapTokenLogicParams } from './swapper.type';
 import * as apisdk from '@protocolink/api';
 import * as common from '@protocolink/common';
 import * as logics from '@protocolink/logics';
 import { providers } from 'ethers';
 
-export abstract class Swaper extends common.Web3Toolkit {
+export abstract class Swapper extends common.Web3Toolkit {
   static readonly supportedChainIds: number[];
 
   static isSupported(chainId: number) {
@@ -23,12 +23,10 @@ export abstract class Swaper extends common.Web3Toolkit {
   abstract quote(params: SwapTokenLogicParams): Promise<logics.paraswapv5.SwapTokenLogicFields>;
 
   abstract newSwapTokenLogic(fields: any): apisdk.protocols.paraswapv5.SwapTokenLogic;
-
-  abstract isExactIn(logic: apisdk.protocols.paraswapv5.SwapTokenLogic): boolean;
 }
 
-export interface SwaperClass {
-  new (chainId: number, library: providers.Provider): Swaper;
+export interface SwapperClass {
+  new (chainId: number, library: providers.Provider): Swapper;
   readonly supportedChainIds: number[];
   isSupported: (chainId: number) => boolean;
 }

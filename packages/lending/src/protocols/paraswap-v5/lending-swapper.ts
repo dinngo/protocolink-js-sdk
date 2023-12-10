@@ -1,11 +1,11 @@
-import { NAME } from './configs';
-import { Swaper } from 'src/swaper';
+import { NAME, supportedChainIds } from './configs';
+import { Swapper } from 'src/swapper';
 import * as apisdk from '@protocolink/api';
 import * as common from '@protocolink/common';
 import * as logics from '@protocolink/logics';
 
-export class LendingSwaper extends Swaper {
-  static readonly supportedChainIds = [1, 10, 137, 42161, 43114];
+export class LendingSwapper extends Swapper {
+  static readonly supportedChainIds = supportedChainIds;
 
   readonly id = NAME;
   readonly canCustomToken = false;
@@ -29,9 +29,5 @@ export class LendingSwaper extends Swaper {
 
   newSwapTokenLogic(fields: apisdk.protocols.paraswapv5.SwapTokenFields): apisdk.protocols.paraswapv5.SwapTokenLogic {
     return apisdk.protocols.paraswapv5.newSwapTokenLogic(fields);
-  }
-
-  isExactIn() {
-    return true;
   }
 }

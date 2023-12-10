@@ -136,6 +136,7 @@ export class Portfolio {
   chainId: number;
   protocolId: string;
   marketId: string;
+  baseToken?: common.Token;
   supplies: Supply[] = [];
   supplyMap: { [key in string]?: Supply } = {};
   borrows: Borrow[] = [];
@@ -154,11 +155,13 @@ export class Portfolio {
     protocolId: string,
     marketId: string,
     supplies: SupplyObject[],
-    borrows: BorrowObject[]
+    borrows: BorrowObject[],
+    baseToken?: common.Token
   ) {
     this.chainId = chainId;
     this.protocolId = protocolId;
     this.marketId = marketId;
+    if (baseToken) this.baseToken = baseToken;
 
     for (let i = 0; i < supplies.length; i++) {
       const supply = new Supply(supplies[i]);
@@ -271,13 +274,11 @@ export class Portfolio {
   }
 
   findSupply(token: common.Token) {
-    return this.supplyMap[token.address] ?? this.supplyMap[token.address];
-    // return this.supplyMap[unwrapToken(this.chainId, token).address] ?? this.supplyMap[token.address];
+    return this.supplyMap[token.unwrapped.address] ?? this.supplyMap[token.address];
   }
 
   findBorrow(token: common.Token) {
-    return this.borrowMap[token.address] ?? this.borrowMap[token.address];
-    // return this.borrowMap[unwrapToken(this.chainId, token).address] ?? this.borrowMap[token.address];
+    return this.borrowMap[token.unwrapped.address] ?? this.borrowMap[token.address];
   }
 
   calcLeverageTimes(leverageToken: common.Token, afterPortfolio: Portfolio) {

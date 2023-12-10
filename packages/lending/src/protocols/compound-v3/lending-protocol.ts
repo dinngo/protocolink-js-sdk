@@ -292,7 +292,7 @@ export class LendingProtocol extends Protocol {
       },
     ];
 
-    const portfolio = new Portfolio(this.chainId, this.id, marketId, supplies, borrows);
+    const portfolio = new Portfolio(this.chainId, this.id, marketId, supplies, borrows, baseToken);
 
     return portfolio;
   }

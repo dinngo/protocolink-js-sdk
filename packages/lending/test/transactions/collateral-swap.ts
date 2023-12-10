@@ -42,7 +42,7 @@ describe('Transaction: Collateral swap', function () {
         },
       },
       {
-        skip: true,
+        skip: false,
         testingAccount: '0x53fb0162bC8d5EEc2fB1532923C4f8997BAce111',
         protocolId: 'compound-v3',
         marketId: 'USDC',
