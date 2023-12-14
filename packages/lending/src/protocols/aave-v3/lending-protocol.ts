@@ -13,7 +13,7 @@ import BigNumberJS from 'bignumber.js';
 import { BorrowObject, Market, RepayParams, SupplyObject, SupplyParams, WithdrawParams } from 'src/protocol.type';
 import {
   DISPLAY_NAME,
-  NAME,
+  ID,
   Reserve,
   configMap,
   getContractAddress,
@@ -39,7 +39,7 @@ export class LendingProtocol extends Protocol {
     chainId,
   }));
 
-  readonly id = NAME;
+  readonly id = ID;
   readonly market: Market;
   readonly isAaveLike = true;
 

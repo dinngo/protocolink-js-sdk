@@ -129,7 +129,7 @@ export class Adapter extends common.Web3Toolkit {
     const afterPortfolio = portfolio.clone();
 
     // compound v3 base token supplied not support collateral swap
-    if (protocolId === 'compound-v3' && portfolio?.baseToken?.is(srcToken.unwrapped))
+    if (protocolId === 'compound-v3' && portfolio.baseToken?.is(srcToken.unwrapped))
       throw new Error('Compound V3 does not support the base token for performing collateral swaps');
 
     // ---------- flashloan ----------
@@ -310,9 +310,13 @@ export class Adapter extends common.Web3Toolkit {
     );
 
     const buildRouterTransactionRequest = (
-      args?: Omit<apisdk.RouterData, 'chainId' | 'account' | 'logics'>
+      args?: Omit<apisdk.RouterData, 'chainId' | 'account' | 'logics'>,
+      apiKey?: string
     ): Promise<common.TransactionRequest> =>
-      apisdk.buildRouterTransactionRequest({ ...args, chainId: this.chainId, account, logics: debtSwapLogics });
+      apisdk.buildRouterTransactionRequest(
+        { ...args, chainId: this.chainId, account, logics: debtSwapLogics },
+        apiKey ? { 'x-api-key': apiKey } : undefined
+      );
 
     return {
       fields: {
@@ -437,9 +441,13 @@ export class Adapter extends common.Web3Toolkit {
     );
 
     const buildRouterTransactionRequest = (
-      args?: Omit<apisdk.RouterData, 'chainId' | 'account' | 'logics'>
+      args?: Omit<apisdk.RouterData, 'chainId' | 'account' | 'logics'>,
+      apiKey?: string
     ): Promise<common.TransactionRequest> =>
-      apisdk.buildRouterTransactionRequest({ ...args, chainId: this.chainId, account, logics: leverageLonglogics });
+      apisdk.buildRouterTransactionRequest(
+        { ...args, chainId: this.chainId, account, logics: leverageLonglogics },
+        apiKey ? { 'x-api-key': apiKey } : undefined
+      );
 
     return {
       fields: {
@@ -545,9 +553,13 @@ export class Adapter extends common.Web3Toolkit {
     );
 
     const buildRouterTransactionRequest = (
-      args?: Omit<apisdk.RouterData, 'chainId' | 'account' | 'logics'>
+      args?: Omit<apisdk.RouterData, 'chainId' | 'account' | 'logics'>,
+      apiKey?: string
     ): Promise<common.TransactionRequest> =>
-      apisdk.buildRouterTransactionRequest({ ...args, chainId: this.chainId, account, logics: leverageShortlogics });
+      apisdk.buildRouterTransactionRequest(
+        { ...args, chainId: this.chainId, account, logics: leverageShortlogics },
+        apiKey ? { 'x-api-key': apiKey } : undefined
+      );
 
     return {
       fields: {
@@ -660,9 +672,13 @@ export class Adapter extends common.Web3Toolkit {
     );
 
     const buildRouterTransactionRequest = (
-      args?: Omit<apisdk.RouterData, 'chainId' | 'account' | 'logics'>
+      args?: Omit<apisdk.RouterData, 'chainId' | 'account' | 'logics'>,
+      apiKey?: string
     ): Promise<common.TransactionRequest> =>
-      apisdk.buildRouterTransactionRequest({ ...args, chainId: this.chainId, account, logics: deleveragelogics });
+      apisdk.buildRouterTransactionRequest(
+        { ...args, chainId: this.chainId, account, logics: deleveragelogics },
+        apiKey ? { 'x-api-key': apiKey } : undefined
+      );
 
     return {
       fields: {

@@ -1,4 +1,4 @@
-import { NAME, supportedChainIds } from './configs';
+import { ID, supportedChainIds } from './configs';
 import { Swapper } from 'src/swapper';
 import * as apisdk from '@protocolink/api';
 import * as common from '@protocolink/common';
@@ -7,7 +7,7 @@ import * as logics from '@protocolink/logics';
 export class LendingSwapper extends Swapper {
   static readonly supportedChainIds = supportedChainIds;
 
-  readonly id = NAME;
+  readonly id = ID;
   readonly canCustomToken = false;
 
   private _tokens?: common.Token[];

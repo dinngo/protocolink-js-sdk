@@ -4,8 +4,8 @@ import { CometInterface } from './contracts/Comet';
 import { Comet__factory } from './contracts';
 import {
   DISPLAY_NAME,
+  ID,
   MarketConfig,
-  NAME,
   configMap,
   getMarketBaseConfig,
   marketMap,
@@ -27,7 +27,7 @@ export class LendingProtocol extends Protocol {
     return accumulator;
   }, [] as Market[]);
 
-  readonly id = NAME;
+  readonly id = ID;
   readonly market: Market;
 
   toUnderlyingToken(protocolToken: common.Token): common.Token {

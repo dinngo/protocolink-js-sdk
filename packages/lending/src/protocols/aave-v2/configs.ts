@@ -2,7 +2,7 @@ import * as common from '@protocolink/common';
 import { isNativeToken, unwrapToken, wrapToken } from 'src/helper';
 import { mainnetTokens, polygonTokens } from './tokens';
 
-export const NAME = 'aave-v2';
+export const ID = 'aave-v2';
 export const DISPLAY_NAME = 'Aave V2';
 
 export enum RateMode {

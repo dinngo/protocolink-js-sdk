@@ -2,7 +2,7 @@ import { arbitrumTokens, avalancheTokens, mainnetTokens, metisTokens, optimismTo
 import * as common from '@protocolink/common';
 import { isNativeToken, unwrapToken, wrapToken } from 'src/helper';
 
-export const NAME = 'aave-v3';
+export const ID = 'aave-v3';
 export const DISPLAY_NAME = 'Aave V3';
 
 export enum RateMode {

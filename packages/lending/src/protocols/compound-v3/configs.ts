@@ -2,7 +2,7 @@ import { arbitrumTokens, mainnetTokens, polygonTokens } from './tokens';
 import * as common from '@protocolink/common';
 import { unwrapToken } from 'src/helper';
 
-export const NAME = 'compound-v3';
+export const ID = 'compound-v3';
 export const DISPLAY_NAME = 'Compound V3';
 
 export interface AssetConfig {
