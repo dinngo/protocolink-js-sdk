@@ -371,7 +371,7 @@ export const configs: Config[] = [
         used: { deposit: true, withdraw: true, borrow: true, repay: true, flashLoan: true },
       },
       {
-        asset: arbitrumTokens.USDC, // USDC.e
+        asset: arbitrumTokens['USDC.e'],
         aToken: arbitrumTokens.aArbUSDC,
         stableDebtTokenAddress: '0x307ffe186F84a3bc2613D1eA417A5737D69A7007',
         variableDebtTokenAddress: '0xFCCf3cAbbe80101232d343252614b6A3eE81C989',

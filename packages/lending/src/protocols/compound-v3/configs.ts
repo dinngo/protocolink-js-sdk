@@ -58,7 +58,7 @@ export const configs: Config[] = [
       {
         cometAddress: '0xF25212E676D1F7F89Cd72fFEe66158f541246445',
         baseToken: polygonTokens.USDC,
-        baseTokenPriceFeedAddress: '0xfe4a8cc5b5b2366c1b58bea3858e81843581b2f7',
+        baseTokenPriceFeedAddress: '0xfE4A8cc5b5B2366C1B58Bea3858e81843581b2F7',
       },
     ],
   },
@@ -68,7 +68,7 @@ export const configs: Config[] = [
       {
         cometAddress: '0xA5EDBDD9646f8dFF606d7448e414884C7d905dCA',
         baseToken: arbitrumTokens.USDC, // USDC.e
-        baseTokenPriceFeedAddress: '0x50834f3163758fcc1df9973b6e91f0f0f0434ad3',
+        baseTokenPriceFeedAddress: '0x50834F3163758fcC1Df9973b6e91f0F0F0434aD3',
       },
     ],
   },
