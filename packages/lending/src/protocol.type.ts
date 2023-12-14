@@ -69,15 +69,17 @@ export interface Logic<TFields = any> {
   fields: TFields;
 }
 
-export type SupplyParams = core.TokenInFields<{ marketId: string }>;
+export type SupplyParams = core.TokenInFields<{ marketId: string; account: string }>;
 export type SupplyLogic = Logic<common.Declasifying<core.TokenInFields<{ output?: common.TokenAmount }>>>;
 
-export type WithdrawParams = core.TokenOutFields<{ marketId: string }>;
+export type WithdrawParams = core.TokenOutFields<{ marketId: string; account: string }>;
 export type WithdrawLogic = Logic<common.Declasifying<core.TokenOutFields<{ input?: common.TokenAmount }>>>;
 
 export type BorrowParams = common.Declasifying<
   core.TokenOutFields<{
     interestRateMode: InterestRateMode;
+    marketId: string;
+    account: string;
   }>
 >;
 export type BorrowLogic = Logic<BorrowParams>;

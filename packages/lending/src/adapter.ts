@@ -135,7 +135,6 @@ export class Adapter extends common.Web3Toolkit {
     // ---------- flashloan ----------
     const flashLoanAggregatorQuotation = await apisdk.protocols.utility.getFlashLoanAggregatorQuotation(this.chainId, {
       repays: [{ token: wrappedSrcToken, amount: srcAmount }],
-      protocolId: protocolId,
     });
 
     const flashLoanTokenAmount = flashLoanAggregatorQuotation.loans.tokenAmountMap[wrappedSrcToken.address];
@@ -158,7 +157,7 @@ export class Adapter extends common.Web3Toolkit {
     collateralSwapLogics.push(swapTokenLogic);
 
     // ---------- supply ----------
-    const supplyLogic = await protocol.newSupplyLogic({ input: swapQuotation.output, marketId });
+    const supplyLogic = await protocol.newSupplyLogic({ input: swapQuotation.output, marketId, account });
 
     collateralSwapLogics.push(supplyLogic);
 
@@ -185,6 +184,7 @@ export class Adapter extends common.Web3Toolkit {
     const withdrawLogic = await protocol.newWithdrawLogic({
       output: new common.TokenAmount(wrappedSrcToken, srcAmount),
       marketId,
+      account,
     });
     collateralSwapLogics.push(withdrawLogic);
 
@@ -403,7 +403,7 @@ export class Adapter extends common.Web3Toolkit {
     leverageLonglogics.push(swapTokenLogic);
 
     // ---------- supply ----------
-    const supplyLogic = await protocol.newSupplyLogic({ input: swapQuotation.output, marketId });
+    const supplyLogic = await protocol.newSupplyLogic({ input: swapQuotation.output, marketId, account });
     leverageLonglogics.push(supplyLogic);
     afterPortfolio.supply(swapQuotation.output.token, swapQuotation.output.amount);
 
@@ -514,7 +514,7 @@ export class Adapter extends common.Web3Toolkit {
     leverageShortlogics.push(swapTokenLogic);
 
     // ---------- supply ----------
-    const supplyLogic = await protocol.newSupplyLogic({ input: swapQuotation.output, marketId });
+    const supplyLogic = await protocol.newSupplyLogic({ input: swapQuotation.output, marketId, account });
     leverageShortlogics.push(supplyLogic);
 
     afterPortfolio.supply(swapQuotation.output.token, swapQuotation.output.amount);
@@ -655,6 +655,7 @@ export class Adapter extends common.Web3Toolkit {
     const withdrawLogic = await protocol.newWithdrawLogic({
       output: new common.TokenAmount(wrappedDestToken, withdrawTokenAmount.amount),
       marketId,
+      account,
     });
     deleveragelogics.push(withdrawLogic);
 
@@ -732,6 +733,7 @@ export class Adapter extends common.Web3Toolkit {
     const supplyLogic = await protocol.newSupplyLogic({
       input: supplyTokenAmount,
       marketId,
+      account,
     });
     zapSupplylogics.push(supplyLogic);
 
@@ -791,6 +793,7 @@ export class Adapter extends common.Web3Toolkit {
     const withdrawLogic = await protocol.newWithdrawLogic({
       output: outputTokenAmount,
       marketId,
+      account,
     });
     zapWithdrawlogics.push(withdrawLogic);
 
