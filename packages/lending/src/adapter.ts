@@ -214,8 +214,12 @@ export class Adapter extends common.Web3Toolkit {
         srcToken: srcToken,
         srcAmount: srcAmount,
         destToken: destToken,
+<<<<<<< Updated upstream
         // TODO: check which one is right
         destAmount: swapQuotation.output.amount, //withdrawLogic.fields.output.amount,
+=======
+        destAmount: swapQuotation.output.amount,
+>>>>>>> Stashed changes
         portfolio,
         afterPortfolio,
       },
@@ -455,6 +459,8 @@ export class Adapter extends common.Web3Toolkit {
       fields: {
         srcToken,
         srcAmount,
+        destToken,
+        destAmount: borrowTokenAmount.amount,
         portfolio,
         afterPortfolio,
       },
@@ -567,6 +573,8 @@ export class Adapter extends common.Web3Toolkit {
       fields: {
         srcToken,
         srcAmount,
+        destToken,
+        destAmount: supplyLogic.fields.input.amount,
         portfolio,
         afterPortfolio,
       },
