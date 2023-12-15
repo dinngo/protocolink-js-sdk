@@ -136,7 +136,6 @@ export class Portfolio {
   chainId: number;
   protocolId: string;
   marketId: string;
-  baseToken?: common.Token;
   supplies: Supply[] = [];
   supplyMap: { [key in string]?: Supply } = {};
   borrows: Borrow[] = [];
@@ -155,13 +154,11 @@ export class Portfolio {
     protocolId: string,
     marketId: string,
     supplies: SupplyObject[],
-    borrows: BorrowObject[],
-    baseToken?: common.Token
+    borrows: BorrowObject[]
   ) {
     this.chainId = chainId;
     this.protocolId = protocolId;
     this.marketId = marketId;
-    if (baseToken) this.baseToken = baseToken;
 
     for (let i = 0; i < supplies.length; i++) {
       const supply = new Supply(supplies[i]);
@@ -398,5 +395,20 @@ export class Portfolio {
     const repayUSD = new BigNumberJS(amount).times(price);
     this.totalBorrowUSD = this.totalBorrowUSD.minus(repayUSD);
     this.negativeProportion = this.negativeProportion.minus(repayUSD.times(apy));
+  }
+
+  toJSON() {
+    return {
+      chainId: this.chainId,
+      protocolId: this.protocolId,
+      marketId: this.marketId,
+      utilization: this.formattedUtilization,
+      healthRate: this.formattedHealthRate,
+      netAPY: this.formattedNetAPY,
+      totalSupplyUSD: this.formattedTotalSupplyUSD,
+      totalBorrowUSD: this.formattedTotalBorrowUSD,
+      supplies: this.supplies,
+      borrows: this.borrows,
+    };
   }
 }

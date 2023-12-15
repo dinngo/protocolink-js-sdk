@@ -52,17 +52,17 @@ export interface BorrowObject {
   apys: string[];
 }
 
-export interface TokenInField {
+export interface TokenInFields {
   marketId: string;
-  input: common.TokenAmountObject;
+  input: common.TokenAmount;
 }
 
-export interface TokenOutField {
+export interface TokenOutFields {
   marketId: string;
-  output: common.TokenAmountObject;
+  output: common.TokenAmount;
 }
 
-export type RepayField = TokenInField & { account: string };
+export type RepayField = TokenInFields & { account: string };
 
 export interface Logic<TFields = any> {
   rid: string;

@@ -317,15 +317,15 @@ export class LendingProtocol extends Protocol {
     return [portfolio];
   }
 
-  toUnderlyingToken(protocolToken: common.Token) {
+  toUnderlyingToken(_marketId: string, protocolToken: common.Token) {
     return toToken(this.chainId, protocolToken);
   }
 
-  toProtocolToken(underlyingToken: common.Token) {
+  toProtocolToken(_marketId: string, underlyingToken: common.Token) {
     return toAToken(this.chainId, underlyingToken);
   }
 
-  isProtocolToken(token: common.Token) {
+  isProtocolToken(_marketId: string, token: common.Token) {
     return isAToken(this.chainId, token);
   }
 

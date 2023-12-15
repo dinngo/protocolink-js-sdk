@@ -1,34 +1,26 @@
-import { BigNumber, providers } from 'ethers';
-import BigNumberJS from 'bignumber.js';
 import {
-  BorrowObject,
-  BorrowParams,
-  Market,
-  RepayParams,
-  SupplyObject,
-  SupplyParams,
-  WithdrawParams,
-} from 'src/protocol.type';
-import { CometInterface } from './contracts/Comet';
-import { Comet__factory } from './contracts';
-import {
+  AssetConfig,
   DISPLAY_NAME,
   ID,
-  MarketConfig,
+  MarketInfo,
   configMap,
-  getMarketBaseConfig,
+  getMarketConfig,
   marketMap,
   supportedChainIds,
 } from './configs';
+import { BigNumber } from 'ethers';
+import { BorrowObject, Market, RepayField, SupplyObject, TokenInFields, TokenOutFields } from 'src/protocol.type';
+import { CometInterface } from './contracts/Comet';
+import { Comet__factory } from './contracts';
 import { Portfolio } from 'src/protocol.portfolio';
 import { Protocol } from 'src/protocol';
 import * as apisdk from '@protocolink/api';
-import { calcAPR, calcHealthRate, calcNetAPR, calcUtilization } from './utils';
+import { calcAPR } from './utils';
 import * as common from '@protocolink/common';
-import * as logics from '@protocolink/logics';
-import { unwrapToken, wrapToken } from 'src/helper';
 
 export class LendingProtocol extends Protocol {
+  readonly id = ID;
+
   static readonly markets = supportedChainIds.reduce((accumulator, chainId) => {
     for (const marketId of Object.keys(marketMap[chainId])) {
       accumulator.push({ id: marketId, chainId });
@@ -36,104 +28,33 @@ export class LendingProtocol extends Protocol {
     return accumulator;
   }, [] as Market[]);
 
-  readonly id = ID;
-  readonly market: Market;
-
-  toUnderlyingToken(protocolToken: common.Token): common.Token {
-    const { baseToken } = marketMap[this.chainId][protocolToken.address];
-    return baseToken;
+  getMarketName(id: string) {
+    return `${DISPLAY_NAME} ${id}`;
   }
 
-  toProtocolToken(underlyingToken: common.Token): common.Token {
-    const { cometAddress } = getMarketBaseConfig(this.chainId, underlyingToken.unwrapped.symbol);
-    return new common.Token(
-      this.chainId,
-      cometAddress,
-      underlyingToken.decimals,
-      `c${underlyingToken.wrapped.symbol}V3`,
-      `Compound V3 ${underlyingToken.wrapped.symbol}`
-    );
+  canCollateralSwap(marketId: string, assetToken: common.Token) {
+    return !assetToken.wrapped.is(getMarketConfig(this.chainId, marketId).baseToken);
   }
 
-  private marketMap: Record<number, Record<string, MarketConfig>> = supportedChainIds.reduce((accumulator, chainId) => {
-    accumulator[chainId] = {};
-    return accumulator;
-  }, {} as Record<number, any>);
-
-  async getMarket(id: string): Promise<MarketConfig> {
-    if (this.marketMap[this.chainId][id]) return this.marketMap[this.chainId][id];
-
-    const _market = getMarketBaseConfig(this.chainId, id);
-    const { cometAddress } = _market;
-    this.marketMap[this.chainId][id] = { ..._market, assets: [], baseBorrowMin: '0', utilization: '0', numAssets: 0 };
-
-    // assets
-    const iface = logics.compoundv3.Comet__factory.createInterface();
-
-    let baseTokenPriceFeed: string;
-    let numAssets: number;
-    let utilization: BigNumber;
-    let baseBorrowMinWei: BigNumber;
-    {
-      const calls: common.Multicall3.CallStruct[] = [
-        {
-          target: cometAddress,
-          callData: iface.encodeFunctionData('baseTokenPriceFeed'),
-        },
-        {
-          target: cometAddress,
-          callData: iface.encodeFunctionData('numAssets'),
-        },
-        {
-          target: cometAddress,
-          callData: iface.encodeFunctionData('baseBorrowMin'),
-        },
-        {
-          target: cometAddress,
-          callData: iface.encodeFunctionData('getUtilization'),
-        },
-      ];
-      const { returnData } = await this.multicall3.callStatic.aggregate(calls);
-
-      [baseTokenPriceFeed] = iface.decodeFunctionResult('baseTokenPriceFeed', returnData[1]);
-      [numAssets] = iface.decodeFunctionResult('numAssets', returnData[2]);
-      [baseBorrowMinWei] = iface.decodeFunctionResult('baseBorrowMin', returnData[3]);
-      [utilization] = iface.decodeFunctionResult('getUtilization', returnData[4]);
-    }
-
-    const calls: common.Multicall3.CallStruct[] = [];
-    for (let i = 0; i < numAssets; i++) {
-      calls.push({ target: cometAddress, callData: iface.encodeFunctionData('getAssetInfo', [i]) });
-    }
-    const { returnData } = await this.multicall3.callStatic.aggregate(calls);
-    for (let i = 0; i < numAssets; i++) {
-      const [{ asset, priceFeed, borrowCollateralFactor, liquidateCollateralFactor }] = iface.decodeFunctionResult(
-        'getAssetInfo',
-        returnData[i]
-      );
-      const token = await this.getToken(asset);
-      this.marketMap[this.chainId][id].assets.push({
-        token,
-        priceFeedAddress: priceFeed,
-        borrowCollateralFactor: common.toBigUnit(borrowCollateralFactor, 18),
-        liquidateCollateralFactor: common.toBigUnit(liquidateCollateralFactor, 18),
-      });
-    }
-
-    this.marketMap[this.chainId][id].numAssets = numAssets;
-    this.marketMap[this.chainId][id].utilization = utilization.toString();
-    this.marketMap[this.chainId][id].baseTokenPriceFeedAddress = baseTokenPriceFeed;
-    this.marketMap[this.chainId][id].baseBorrowMin = common.toBigUnit(
-      baseBorrowMinWei,
-      this.marketMap[this.chainId][id].baseToken.decimals
-    );
-
-    return this.marketMap[this.chainId][id];
+  canDebtSwap() {
+    return false;
   }
 
-  constructor(chainId: number, provider?: providers.Provider) {
-    super(chainId, provider);
-    this.market = LendingProtocol.markets.find((market) => market.chainId === this.chainId)!;
+  canLeverageShort = false;
+
+  toUnderlyingToken(marketId: string) {
+    const { baseToken } = getMarketConfig(this.chainId, marketId);
+    return baseToken.unwrapped;
+  }
+
+  toProtocolToken(marketId: string) {
+    const { cToken } = getMarketConfig(this.chainId, marketId);
+    return cToken;
+  }
+
+  isProtocolToken(marketId: string, token: common.Token) {
+    const { cToken } = getMarketConfig(this.chainId, marketId);
+    return token.is(cToken);
   }
 
   private _cometIface?: CometInterface;
@@ -145,33 +66,92 @@ export class LendingProtocol extends Protocol {
     return this._cometIface;
   }
 
-  getMarketName(id: string) {
-    return `${DISPLAY_NAME} ${id}`;
-  }
+  private _marketMap = supportedChainIds.reduce((accumulator, chainId) => {
+    accumulator[chainId] = {};
+    return accumulator;
+  }, {} as Record<number, Record<string, MarketInfo>>);
 
-  canDebtSwap() {
-    return false;
-  }
+  async getMarket(id: string) {
+    if (!this._marketMap[this.chainId][id]) {
+      const market = getMarketConfig(this.chainId, id);
+      const { cometAddress } = market;
 
-  isProtocolToken(token: common.Token): boolean {
-    const marketConfigs = configMap[this.chainId];
-    return !!marketConfigs.markets.find(({ cometAddress }) => {
-      return cometAddress === token.address;
-    });
-  }
+      let baseTokenPriceFeed: string;
+      let numAssets: number;
+      let utilization: BigNumber;
+      let baseBorrowMinWei: BigNumber;
+      {
+        const calls: common.Multicall3.CallStruct[] = [
+          {
+            target: cometAddress,
+            callData: this.cometIface.encodeFunctionData('baseTokenPriceFeed'),
+          },
+          {
+            target: cometAddress,
+            callData: this.cometIface.encodeFunctionData('numAssets'),
+          },
+          {
+            target: cometAddress,
+            callData: this.cometIface.encodeFunctionData('baseBorrowMin'),
+          },
+          {
+            target: cometAddress,
+            callData: this.cometIface.encodeFunctionData('getUtilization'),
+          },
+        ];
+        const { returnData } = await this.multicall3.callStatic.aggregate(calls, { blockTag: this.blockTag });
 
-  canLeverageShort = false;
+        [baseTokenPriceFeed] = this.cometIface.decodeFunctionResult('baseTokenPriceFeed', returnData[0]);
+        [numAssets] = this.cometIface.decodeFunctionResult('numAssets', returnData[1]);
+        [baseBorrowMinWei] = this.cometIface.decodeFunctionResult('baseBorrowMin', returnData[2]);
+        [utilization] = this.cometIface.decodeFunctionResult('getUtilization', returnData[3]);
+      }
+
+      const calls: common.Multicall3.CallStruct[] = [];
+      for (let i = 0; i < numAssets; i++) {
+        calls.push({ target: cometAddress, callData: this.cometIface.encodeFunctionData('getAssetInfo', [i]) });
+      }
+      const { returnData } = await this.multicall3.callStatic.aggregate(calls, { blockTag: this.blockTag });
+
+      const assets: AssetConfig[] = [];
+      for (let i = 0; i < numAssets; i++) {
+        const [{ asset, priceFeed, borrowCollateralFactor, liquidateCollateralFactor }] =
+          this.cometIface.decodeFunctionResult('getAssetInfo', returnData[i]);
+        const token = await this.getToken(asset);
+
+        assets.push({
+          token,
+          priceFeedAddress: priceFeed,
+          borrowCollateralFactor: common.toBigUnit(borrowCollateralFactor, 18),
+          liquidateCollateralFactor: common.toBigUnit(liquidateCollateralFactor, 18),
+        });
+      }
+
+      this._marketMap[this.chainId][id] = {
+        ...market,
+        assets,
+        numAssets,
+        utilization: utilization.toString(),
+        baseTokenPriceFeedAddress: baseTokenPriceFeed,
+        baseBorrowMin: common.toBigUnit(baseBorrowMinWei, market.baseToken.decimals),
+      };
+    }
+
+    return this._marketMap[this.chainId][id];
+  }
 
   async getAPYs(marketId: string) {
-    const { cometAddress } = getMarketBaseConfig(this.chainId, marketId);
+    const { cometAddress } = getMarketConfig(this.chainId, marketId);
 
-    const utilization = await Comet__factory.connect(cometAddress, this.provider).getUtilization();
+    const utilization = await Comet__factory.connect(cometAddress, this.provider).getUtilization({
+      blockTag: this.blockTag,
+    });
 
     const calls: common.Multicall2.CallStruct[] = [
       { target: cometAddress, callData: this.cometIface.encodeFunctionData('getSupplyRate', [utilization]) },
       { target: cometAddress, callData: this.cometIface.encodeFunctionData('getBorrowRate', [utilization]) },
     ];
-    const { returnData } = await this.multicall3.callStatic.aggregate(calls);
+    const { returnData } = await this.multicall3.callStatic.aggregate(calls, { blockTag: this.blockTag });
 
     const [supplyRate] = this.cometIface.decodeFunctionResult('getSupplyRate', returnData[0]);
     const supplyAPR = calcAPR(supplyRate);
@@ -204,7 +184,7 @@ export class LendingProtocol extends Protocol {
         callData: this.cometIface.encodeFunctionData('getPrice', [priceFeedAddress]),
       });
     }
-    const { returnData } = await this.multicall3.callStatic.aggregate(calls);
+    const { returnData } = await this.multicall3.callStatic.aggregate(calls, { blockTag: this.blockTag });
 
     let j = 0;
 
@@ -235,31 +215,6 @@ export class LendingProtocol extends Protocol {
     return { baseTokenPrice, assetPriceMap };
   }
 
-  async getAssetInfoMap(marketId: string) {
-    const { cometAddress, assets } = await this.getMarket(marketId);
-
-    const calls: common.Multicall2.CallStruct[] = assets.map(({ token }) => ({
-      target: cometAddress,
-      callData: this.cometIface.encodeFunctionData('getAssetInfoByAddress', [wrapToken(this.chainId, token).address]),
-    }));
-    const { returnData } = await this.multicall3.callStatic.aggregate(calls);
-
-    const assetInfoMap: Record<string, { borrowCollateralFactor: string; liquidateCollateralFactor: string }> = {};
-    for (let i = 0; i < assets.length; i++) {
-      const { token } = assets[i];
-      const [{ borrowCollateralFactor, liquidateCollateralFactor }] = this.cometIface.decodeFunctionResult(
-        'getAssetInfoByAddress',
-        returnData[i]
-      );
-      assetInfoMap[token.address] = {
-        borrowCollateralFactor: common.toBigUnit(borrowCollateralFactor, 18),
-        liquidateCollateralFactor: common.toBigUnit(liquidateCollateralFactor, 18),
-      };
-    }
-
-    return assetInfoMap;
-  }
-
   async getUserBalances(marketId: string, account: string) {
     const { cometAddress, baseToken, assets } = await this.getMarket(marketId);
 
@@ -276,13 +231,10 @@ export class LendingProtocol extends Protocol {
     for (const { token } of assets) {
       calls.push({
         target: cometAddress,
-        callData: this.cometIface.encodeFunctionData('collateralBalanceOf', [
-          account,
-          wrapToken(this.chainId, token).address,
-        ]),
+        callData: this.cometIface.encodeFunctionData('collateralBalanceOf', [account, token.wrapped.address]),
       });
     }
-    const { returnData } = await this.multicall3.callStatic.aggregate(calls);
+    const { returnData } = await this.multicall3.callStatic.aggregate(calls, { blockTag: this.blockTag });
 
     const [supplyBalanceWei] = this.cometIface.decodeFunctionResult('balanceOf', returnData[0]);
     const supplyBalance = common.toBigUnit(supplyBalanceWei, baseToken.decimals);
@@ -300,129 +252,16 @@ export class LendingProtocol extends Protocol {
     return { supplyBalance, borrowBalance, collateralBalanceMap };
   }
 
-  async getMarketInfo(marketId: string, account: string) {
-    const { baseToken, numAssets, assets, baseBorrowMin } = await this.getMarket(marketId);
-    const { baseTokenPrice, assetPriceMap } = await this.getPriceMap(marketId);
-    const { supplyAPR, borrowAPR } = await this.getAPYs(marketId);
-    const { supplyBalance, borrowBalance, collateralBalanceMap } = await this.getUserBalances(marketId, account);
-
-    let supplyUSD = new BigNumberJS(0);
-    let positiveProportion = new BigNumberJS(0);
-    if (supplyBalance !== '0') {
-      supplyUSD = new BigNumberJS(supplyBalance).times(baseTokenPrice);
-      positiveProportion = supplyUSD.times(supplyAPR);
-    }
-
-    let borrowUSD = new BigNumberJS(0);
-    let negativeProportion = new BigNumberJS(0);
-    if (borrowBalance !== '0') {
-      borrowUSD = new BigNumberJS(borrowBalance).times(baseTokenPrice);
-      negativeProportion = borrowUSD.times(borrowAPR);
-    }
-
-    let totalCollateralUSD = new BigNumberJS(0);
-    let totalBorrowCapacityUSD = new BigNumberJS(0);
-    let liquidationLimit = new BigNumberJS(0);
-    const collaterals = [];
-    for (let i = 0; i < numAssets; i++) {
-      const { token, borrowCollateralFactor, liquidateCollateralFactor } = assets[i];
-      const assetPrice = assetPriceMap[i];
-
-      const collateralBalance = collateralBalanceMap[i];
-
-      let collateralUSD = new BigNumberJS(0);
-      let borrowCapacityUSD = new BigNumberJS(0);
-      let borrowCapacity = '0';
-      if (collateralBalance !== '0') {
-        collateralUSD = new BigNumberJS(collateralBalance).times(assetPrice);
-        totalCollateralUSD = totalCollateralUSD.plus(collateralUSD);
-
-        borrowCapacityUSD = collateralUSD.times(borrowCollateralFactor);
-        totalBorrowCapacityUSD = totalBorrowCapacityUSD.plus(borrowCapacityUSD);
-        borrowCapacity = common.formatBigUnit(borrowCapacityUSD.div(baseTokenPrice), baseToken.decimals, 'floor');
-        liquidationLimit = liquidationLimit.plus(collateralUSD.times(liquidateCollateralFactor));
-      }
-
-      const collateralInfo = {
-        asset: token.unwrapped,
-        assetPrice,
-        borrowCollateralFactor,
-        liquidateCollateralFactor,
-        collateralBalance,
-        collateralUSD: common.formatBigUnit(collateralUSD, 2),
-        borrowCapacity,
-        borrowCapacityUSD: common.formatBigUnit(borrowCapacityUSD, 2),
-      };
-
-      collaterals.push(collateralInfo);
-    }
-
-    let borrowCapacity = new BigNumberJS('0');
-    let availableToBorrow = new BigNumberJS('0');
-    let availableToBorrowUSD = '0';
-    if (!totalBorrowCapacityUSD.isZero()) {
-      borrowCapacity = totalBorrowCapacityUSD
-        .div(baseTokenPrice)
-        .decimalPlaces(baseToken.decimals, BigNumberJS.ROUND_FLOOR);
-      availableToBorrow = borrowCapacity.minus(borrowBalance);
-      availableToBorrowUSD = common.formatBigUnit(availableToBorrow.times(baseTokenPrice), 2);
-    }
-
-    let liquidationThreshold = '0';
-    let liquidationRisk = new BigNumberJS(0);
-    let liquidationPointUSD = new BigNumberJS(0);
-    let liquidationPoint = '0';
-    if (!liquidationLimit.isZero()) {
-      liquidationThreshold = common.formatBigUnit(liquidationLimit.div(totalCollateralUSD), 4);
-      liquidationRisk = new BigNumberJS(borrowUSD).div(liquidationLimit).decimalPlaces(2);
-      liquidationPointUSD = totalCollateralUSD.times(liquidationRisk);
-      liquidationPoint = common.formatBigUnit(liquidationPointUSD.div(baseTokenPrice), baseToken.decimals, 'floor');
-    }
-
-    const utilization = calcUtilization(totalBorrowCapacityUSD, borrowUSD);
-    const healthRate = calcHealthRate(totalCollateralUSD, borrowUSD, liquidationThreshold);
-    const netAPR = calcNetAPR(supplyUSD, positiveProportion, borrowUSD, negativeProportion, totalCollateralUSD);
-
-    const marketInfo = {
-      baseToken: baseToken.unwrapped,
-      baseTokenPrice,
-      baseBorrowMin,
-      supplyAPR,
-      supplyBalance,
-      supplyUSD: common.formatBigUnit(supplyUSD, 2),
-      borrowAPR,
-      borrowBalance,
-      borrowUSD: common.formatBigUnit(borrowUSD, 2),
-      collateralUSD: common.formatBigUnit(totalCollateralUSD, 2),
-      borrowCapacity: borrowCapacity.toFixed(),
-      borrowCapacityUSD: common.formatBigUnit(totalBorrowCapacityUSD, 2),
-      availableToBorrow: availableToBorrow.toFixed(),
-      availableToBorrowUSD,
-      liquidationLimit: common.formatBigUnit(liquidationLimit, 2),
-      liquidationThreshold,
-      liquidationRisk: liquidationRisk.toFixed(),
-      liquidationPoint,
-      liquidationPointUSD: common.formatBigUnit(liquidationPointUSD, 2),
-      utilization,
-      healthRate,
-      netAPR,
-      collaterals,
-    };
-
-    return marketInfo;
-  }
-
   async getPortfolio(account: string, marketId: string) {
     const { baseToken, assets } = await this.getMarket(marketId);
 
     const { supplyAPR, borrowAPR } = await this.getAPYs(marketId);
     const { baseTokenPrice, assetPriceMap } = await this.getPriceMap(marketId);
-    const assetInfoMap = await this.getAssetInfoMap(marketId);
     const { supplyBalance, borrowBalance, collateralBalanceMap } = await this.getUserBalances(marketId, account);
 
     const supplies: SupplyObject[] = [
       {
-        token: unwrapToken(this.chainId, baseToken),
+        token: baseToken,
         price: baseTokenPrice,
         balance: supplyBalance,
         apy: supplyAPR,
@@ -432,10 +271,7 @@ export class LendingProtocol extends Protocol {
         isNotCollateral: true,
       },
     ];
-    for (const { token } of assets) {
-      // if (isWrappedNativeToken(this.chainId, token)) continue;
-
-      const { borrowCollateralFactor, liquidateCollateralFactor } = assetInfoMap[token.address];
+    for (const { token, borrowCollateralFactor, liquidateCollateralFactor } of assets) {
       supplies.push({
         token,
         price: assetPriceMap[token.address],
@@ -449,107 +285,55 @@ export class LendingProtocol extends Protocol {
 
     const borrows: BorrowObject[] = [
       {
-        token: unwrapToken(this.chainId, baseToken),
+        token: baseToken,
         price: baseTokenPrice,
         balances: [borrowBalance],
         apys: [borrowAPR],
       },
     ];
 
-    const portfolio = new Portfolio(this.chainId, this.id, marketId, supplies, borrows, baseToken);
+    const portfolio = new Portfolio(this.chainId, this.id, marketId, supplies, borrows);
 
     return portfolio;
   }
 
   async getPortfolios(account: string) {
-    return await Promise.all(
-      Object.keys(marketMap[this.chainId]).map((marketId) => this.getPortfolio(account, marketId))
-    );
+    return Promise.all(configMap[this.chainId].markets.map(({ id }) => this.getPortfolio(account, id)));
   }
 
-  async newSupplyLogic(params: SupplyParams) {
-    const { cometAddress, baseToken } = getMarketBaseConfig(this.chainId, params.marketId);
-    const cToken = await this.getToken(cometAddress);
+  async newSupplyLogic({ marketId, input }: TokenInFields) {
+    const { baseToken, cToken } = getMarketConfig(this.chainId, marketId);
 
-    const userBalances = await this.getUserBalances(params.marketId, params.account);
-
-    if (params.input.token.unwrapped.is(baseToken.unwrapped)) {
-      if (new BigNumberJS(userBalances.borrowBalance)) {
-        throw new Error('borrow USD is not zero');
-      }
-      const supplyQuotation = await apisdk.protocols.compoundv3.getSupplyBaseQuotation(this.chainId, {
-        input: params.input,
-        tokenOut: cToken,
-        marketId: params.marketId,
+    if (input.token.wrapped.is(baseToken)) {
+      return apisdk.protocols.compoundv3.newSupplyBaseLogic({
+        marketId,
+        input,
+        output: new common.TokenAmount(cToken, input.amount),
       });
-      return apisdk.protocols.compoundv3.newSupplyBaseLogic({ ...supplyQuotation, balanceBps: common.BPS_BASE });
     } else {
-      return apisdk.protocols.compoundv3.newSupplyCollateralLogic({
-        input: params.input,
-        marketId: params.marketId,
-        balanceBps: common.BPS_BASE,
-      });
+      return apisdk.protocols.compoundv3.newSupplyCollateralLogic({ marketId, input });
     }
   }
 
-  async newWithdrawLogic(params: WithdrawParams) {
-    const { cometAddress, baseToken } = getMarketBaseConfig(this.chainId, params.marketId);
-    const cToken = await this.getToken(cometAddress);
+  async newWithdrawLogic({ marketId, output }: TokenOutFields) {
+    const { baseToken, cToken } = getMarketConfig(this.chainId, marketId);
 
-    const userBalances = await this.getUserBalances(params.marketId, params.account);
-
-    const realAmount = new common.TokenAmount(params.output.token, params.output.amount);
-    realAmount.subWei(2);
-    if (params.output.token.wrapped.is(baseToken)) {
-      if (realAmount.gt(userBalances.supplyBalance)) {
-        throw new Error('source amount is greater than available base amount');
-      }
-      const withdrawBaseQuotation = await apisdk.protocols.compoundv3.getWithdrawBaseQuotation(this.chainId, {
-        input: {
-          token: cToken,
-          amount: realAmount.amount,
-        },
-        tokenOut: params.output.token,
-        marketId: params.marketId,
+    if (output.token.wrapped.is(baseToken)) {
+      return apisdk.protocols.compoundv3.newWithdrawBaseLogic({
+        marketId,
+        input: new common.TokenAmount(cToken, output.amount),
+        output,
       });
-      const withdrawBaseLogic = await apisdk.protocols.compoundv3.newWithdrawBaseLogic({
-        ...withdrawBaseQuotation,
-        balanceBps: common.BPS_BASE,
-      });
-      withdrawBaseLogic.fields.output.amount = realAmount.subWei(1).amount;
-      return withdrawBaseLogic;
     } else {
-      if (realAmount.gt(userBalances.collateralBalanceMap[params.output.token.wrapped.address])) {
-        throw new Error('source amount is greater than available collateral amount');
-      }
-      return apisdk.protocols.compoundv3.newWithdrawCollateralLogic({
-        output: params.output,
-        marketId: params.marketId,
-      });
+      return apisdk.protocols.compoundv3.newWithdrawCollateralLogic({ marketId, output });
     }
   }
 
-  async newBorrowLogic(params: BorrowParams) {
-    const marketInfo = await this.getMarketInfo(params.marketId, params.account);
-    if (new BigNumberJS(marketInfo.supplyUSD).isZero()) {
-      throw new Error('supply USD is not zero');
-    }
-    if (new BigNumberJS(params.output.amount).gt(marketInfo.availableToBorrow)) {
-      throw new Error('source amount is greater than available amount');
-    }
-    if (new BigNumberJS(marketInfo.borrowBalance).plus(params.output.amount).lt(marketInfo.baseBorrowMin)) {
-      throw Error(`target borrow balance is less than baseBorrowMin: ${marketInfo.baseBorrowMin}`);
-    }
-    return apisdk.protocols.compoundv3.newBorrowLogic({ output: params.output, marketId: params.marketId });
+  async newBorrowLogic(fields: TokenOutFields) {
+    return apisdk.protocols.compoundv3.newBorrowLogic(fields);
   }
 
-  async newRepayLogic(params: RepayParams): Promise<any> {
-    const repayQuotation = await apisdk.protocols.compoundv3.getRepayQuotation(this.chainId, {
-      tokenIn: params.input.token,
-      borrower: params.borrower,
-      marketId: params.marketId,
-    });
-    repayQuotation.input.amount = params.input.amount;
-    return apisdk.protocols.compoundv3.newRepayLogic(repayQuotation);
+  async newRepayLogic({ marketId, input, account }: RepayField) {
+    return apisdk.protocols.compoundv3.newRepayLogic({ marketId, input, borrower: account });
   }
 }

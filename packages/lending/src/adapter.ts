@@ -128,10 +128,6 @@ export class Adapter extends common.Web3Toolkit {
     portfolio = portfolio || (await protocol.getPortfolio(account, marketId));
     const afterPortfolio = portfolio.clone();
 
-    // compound v3 base token supplied not support collateral swap
-    if (protocolId === 'compound-v3' && portfolio.baseToken?.is(srcToken.unwrapped))
-      throw new Error('Compound V3 does not support the base token for performing collateral swaps');
-
     // ---------- flashloan ----------
     const flashLoanAggregatorQuotation = await apisdk.protocols.utility.getFlashLoanAggregatorQuotation(this.chainId, {
       repays: [{ token: wrappedSrcToken, amount: srcAmount }],
@@ -175,7 +171,7 @@ export class Adapter extends common.Web3Toolkit {
 
       // ---------- add funds ----------
       const addLogic = apisdk.protocols.permit2.newPullTokenLogic({
-        input: new common.TokenAmount(protocol.toProtocolToken(wrappedSrcToken), srcAmount),
+        input: new common.TokenAmount(protocol.toProtocolToken(marketId, wrappedSrcToken), srcAmount),
       });
       collateralSwapLogics.push(addLogic);
     }

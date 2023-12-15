@@ -3,7 +3,7 @@ import * as common from '@protocolink/common';
 import { configs } from './configs';
 import { expect } from 'chai';
 
-describe('check configs', function () {
+describe('Check Aave V2 configs', function () {
   for (const { chainId, contractMap, reserves } of configs) {
     it(`${common.toNetworkId(chainId)}`, async () => {
       const iface = ProtocolDataProvider__factory.createInterface();

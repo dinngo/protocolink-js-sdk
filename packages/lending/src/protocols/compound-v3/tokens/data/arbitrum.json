@@ -1,17 +1,31 @@
 {
-  "cUSDCv3": {
+  "cUSDCev3": {
     "chainId": 42161,
     "address": "0xA5EDBDD9646f8dFF606d7448e414884C7d905dCA",
+    "decimals": 6,
+    "symbol": "cUSDCev3",
+    "name": "Compound USDC"
+  },
+  "cUSDCv3": {
+    "chainId": 42161,
+    "address": "0x9c4ec768c28520B50860ea7a15bd7213a9fF58bf",
     "decimals": 6,
     "symbol": "cUSDCv3",
     "name": "Compound USDC"
   },
-  "USDC": {
+  "USDC.e": {
     "chainId": 42161,
     "address": "0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8",
     "decimals": 6,
-    "symbol": "USDC",
+    "symbol": "USDC.e",
     "name": "USD Coin (Arb1)"
+  },
+  "USDC": {
+    "chainId": 42161,
+    "address": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    "decimals": 6,
+    "symbol": "USDC",
+    "name": "USD Coin"
   },
   "ARB": {
     "chainId": 42161,

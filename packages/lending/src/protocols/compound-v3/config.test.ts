@@ -3,7 +3,7 @@ import * as common from '@protocolink/common';
 import { configs } from './configs';
 import { expect } from 'chai';
 
-describe('check configs', function () {
+describe('Check Compound V3 configs', function () {
   for (const { chainId, markets } of configs) {
     for (const market of markets) {
       it(`${common.toNetworkId(chainId)}: ${market.baseToken.symbol}`, async () => {

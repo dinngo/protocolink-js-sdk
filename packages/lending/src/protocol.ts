@@ -1,17 +1,16 @@
-import {
-  Market,
-  RepayLogic,
-  RepayParams,
-  SupplyLogic,
-  SupplyParams,
-  WithdrawLogic,
-  WithdrawParams,
-} from './protocol.type';
+import { Market, SupplyLogic, SupplyParams, WithdrawLogic, WithdrawParams } from './protocol.type';
 import { Portfolio } from './protocol.portfolio';
+import * as api from '@protocolink/api';
 import * as common from '@protocolink/common';
 import { providers } from 'ethers';
 
 export abstract class Protocol extends common.Web3Toolkit {
+  blockTag?: providers.BlockTag;
+
+  setBlockTag(blockTag: providers.BlockTag) {
+    this.blockTag = blockTag;
+  }
+
   static readonly markets: Market[];
 
   static isSupported(chainId: number) {
@@ -26,29 +25,29 @@ export abstract class Protocol extends common.Web3Toolkit {
 
   abstract getPortfolios(account: string): Promise<Portfolio[]>;
 
-  canCollateralSwap(_assetToken: common.Token) {
+  canCollateralSwap(_marketId: string, _assetToken: common.Token) {
     return true;
   }
 
-  canDebtSwap(_assetToken: common.Token) {
+  canDebtSwap(_marketId: string, _assetToken: common.Token) {
     return true;
   }
 
-  canLeverage(_assetToken: common.Token) {
+  canLeverage(_marketId: string, _assetToken: common.Token) {
     return true;
   }
 
   canLeverageShort = true;
 
-  canDeleverage(_assetToken: common.Token) {
+  canDeleverage(_marketId: string, _assetToken: common.Token) {
     return true;
   }
 
-  abstract toUnderlyingToken(protocolToken: common.Token): common.Token;
+  abstract toUnderlyingToken(marketId: string, protocolToken: common.Token): common.Token;
 
-  abstract toProtocolToken(underlyingToken: common.Token): common.Token;
+  abstract toProtocolToken(marketId: string, underlyingToken: common.Token): common.Token;
 
-  abstract isProtocolToken(token: common.Token): boolean;
+  abstract isProtocolToken(marketId: string, token: common.Token): boolean;
 
   isAaveLike = false;
 
@@ -62,7 +61,7 @@ export abstract class Protocol extends common.Web3Toolkit {
 
   abstract newBorrowLogic(params: any): any;
 
-  abstract newRepayLogic(params: RepayParams): Promise<RepayLogic>;
+  abstract newRepayLogic(params: any): Promise<api.Logic>;
 }
 
 export interface ProtocolClass {
