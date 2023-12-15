@@ -87,7 +87,7 @@ export type BorrowLogic = Logic<BorrowParams>;
 export type RepayParams = core.TokenInFields<{
   marketId: string;
   borrower: string;
-  interestRateMode?: InterestRateMode;
+  interestRateMode: InterestRateMode;
 }>;
 export type RepayLogic = Logic<
   common.Declasifying<

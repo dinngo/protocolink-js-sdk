@@ -355,7 +355,6 @@ export class LendingProtocol extends Protocol {
   newBorrowLogic = apisdk.protocols.aavev3.newBorrowLogic;
 
   async newRepayLogic(params: RepayParams) {
-    if (!params.borrower || !params.interestRateMode) throw new Error('missing requied params');
     const repayQuotation = await apisdk.protocols.aavev3.getRepayQuotation(this.chainId, {
       tokenIn: params.input.token,
       borrower: params.borrower,
