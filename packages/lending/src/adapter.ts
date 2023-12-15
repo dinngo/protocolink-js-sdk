@@ -101,14 +101,15 @@ export class Adapter extends common.Web3Toolkit {
     return this.protocolMap[id];
   }
 
-  // tokenA: USDC, tokenB: USDT
-  // 1. flashloan USDC
-  // 2. swap USDC to USDT
-  // 3. deposit USDT, get aUSDT
-  // 4. return-funds aUSDT to user
-  // 5. add-funds aUSDC to router
-  // 6. withdraw aUSDC, get USDC
-  // 7. flashloan repay USDC
+  // 1. flashloan srcToken
+  // 2. swap srcToken to destToken
+  // 3. deposit destToken, get aDestToken
+  // 4. return-funds aDestToken to user
+  // 5. add-funds aSrcToken to router
+  // 6. withdraw srcToken
+  // 7. flashloan repay srcToken
+  // * srcToken = old deposit token
+  // * destToken = new deposit token
   async getCollateralSwap(
     protocolId: string,
     marketId: string,
@@ -213,7 +214,8 @@ export class Adapter extends common.Web3Toolkit {
         srcToken: srcToken,
         srcAmount: srcAmount,
         destToken: destToken,
-        destAmount: withdrawLogic.fields.output.amount,
+        // TODO: check which one is right
+        destAmount: swapQuotation.output.amount, //withdrawLogic.fields.output.amount,
         portfolio,
         afterPortfolio,
       },
@@ -223,12 +225,13 @@ export class Adapter extends common.Web3Toolkit {
     };
   }
 
-  // tokenA: USDC, tokenB: USDT
-  // 1. flashloan USDT
-  // 2. swap USDT to USDC
-  // 3. repay USDC
-  // 4. borrow USDT
-  // 5. flashloan repay USDT
+  // 1. flashloan destToken
+  // 2. swap destToken to srcToken
+  // 3. repay srcToken
+  // 4. borrow destToken
+  // 5. flashloan repay destToken
+  // * srcToken = old borrow token
+  // * destToken = new borrow token
   async getDebtSwap(
     protocolId: string,
     marketId: string,
@@ -257,7 +260,11 @@ export class Adapter extends common.Web3Toolkit {
       slippage: defaultSlippage,
     });
     // convert swap type to exact in
-    swapQuotation = await swapper.quote({ input: swapQuotation.input, tokenOut: srcToken, slippage: defaultSlippage });
+    swapQuotation = await swapper.quote({
+      input: swapQuotation.input,
+      tokenOut: srcToken,
+      slippage: defaultSlippage,
+    });
 
     // ---------- flashloan ----------
     const flashLoanAggregatorQuotation = await apisdk.protocols.utility.getFlashLoanAggregatorQuotation(this.chainId, {
@@ -289,6 +296,7 @@ export class Adapter extends common.Web3Toolkit {
       output: borrowTokenAmount,
       interestRateMode: defaultInterestRateMode,
     });
+
     debtSwapLogics.push(borrowLogic);
     afterPortfolio.borrow(borrowTokenAmount.token, borrowTokenAmount.amount);
 
@@ -329,14 +337,12 @@ export class Adapter extends common.Web3Toolkit {
     };
   }
 
-  // Leverage
-  // tokenA: WBTC
-  // 1. flashloan USDC
-  // 2. swap USDC to WBTC
-  // 3. deposit WBTC, get aWBTC
-  // 4. return funds aWBTC to user
-  // 5. borrow USDC
-  // 6. flashloan repay USDC
+  // 1. flashloan destToken
+  // 2. swap destToken to srcToken
+  // 3. deposit srcToken, get aSrcToken
+  // 4. return funds aSrcToken to user
+  // 5. borrow destToken
+  // 6. flashloan repay destToken
   // * srcToken => depositToken, collateralToken
   // * destToken => flashloanToken, borrowToken
   /**
@@ -458,15 +464,15 @@ export class Adapter extends common.Web3Toolkit {
     };
   }
 
-  // tokenA: WBTC
-  // 1. flashloan WBTC
-  // 2. swap WBTC to USDC
-  // 3. deposit USDC, get aUSDC
-  // 4. return funds aUSDC to user
-  // 5. borrow WBTC
-  // 6. flashloan repay WBTC
+  // 1. flashloan srcToken
+  // 2. swap srcToken to destToken
+  // 3. deposit destToken, get aDestToken
+  // 4. return funds aDestToken to user
+  // 5. borrow srcToken
+  // 6. flashloan repay srcToken
   // * srcToken => flashloanToken, borrowToken
   // * destToken => depositToken, collateralToken
+  // * srcAmount => flashloan amount
   async getLeverageShort(
     protocolId: string,
     marketId: string,
@@ -570,14 +576,13 @@ export class Adapter extends common.Web3Toolkit {
     };
   }
 
-  // tokenA: WBTC
-  // 1. flashloan USDC
-  // 2. swap USDC to WBTC
-  // 3. repay WBTC
-  // 4. add fund rUSDC
-  // 5. withdraw USDC by rUSDC
-  // 6. flashloan repay WBTC
-  // * srcToken => repayToken
+  // 1. flashloan destToken
+  // 2. swap destToken to srcToken
+  // 3. repay srcToken
+  // 4. add fund destToken
+  // 5. withdraw destToken by aDestToken
+  // 6. flashloan repay destToken
+  // * srcToken => borrowToken, repayToken
   // * destToken => depositToken, collateralToken
   async getDeleverage(
     protocolId: string,
@@ -601,17 +606,19 @@ export class Adapter extends common.Web3Toolkit {
     // ---------- Pre-calc quotation ----------
     const swapper = this.findSwapper([wrappedDestToken, wrappedSrcToken]);
     //  get the quotation for how much collateral token is needed to exchange for the repay amount
-    let swapQuotation = await swapper.quote({
+    const swapQuotation = await swapper.quote({
       tokenIn: wrappedDestToken,
       output: { token: wrappedSrcToken, amount: srcAmount },
       slippage: defaultSlippage,
     });
-    // convert swap type to exact in
-    swapQuotation = await swapper.quote({
-      input: swapQuotation.input,
-      tokenOut: wrappedDestToken,
-      slippage: defaultSlippage,
-    });
+
+    // TODO: seems we do not need this
+    // // convert swap type to exact in
+    // swapQuotation = await swapper.quote({
+    //   input: swapQuotation.input,
+    //   tokenOut: wrappedDestToken,
+    //   slippage: defaultSlippage,
+    // });
 
     // ---------- flashloan ----------
     const flashLoanAggregatorQuotation = await apisdk.protocols.utility.getFlashLoanAggregatorQuotation(this.chainId, {
