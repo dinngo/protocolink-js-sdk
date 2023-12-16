@@ -67,17 +67,6 @@ export function calcNetAPY(
   return netAPY;
 }
 
-export interface ToFixedOptions {
-  baseDecimals?: number;
-  displayDecimals?: number;
-  useLessThan?: boolean;
-  useApproximation?: boolean;
-  round?: boolean;
-  ceil?: boolean;
-  trim?: boolean;
-  significantDigits?: number;
-}
-
 export function formatPercentage(number: string): string {
   return (parseFloat(number) * 100).toFixed(2) + '%';
 }

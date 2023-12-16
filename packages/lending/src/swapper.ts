@@ -16,7 +16,8 @@ export abstract class Swapper extends common.Web3Toolkit {
 
   abstract tokens(): Promise<common.Token[]>;
 
-  isSupportedToken(token: common.Token) {
+  // TODO: not implement
+  isSupportedToken(_token: common.Token) {
     return true;
   }
 

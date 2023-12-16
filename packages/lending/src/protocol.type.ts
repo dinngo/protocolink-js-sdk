@@ -1,16 +1,12 @@
 import * as common from '@protocolink/common';
-import * as core from '@protocolink/core';
 
 export interface Market {
   id: string;
   chainId: number;
 }
-export declare enum InterestRateMode {
-  none = 0,
-  stable = 1,
-  variable = 2,
-}
+
 export const defaultInterestRateMode = 2;
+
 export const defaultSlippage = 100;
 
 export type Operation =
@@ -18,7 +14,6 @@ export type Operation =
   | 'withdraw'
   | 'borrow'
   | 'repay'
-  | 'claim_rewards'
   | 'collateral_swap'
   | 'debt_swap'
   | 'leverage'
@@ -63,38 +58,3 @@ export interface TokenOutFields {
 }
 
 export type RepayFields = TokenInFields & { account: string };
-
-export interface Logic<TFields = any> {
-  rid: string;
-  fields: TFields;
-}
-
-export type SupplyParams = core.TokenInFields<{ marketId: string; account: string }>;
-export type SupplyLogic = Logic<common.Declasifying<core.TokenInFields<{ output?: common.TokenAmount }>>>;
-
-export type WithdrawParams = core.TokenOutFields<{ marketId: string; account: string }>;
-export type WithdrawLogic = Logic<common.Declasifying<core.TokenOutFields<{ input?: common.TokenAmount }>>>;
-
-export type BorrowParams = common.Declasifying<
-  core.TokenOutFields<{
-    interestRateMode: InterestRateMode;
-    marketId: string;
-    account: string;
-  }>
->;
-export type BorrowLogic = Logic<BorrowParams>;
-
-export type RepayParams = core.TokenInFields<{
-  marketId: string;
-  borrower: string;
-  interestRateMode: InterestRateMode;
-}>;
-export type RepayLogic = Logic<
-  common.Declasifying<
-    core.TokenInFields<{
-      marketId?: string;
-      borrower: string;
-      interestRateMode?: InterestRateMode;
-    }>
-  >
->;

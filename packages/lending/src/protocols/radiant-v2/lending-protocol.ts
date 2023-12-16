@@ -278,14 +278,14 @@ export class LendingProtocol extends Protocol {
     return isRToken(this.chainId, token);
   }
 
-  async newSupplyLogic({ marketId, input }: TokenInFields) {
+  newSupplyLogic({ marketId, input }: TokenInFields) {
     return apisdk.protocols.radiantv2.newDepositLogic({
       input,
       output: new common.TokenAmount(this.toProtocolToken(marketId, input.token), input.amount),
     });
   }
 
-  async newWithdrawLogic({ marketId, output }: TokenOutFields) {
+  newWithdrawLogic({ marketId, output }: TokenOutFields) {
     return apisdk.protocols.radiantv2.newWithdrawLogic({
       input: new common.TokenAmount(this.toProtocolToken(marketId, output.token), output.amount),
       output,
@@ -299,7 +299,7 @@ export class LendingProtocol extends Protocol {
     });
   }
 
-  async newRepayLogic({ input, account }: RepayFields) {
+  newRepayLogic({ input, account }: RepayFields) {
     return apisdk.protocols.radiantv2.newRepayLogic({
       input,
       borrower: account,

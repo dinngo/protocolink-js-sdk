@@ -1,20 +1,20 @@
-import { Market, SupplyLogic, SupplyParams, WithdrawLogic, WithdrawParams } from './protocol.type';
+import { Market } from './protocol.type';
 import { Portfolio } from './protocol.portfolio';
 import * as api from '@protocolink/api';
 import * as common from '@protocolink/common';
 import { providers } from 'ethers';
 
 export abstract class Protocol extends common.Web3Toolkit {
-  blockTag?: providers.BlockTag;
-
-  setBlockTag(blockTag: providers.BlockTag) {
-    this.blockTag = blockTag;
-  }
-
   static readonly markets: Market[];
 
   static isSupported(chainId: number) {
     return this.markets.some((market) => market.chainId === chainId);
+  }
+
+  blockTag?: providers.BlockTag;
+
+  setBlockTag(blockTag: providers.BlockTag) {
+    this.blockTag = blockTag;
   }
 
   abstract id: string;
@@ -51,17 +51,15 @@ export abstract class Protocol extends common.Web3Toolkit {
 
   isAaveLike = false;
 
-  isUsingWrappedNativeToken = true;
-
   preferredFlashLoanerId?: string;
 
-  abstract newSupplyLogic(params: SupplyParams): Promise<SupplyLogic>;
+  abstract newSupplyLogic(params: any): api.Logic;
 
-  abstract newWithdrawLogic(params: WithdrawParams): Promise<WithdrawLogic>;
+  abstract newWithdrawLogic(params: any): api.Logic;
 
-  abstract newBorrowLogic(params: any): any;
+  abstract newBorrowLogic(params: any): api.Logic;
 
-  abstract newRepayLogic(params: any): Promise<api.Logic>;
+  abstract newRepayLogic(params: any): api.Logic;
 }
 
 export interface ProtocolClass {

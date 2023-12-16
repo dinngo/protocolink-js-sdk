@@ -301,7 +301,7 @@ export class LendingProtocol extends Protocol {
     return Promise.all(configMap[this.chainId].markets.map(({ id }) => this.getPortfolio(account, id)));
   }
 
-  async newSupplyLogic({ marketId, input }: TokenInFields) {
+  newSupplyLogic({ marketId, input }: TokenInFields) {
     const { baseToken, cToken } = getMarketConfig(this.chainId, marketId);
 
     if (input.token.wrapped.is(baseToken)) {
@@ -315,7 +315,7 @@ export class LendingProtocol extends Protocol {
     }
   }
 
-  async newWithdrawLogic({ marketId, output }: TokenOutFields) {
+  newWithdrawLogic({ marketId, output }: TokenOutFields) {
     const { baseToken, cToken } = getMarketConfig(this.chainId, marketId);
 
     if (output.token.wrapped.is(baseToken)) {
@@ -331,7 +331,7 @@ export class LendingProtocol extends Protocol {
 
   newBorrowLogic = apisdk.protocols.compoundv3.newBorrowLogic;
 
-  async newRepayLogic({ marketId, input, account }: RepayFields) {
+  newRepayLogic({ marketId, input, account }: RepayFields) {
     return apisdk.protocols.compoundv3.newRepayLogic({ marketId, input, borrower: account });
   }
 }

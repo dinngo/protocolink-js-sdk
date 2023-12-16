@@ -1,4 +1,3 @@
-import { Logic } from './protocol.type';
 import { Portfolio } from './protocol.portfolio';
 import * as apisdk from '@protocolink/api';
 import * as common from '@protocolink/common';
@@ -17,7 +16,7 @@ export type BaseFields = {
     args?: Omit<apisdk.RouterData, 'chainId' | 'account' | 'logics'>,
     apiKey?: string
   ) => Promise<common.TransactionRequest>;
-  logics: Logic[];
+  logics: apisdk.Logic[];
 };
 
 export type BaseParams = {
@@ -25,5 +24,3 @@ export type BaseParams = {
   srcAmount: string;
   destToken: common.Token;
 };
-
-export type DebtSwapFields = BaseFields;
