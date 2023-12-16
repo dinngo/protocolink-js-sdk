@@ -26,13 +26,8 @@ describe('Check Aave V3 configs', function () {
 
       let j = 0;
       for (const reserve of reserves) {
-        const [aTokenAddress, stableDebtTokenAddress, variableDebtTokenAddress] = iface.decodeFunctionResult(
-          'getReserveTokensAddresses',
-          returnData[j]
-        );
+        const [aTokenAddress] = iface.decodeFunctionResult('getReserveTokensAddresses', returnData[j]);
         expect(aTokenAddress).to.eq(reserve.aToken.address);
-        expect(stableDebtTokenAddress).to.eq(reserve.stableDebtTokenAddress);
-        expect(variableDebtTokenAddress).to.eq(reserve.variableDebtTokenAddress);
         j++;
 
         if (!reserve.asset.isNative) {

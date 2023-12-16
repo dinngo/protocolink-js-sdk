@@ -16,7 +16,7 @@ export interface Reserve {
   };
 }
 
-type ContractName = 'LendingPool' | 'ProtocolDataProvider' | 'PriceOracle' | 'ETHPriceFeed';
+type ContractName = 'ProtocolDataProvider' | 'PriceOracle' | 'ETHPriceFeed';
 
 interface Config {
   chainId: number;
@@ -29,7 +29,6 @@ export const configs: Config[] = [
   {
     chainId: common.ChainId.mainnet,
     contractMap: {
-      LendingPool: '0x7d2768dE32b0b80b7a3454c06BdAc94A69DDc7A9',
       ProtocolDataProvider: '0x057835Ad21a177dbdd3090bB1CAE03EaCF78Fc6d',
       PriceOracle: '0xA50ba011c48153De246E5192C8f9258A2ba79Ca9',
       ETHPriceFeed: '0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419',
@@ -106,7 +105,6 @@ export const configs: Config[] = [
   {
     chainId: common.ChainId.polygon,
     contractMap: {
-      LendingPool: '0x8dFf5E27EA6b7AC08EbFdf9eB090F32ee9a30fcf',
       ProtocolDataProvider: '0x7551b5D2763519d4e37e8B81929D336De671d46d',
       PriceOracle: '0x0229F777B0fAb107F9591a41d5F02E4e98dB6f2d',
       ETHPriceFeed: '0xF9680D99D6C9589e2a93a78A04A279e509205945',

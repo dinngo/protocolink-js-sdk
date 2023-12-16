@@ -101,6 +101,7 @@ export function toLessThanString(amount: string | BigNumberJS, decimals: number)
 }
 
 export type RoundingMode = 'ceil' | 'round' | 'floor';
+
 export function toSignificantDigits(amount: string, decimals: number, mode?: RoundingMode) {
   return new Decimal(amount)
     .toSignificantDigits(

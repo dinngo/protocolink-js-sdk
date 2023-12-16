@@ -2,14 +2,12 @@
 /* tslint:disable */
 /* eslint-disable */
 export type { AToken } from './AToken';
-export type { DebtToken } from './DebtToken';
 export type { ETHPriceFeed } from './ETHPriceFeed';
 export type { LendingPool } from './LendingPool';
 export type { PriceOracle } from './PriceOracle';
 export type { ProtocolDataProvider } from './ProtocolDataProvider';
 export * as factories from './factories';
 export { AToken__factory } from './factories/AToken__factory';
-export { DebtToken__factory } from './factories/DebtToken__factory';
 export { ETHPriceFeed__factory } from './factories/ETHPriceFeed__factory';
 export { LendingPool__factory } from './factories/LendingPool__factory';
 export { PriceOracle__factory } from './factories/PriceOracle__factory';

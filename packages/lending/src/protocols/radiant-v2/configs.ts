@@ -16,7 +16,7 @@ export interface Reserve {
   };
 }
 
-type ContractName = 'LendingPool' | 'ProtocolDataProvider' | 'PriceOracle';
+type ContractName = 'ProtocolDataProvider' | 'PriceOracle';
 
 interface Config {
   chainId: number;
@@ -28,7 +28,6 @@ export const configs: Config[] = [
   {
     chainId: common.ChainId.mainnet,
     contractMap: {
-      LendingPool: '0xA950974f64aA33f27F6C5e017eEE93BF7588ED07',
       ProtocolDataProvider: '0x362f3BB63Cff83bd169aE1793979E9e537993813',
       PriceOracle: '0xbD60293fBe4B285402510562A64E5fCEE9c4a8F9',
     },
@@ -73,7 +72,6 @@ export const configs: Config[] = [
   {
     chainId: common.ChainId.arbitrum,
     contractMap: {
-      LendingPool: '0xF4B1486DD74D07706052A33d31d7c0AAFD0659E1',
       ProtocolDataProvider: '0x596B0cc4c5094507C50b579a662FE7e7b094A2cC',
       PriceOracle: '0xC0cE5De939aaD880b0bdDcf9aB5750a53EDa454b',
     },
