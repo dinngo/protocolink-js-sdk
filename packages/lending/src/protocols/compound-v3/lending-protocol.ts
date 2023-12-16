@@ -9,7 +9,7 @@ import {
   supportedChainIds,
 } from './configs';
 import { BigNumber } from 'ethers';
-import { BorrowObject, Market, RepayField, SupplyObject, TokenInFields, TokenOutFields } from 'src/protocol.type';
+import { BorrowObject, Market, RepayFields, SupplyObject, TokenInFields, TokenOutFields } from 'src/protocol.type';
 import { CometInterface } from './contracts/Comet';
 import { Comet__factory } from './contracts';
 import { Portfolio } from 'src/protocol.portfolio';
@@ -329,11 +329,9 @@ export class LendingProtocol extends Protocol {
     }
   }
 
-  async newBorrowLogic(fields: TokenOutFields) {
-    return apisdk.protocols.compoundv3.newBorrowLogic(fields);
-  }
+  newBorrowLogic = apisdk.protocols.compoundv3.newBorrowLogic;
 
-  async newRepayLogic({ marketId, input, account }: RepayField) {
+  async newRepayLogic({ marketId, input, account }: RepayFields) {
     return apisdk.protocols.compoundv3.newRepayLogic({ marketId, input, borrower: account });
   }
 }

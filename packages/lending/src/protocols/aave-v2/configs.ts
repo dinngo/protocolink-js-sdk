@@ -5,11 +5,6 @@ import { mainnetTokens, polygonTokens } from './tokens';
 export const ID = 'aave-v2';
 export const DISPLAY_NAME = 'Aave V2';
 
-export enum RateMode {
-  STABLE = 1,
-  VARIABLE,
-}
-
 export interface Reserve {
   asset: common.Token;
   aToken: common.Token;
@@ -287,9 +282,4 @@ export function isAToken(chainId: number, token: common.Token): boolean {
 export function toToken(chainId: number, aToken: common.Token, unwrap = true) {
   const asset = reserveMap[chainId][aToken.address].asset;
   return unwrap ? unwrapToken(chainId, asset) : asset;
-}
-
-export function getDebtTokenAddress(chainId: number, token: common.Token, rateMode: RateMode): string {
-  const reserve = reserveMap[chainId][wrapToken(chainId, token).address];
-  return rateMode === RateMode.STABLE ? reserve.stableDebtTokenAddress : reserve.variableDebtTokenAddress;
 }

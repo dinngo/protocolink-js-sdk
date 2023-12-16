@@ -9,7 +9,7 @@ import {
   ProtocolDataProvider__factory,
 } from './contracts';
 import { BigNumber, providers } from 'ethers';
-import { BorrowObject, Market, RepayParams, SupplyObject, SupplyParams, WithdrawParams } from 'src/protocol.type';
+import { BorrowObject, Market, RepayFields, SupplyObject, TokenInFields, TokenOutFields } from 'src/protocol.type';
 import {
   DISPLAY_NAME,
   ID,
@@ -30,7 +30,7 @@ import { ProtocolDataProviderInterface } from './contracts/ProtocolDataProvider'
 import { RAY_DECIMALS, SECONDS_PER_YEAR, calculateCompoundedRate, normalize } from '@aave/math-utils';
 import * as apisdk from '@protocolink/api';
 import * as common from '@protocolink/common';
-import { isWrappedNativeToken, wrapToken } from 'src/helper';
+import * as logics from '@protocolink/logics';
 
 export class LendingProtocol extends Protocol {
   static readonly markets = supportedChainIds.map((chainId) => ({
@@ -124,7 +124,7 @@ export class LendingProtocol extends Protocol {
     return DISPLAY_NAME;
   }
 
-  private reserveDataMap?: Record<
+  private _reserveDataMap?: Record<
     string,
     {
       ltv: string;
@@ -136,29 +136,24 @@ export class LendingProtocol extends Protocol {
     }
   >;
 
-  async getPortfolio(account: string, _marketId: string) {
-    return (await this.getPortfolios(account))[0];
-  }
-
   async getReserveDataMap() {
-    if (!this.reserveDataMap) {
+    if (!this._reserveDataMap) {
       const calls: common.Multicall3.CallStruct[] = [];
       for (const { asset } of this.reserves) {
-        const wrappedToken = wrapToken(this.chainId, asset);
         calls.push({
           target: this.protocolDataProvider.address,
           callData: this.protocolDataProviderIface.encodeFunctionData('getReserveConfigurationData', [
-            wrappedToken.address,
+            asset.wrapped.address,
           ]),
         });
         calls.push({
           target: this.protocolDataProvider.address,
-          callData: this.protocolDataProviderIface.encodeFunctionData('getReserveData', [wrappedToken.address]),
+          callData: this.protocolDataProviderIface.encodeFunctionData('getReserveData', [asset.wrapped.address]),
         });
       }
-      const { returnData } = await this.multicall3.callStatic.aggregate(calls);
+      const { returnData } = await this.multicall3.callStatic.aggregate(calls, { blockTag: this.blockTag });
 
-      this.reserveDataMap = {};
+      this._reserveDataMap = {};
       let j = 0;
       for (const { asset } of this.reserves) {
         const { ltv, liquidationThreshold, usageAsCollateralEnabled } =
@@ -168,7 +163,7 @@ export class LendingProtocol extends Protocol {
           this.protocolDataProviderIface.decodeFunctionResult('getReserveData', returnData[j]);
         j++;
 
-        this.reserveDataMap[asset.address] = {
+        this._reserveDataMap[asset.address] = {
           ltv: common.toBigUnit(ltv, 4),
           liquidationThreshold: common.toBigUnit(liquidationThreshold, 4),
           usageAsCollateralEnabled,
@@ -188,7 +183,7 @@ export class LendingProtocol extends Protocol {
       }
     }
 
-    return this.reserveDataMap;
+    return this._reserveDataMap;
   }
 
   async getAssetPriceMap() {
@@ -200,11 +195,11 @@ export class LendingProtocol extends Protocol {
       {
         target: this.priceOracle.address,
         callData: this.priceOracleIface.encodeFunctionData('getAssetsPrices', [
-          this.reserves.map(({ asset }) => wrapToken(this.chainId, asset).address),
+          this.reserves.map(({ asset }) => asset.wrapped.address),
         ]),
       },
     ];
-    const { returnData } = await this.multicall3.callStatic.aggregate(calls);
+    const { returnData } = await this.multicall3.callStatic.aggregate(calls, { blockTag: this.blockTag });
 
     const [ethPrice] = this.ethPriceFeedIface.decodeFunctionResult('latestAnswer', returnData[0]);
     const [assetPrices] = this.priceOracleIface.decodeFunctionResult('getAssetsPrices', returnData[1]);
@@ -227,12 +222,12 @@ export class LendingProtocol extends Protocol {
       calls.push({
         target: this.protocolDataProvider.address,
         callData: this.protocolDataProviderIface.encodeFunctionData('getUserReserveData', [
-          wrapToken(this.chainId, asset).address,
+          asset.wrapped.address,
           account,
         ]),
       });
     }
-    const { returnData } = await this.multicall3.callStatic.aggregate(calls);
+    const { returnData } = await this.multicall3.callStatic.aggregate(calls, { blockTag: this.blockTag });
 
     const userBalancesMap: Record<
       string,
@@ -274,7 +269,7 @@ export class LendingProtocol extends Protocol {
 
     const supplies: SupplyObject[] = [];
     for (const token of tokensForDepositMap[this.chainId]) {
-      if (isWrappedNativeToken(this.chainId, token)) continue;
+      if (token.isWrapped) continue;
 
       const reserveData = reserveDataMap[token.address];
       const assetPrice = assetPriceMap[token.address];
@@ -298,7 +293,7 @@ export class LendingProtocol extends Protocol {
 
     const borrows: BorrowObject[] = [];
     for (const token of tokensForBorrowMap[this.chainId]) {
-      if (isWrappedNativeToken(this.chainId, token)) continue;
+      if (token.isWrapped) continue;
 
       const { stableBorrowAPY, variableBorrowAPY } = reserveDataMap[token.address];
       const assetPrice = assetPriceMap[token.address];
@@ -317,6 +312,10 @@ export class LendingProtocol extends Protocol {
     return [portfolio];
   }
 
+  async getPortfolio(account: string) {
+    return this.getPortfolios(account).then((portfolios) => portfolios[0]);
+  }
+
   toUnderlyingToken(_marketId: string, protocolToken: common.Token) {
     return toToken(this.chainId, protocolToken);
   }
@@ -329,34 +328,32 @@ export class LendingProtocol extends Protocol {
     return isAToken(this.chainId, token);
   }
 
-  async newSupplyLogic(params: SupplyParams) {
-    const supplyQuotation = await apisdk.protocols.aavev2.getDepositQuotation(this.chainId, {
-      input: params.input,
-      tokenOut: toAToken(this.chainId, params.input.token),
+  async newSupplyLogic({ marketId, input }: TokenInFields) {
+    return apisdk.protocols.aavev2.newDepositLogic({
+      input,
+      output: new common.TokenAmount(this.toProtocolToken(marketId, input.token), input.amount),
     });
-    return apisdk.protocols.aavev2.newDepositLogic({ ...supplyQuotation, balanceBps: common.BPS_BASE });
   }
 
-  async newWithdrawLogic(params: WithdrawParams) {
-    const withdrawQuotation = await apisdk.protocols.aavev2.getWithdrawQuotation(this.chainId, {
-      input: {
-        token: toAToken(this.chainId, params.output.token),
-        amount: params.output.amount,
-      },
-      tokenOut: params.output.token,
+  async newWithdrawLogic({ marketId, output }: TokenOutFields) {
+    return apisdk.protocols.aavev2.newWithdrawLogic({
+      input: new common.TokenAmount(this.toProtocolToken(marketId, output.token), output.amount),
+      output,
     });
-    return apisdk.protocols.aavev2.newWithdrawLogic(withdrawQuotation);
   }
 
-  newBorrowLogic = apisdk.protocols.aavev2.newBorrowLogic;
-
-  async newRepayLogic(params: RepayParams) {
-    const repayQuotation = await apisdk.protocols.aavev2.getRepayQuotation(this.chainId, {
-      tokenIn: params.input.token,
-      borrower: params.borrower,
-      interestRateMode: params.interestRateMode,
+  newBorrowLogic({ output }: TokenOutFields) {
+    return apisdk.protocols.aavev2.newBorrowLogic({
+      output,
+      interestRateMode: logics.aavev2.InterestRateMode.variable,
     });
-    repayQuotation.input.amount = params.input.amount;
-    return apisdk.protocols.aavev2.newRepayLogic(repayQuotation);
+  }
+
+  async newRepayLogic({ input, account }: RepayFields) {
+    return apisdk.protocols.aavev2.newRepayLogic({
+      input,
+      borrower: account,
+      interestRateMode: logics.aavev2.InterestRateMode.variable,
+    });
   }
 }

@@ -62,7 +62,7 @@ export interface TokenOutFields {
   output: common.TokenAmount;
 }
 
-export type RepayField = TokenInFields & { account: string };
+export type RepayFields = TokenInFields & { account: string };
 
 export interface Logic<TFields = any> {
   rid: string;

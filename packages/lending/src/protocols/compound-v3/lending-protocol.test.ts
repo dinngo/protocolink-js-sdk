@@ -16,11 +16,11 @@ describe('Test Compound V3 LendingProtocol', function () {
           chainId: 1,
           protocolId: 'compound-v3',
           marketId: 'USDC',
-          utilization: '0.00%',
-          healthRate: '∞',
-          netAPY: '5.25%',
-          totalSupplyUSD: '$802.84',
-          totalBorrowUSD: '$0',
+          utilization: '0',
+          healthRate: 'Infinity',
+          netAPY: '0.052483458259584',
+          totalSupplyUSD: '802.844449',
+          totalBorrowUSD: '0',
           supplies: [
             {
               token: {
@@ -144,11 +144,11 @@ describe('Test Compound V3 LendingProtocol', function () {
           chainId: 1,
           protocolId: 'compound-v3',
           marketId: 'ETH',
-          utilization: '0.00%',
-          healthRate: '∞',
-          netAPY: '1.26%',
-          totalSupplyUSD: '$8,966.96',
-          totalBorrowUSD: '$0',
+          utilization: '0',
+          healthRate: 'Infinity',
+          netAPY: '0.012615558222672',
+          totalSupplyUSD: '8966.95502603240985750683884',
+          totalBorrowUSD: '0',
           supplies: [
             {
               token: {
@@ -224,11 +224,11 @@ describe('Test Compound V3 LendingProtocol', function () {
           chainId: 137,
           protocolId: 'compound-v3',
           marketId: 'USDC',
-          utilization: '62.90%',
-          healthRate: '1.69',
-          netAPY: '-4.08%',
-          totalSupplyUSD: '$350.78',
-          totalBorrowUSD: '$170.99',
+          utilization: '0.62899605117035539651',
+          healthRate: '1.6924051066004987073',
+          netAPY: '-0.04077766466005592672',
+          totalSupplyUSD: '350.776292007540263981961',
+          totalBorrowUSD: '170.9935994506148',
           supplies: [
             {
               token: {
@@ -320,11 +320,11 @@ describe('Test Compound V3 LendingProtocol', function () {
           chainId: 42161,
           protocolId: 'compound-v3',
           marketId: 'USDC.e',
-          utilization: '0.00%',
-          healthRate: '∞',
-          netAPY: '0.00%',
-          totalSupplyUSD: '$0',
-          totalBorrowUSD: '$0',
+          utilization: '0',
+          healthRate: 'Infinity',
+          netAPY: '0',
+          totalSupplyUSD: '0.00000035857897846998967539',
+          totalBorrowUSD: '0',
           supplies: [
             {
               token: {
@@ -432,11 +432,11 @@ describe('Test Compound V3 LendingProtocol', function () {
           chainId: 42161,
           protocolId: 'compound-v3',
           marketId: 'USDC',
-          utilization: '75.81%',
-          healthRate: '1.45',
-          netAPY: '-3.00%',
-          totalSupplyUSD: '$1.04M',
-          totalBorrowUSD: '$549.98K',
+          utilization: '0.75811587136392897001',
+          healthRate: '1.45096553383190101788',
+          netAPY: '-0.03003924035958431595',
+          totalSupplyUSD: '1036374.0626536738',
+          totalBorrowUSD: '549984.13789736552058',
           supplies: [
             {
               token: {
