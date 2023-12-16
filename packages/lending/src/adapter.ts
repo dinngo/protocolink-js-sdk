@@ -4,6 +4,7 @@ import { Protocol, ProtocolClass } from './protocol';
 import { Swapper, SwapperClass } from './swapper';
 import * as apisdk from '@protocolink/api';
 import * as common from '@protocolink/common';
+import { configMap } from './adapter.config';
 import { defaultInterestRateMode, defaultSlippage } from './protocol.type';
 import flatten from 'lodash/flatten';
 import { providers } from 'ethers';
@@ -50,6 +51,58 @@ export class Adapter extends common.Web3Toolkit {
         this.swappers.push(new Swapper(chainId, provider));
       }
     }
+  }
+
+  get primaryStablecoin() {
+    return configMap[this.chainId].primaryStablecoin;
+  }
+
+  get secondaryStablecoin() {
+    return configMap[this.chainId].secondaryStablecoin;
+  }
+
+  get primaryNonstablecoin() {
+    return configMap[this.chainId].primaryNonstablecoin;
+  }
+
+  get wrappedPrimaryNonstablecoin() {
+    return this.primaryNonstablecoin.wrapped;
+  }
+
+  chooseSuitableToken(options: {
+    tokens: common.Token[];
+    priorityToken?: common.Token;
+    excludedToken?: common.Token;
+    preferredTokens?: common.Token[];
+  }) {
+    const {
+      tokens,
+      priorityToken,
+      excludedToken,
+      preferredTokens = [
+        this.primaryStablecoin,
+        this.primaryNonstablecoin,
+        this.wrappedPrimaryNonstablecoin,
+        this.secondaryStablecoin,
+      ],
+    } = options;
+
+    const tokenMap: Record<string, common.Token> = {};
+    for (const token of tokens) {
+      if (excludedToken?.is(token)) continue;
+      if (priorityToken?.is(token)) {
+        return token;
+      }
+      tokenMap[token.address] = token;
+    }
+
+    for (const token of preferredTokens) {
+      if (tokenMap[token.address]) {
+        return token;
+      }
+    }
+
+    return Object.values(tokenMap)[0];
   }
 
   get protocolIds() {
@@ -214,12 +267,8 @@ export class Adapter extends common.Web3Toolkit {
         srcToken: srcToken,
         srcAmount: srcAmount,
         destToken: destToken,
-<<<<<<< Updated upstream
         // TODO: check which one is right
         destAmount: swapQuotation.output.amount, //withdrawLogic.fields.output.amount,
-=======
-        destAmount: swapQuotation.output.amount,
->>>>>>> Stashed changes
         portfolio,
         afterPortfolio,
       },
