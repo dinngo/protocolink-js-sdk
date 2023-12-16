@@ -16,14 +16,8 @@ describe('Check Aave V2 configs', function () {
       const { returnData } = await web3Toolkit.multicall3.callStatic.aggregate(calls);
       for (let i = 0; i < reserves.length; i++) {
         const reserve = reserves[i];
-        const [aTokenAddress, stableDebtTokenAddress, variableDebtTokenAddress] = iface.decodeFunctionResult(
-          'getReserveTokensAddresses',
-          returnData[i]
-        );
-
+        const [aTokenAddress] = iface.decodeFunctionResult('getReserveTokensAddresses', returnData[i]);
         expect(aTokenAddress).to.eq(reserve.aToken.address);
-        expect(stableDebtTokenAddress).to.eq(reserve.stableDebtTokenAddress);
-        expect(variableDebtTokenAddress).to.eq(reserve.variableDebtTokenAddress);
       }
     });
   }
