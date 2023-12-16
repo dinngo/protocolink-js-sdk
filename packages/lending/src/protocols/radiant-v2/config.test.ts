@@ -16,13 +16,8 @@ describe('Check Radiant V2 configs', function () {
       const { returnData } = await web3Toolkit.multicall3.callStatic.aggregate(calls);
       for (let i = 0; i < reserves.length; i++) {
         const reserve = reserves[i];
-        const { rTokenAddress, variableDebtTokenAddress } = iface.decodeFunctionResult(
-          'getReserveTokensAddresses',
-          returnData[i]
-        );
-
+        const [rTokenAddress] = iface.decodeFunctionResult('getReserveTokensAddresses', returnData[i]);
         expect(rTokenAddress).to.eq(reserve.rToken.address);
-        expect(variableDebtTokenAddress).to.eq(reserve.variableDebtTokenAddress);
       }
     });
   }

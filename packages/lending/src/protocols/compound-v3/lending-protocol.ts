@@ -147,7 +147,7 @@ export class LendingProtocol extends Protocol {
       blockTag: this.blockTag,
     });
 
-    const calls: common.Multicall2.CallStruct[] = [
+    const calls: common.Multicall3.CallStruct[] = [
       { target: cometAddress, callData: this.cometIface.encodeFunctionData('getSupplyRate', [utilization]) },
       { target: cometAddress, callData: this.cometIface.encodeFunctionData('getBorrowRate', [utilization]) },
     ];
@@ -167,7 +167,7 @@ export class LendingProtocol extends Protocol {
       marketId
     );
 
-    const calls: common.Multicall2.CallStruct[] = [];
+    const calls: common.Multicall3.CallStruct[] = [];
     if (baseTokenQuotePriceFeedAddress) {
       calls.push({
         target: cometAddress,
