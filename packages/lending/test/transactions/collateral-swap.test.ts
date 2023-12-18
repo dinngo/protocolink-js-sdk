@@ -3,9 +3,8 @@ import { Portfolio } from 'src/protocol.portfolio';
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 import * as aaveV2 from 'src/protocols/aave-v2/tokens';
 import * as aaveV3 from 'src/protocols/aave-v3/tokens';
-import { claimToken, getBalance, snapshotAndRevertEach } from '@protocolink/test-helpers';
+import { claimToken, getBalance, mainnetTokens, snapshotAndRevertEach } from '@protocolink/test-helpers';
 import * as common from '@protocolink/common';
-import * as compoundV3 from 'src/protocols/compound-v3/tokens';
 import { expect } from 'chai';
 import hre from 'hardhat';
 import * as logics from '@protocolink/logics';
@@ -23,7 +22,7 @@ describe('Transaction: Collateral swap', function () {
     adapter = new Adapter(chainId, hre.ethers.provider);
     [, user] = await hre.ethers.getSigners();
 
-    await claimToken(chainId, user.address, aaveV3.mainnetTokens.WETH, '5');
+    await claimToken(chainId, user.address, mainnetTokens.WETH, '5');
   });
 
   snapshotAndRevertEach();
@@ -31,14 +30,13 @@ describe('Transaction: Collateral swap', function () {
   context('Test Collateral swap', function () {
     const testCases = [
       {
-        skip: false,
         protocolId: 'aave-v2',
         marketId: 'mainnet',
         params: {
-          srcToken: aaveV2.mainnetTokens.WETH,
+          srcToken: mainnetTokens.WETH,
           srcAmount: '1',
           srcAToken: aaveV2.mainnetTokens.aWETH,
-          destToken: aaveV2.mainnetTokens.WBTC,
+          destToken: mainnetTokens.WBTC,
           destAToken: aaveV2.mainnetTokens.aWBTC,
         },
         expects: {
@@ -47,14 +45,13 @@ describe('Transaction: Collateral swap', function () {
         },
       },
       {
-        skip: false,
         protocolId: 'radiant-v2',
         marketId: 'mainnet',
         params: {
-          srcToken: radiantV2.mainnetTokens.WETH,
+          srcToken: mainnetTokens.WETH,
           srcAmount: '1',
           srcAToken: radiantV2.mainnetTokens.rWETH,
-          destToken: radiantV2.mainnetTokens.WBTC,
+          destToken: mainnetTokens.WBTC,
           destAToken: radiantV2.mainnetTokens.rWBTC,
         },
         expects: {
@@ -63,14 +60,13 @@ describe('Transaction: Collateral swap', function () {
         },
       },
       {
-        skip: false,
         protocolId: 'aave-v3',
         marketId: 'mainnet',
         params: {
-          srcToken: aaveV3.mainnetTokens.WETH,
+          srcToken: mainnetTokens.WETH,
           srcAmount: '1',
           srcAToken: aaveV3.mainnetTokens.aEthWETH,
-          destToken: aaveV3.mainnetTokens.WBTC,
+          destToken: mainnetTokens.WBTC,
           destAToken: aaveV3.mainnetTokens.aEthWBTC,
         },
         expects: {
@@ -79,13 +75,12 @@ describe('Transaction: Collateral swap', function () {
         },
       },
       {
-        skip: false,
         protocolId: 'compound-v3',
-        marketId: 'USDC',
+        marketId: logics.compoundv3.MarketId.USDC,
         params: {
-          srcToken: compoundV3.mainnetTokens.WETH,
+          srcToken: mainnetTokens.WETH,
           srcAmount: '1',
-          destToken: compoundV3.mainnetTokens.WBTC,
+          destToken: mainnetTokens.WBTC,
         },
         expects: {
           approveTimes: 1,
@@ -94,12 +89,10 @@ describe('Transaction: Collateral swap', function () {
       },
     ];
 
-    for (const [i, { skip, protocolId, marketId, params, expects }] of testCases.entries()) {
-      if (skip) continue;
-
+    for (const [i, { protocolId, marketId, params, expects }] of testCases.entries()) {
       it(`case ${i + 1} - ${protocolId}:${marketId}`, async function () {
         const supplyAmount = new common.TokenAmount(params.srcToken, '5');
-        const borrowAmount = new common.TokenAmount(aaveV2.mainnetTokens.USDC, '2000');
+        const borrowAmount = new common.TokenAmount(mainnetTokens.USDC, '2000');
 
         // 1. user supply and borrow token
         let service, lendingPoolAddress;

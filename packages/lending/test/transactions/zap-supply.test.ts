@@ -23,7 +23,6 @@ describe('Transaction: Zap Supply', function () {
     [, user] = await hre.ethers.getSigners();
 
     await claimToken(chainId, user.address, aaveV3.mainnetTokens.USDC, '1000');
-    await claimToken(chainId, user.address, aaveV3.mainnetTokens.WETH, '1');
   });
 
   snapshotAndRevertEach();
@@ -31,7 +30,6 @@ describe('Transaction: Zap Supply', function () {
   context('Test Zap Supply Base', function () {
     const testCases = [
       {
-        skip: false,
         protocolId: 'aave-v2',
         marketId: 'mainnet',
         params: {
@@ -44,28 +42,10 @@ describe('Transaction: Zap Supply', function () {
           balances: [aaveV2.mainnetTokens.aWBTC],
           approveTimes: 1,
           logicLength: 2,
-          receivedTokens: [aaveV2.mainnetTokens.aWBTC],
+          aToken: aaveV2.mainnetTokens.aWBTC,
         },
       },
       {
-        skip: false,
-        protocolId: 'radiant-v2',
-        marketId: 'mainnet',
-        params: {
-          srcToken: radiantV2.mainnetTokens.USDC,
-          srcAmount: '100',
-          destToken: radiantV2.mainnetTokens.WBTC,
-        },
-        expects: {
-          funds: [radiantV2.mainnetTokens.USDC],
-          balances: [radiantV2.mainnetTokens.rWBTC],
-          approveTimes: 1,
-          logicLength: 2,
-          receivedTokens: [radiantV2.mainnetTokens.rWBTC],
-        },
-      },
-      {
-        skip: false,
         protocolId: 'aave-v3',
         marketId: 'mainnet',
         params: {
@@ -78,32 +58,44 @@ describe('Transaction: Zap Supply', function () {
           balances: [aaveV3.mainnetTokens.aEthWBTC],
           approveTimes: 1,
           logicLength: 2,
-          receivedTokens: [aaveV3.mainnetTokens.aEthWBTC],
+          aToken: aaveV3.mainnetTokens.aEthWBTC,
         },
       },
-      // {
-      // TODO: Error: borrow USD is not zero
-      //   skip: false,
-      //   protocolId: 'compound-v3',
-      //   marketId: 'ETH',
-      //   params: {
-      //     srcToken: compoundV3.mainnetTokens.USDC,
-      //     srcAmount: '100',
-      //     destToken: compoundV3.mainnetTokens.WETH,
-      //   },
-      //   expects: {
-      //     funds: [compoundV3.mainnetTokens.USDC],
-      //     balances: [compoundV3.mainnetTokens.cWETHv3],
-      //     approveTimes: 1,
-      //     logicLength: 2,
-      //     receivedTokens: [compoundV3.mainnetTokens.cWETHv3],
-      //   },
-      // },
+      {
+        protocolId: 'radiant-v2',
+        marketId: 'mainnet',
+        params: {
+          srcToken: radiantV2.mainnetTokens.USDC,
+          srcAmount: '100',
+          destToken: radiantV2.mainnetTokens.WBTC,
+        },
+        expects: {
+          funds: [radiantV2.mainnetTokens.USDC],
+          balances: [radiantV2.mainnetTokens.rWBTC],
+          approveTimes: 1,
+          logicLength: 2,
+          aToken: radiantV2.mainnetTokens.rWBTC,
+        },
+      },
+      {
+        protocolId: 'compound-v3',
+        marketId: 'ETH',
+        params: {
+          srcToken: compoundV3.mainnetTokens.USDC,
+          srcAmount: '100',
+          destToken: compoundV3.mainnetTokens.WETH,
+        },
+        expects: {
+          funds: [compoundV3.mainnetTokens.USDC],
+          balances: [compoundV3.mainnetTokens.cWETHv3],
+          approveTimes: 1,
+          logicLength: 2,
+          aToken: compoundV3.mainnetTokens.cWETHv3,
+        },
+      },
     ];
 
-    for (const [i, { skip, protocolId, marketId, params, expects }] of testCases.entries()) {
-      if (skip) continue;
-
+    for (const [i, { protocolId, marketId, params, expects }] of testCases.entries()) {
       it(`case ${i + 1} - ${protocolId}:${marketId}`, async function () {
         // 1. user obtains a quotation for zap supply
         const zapDepositInfo = await adapter.getZapSupply(protocolId, marketId, params, user.address);
@@ -119,6 +111,7 @@ describe('Transaction: Zap Supply', function () {
         const { domain, types, values } = permitData!;
         const permitSig = await user._signTypedData(domain, types, values);
 
+        // TODO: move to unit test
         expect(estimateResult).to.include.all.keys('funds', 'balances', 'approvals');
         expect(estimateResult.funds).to.have.lengthOf(expects.funds.length);
         expect(estimateResult.balances).to.have.lengthOf(expects.balances.length);
@@ -133,9 +126,7 @@ describe('Transaction: Zap Supply', function () {
         await expect(user.sendTransaction(transactionRequest)).to.not.be.reverted;
 
         // 4. user's balance will increase.
-        for (const receivedToken of expects.receivedTokens) {
-          await expect(user.address).to.changeBalance(receivedToken, zapDepositInfo.fields.destAmount, slippage);
-        }
+        await expect(user.address).to.changeBalance(expects.aToken, zapDepositInfo.fields.destAmount, slippage);
       });
     }
   });
@@ -143,8 +134,6 @@ describe('Transaction: Zap Supply', function () {
   context('Test Zap Supply Collateral', function () {
     const testCases = [
       {
-        // TODO: UniswapV2Router: INSUFFICIENT_OUTPUT_AMOUNT
-        skip: true,
         protocolId: 'compound-v3',
         marketId: 'USDC',
         params: {
@@ -157,14 +146,11 @@ describe('Transaction: Zap Supply', function () {
           balances: [],
           approveTimes: 1,
           logicLength: 2,
-          receivedTokens: [],
         },
       },
     ];
 
-    for (const [i, { skip, protocolId, marketId, params, expects }] of testCases.entries()) {
-      if (skip) continue;
-
+    for (const [i, { protocolId, marketId, params, expects }] of testCases.entries()) {
       it(`case ${i + 1} - ${protocolId}:${marketId}`, async function () {
         // 1. user obtains a quotation for zap supply
         const zapDepositInfo = await adapter.getZapSupply(protocolId, marketId, params, user.address);
@@ -180,6 +166,7 @@ describe('Transaction: Zap Supply', function () {
         const { domain, types, values } = permitData!;
         const permitSig = await user._signTypedData(domain, types, values);
 
+        // TODO: move to unit test
         expect(estimateResult).to.include.all.keys('funds', 'balances', 'approvals');
         expect(estimateResult.funds).to.have.lengthOf(expects.funds.length);
         expect(estimateResult.balances).to.have.lengthOf(expects.balances.length);

@@ -161,8 +161,8 @@ export class Adapter extends common.Web3Toolkit {
   // 5. add-funds aSrcToken to router
   // 6. withdraw srcToken
   // 7. flashloan repay srcToken
-  // * srcToken = old deposit token
-  // * destToken = new deposit token
+  // @param srcToken Old deposit token
+  // @param destToken New deposit token
   async getCollateralSwap(
     protocolId: string,
     marketId: string,
@@ -267,8 +267,7 @@ export class Adapter extends common.Web3Toolkit {
         srcToken: srcToken,
         srcAmount: srcAmount,
         destToken: destToken,
-        // TODO: check which one is right
-        destAmount: swapQuotation.output.amount, //withdrawLogic.fields.output.amount,
+        destAmount: swapQuotation.output.amount,
         portfolio,
         afterPortfolio,
       },
@@ -283,8 +282,8 @@ export class Adapter extends common.Web3Toolkit {
   // 3. repay srcToken
   // 4. borrow destToken
   // 5. flashloan repay destToken
-  // * srcToken = old borrow token
-  // * destToken = new borrow token
+  // @param srcToken Old borrow token
+  // @param destToken New borrow token
   async getDebtSwap(
     protocolId: string,
     marketId: string,
@@ -315,7 +314,7 @@ export class Adapter extends common.Web3Toolkit {
     // convert swap type to exact in
     swapQuotation = await swapper.quote({
       input: swapQuotation.input,
-      tokenOut: srcToken,
+      tokenOut: wrappedSrcToken,
       slippage: defaultSlippage,
     });
 
@@ -336,7 +335,8 @@ export class Adapter extends common.Web3Toolkit {
     // ---------- repay ----------
     const repayLogic = await protocol.newRepayLogic({
       input: swapQuotation.output,
-      borrower: account,
+      // TODO: check why don't reuse interface
+      /*borrower:*/ account,
       interestRateMode: defaultInterestRateMode,
       marketId,
     });
@@ -396,17 +396,8 @@ export class Adapter extends common.Web3Toolkit {
   // 4. return funds aSrcToken to user
   // 5. borrow destToken
   // 6. flashloan repay destToken
-  // * srcToken => depositToken, collateralToken
-  // * destToken => flashloanToken, borrowToken
-  /**
-   * params' srcToken is which user want to long(collateral token), destToken is flashloan token(borrow token)
-   * @param protocolId
-   * @param marketId
-   * @param params
-   * @param account
-   * @param portfolio
-   * @returns
-   */
+  // @param srcToken Deposit token, collateral token
+  // @param destToken Flashloan token, borrowed token
   async getLeverageLong(
     protocolId: string,
     marketId: string,
@@ -525,9 +516,8 @@ export class Adapter extends common.Web3Toolkit {
   // 4. return funds aDestToken to user
   // 5. borrow srcToken
   // 6. flashloan repay srcToken
-  // * srcToken => flashloanToken, borrowToken
-  // * destToken => depositToken, collateralToken
-  // * srcAmount => flashloan amount
+  // @param srcToken Flashloan token, borrowed token
+  // @param destToken Deposit token, collateral token
   async getLeverageShort(
     protocolId: string,
     marketId: string,
@@ -636,11 +626,11 @@ export class Adapter extends common.Web3Toolkit {
   // 1. flashloan destToken
   // 2. swap destToken to srcToken
   // 3. repay srcToken
-  // 4. add fund destToken
-  // 5. withdraw destToken by aDestToken
+  // 4. add fund aDestToken
+  // 5. withdraw destToken
   // 6. flashloan repay destToken
-  // * srcToken => borrowToken, repayToken
-  // * destToken => depositToken, collateralToken
+  // @param srcToken Borrowed token, repaid token
+  // @param destToken Deposit token, collateral token
   async getDeleverage(
     protocolId: string,
     marketId: string,
@@ -661,21 +651,26 @@ export class Adapter extends common.Web3Toolkit {
     const afterPortfolio = portfolio.clone();
 
     // ---------- Pre-calc quotation ----------
-    const swapper = this.findSwapper([wrappedDestToken, wrappedSrcToken]);
-    //  get the quotation for how much collateral token is needed to exchange for the repay amount
-    const swapQuotation = await swapper.quote({
-      tokenIn: wrappedDestToken,
-      output: { token: wrappedSrcToken, amount: srcAmount },
-      slippage: defaultSlippage,
-    });
+    let swapper: Swapper, swapQuotation;
+    if (!srcToken.wrapped.is(destToken.wrapped)) {
+      swapper = this.findSwapper([wrappedDestToken, wrappedSrcToken]);
+      //  get the quotation for how much collateral token is needed to exchange for the repay amount
+      swapQuotation = await swapper.quote({
+        tokenIn: wrappedDestToken,
+        output: { token: wrappedSrcToken, amount: srcAmount },
+        slippage: defaultSlippage,
+      });
 
-    // TODO: seems we do not need this
-    // // convert swap type to exact in
-    // swapQuotation = await swapper.quote({
-    //   input: swapQuotation.input,
-    //   tokenOut: wrappedDestToken,
-    //   slippage: defaultSlippage,
-    // });
+      // convert swap type to exact in
+      swapQuotation = await swapper.quote({
+        input: swapQuotation.input,
+        tokenOut: wrappedSrcToken,
+        slippage: defaultSlippage,
+      });
+    } else {
+      const deleverageTokenAmount = new common.TokenAmount(wrappedDestToken, srcAmount);
+      swapQuotation = { input: deleverageTokenAmount, output: deleverageTokenAmount };
+    }
 
     // ---------- flashloan ----------
     const flashLoanAggregatorQuotation = await apisdk.protocols.utility.getFlashLoanAggregatorQuotation(this.chainId, {
@@ -689,13 +684,16 @@ export class Adapter extends common.Web3Toolkit {
     deleveragelogics.push(flashLoanLoanLogic);
 
     // ---------- swap ----------
-    const swapTokenLogic = swapper.newSwapTokenLogic(swapQuotation);
-    deleveragelogics.push(swapTokenLogic);
-
+    // TODO: should consider srcToken == destToken, pls also chk other swaps
+    if (!srcToken.wrapped.is(destToken.wrapped)) {
+      const swapTokenLogic = swapper!.newSwapTokenLogic(swapQuotation);
+      deleveragelogics.push(swapTokenLogic);
+    }
     // ---------- repay ----------
     const repayLogic = await protocol.newRepayLogic({
       input: swapQuotation.output,
-      borrower: account,
+      // TODO: reuse interface?
+      /*borrower:*/ account,
       interestRateMode: defaultInterestRateMode,
       marketId,
     });
@@ -705,15 +703,19 @@ export class Adapter extends common.Web3Toolkit {
     // ---------- add funds ----------
     if (protocolId !== 'compound-v3') {
       const addLogic = apisdk.protocols.permit2.newPullTokenLogic({
-        input: swapQuotation.input,
+        input: new common.TokenAmount(
+          protocol.toProtocolToken(marketId, swapQuotation.input.token),
+          swapQuotation.input.amount
+        ),
       });
+
       deleveragelogics.push(addLogic);
     }
 
     // ---------- withdraw ----------
     const withdrawTokenAmount = flashLoanAggregatorQuotation.repays.tokenAmountMap[wrappedDestToken.address];
     const withdrawLogic = await protocol.newWithdrawLogic({
-      output: new common.TokenAmount(wrappedDestToken, withdrawTokenAmount.amount),
+      output: withdrawTokenAmount,
       marketId,
       account,
     });
@@ -756,6 +758,10 @@ export class Adapter extends common.Web3Toolkit {
     };
   }
 
+  // 1. swap srcToken to destToken
+  // 2. supply destToken
+  // @param srcToken Any token
+  // @param destToken Deposit token, collateral token
   async getZapSupply(
     protocolId: string,
     marketId: string,
@@ -829,6 +835,10 @@ export class Adapter extends common.Web3Toolkit {
     };
   }
 
+  // 1. withdraw srcToken
+  // 2. swap srcToken to destToken
+  // @param srcToken Deposit token, collateral token
+  // @param destToken Any token
   async getZapWithdraw(
     protocolId: string,
     marketId: string,
@@ -861,6 +871,7 @@ export class Adapter extends common.Web3Toolkit {
 
     // ---------- swap ----------
     if (!srcToken.unwrapped.is(destToken.unwrapped)) {
+      if (protocolId === 'compound-v3') withdrawLogic.fields.output.subWei(1);
       const swapper = this.findSwapper([srcToken, destToken]);
       const swapQuotation = await swapper.quote({
         input: withdrawLogic.fields.output,
@@ -902,6 +913,10 @@ export class Adapter extends common.Web3Toolkit {
     };
   }
 
+  // 1. borrow srcToken
+  // 2. swap srcToken to destToken
+  // @param srcToken Borrowed token
+  // @param destToken Any token
   async getZapBorrow(
     protocolId: string,
     marketId: string,
@@ -964,7 +979,6 @@ export class Adapter extends common.Web3Toolkit {
         srcToken,
         srcAmount,
         destToken,
-
         destAmount: outputTokenAmount.amount,
         portfolio,
         afterPortfolio,
@@ -975,6 +989,10 @@ export class Adapter extends common.Web3Toolkit {
     };
   }
 
+  // 1. swap srcToken to destToken
+  // 2. repay destToken
+  // @param srcToken Any token
+  // @param destToken Borrowed token, repaid token
   async getZapRepay(
     protocolId: string,
     marketId: string,
@@ -1009,7 +1027,8 @@ export class Adapter extends common.Web3Toolkit {
     }
     // ---------- repay ----------
     const repayLogic = await protocol.newRepayLogic({
-      borrower: account,
+      // TODO: reuse interface?
+      /*borrower:*/ account,
       interestRateMode: defaultInterestRateMode,
       input: new common.TokenAmount(repayTokenAmount.token, repayTokenAmount.amount),
       marketId,

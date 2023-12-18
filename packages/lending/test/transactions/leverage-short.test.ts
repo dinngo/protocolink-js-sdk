@@ -2,7 +2,7 @@ import { Adapter } from 'src/adapter';
 import { Portfolio } from 'src/protocol.portfolio';
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 import * as aaveV3 from 'src/protocols/aave-v3/tokens';
-import { claimToken, getBalance, snapshotAndRevertEach } from '@protocolink/test-helpers';
+import { claimToken, getBalance, mainnetTokens, snapshotAndRevertEach } from '@protocolink/test-helpers';
 import * as common from '@protocolink/common';
 import { expect } from 'chai';
 import hre from 'hardhat';
@@ -20,7 +20,7 @@ describe('Transaction: Leverage Short', function () {
   before(async function () {
     adapter = new Adapter(chainId, hre.ethers.provider);
     [, user] = await hre.ethers.getSigners();
-    await claimToken(chainId, user.address, aaveV3.mainnetTokens.USDC, '10000');
+    await claimToken(chainId, user.address, mainnetTokens.USDC, '10000');
   });
 
   snapshotAndRevertEach();
@@ -28,26 +28,24 @@ describe('Transaction: Leverage Short', function () {
   context('Test Leverage Short', function () {
     const testCases = [
       {
-        skip: false,
         protocolId: 'aave-v3',
         marketId: 'mainnet',
         params: {
-          srcToken: aaveV3.mainnetTokens.WETH,
+          srcToken: mainnetTokens.WETH,
           srcAmount: '1',
-          debtToken: '0xeA51d7853EEFb32b6ee06b1C12E6dcCA88Be0fFE', // variableDebtEthWETH
-          destToken: aaveV3.mainnetTokens.USDC,
-          aToken: aaveV3.mainnetTokens.aEthUSDC,
+          srcDebtToken: '0xeA51d7853EEFb32b6ee06b1C12E6dcCA88Be0fFE', // variableDebtEthWETH
+          destToken: mainnetTokens.USDC,
+          destAToken: aaveV3.mainnetTokens.aEthUSDC,
         },
         expects: {
           approveTimes: 1,
           logicLength: 6,
         },
       },
+      // TODO: do we need to test other protocols?
     ];
 
-    for (const [i, { skip, protocolId, marketId, params, expects }] of testCases.entries()) {
-      if (skip) continue;
-
+    for (const [i, { protocolId, marketId, params, expects }] of testCases.entries()) {
       it(`case ${i + 1} - ${protocolId}:${marketId}`, async function () {
         const supplyAmount = new common.TokenAmount(params.destToken, '10000');
         const borrowAmount = new common.TokenAmount(params.srcToken, '1');
@@ -70,6 +68,7 @@ describe('Transaction: Leverage Short', function () {
         for (const approval of estimateResult.approvals) {
           await expect(user.sendTransaction(approval)).to.not.be.reverted;
         }
+        // TODO: move to unit test
         expect(estimateResult).to.include.all.keys('funds', 'balances', 'approvals');
 
         // 5. user obtains a leverage short transaction request
@@ -80,7 +79,7 @@ describe('Transaction: Leverage Short', function () {
 
         // 6. user's supply balance will increase.
         // 6-1. due to the slippage caused by the swap, we need to calculate the minimum leverage amount.
-        const supplyBalance = await getBalance(user.address, params.aToken);
+        const supplyBalance = await getBalance(user.address, params.destAToken);
         const minimumLeverageAmount = new common.TokenAmount(leverageAmount.token).setWei(
           common.calcSlippage(leverageAmount.amountWei, slippage)
         );
@@ -88,7 +87,7 @@ describe('Transaction: Leverage Short', function () {
 
         // 7. user's borrow balance will increase.
         // 7-1. As the block number increases, the initial borrow balance will also increase.
-        const borrowBalance = await getBalance(user.address, params.debtToken);
+        const borrowBalance = await getBalance(user.address, params.srcDebtToken);
         const leverageBorrowAmount = new common.TokenAmount(leverageShortInfo.logics[4].fields.output);
         expect(borrowBalance.gte(borrowAmount.clone().add(leverageBorrowAmount))).to.be.true;
       });

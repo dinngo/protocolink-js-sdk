@@ -317,12 +317,13 @@ export class LendingProtocol extends Protocol {
 
   newWithdrawLogic({ marketId, output }: TokenOutFields) {
     const { baseToken, cToken } = getMarketConfig(this.chainId, marketId);
-
     if (output.token.wrapped.is(baseToken)) {
       return apisdk.protocols.compoundv3.newWithdrawBaseLogic({
         marketId,
-        input: new common.TokenAmount(cToken, output.amount),
+        // cToken amount would be 2 wei less after permit2-pull
+        input: new common.TokenAmount(cToken, output.subWei(2).amount),
         output,
+        balanceBps: common.BPS_BASE,
       });
     } else {
       return apisdk.protocols.compoundv3.newWithdrawCollateralLogic({ marketId, output });
