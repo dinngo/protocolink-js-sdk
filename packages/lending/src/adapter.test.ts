@@ -3,7 +3,7 @@
 import { Adapter } from './adapter';
 import { BaseParams } from './adapter.type';
 import { LendingProtocol } from './protocols/aave-v3/lending-protocol';
-import { LendingSwapper } from './protocols/paraswap-v5/lending-swapper';
+import { LendingSwapper } from './swappers/paraswap-v5';
 import { Portfolio } from './protocol.portfolio';
 import { expect } from 'chai';
 import { mainnetTokens } from '@protocolink/test-helpers';
