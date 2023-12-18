@@ -49,7 +49,7 @@ export abstract class Protocol extends common.Web3Toolkit {
 
   abstract isProtocolToken(marketId: string, token: common.Token): boolean;
 
-  isAaveLike = false;
+  isCollateralTokenized = true;
 
   preferredFlashLoanerId?: string;
 

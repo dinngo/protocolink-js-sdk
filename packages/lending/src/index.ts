@@ -1,13 +1,10 @@
-// TODO: BOOOB
 import * as apisdk from '@protocolink/api';
 
 apisdk.init({ baseURL: 'https://api-beta.protocolink.com' });
 
-export * as adapter from './adapter';
-export * as protocol from './protocol';
+export * from './adapter';
+export * from './adapter.type';
+export * from './protocol';
+export * from './protocol.portfolio';
+export * from './protocol.type';
 export * as protocols from './protocols';
-
-export * as adapterType from './adapter.type';
-export * as protocolType from './protocol.type';
-
-export * as protocolPortfolio from './protocol.portfolio';

@@ -1,4 +1,5 @@
-import { BaseFields, BaseParams } from './adapter.type';
+import { BaseFields, BaseParams, OperationError, OperationInput, OperationOutput } from './adapter.type';
+import BigNumberJS from 'bignumber.js';
 import { Portfolio } from './protocol.portfolio';
 import { Protocol, ProtocolClass } from './protocol';
 import { Swapper, SwapperClass } from './swapper';
@@ -10,9 +11,10 @@ import flatten from 'lodash/flatten';
 import { providers } from 'ethers';
 
 type Options = {
-  permitType: apisdk.Permit2Type | undefined;
-  apiKey?: string | undefined;
+  permitType?: apisdk.Permit2Type;
+  apiKey?: string;
 };
+
 export class Adapter extends common.Web3Toolkit {
   static Protocols: ProtocolClass[] = [];
 
@@ -26,19 +28,13 @@ export class Adapter extends common.Web3Toolkit {
     this.Swappers.push(swapper);
   }
 
-  permitType: apisdk.Permit2Type | undefined = 'permit';
-  apiKey: string | undefined;
   protocolMap: Record<string, Protocol> = {};
   swappers: Swapper[] = [];
+  permitType: apisdk.Permit2Type = 'permit';
+  apiKey?: string;
 
-  constructor(
-    chainId: number,
-    provider: providers.Provider,
-    { permitType, apiKey }: Options = { permitType: 'permit' }
-  ) {
+  constructor(chainId: number, provider: providers.Provider, { permitType, apiKey }: Options = {}) {
     super(chainId, provider);
-    if (permitType) this.permitType = permitType;
-    if (apiKey) this.apiKey = apiKey;
 
     for (const Protocol of Adapter.Protocols) {
       if (Protocol.isSupported(this.chainId)) {
@@ -51,6 +47,13 @@ export class Adapter extends common.Web3Toolkit {
         this.swappers.push(new Swapper(chainId, provider));
       }
     }
+
+    if (permitType) this.permitType = permitType;
+    if (apiKey) this.apiKey = apiKey;
+  }
+
+  get protocolIds() {
+    return Object.keys(this.protocolMap);
   }
 
   get primaryStablecoin() {
@@ -105,10 +108,6 @@ export class Adapter extends common.Web3Toolkit {
     return Object.values(tokenMap)[0];
   }
 
-  get protocolIds() {
-    return Object.keys(this.protocolMap);
-  }
-
   findSwapper(tokenOrTokens: common.Token | common.Token[]) {
     const canCustomTokenSwappers: Swapper[] = [];
     const tokensSupportedSwappers: Swapper[] = [];
@@ -139,7 +138,7 @@ export class Adapter extends common.Web3Toolkit {
     return bestSwapper;
   }
 
-  async getPortfolios(account: string): Promise<Portfolio[]> {
+  async getPortfolios(account: string) {
     const portfolios = await Promise.all(
       Object.values(this.protocolMap).map((protocol) => protocol.getPortfolios(account))
     );
@@ -154,127 +153,114 @@ export class Adapter extends common.Web3Toolkit {
     return this.protocolMap[id];
   }
 
-  // 1. flashloan srcToken
-  // 2. swap srcToken to destToken
-  // 3. deposit destToken, get aDestToken
-  // 4. return-funds aDestToken to user
-  // 5. add-funds aSrcToken to router
-  // 6. withdraw srcToken
-  // 7. flashloan repay srcToken
+  // 1. validate src amount
+  // 2. flashloan loan src token
+  // 3. swap src token to dest token
+  // 4. deposit dest token
+  // 5. withdraw src token, if protocol is collateral tokenized, perform the following actions first:
+  // 5-1. return dest protocol token to user
+  // 5-2. add src protocol token to router
+  // 6. flashloan repay src token
   // @param srcToken Old deposit token
   // @param destToken New deposit token
-  async getCollateralSwap(
-    protocolId: string,
-    marketId: string,
-    params: BaseParams,
-    account: string,
-    portfolio?: Portfolio
-  ): Promise<BaseFields> {
-    const { srcAmount } = params;
-    const srcToken = common.classifying(params.srcToken);
-    const destToken = common.classifying(params.destToken);
-    const wrappedSrcToken = srcToken.wrapped;
-    const wrappedDestToken = destToken.wrapped;
-
-    const collateralSwapLogics: apisdk.Logic<any>[] = [];
+  async getCollateralSwap({
+    account,
+    portfolio,
+    srcToken,
+    srcAmount,
+    destToken,
+    slippage = defaultSlippage,
+  }: OperationInput): Promise<OperationOutput> {
+    const { protocolId, marketId } = portfolio;
     const protocol = this.getProtocol(protocolId);
+    const srcCollateral = portfolio.findSupply(srcToken);
+    const destCollateral = portfolio.findSupply(destToken);
 
-    portfolio = portfolio || (await protocol.getPortfolio(account, marketId));
+    let destAmount = '0';
     const afterPortfolio = portfolio.clone();
+    let error: OperationError | undefined;
+    const logics: apisdk.Logic[] = [];
 
-    // ---------- flashloan ----------
-    const flashLoanAggregatorQuotation = await apisdk.protocols.utility.getFlashLoanAggregatorQuotation(this.chainId, {
-      repays: [{ token: wrappedSrcToken, amount: srcAmount }],
-    });
+    if (Number(srcAmount) > 0 && srcCollateral && destCollateral) {
+      // 1. get the actual withdraw amount of src
+      // 1-1. when src amount >= src collateral balance, set it equal to the collateral balance.
+      // 1-2. when src amount > src collateral balance, set an error.
+      let srcActualWithdrawAmount = srcAmount;
+      if (new BigNumberJS(srcAmount).gte(srcCollateral.balance)) {
+        srcActualWithdrawAmount = srcCollateral.balance;
 
-    const flashLoanTokenAmount = flashLoanAggregatorQuotation.loans.tokenAmountMap[wrappedSrcToken.address];
+        if (new BigNumberJS(srcAmount).gt(srcCollateral.balance)) {
+          error = { name: 'srcAmount', code: 'INSUFFICIENT_AMOUNT' };
+        }
+      }
+      afterPortfolio.withdraw(srcCollateral.token, srcActualWithdrawAmount);
 
-    const [flashLoanLoanLogic, flashLoanRepayLogic] = apisdk.protocols.utility.newFlashLoanAggregatorLogicPair(
-      flashLoanAggregatorQuotation.protocolId,
-      flashLoanAggregatorQuotation.loans.toArray()
-    );
-    collateralSwapLogics.push(flashLoanLoanLogic);
+      if (!error) {
+        // 2. ---------- flashloan ----------
+        // utilize the src collateral withdraw amount as the flashloan repay amount
+        // to reverse how much needs to be borrowed in the flashloan
+        const flashLoanRepay = new common.TokenAmount(srcToken.wrapped, srcAmount);
+        // 2-1. if protocol is Aave-like, sub 2 wei from the flashloan repay amount
+        if (protocol.isCollateralTokenized) {
+          flashLoanRepay.subWei(2);
+        }
+        const flashLoanAggregatorQuotation = await apisdk.protocols.utility.getFlashLoanAggregatorQuotation(
+          this.chainId,
+          { repays: [flashLoanRepay] }
+        );
+        const [flashLoanLoanLogic, flashLoanRepayLogic] = apisdk.protocols.utility.newFlashLoanAggregatorLogicPair(
+          flashLoanAggregatorQuotation.protocolId,
+          flashLoanAggregatorQuotation.loans.toArray()
+        );
+        logics.push(flashLoanLoanLogic);
 
-    // ---------- swap ----------
-    const swapper = this.findSwapper([wrappedSrcToken, wrappedDestToken]);
-    const swapQuotation = await swapper.quote({
-      input: flashLoanTokenAmount,
-      tokenOut: wrappedDestToken,
-      slippage: defaultSlippage,
-    });
+        // 3. ---------- swap ----------
+        // swap the flashloan borrow amount to dest collateral
+        const swapper = this.findSwapper([srcToken.wrapped, destToken.wrapped]);
+        const swapQuotation = await swapper.quote({
+          input: flashLoanAggregatorQuotation.loans.get(srcToken.wrapped),
+          tokenOut: destToken.wrapped,
+          slippage,
+        });
+        const swapTokenLogic = swapper.newSwapTokenLogic(swapQuotation);
+        logics.push(swapTokenLogic);
+        // 3-1. the swap output amount is the dest amount
+        destAmount = swapQuotation.output.amount;
 
-    const swapTokenLogic = swapper.newSwapTokenLogic(swapQuotation);
-    collateralSwapLogics.push(swapTokenLogic);
+        // 4. ---------- supply ----------
+        // supply to target collateral
+        const supplyInput = swapQuotation.output;
+        const supplyLogic = protocol.newSupplyLogic({ marketId, input: supplyInput });
+        // 4-1. due to the swap slippage, so update to use 100% of the amount for the supply
+        supplyLogic.fields.balanceBps = common.BPS_BASE;
+        logics.push(supplyLogic);
+        afterPortfolio.supply(supplyInput.token, supplyInput.amount);
 
-    // ---------- supply ----------
-    const supplyLogic = await protocol.newSupplyLogic({ input: swapQuotation.output, marketId, account });
+        // 5. ---------- withdraw ----------
+        const withdrawOutput = { token: srcToken.wrapped, amount: srcAmount };
+        const withdrawLogic = await protocol.newWithdrawLogic({ marketId, output: withdrawOutput, account });
+        // 5-1. if protocol is collateral tokenized
+        if (protocol.isCollateralTokenized) {
+          // 5-1-1. return dest protocol token to user
+          const returnFundsLogic = apisdk.protocols.utility.newSendTokenLogic({
+            input: supplyLogic.fields.output,
+            recipient: account,
+          });
+          logics.push(returnFundsLogic);
 
-    collateralSwapLogics.push(supplyLogic);
+          // 5-1-2. add src protocol token to router
+          const addLogic = apisdk.protocols.permit2.newPullTokenLogic({ input: withdrawLogic.fields.input });
+          logics.push(addLogic);
+        }
+        // 5-2. append withdraw logic
+        logics.push(withdrawLogic);
 
-    afterPortfolio.supply(swapQuotation.output.token, swapQuotation.output.amount);
-
-    // if not compound v3, compound v3 does not need return and add funds in collateral swap flow
-    if (protocolId !== 'compound-v3') {
-      if (!supplyLogic.fields.output) throw new Error('incorrect supply result');
-      // ---------- return funds ----------
-      const returnLogic = apisdk.protocols.utility.newSendTokenLogic({
-        input: supplyLogic.fields.output,
-        recipient: account,
-      });
-      collateralSwapLogics.push(returnLogic);
-
-      // ---------- add funds ----------
-      const addLogic = apisdk.protocols.permit2.newPullTokenLogic({
-        input: new common.TokenAmount(protocol.toProtocolToken(marketId, wrappedSrcToken), srcAmount),
-      });
-      collateralSwapLogics.push(addLogic);
+        // 6. append flashloan repay logic
+        logics.push(flashLoanRepayLogic);
+      }
     }
 
-    // ---------- withdraw ----------
-    const withdrawLogic = await protocol.newWithdrawLogic({
-      output: new common.TokenAmount(wrappedSrcToken, srcAmount),
-      marketId,
-      account,
-    });
-    collateralSwapLogics.push(withdrawLogic);
-
-    afterPortfolio.withdraw(wrappedSrcToken, srcAmount);
-
-    // ---------- flashloan repay ----------
-    collateralSwapLogics.push(flashLoanRepayLogic);
-
-    // ---------- tx related ----------
-    const estimateResult = await apisdk.estimateRouterData(
-      {
-        chainId: this.chainId,
-        account,
-        logics: collateralSwapLogics,
-      },
-      this.permitType
-    );
-
-    const buildRouterTransactionRequest = (
-      args?: Omit<apisdk.RouterData, 'chainId' | 'account' | 'logics'>,
-      apiKey?: string
-    ): Promise<common.TransactionRequest> =>
-      apisdk.buildRouterTransactionRequest(
-        { ...args, chainId: this.chainId, account, logics: collateralSwapLogics },
-        apiKey ? { 'x-api-key': apiKey } : undefined
-      );
-
-    return {
-      fields: {
-        srcToken: srcToken,
-        srcAmount: srcAmount,
-        destToken: destToken,
-        destAmount: swapQuotation.output.amount,
-        portfolio,
-        afterPortfolio,
-      },
-      estimateResult,
-      buildRouterTransactionRequest,
-      logics: collateralSwapLogics,
-    };
+    return { destAmount, afterPortfolio, error, logics };
   }
 
   // 1. flashloan destToken

@@ -32,6 +32,8 @@ export class LendingProtocol extends Protocol {
     return `${DISPLAY_NAME} ${id}`;
   }
 
+  isCollateralTokenized = false;
+
   canCollateralSwap(marketId: string, assetToken: common.Token) {
     return !assetToken.wrapped.is(getMarketConfig(this.chainId, marketId).baseToken);
   }

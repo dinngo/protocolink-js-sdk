@@ -40,7 +40,6 @@ export class LendingProtocol extends Protocol {
 
   readonly id = ID;
   readonly market: Market;
-  readonly isAaveLike = true;
 
   constructor(chainId: number, provider?: providers.Provider) {
     super(chainId, provider);

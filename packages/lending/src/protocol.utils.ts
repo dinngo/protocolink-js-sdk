@@ -32,17 +32,17 @@ export function calcHealthRate(
 }
 
 export function calcNetAPY(
-  totalCollateralUSD: string | BigNumberJS,
+  totalSupplyUSD: string | BigNumberJS,
   positiveProportion: string | BigNumberJS,
   totalBorrowUSD: string | BigNumberJS,
   negativeProportion: string | BigNumberJS
 ) {
-  totalCollateralUSD = new BigNumberJS(totalCollateralUSD);
+  totalSupplyUSD = new BigNumberJS(totalSupplyUSD);
   totalBorrowUSD = new BigNumberJS(totalBorrowUSD);
 
   let earnedAPY = new BigNumberJS(0);
-  if (!totalCollateralUSD.isZero()) {
-    earnedAPY = new BigNumberJS(positiveProportion).div(totalCollateralUSD);
+  if (!totalSupplyUSD.isZero()) {
+    earnedAPY = new BigNumberJS(positiveProportion).div(totalSupplyUSD);
   }
 
   let debtAPY = new BigNumberJS(0);
@@ -50,7 +50,7 @@ export function calcNetAPY(
     debtAPY = new BigNumberJS(negativeProportion).div(totalBorrowUSD);
   }
 
-  let netWorthUSD = new BigNumberJS(totalCollateralUSD).minus(totalBorrowUSD);
+  let netWorthUSD = new BigNumberJS(totalSupplyUSD).minus(totalBorrowUSD);
   if (netWorthUSD.isZero()) {
     netWorthUSD = new BigNumberJS(1);
   }
@@ -58,7 +58,7 @@ export function calcNetAPY(
   let netAPY = '0';
   if (netWorthUSD.gt(0)) {
     netAPY = earnedAPY
-      .times(totalCollateralUSD)
+      .times(totalSupplyUSD)
       .div(netWorthUSD)
       .minus(debtAPY.times(totalBorrowUSD).div(netWorthUSD))
       .toFixed();

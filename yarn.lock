@@ -1085,7 +1085,22 @@
     node-addon-api "^3.2.1"
     node-gyp-build "^4.3.0"
 
-"@protocolink/logics@^1.0.1":
+"@protocolink/api@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@protocolink/api/-/api-1.0.2.tgz#88a6f4f4614059ae260ed9ec05f2e156f25e9471"
+  integrity sha512-64/O+1etX8eBUn/FMDEFYTEaimax1dzoSzbUkhHkjBTfAkeZvCm/FQeiJPBSZhcp5gBPZYdYM/63pYFa1KxbIQ==
+  dependencies:
+    "@protocolink/common" "^0.3.4"
+    "@protocolink/core" "^0.4.4"
+    "@protocolink/logics" "^1.0.1"
+    "@types/lodash" "^4.14.195"
+    "@types/uuid" "^9.0.2"
+    "@uniswap/permit2-sdk" "^1.2.0"
+    axios "^1.3.6"
+    axios-retry "^3.5.1"
+    uuid "^9.0.0"
+
+"@protocolink/logics@^1.0.0", "@protocolink/logics@^1.0.1":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@protocolink/logics/-/logics-1.0.1.tgz#947b88a97072a5b19d72e3771f68c6f785920972"
   integrity sha512-ZAX35fVMu/MuzB35GCoslyL5z5fmPVy8LvxuO44N/59zutUOWT2iUiTc6+ZE3+3Yxh2fHEhDuZvPkGHNJWKRmg==

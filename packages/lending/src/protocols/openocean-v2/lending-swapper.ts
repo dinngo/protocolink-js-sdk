@@ -1,4 +1,4 @@
-import { ID, supportedChainIds } from './configs';
+import { ID, disabledDexIdsMap, supportedChainIds } from './configs';
 import { Swapper } from 'src/swapper';
 import * as apisdk from '@protocolink/api';
 import * as common from '@protocolink/common';
@@ -23,7 +23,10 @@ export class LendingSwapper extends Swapper {
   }
 
   async quote(params: apisdk.protocols.openoceanv2.SwapTokenParams) {
-    return apisdk.protocols.openoceanv2.getSwapTokenQuotation(this.chainId, params);
+    return apisdk.protocols.openoceanv2.getSwapTokenQuotation(this.chainId, {
+      ...params,
+      disabledDexIds: disabledDexIdsMap[this.chainId],
+    });
   }
 
   newSwapTokenLogic = apisdk.protocols.openoceanv2.newSwapTokenLogic;

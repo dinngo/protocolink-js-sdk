@@ -23,7 +23,7 @@ export class LendingSwapper extends Swapper {
   }
 
   async quote(params: apisdk.protocols.paraswapv5.SwapTokenParams) {
-    return apisdk.protocols.paraswapv5.getSwapTokenQuotation(this.chainId, params);
+    return apisdk.protocols.paraswapv5.getSwapTokenQuotation(this.chainId, { ...params, excludeDEXS: ['BalancerV2'] });
   }
 
   newSwapTokenLogic = apisdk.protocols.paraswapv5.newSwapTokenLogic;

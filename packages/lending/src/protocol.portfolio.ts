@@ -235,7 +235,7 @@ export class Portfolio {
   }
 
   get netAPY() {
-    return calcNetAPY(this.totalCollateralUSD, this.positiveProportion, this.totalBorrowUSD, this.negativeProportion);
+    return calcNetAPY(this.totalSupplyUSD, this.positiveProportion, this.totalBorrowUSD, this.negativeProportion);
   }
 
   get formattedNetAPY() {
@@ -325,9 +325,9 @@ export class Portfolio {
 
     const supplyUSD = new BigNumberJS(amount).times(price);
     this.totalSupplyUSD = this.totalSupplyUSD.plus(supplyUSD);
-    this.totalCollateralUSD = this.totalCollateralUSD.plus(supplyUSD);
     this.positiveProportion = this.positiveProportion.plus(supplyUSD.times(apy));
     if (usageAsCollateralEnabled) {
+      this.totalCollateralUSD = this.totalCollateralUSD.plus(supplyUSD);
       this.totalBorrowCapacityUSD = this.totalBorrowCapacityUSD.plus(supplyUSD.times(ltv));
       this.liquidationLimit = this.liquidationLimit.plus(supplyUSD.times(liquidationThreshold));
     }
@@ -345,9 +345,9 @@ export class Portfolio {
 
     const withdrawUSD = new BigNumberJS(amount).times(price);
     this.totalSupplyUSD = this.totalSupplyUSD.minus(withdrawUSD);
-    this.totalCollateralUSD = this.totalCollateralUSD.minus(withdrawUSD);
     this.positiveProportion = this.positiveProportion.minus(withdrawUSD.times(apy));
     if (usageAsCollateralEnabled) {
+      this.totalCollateralUSD = this.totalCollateralUSD.minus(withdrawUSD);
       this.totalBorrowCapacityUSD = this.totalBorrowCapacityUSD.minus(withdrawUSD.times(ltv));
       this.liquidationLimit = this.liquidationLimit.minus(withdrawUSD.times(liquidationThreshold));
     }

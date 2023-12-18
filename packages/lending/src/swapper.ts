@@ -1,7 +1,6 @@
-import { SwapTokenLogicParams } from './swapper.type';
+import { SwapperQuoteFields, SwapperQuoteParams } from './swapper.type';
 import * as apisdk from '@protocolink/api';
 import * as common from '@protocolink/common';
-import * as logics from '@protocolink/logics';
 import { providers } from 'ethers';
 
 export abstract class Swapper extends common.Web3Toolkit {
@@ -21,9 +20,9 @@ export abstract class Swapper extends common.Web3Toolkit {
     return true;
   }
 
-  abstract quote(params: SwapTokenLogicParams): Promise<logics.paraswapv5.SwapTokenLogicFields>;
+  abstract quote(params: SwapperQuoteParams): Promise<SwapperQuoteFields>;
 
-  abstract newSwapTokenLogic(fields: any): apisdk.protocols.paraswapv5.SwapTokenLogic;
+  abstract newSwapTokenLogic(fields: SwapperQuoteFields): apisdk.Logic;
 }
 
 export interface SwapperClass {

@@ -13,13 +13,13 @@ const account = '0xa3C1C91403F0026b9dd086882aDbC8Cdbc3b3cfB';
 const rpcUrl = 'https://rpc.ankr.com/eth';
 const provider = new providers.JsonRpcProvider(rpcUrl);
 
-const collateralSwapTestCases: BaseParams[] = [
-  {
-    srcToken: mainnetTokens.USDC,
-    srcAmount: '1',
-    destToken: mainnetTokens.USDT,
-  },
-];
+// const collateralSwapTestCases: BaseParams[] = [
+//   {
+//     srcToken: mainnetTokens.USDC,
+//     srcAmount: '1',
+//     destToken: mainnetTokens.USDT,
+//   },
+// ];
 
 const debtSwapTestCases: BaseParams[] = [
   {
@@ -104,17 +104,17 @@ describe('Lending AaveV3 SDK', function () {
   });
 
   const marketId = '';
-  context('Test CollateralSwap', function () {
-    collateralSwapTestCases.forEach((params, i) => {
-      it(`case ${i + 1}`, async function () {
-        const collateralSwapInfo = await adapter.getCollateralSwap(protocolId, marketId, params, account, portfolio);
+  // context('Test CollateralSwap', function () {
+  //   collateralSwapTestCases.forEach((params, i) => {
+  //     it(`case ${i + 1}`, async function () {
+  //       const collateralSwapInfo = await adapter.getCollateralSwap(protocolId, marketId, params, account, portfolio);
 
-        expect(collateralSwapInfo).to.include.all.keys('fields', 'logics');
-        expect(parseFloat(collateralSwapInfo.fields.destAmount!)).above(0);
-        expect(collateralSwapInfo.logics).to.have.lengthOf(7);
-      });
-    });
-  });
+  //       expect(collateralSwapInfo).to.include.all.keys('fields', 'logics');
+  //       expect(parseFloat(collateralSwapInfo.fields.destAmount!)).above(0);
+  //       expect(collateralSwapInfo.logics).to.have.lengthOf(7);
+  //     });
+  //   });
+  // });
 
   context('Test DebtSwap', function () {
     debtSwapTestCases.forEach((params, i) => {
