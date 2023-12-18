@@ -1,5 +1,14 @@
 # @furucombo/composable-router-api
 
+## 1.0.2
+
+### Patch Changes
+
+- fa27d76: add Spark test
+- 8a55348: Updated dependencies
+  - @protocolink/logics@1.0.1
+- 1c1f56d: add Permit2 test
+
 ## 1.0.1
 
 ### Patch Changes
