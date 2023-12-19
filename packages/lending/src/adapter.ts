@@ -696,7 +696,7 @@ export class Adapter extends common.Web3Toolkit {
       // 1. ---------- swap ----------
       let supplyInput: common.TokenAmount;
       // 1-1. the src token is equal to dest token
-      if (srcToken.is(destToken)) {
+      if (srcToken.wrapped.is(destToken.wrapped)) {
         supplyInput = new common.TokenAmount(srcToken, srcAmount);
       }
       // 1-2. the src token is not equal to dest token
@@ -704,7 +704,7 @@ export class Adapter extends common.Web3Toolkit {
         const swapper = this.findSwapper([srcToken, destToken]);
         const swapQuotation = await swapper.quote({
           input: { token: srcToken, amount: srcAmount },
-          tokenOut: destToken,
+          tokenOut: destToken.wrapped,
           slippage,
         });
         const swapTokenLogic = swapper.newSwapTokenLogic(swapQuotation);
@@ -716,7 +716,7 @@ export class Adapter extends common.Web3Toolkit {
       // 2. ---------- supply ----------
       const supplyLogic = protocol.newSupplyLogic({ marketId, input: supplyInput });
       // 2-1. if the src token is not equal to dest token, use BalanceLink to prevent swap slippage
-      if (!srcToken.is(destToken)) {
+      if (!srcToken.wrapped.is(destToken.wrapped)) {
         supplyLogic.fields.balanceBps = common.BPS_BASE;
       }
       output.logics.push(supplyLogic);
@@ -753,7 +753,8 @@ export class Adapter extends common.Web3Toolkit {
 
         if (!output.error) {
           // 2. ---------- withdraw ----------
-          const withdrawOutput = new common.TokenAmount(srcToken, srcAmount);
+          const withdrawalToken = srcToken.wrapped.is(destToken.wrapped) ? destToken : srcToken.wrapped;
+          const withdrawOutput = new common.TokenAmount(withdrawalToken, srcAmount);
           const withdrawLogic = protocol.newWithdrawLogic({ marketId, output: withdrawOutput });
           // 2-1. use BalanceLink to prevent protocol token shortages during the transfer
           if (protocol.isAssetTokenized(marketId, withdrawOutput.token)) {
@@ -763,7 +764,7 @@ export class Adapter extends common.Web3Toolkit {
 
           // 3. ---------- swap ----------
           // 3-1. the src token is equal to dest token
-          if (srcToken.is(destToken)) {
+          if (srcToken.wrapped.is(destToken.wrapped)) {
             // 3-1-1. set dest amount
             output.destAmount = withdrawOutput.amount;
           }
@@ -804,14 +805,15 @@ export class Adapter extends common.Web3Toolkit {
       const protocol = this.getProtocol(protocolId);
 
       // 1. ---------- borrow ----------
-      const borrowOutput = new common.TokenAmount(srcToken, srcAmount);
+      const borrowToken = srcToken.wrapped.is(destToken.wrapped) ? destToken : srcToken.wrapped;
+      const borrowOutput = new common.TokenAmount(borrowToken, srcAmount);
       const borrowLogic = protocol.newBorrowLogic({ marketId, output: borrowOutput });
       output.logics.push(borrowLogic);
       output.afterPortfolio.borrow(borrowOutput.token, borrowOutput.amount);
 
       // 2. ---------- swap ----------
       // 2-1. the src token is equal to dest token
-      if (srcToken.is(destToken)) {
+      if (srcToken.wrapped.is(destToken.wrapped)) {
         // 2-1-1. set dest amount
         output.destAmount = borrowOutput.amount;
       }
@@ -861,22 +863,22 @@ export class Adapter extends common.Web3Toolkit {
           // 3. ---------- swap ----------
           let repayInput: common.TokenAmount;
           // 3-1. the src token is equal to dest token
-          if (srcToken.is(destToken)) {
+          if (srcToken.wrapped.is(destToken.wrapped)) {
             // 3-1-1. the repay amount is the src amount
-            repayInput = new common.TokenAmount(srcToken, srcAmount);
+            repayInput = new common.TokenAmount(destToken, srcAmount);
             // 3-1-2. set dest amount
             output.destAmount = srcAmount;
           }
           // 3-2. the src token is not equal to dest token
           else {
-            const swapper = this.findSwapper([srcToken, destToken]);
+            const swapper = this.findSwapper([destToken, srcToken.wrapped]);
             // 3-2-1. get the quotation for how much dest token is needed to exchange for the src amount
             let swapQuotation = await swapper.quote({
               tokenIn: destToken,
-              output: { token: srcToken, amount: srcAmount },
+              output: { token: srcToken.wrapped, amount: srcAmount },
             });
             // 3-2-2. convert swap type to exact in
-            swapQuotation = await swapper.quote({ input: swapQuotation.input, tokenOut: srcToken, slippage });
+            swapQuotation = await swapper.quote({ input: swapQuotation.input, tokenOut: srcToken.wrapped, slippage });
             const swapTokenLogic = swapper.newSwapTokenLogic(swapQuotation);
             output.logics.push(swapTokenLogic);
             // 3-2-3. the repay amount is the swap quotation output
@@ -888,7 +890,7 @@ export class Adapter extends common.Web3Toolkit {
           // 4. ---------- repay ----------
           const repayLogic = await protocol.newRepayLogic({ marketId, account, input: repayInput });
           // 4-1. if the src token is not equal to dest token, use BalanceLink to prevent swap slippage
-          if (!srcToken.is(destToken)) {
+          if (!srcToken.wrapped.is(destToken.wrapped)) {
             repayLogic.fields.balanceBps = common.BPS_BASE;
           }
           output.logics.push(repayLogic);
