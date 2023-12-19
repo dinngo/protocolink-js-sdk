@@ -106,7 +106,7 @@ describe('Transaction: Deleverage', function () {
         }
 
         // 1. user obtains a quotation for deleveraging dest token
-        const deleverageInfo = await adapter.getDeleverage(protocolId, marketId, params, user.address, portfolio);
+        const deleverageInfo = await adapter.deleverage(protocolId, marketId, params, user.address, portfolio);
         const estimateResult = deleverageInfo.estimateResult;
 
         // 2. user needs to permit the Protocolink user agent to borrow on behalf of the user

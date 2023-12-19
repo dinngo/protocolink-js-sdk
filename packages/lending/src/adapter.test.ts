@@ -153,7 +153,7 @@ describe('Lending AaveV3 SDK', function () {
   context('Test Deleverage', function () {
     deleverageTestCases.forEach((params, i) => {
       it(`case ${i + 1}`, async function () {
-        const deleverageInfo = await adapter.getDeleverage(protocolId, marketId, params, account, portfolio);
+        const deleverageInfo = await adapter.deleverage(protocolId, marketId, params, account, portfolio);
 
         expect(deleverageInfo).to.include.all.keys('fields', 'logics');
         expect(parseFloat(deleverageInfo.fields.destAmount!)).above(0);
