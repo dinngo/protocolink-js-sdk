@@ -177,7 +177,7 @@ describe('Lending AaveV3 SDK', function () {
   context('Test ZapWithdraw', function () {
     zapWithdrawTestCases.forEach((params, i) => {
       it(`case ${i + 1}`, async function () {
-        const zapWithdrawInfo = await adapter.getZapWithdraw(protocolId, marketId, params, account, portfolio);
+        const zapWithdrawInfo = await adapter.zapWithdraw(protocolId, marketId, params, account, portfolio);
 
         expect(zapWithdrawInfo).to.include.all.keys('fields', 'logics');
         expect(parseFloat(zapWithdrawInfo.fields.destAmount!)).above(0);

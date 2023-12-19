@@ -117,7 +117,7 @@ describe('Transaction: Zap Withdraw', function () {
         user = await hre.ethers.getImpersonatedSigner(account);
 
         // 1. user obtains a quotation for zap withdraw
-        const zapWithdrawInfo = await adapter.getZapWithdraw(protocolId, marketId, params, user.address, portfolio);
+        const zapWithdrawInfo = await adapter.zapWithdraw(protocolId, marketId, params, user.address, portfolio);
         const estimateResult = zapWithdrawInfo.estimateResult;
 
         // 2. user needs to permit the Protocolink user agent to withdraw on behalf of the user
@@ -172,7 +172,7 @@ describe('Transaction: Zap Withdraw', function () {
         const initCollateralBalance = await service.getCollateralBalance(marketId, user.address, srcToken);
 
         // 1. user obtains a quotation for zap withdraw
-        const zapWithdrawInfo = await adapter.getZapWithdraw(protocolId, marketId, params, user.address, portfolio);
+        const zapWithdrawInfo = await adapter.zapWithdraw(protocolId, marketId, params, user.address, portfolio);
         const estimateResult = zapWithdrawInfo.estimateResult;
 
         // 2. user needs to permit the Protocolink user agent to withdraw on behalf of the user

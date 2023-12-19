@@ -234,7 +234,7 @@ export class Adapter extends common.Web3Toolkit {
 
           // 5. ---------- withdraw ----------
           const withdrawOutput = { token: srcToken.wrapped, amount: srcAmount };
-          const withdrawLogic = protocol.newWithdrawLogic({ marketId, output: withdrawOutput, account });
+          const withdrawLogic = protocol.newWithdrawLogic({ marketId, output: withdrawOutput });
           // 5-1. if protocol is collateral tokenized
           if (protocol.isCollateralTokenized) {
             // 5-1-1. return dest protocol token to user
@@ -521,7 +521,7 @@ export class Adapter extends common.Web3Toolkit {
         }
         output.logics.push(supplyLogic);
         output.afterPortfolio.supply(supplyInput.token, supplyInput.amount);
-        // 5-1. set dest amount
+        // 3-2. set dest amount
         output.destAmount = supplyInput.amount;
 
         // 4. ---------- return funds ----------
@@ -629,6 +629,8 @@ export class Adapter extends common.Web3Toolkit {
             output.error = { name: 'destAmount', code: 'INSUFFICIENT_AMOUNT' };
           }
           output.afterPortfolio.withdraw(withdrawOutput.token, withdrawOutput.amount);
+          // 5-4. set dest amount
+          output.destAmount = withdrawOutput.amount;
 
           if (!output.error) {
             // 6. ---------- flashloan ----------
@@ -654,7 +656,7 @@ export class Adapter extends common.Web3Toolkit {
             output.afterPortfolio.repay(repayInput.token, repayInput.amount);
 
             // 9. ---------- withdraw ----------
-            const withdrawLogic = protocol.newWithdrawLogic({ marketId, output: withdrawOutput, account });
+            const withdrawLogic = protocol.newWithdrawLogic({ marketId, output: withdrawOutput });
             // 9-1. if protocol is collateral tokenized
             if (protocol.isCollateralTokenized) {
               // 9-1-1. add src protocol token to router
@@ -714,12 +716,14 @@ export class Adapter extends common.Web3Toolkit {
 
       // 2. ---------- supply ----------
       const supplyLogic = protocol.newSupplyLogic({ marketId, input: supplyInput });
-      // 2-1. ifthe src token is not equal to dest token, use BalanceLink to prevent swap slippage
+      // 2-1. if the src token is not equal to dest token, use BalanceLink to prevent swap slippage
       if (!srcToken.wrapped.is(destToken.wrapped)) {
         supplyLogic.fields.balanceBps = common.BPS_BASE;
       }
       output.logics.push(supplyLogic);
       output.afterPortfolio.supply(supplyInput.token, supplyInput.amount);
+      // 5-4. set dest amount
+      output.destAmount = supplyInput.amount;
     }
 
     return output;
@@ -729,78 +733,53 @@ export class Adapter extends common.Web3Toolkit {
   // 2. swap srcToken to destToken
   // @param srcToken Deposit token, collateral token
   // @param destToken Any token
-  async getZapWithdraw(
-    protocolId: string,
-    marketId: string,
-    params: BaseParams,
-    account: string,
-    portfolio?: Portfolio
-  ): Promise<BaseFields> {
-    const { srcAmount } = params;
-    const srcToken = common.classifying(params.srcToken);
-    const destToken = common.classifying(params.destToken);
+  async zapWithdraw({ portfolio, srcToken, srcAmount, destToken, slippage = defaultSlippage }: OperationInput) {
+    const output: OperationOutput = {
+      destAmount: '0',
+      afterPortfolio: portfolio.clone(),
+      logics: [],
+    };
 
-    const zapWithdrawlogics: apisdk.Logic<any>[] = [];
-    const protocol = this.getProtocol(protocolId);
+    if (Number(srcAmount) > 0) {
+      const { protocolId, marketId } = portfolio;
+      const protocol = this.getProtocol(protocolId);
 
-    portfolio = portfolio || (await protocol.getPortfolio(account, marketId));
-    const afterPortfolio = portfolio.clone();
+      // 1. ---------- withdraw ----------
+      const withdrawOutput = new common.TokenAmount(srcToken, srcAmount);
+      const withdrawLogic = protocol.newWithdrawLogic({ marketId, output: withdrawOutput });
+      // 1-1. use BalanceLink to prevent protocol token shortages during the transfer
+      if (protocol.isCollateralTokenized) {
+        withdrawLogic.fields.balanceBps = common.BPS_BASE;
+      }
+      output.logics.push(withdrawLogic);
+      output.afterPortfolio.withdraw(withdrawOutput.token, withdrawOutput.amount);
 
-    // init with withdraw token amount
-    let outputTokenAmount = new common.TokenAmount(srcToken, srcAmount);
-
-    // ---------- withdraw ----------
-    const withdrawLogic = await protocol.newWithdrawLogic({
-      output: outputTokenAmount,
-      marketId,
-      account,
-    });
-    zapWithdrawlogics.push(withdrawLogic);
-
-    afterPortfolio.withdraw(srcToken, withdrawLogic.fields.output.amount);
-
-    // ---------- swap ----------
-    if (!srcToken.unwrapped.is(destToken.unwrapped)) {
-      if (protocolId === 'compound-v3') withdrawLogic.fields.output.subWei(1);
-      const swapper = this.findSwapper([srcToken, destToken]);
-      const swapQuotation = await swapper.quote({
-        input: withdrawLogic.fields.output,
-        tokenOut: destToken,
-        slippage: defaultSlippage,
-      });
-      outputTokenAmount = swapQuotation.output;
-      const swapTokenLogic = swapper.newSwapTokenLogic(swapQuotation);
-      zapWithdrawlogics.push(swapTokenLogic);
+      // 2. ---------- swap ----------
+      // 2-1. the src token is equal to dest token
+      if (srcToken.unwrapped.is(destToken.unwrapped)) {
+        // 2-1-1. set dest amount
+        output.destAmount = withdrawOutput.amount;
+      }
+      // 2-2. the src token is not equal to dest token
+      else {
+        const swapper = this.findSwapper([srcToken, destToken]);
+        const swapQuotation = await swapper.quote({
+          input: withdrawOutput,
+          tokenOut: destToken,
+          slippage,
+        });
+        const swapTokenLogic = swapper.newSwapTokenLogic(swapQuotation);
+        // 2-2-1. use BalanceLink to prevent protocol token shortages during the transfer
+        if (protocol.isCollateralTokenized) {
+          swapTokenLogic.fields.balanceBps = common.BPS_BASE;
+        }
+        output.logics.push(swapTokenLogic);
+        // 2-2-2. set dest amount
+        output.destAmount = swapQuotation.output.amount;
+      }
     }
 
-    // ---------- tx related ----------
-    const estimateResult = await apisdk.estimateRouterData(
-      {
-        chainId: this.chainId,
-        account,
-        logics: zapWithdrawlogics,
-      },
-      this.permitType
-    );
-
-    const buildRouterTransactionRequest = (
-      args?: Omit<apisdk.RouterData, 'chainId' | 'account' | 'logics'>
-    ): Promise<common.TransactionRequest> =>
-      apisdk.buildRouterTransactionRequest({ ...args, chainId: this.chainId, account, logics: zapWithdrawlogics });
-
-    return {
-      fields: {
-        srcToken,
-        srcAmount,
-        destToken,
-        destAmount: outputTokenAmount.amount,
-        portfolio,
-        afterPortfolio,
-      },
-      estimateResult,
-      buildRouterTransactionRequest,
-      logics: zapWithdrawlogics,
-    };
+    return output;
   }
 
   // 1. borrow srcToken
