@@ -119,7 +119,7 @@ describe('Lending AaveV3 SDK', function () {
   context('Test DebtSwap', function () {
     debtSwapTestCases.forEach((params, i) => {
       it(`case ${i + 1}`, async function () {
-        const debtSwapInfo = await adapter.getDebtSwap(protocolId, marketId, params, account, portfolio);
+        const debtSwapInfo = await adapter.debtSwap(protocolId, marketId, params, account, portfolio);
 
         expect(debtSwapInfo).to.include.all.keys('fields', 'logics');
         expect(parseFloat(debtSwapInfo.fields.destAmount!)).above(0);
@@ -131,7 +131,7 @@ describe('Lending AaveV3 SDK', function () {
   context('Test LeverageLong', function () {
     leverageLongTestCases.forEach((params, i) => {
       it(`case ${i + 1}`, async function () {
-        const leverageLongInfo = await adapter.getLeverageLong(protocolId, marketId, params, account, portfolio);
+        const leverageLongInfo = await adapter.leverageLong(protocolId, marketId, params, account, portfolio);
 
         expect(leverageLongInfo).to.include.all.keys('fields', 'logics');
         expect(leverageLongInfo.logics).to.have.lengthOf(6);

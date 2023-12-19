@@ -125,13 +125,7 @@ describe('Transaction: Collateral swap', function () {
         }
 
         // 3. user obtains a quotation for collateral swap srcToken to destToken
-        const collateralSwapInfo = await adapter.getCollateralSwap(
-          protocolId,
-          marketId,
-          params,
-          user.address,
-          portfolio
-        );
+        const collateralSwapInfo = await adapter.collateralSwap(protocolId, marketId, params, user.address, portfolio);
         const estimateResult = collateralSwapInfo.estimateResult;
 
         // 4. user needs to allow the Protocolink user agent to borrow on behalf of the user

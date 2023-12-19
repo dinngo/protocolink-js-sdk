@@ -76,7 +76,7 @@ describe('Transaction: Leverage Long', function () {
 
         // 2. user obtains a quotation for leveraging src token
         const leverageAmount = new common.TokenAmount(params.srcToken, params.srcAmount);
-        const leverageLongInfo = await adapter.getLeverageLong(protocolId, marketId, params, user.address, portfolio);
+        const leverageLongInfo = await adapter.leverageLong(protocolId, marketId, params, user.address, portfolio);
         const estimateResult = leverageLongInfo.estimateResult;
 
         // 3. user needs to permit the Protocolink user agent to borrow for the user

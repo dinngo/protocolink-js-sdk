@@ -77,7 +77,7 @@ describe('Transaction: Debt swap', function () {
         user = await hre.ethers.getImpersonatedSigner(account);
 
         // 1. user obtains a quotation for debt swap
-        const debtSwapInfo = await adapter.getDebtSwap(protocolId, marketId, params, user.address, portfolio);
+        const debtSwapInfo = await adapter.debtSwap(protocolId, marketId, params, user.address, portfolio);
         const estimateResult = debtSwapInfo.estimateResult;
 
         // 2. user needs to permit the Protocolink user agent to borrow on behalf of the user
