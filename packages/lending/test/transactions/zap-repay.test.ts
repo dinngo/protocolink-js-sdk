@@ -104,7 +104,7 @@ describe('Transaction: Zap Repay', function () {
         }
 
         // 1. user obtains a quotation for zap repay
-        const zapRepayInfo = await adapter.getZapRepay(protocolId, marketId, params, user.address, portfolio);
+        const zapRepayInfo = await adapter.zapRepay(protocolId, marketId, params, user.address, portfolio);
         const estimateResult = zapRepayInfo.estimateResult;
 
         // 2. user needs to allow the Protocolink user agent to repay on behalf of the user

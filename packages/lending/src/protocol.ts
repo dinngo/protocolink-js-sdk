@@ -1,4 +1,14 @@
-import { Market } from './protocol.type';
+import {
+  BorrowFields,
+  BorrowParams,
+  Market,
+  RepayFields,
+  RepayParams,
+  SupplyFields,
+  SupplyParams,
+  WithdrawFields,
+  WithdrawParams,
+} from './protocol.type';
 import { Portfolio } from './protocol.portfolio';
 import * as api from '@protocolink/api';
 import * as common from '@protocolink/common';
@@ -49,17 +59,19 @@ export abstract class Protocol extends common.Web3Toolkit {
 
   abstract isProtocolToken(marketId: string, token: common.Token): boolean;
 
-  isCollateralTokenized = true;
+  isAssetTokenized(_marketId: string, _assetToken: common.Token) {
+    return true;
+  }
 
   preferredFlashLoanerId?: string;
 
-  abstract newSupplyLogic(params: any): api.Logic;
+  abstract newSupplyLogic(params: SupplyParams): api.Logic<SupplyFields>;
 
-  abstract newWithdrawLogic(params: any): api.Logic;
+  abstract newWithdrawLogic(params: WithdrawParams): api.Logic<WithdrawFields>;
 
-  abstract newBorrowLogic(params: any): api.Logic;
+  abstract newBorrowLogic(params: BorrowParams): api.Logic<BorrowFields>;
 
-  abstract newRepayLogic(params: any): api.Logic;
+  abstract newRepayLogic(params: RepayParams): api.Logic<RepayFields>;
 }
 
 export interface ProtocolClass {

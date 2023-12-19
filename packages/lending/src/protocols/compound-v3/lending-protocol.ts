@@ -9,7 +9,7 @@ import {
   supportedChainIds,
 } from './configs';
 import { BigNumber } from 'ethers';
-import { BorrowObject, Market, RepayFields, SupplyObject, TokenInFields, TokenOutFields } from 'src/protocol.type';
+import { BorrowObject, Market, RepayParams, SupplyObject, SupplyParams, WithdrawParams } from 'src/protocol.type';
 import { CometInterface } from './contracts/Comet';
 import { Comet__factory } from './contracts';
 import { Portfolio } from 'src/protocol.portfolio';
@@ -31,8 +31,6 @@ export class LendingProtocol extends Protocol {
   getMarketName(id: string) {
     return `${DISPLAY_NAME} ${id}`;
   }
-
-  isCollateralTokenized = false;
 
   canCollateralSwap(marketId: string, assetToken: common.Token) {
     return !assetToken.wrapped.is(getMarketConfig(this.chainId, marketId).baseToken);
@@ -57,6 +55,10 @@ export class LendingProtocol extends Protocol {
   isProtocolToken(marketId: string, token: common.Token) {
     const { cToken } = getMarketConfig(this.chainId, marketId);
     return token.is(cToken);
+  }
+
+  override isAssetTokenized(marketId: string, assetToken: common.Token) {
+    return !assetToken.wrapped.is(getMarketConfig(this.chainId, marketId).baseToken);
   }
 
   private _cometIface?: CometInterface;
@@ -303,7 +305,7 @@ export class LendingProtocol extends Protocol {
     return Promise.all(configMap[this.chainId].markets.map(({ id }) => this.getPortfolio(account, id)));
   }
 
-  newSupplyLogic({ marketId, input }: TokenInFields) {
+  newSupplyLogic({ marketId, input }: SupplyParams) {
     const { baseToken, cToken } = getMarketConfig(this.chainId, marketId);
 
     if (input.token.wrapped.is(baseToken)) {
@@ -317,15 +319,13 @@ export class LendingProtocol extends Protocol {
     }
   }
 
-  newWithdrawLogic({ marketId, output }: TokenOutFields) {
+  newWithdrawLogic({ marketId, output }: WithdrawParams) {
     const { baseToken, cToken } = getMarketConfig(this.chainId, marketId);
     if (output.token.wrapped.is(baseToken)) {
       return apisdk.protocols.compoundv3.newWithdrawBaseLogic({
         marketId,
-        // cToken amount would be 2 wei less after permit2-pull
-        input: new common.TokenAmount(cToken, output.subWei(2).amount),
+        input: new common.TokenAmount(cToken, output.amount),
         output,
-        balanceBps: common.BPS_BASE,
       });
     } else {
       return apisdk.protocols.compoundv3.newWithdrawCollateralLogic({ marketId, output });
@@ -334,7 +334,7 @@ export class LendingProtocol extends Protocol {
 
   newBorrowLogic = apisdk.protocols.compoundv3.newBorrowLogic;
 
-  newRepayLogic({ marketId, input, account }: RepayFields) {
+  newRepayLogic({ marketId, input, account }: RepayParams) {
     return apisdk.protocols.compoundv3.newRepayLogic({ marketId, input, borrower: account });
   }
 }

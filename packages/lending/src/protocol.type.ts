@@ -47,14 +47,45 @@ export interface BorrowObject {
   apys: string[];
 }
 
-export interface TokenInFields {
+export interface SupplyParams {
   marketId: string;
   input: common.TokenAmount;
 }
 
-export interface TokenOutFields {
+export interface SupplyFields {
+  input: common.TokenAmountObject;
+  output?: common.TokenAmountObject;
+  balanceBps?: number;
+}
+
+export interface WithdrawParams {
   marketId: string;
   output: common.TokenAmount;
 }
 
-export type RepayFields = TokenInFields & { account: string };
+export interface WithdrawFields {
+  input?: common.TokenAmountObject;
+  output: common.TokenAmountObject;
+  balanceBps?: number;
+}
+
+export interface BorrowParams {
+  marketId: string;
+  output: common.TokenAmount;
+}
+
+export interface BorrowFields {
+  output: common.TokenAmountObject;
+}
+
+export interface RepayParams {
+  marketId: string;
+  input: common.TokenAmount;
+  account: string;
+}
+
+export interface RepayFields {
+  input: common.TokenAmountObject;
+  borrower: string;
+  balanceBps?: number;
+}

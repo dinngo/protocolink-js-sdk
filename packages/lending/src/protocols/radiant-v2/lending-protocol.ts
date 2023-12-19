@@ -6,7 +6,15 @@ import {
   ProtocolDataProvider,
   ProtocolDataProvider__factory,
 } from './contracts';
-import { BorrowObject, Market, RepayFields, SupplyObject, TokenInFields, TokenOutFields } from 'src/protocol.type';
+import {
+  BorrowObject,
+  BorrowParams,
+  Market,
+  RepayParams,
+  SupplyObject,
+  SupplyParams,
+  WithdrawParams,
+} from 'src/protocol.type';
 import {
   DISPLAY_NAME,
   ID,
@@ -277,28 +285,28 @@ export class LendingProtocol extends Protocol {
     return isRToken(this.chainId, token);
   }
 
-  newSupplyLogic({ marketId, input }: TokenInFields) {
+  newSupplyLogic({ marketId, input }: SupplyParams) {
     return apisdk.protocols.radiantv2.newDepositLogic({
       input,
       output: new common.TokenAmount(this.toProtocolToken(marketId, input.token), input.amount),
     });
   }
 
-  newWithdrawLogic({ marketId, output }: TokenOutFields) {
+  newWithdrawLogic({ marketId, output }: WithdrawParams) {
     return apisdk.protocols.radiantv2.newWithdrawLogic({
       input: new common.TokenAmount(this.toProtocolToken(marketId, output.token), output.amount),
       output,
     });
   }
 
-  newBorrowLogic({ output }: TokenOutFields) {
+  newBorrowLogic({ output }: BorrowParams) {
     return apisdk.protocols.radiantv2.newBorrowLogic({
       output,
       interestRateMode: logics.radiantv2.InterestRateMode.variable,
     });
   }
 
-  newRepayLogic({ input, account }: RepayFields) {
+  newRepayLogic({ input, account }: RepayParams) {
     return apisdk.protocols.radiantv2.newRepayLogic({
       input,
       borrower: account,

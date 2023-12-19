@@ -2169,7 +2169,7 @@ describe('Test Aave V3 LendingProtocol', function () {
           protocolId: 'aave-v3',
           marketId: 'metis',
           utilization: '0.90566901899748112035',
-          healthRate: '1.173165889207650001',
+          healthRate: '1.17316588920765000099',
           netAPY: '0.01703506792443164733',
           totalSupplyUSD: '651222.83357431977924308968815744',
           totalBorrowUSD: '292970.85411820554313194246800317',
