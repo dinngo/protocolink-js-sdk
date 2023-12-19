@@ -421,8 +421,10 @@ export class Adapter extends common.Web3Toolkit {
 
         // 4. ---------- supply ----------
         const supplyLogic = protocol.newSupplyLogic({ marketId, input: supplyInput });
-        // 4-1. use BalanceLink to prevent swap slippage
-        supplyLogic.fields.balanceBps = common.BPS_BASE;
+        // 4-1. if the src token is not equal to dest token, use BalanceLink to prevent swap slippage
+        if (!srcToken.wrapped.is(destToken.wrapped)) {
+          supplyLogic.fields.balanceBps = common.BPS_BASE;
+        }
         output.logics.push(supplyLogic);
         output.afterPortfolio.supply(supplyInput.token, supplyInput.amount);
 
@@ -513,10 +515,14 @@ export class Adapter extends common.Web3Toolkit {
 
         // 3. ---------- supply ----------
         const supplyLogic = protocol.newSupplyLogic({ marketId, input: supplyInput });
-        // 3-1. use BalanceLink to prevent swap slippage
-        supplyLogic.fields.balanceBps = common.BPS_BASE;
+        // 3-1. if the src token is not equal to dest token, use BalanceLink to prevent swap slippage
+        if (!srcToken.wrapped.is(destToken.wrapped)) {
+          supplyLogic.fields.balanceBps = common.BPS_BASE;
+        }
         output.logics.push(supplyLogic);
         output.afterPortfolio.supply(supplyInput.token, supplyInput.amount);
+        // 5-1. set dest amount
+        output.destAmount = supplyInput.amount;
 
         // 4. ---------- return funds ----------
         // 4-1. if protocol is collateral tokenized
@@ -535,8 +541,6 @@ export class Adapter extends common.Web3Toolkit {
         const borrowLogic = protocol.newBorrowLogic({ marketId, output: borrowOutput });
         output.logics.push(borrowLogic);
         output.afterPortfolio.borrow(borrowOutput.token, borrowOutput.amount);
-        // 5-1. set dest amount
-        output.destAmount = borrowOutput.amount;
 
         // 6. append flash loan repay cube
         output.logics.push(flashLoanRepayLogic);
@@ -642,8 +646,10 @@ export class Adapter extends common.Web3Toolkit {
 
             // 8. ---------- repay ----------
             const repayLogic = protocol.newRepayLogic({ marketId, account, input: repayInput });
-            // 8-1. use BalanceLink to prevent swap slippage
-            repayLogic.fields.balanceBps = common.BPS_BASE;
+            // 8-1. if the src token is not equal to dest token, use BalanceLink to prevent swap slippage
+            if (!srcToken.wrapped.is(destToken.wrapped)) {
+              repayLogic.fields.balanceBps = common.BPS_BASE;
+            }
             output.logics.push(repayLogic);
             output.afterPortfolio.repay(repayInput.token, repayInput.amount);
 
@@ -675,77 +681,48 @@ export class Adapter extends common.Web3Toolkit {
   // 2. supply destToken
   // @param srcToken Any token
   // @param destToken Deposit token, collateral token
-  async getZapSupply(
-    protocolId: string,
-    marketId: string,
-    params: BaseParams,
-    account: string,
-    portfolio?: Portfolio
-  ): Promise<BaseFields> {
-    const { srcAmount } = params;
-    const srcToken = common.classifying(params.srcToken);
-    const destToken = common.classifying(params.destToken);
+  async zapSupply({ portfolio, srcToken, srcAmount, destToken, slippage = defaultSlippage }: OperationInput) {
+    const output: OperationOutput = {
+      destAmount: '0',
+      afterPortfolio: portfolio.clone(),
+      logics: [],
+    };
 
-    const zapSupplylogics: apisdk.Logic<any>[] = [];
-    const protocol = this.getProtocol(protocolId);
+    if (Number(srcAmount) > 0) {
+      const { protocolId, marketId } = portfolio;
+      const protocol = this.getProtocol(protocolId);
 
-    portfolio = portfolio || (await protocol.getPortfolio(account, marketId));
+      // 1. ---------- swap ----------
+      let supplyInput: common.TokenAmount;
+      // 1-1. the src token is equal to dest token
+      if (srcToken.wrapped.is(destToken.wrapped)) {
+        supplyInput = new common.TokenAmount(srcToken.wrapped, srcAmount);
+      }
+      // 1-2. the src token is not equal to dest token
+      else {
+        const swapper = this.findSwapper([srcToken, destToken]);
+        const swapQuotation = await swapper.quote({
+          input: { token: srcToken, amount: srcAmount },
+          tokenOut: destToken,
+          slippage,
+        });
+        const swapTokenLogic = swapper.newSwapTokenLogic(swapQuotation);
+        output.logics.push(swapTokenLogic);
+        // 1-2-1. the supply amount is the swap quotation output
+        supplyInput = swapQuotation.output;
+      }
 
-    const afterPortfolio = portfolio.clone();
-
-    let supplyTokenAmount = new common.TokenAmount(srcToken, srcAmount);
-
-    // ---------- swap ----------
-    if (!srcToken.wrapped.is(destToken.wrapped)) {
-      const swapper = this.findSwapper([srcToken, destToken]);
-      const swapQuotation = await swapper.quote({
-        input: { token: srcToken, amount: srcAmount },
-        tokenOut: destToken,
-        slippage: defaultSlippage,
-      });
-      const swapTokenLogic = swapper.newSwapTokenLogic(swapQuotation);
-      supplyTokenAmount = swapQuotation.output;
-      zapSupplylogics.push(swapTokenLogic);
+      // 2. ---------- supply ----------
+      const supplyLogic = protocol.newSupplyLogic({ marketId, input: supplyInput });
+      // 2-1. ifthe src token is not equal to dest token, use BalanceLink to prevent swap slippage
+      if (!srcToken.wrapped.is(destToken.wrapped)) {
+        supplyLogic.fields.balanceBps = common.BPS_BASE;
+      }
+      output.logics.push(supplyLogic);
+      output.afterPortfolio.supply(supplyInput.token, supplyInput.amount);
     }
 
-    // ---------- supply ----------
-    const supplyLogic = await protocol.newSupplyLogic({
-      input: supplyTokenAmount,
-      marketId,
-      account,
-    });
-    zapSupplylogics.push(supplyLogic);
-
-    afterPortfolio.supply(supplyTokenAmount.token, supplyTokenAmount.amount);
-
-    // ---------- tx related ----------
-    const estimateResult = await apisdk.estimateRouterData(
-      {
-        chainId: this.chainId,
-        account,
-        logics: zapSupplylogics,
-      },
-      this.permitType
-    );
-
-    const buildRouterTransactionRequest = (
-      args?: Omit<apisdk.RouterData, 'chainId' | 'account' | 'logics'>
-    ): Promise<common.TransactionRequest> =>
-      apisdk.buildRouterTransactionRequest({ ...args, chainId: this.chainId, account, logics: zapSupplylogics });
-
-    return {
-      fields: {
-        srcToken,
-        srcAmount,
-        destToken,
-        destAmount: supplyTokenAmount.amount,
-        portfolio,
-        afterPortfolio,
-      },
-      logics: zapSupplylogics,
-      estimateResult,
-      buildRouterTransactionRequest,
-    };
+    return output;
   }
 
   // 1. withdraw srcToken

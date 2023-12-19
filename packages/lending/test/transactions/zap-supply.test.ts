@@ -98,7 +98,7 @@ describe('Transaction: Zap Supply', function () {
     for (const [i, { protocolId, marketId, params, expects }] of testCases.entries()) {
       it(`case ${i + 1} - ${protocolId}:${marketId}`, async function () {
         // 1. user obtains a quotation for zap supply
-        const zapDepositInfo = await adapter.getZapSupply(protocolId, marketId, params, user.address);
+        const zapDepositInfo = await adapter.zapSupply(protocolId, marketId, params, user.address);
         const estimateResult = zapDepositInfo.estimateResult;
 
         // 2. user needs to permit the Protocolink user agent to supply for the user
@@ -153,7 +153,7 @@ describe('Transaction: Zap Supply', function () {
     for (const [i, { protocolId, marketId, params, expects }] of testCases.entries()) {
       it(`case ${i + 1} - ${protocolId}:${marketId}`, async function () {
         // 1. user obtains a quotation for zap supply
-        const zapDepositInfo = await adapter.getZapSupply(protocolId, marketId, params, user.address);
+        const zapDepositInfo = await adapter.zapSupply(protocolId, marketId, params, user.address);
         const estimateResult = zapDepositInfo.estimateResult;
 
         // 2. user needs to permit the Protocolink user agent to supply for the user
