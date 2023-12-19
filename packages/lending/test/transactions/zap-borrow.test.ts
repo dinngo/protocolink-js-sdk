@@ -95,7 +95,7 @@ describe('Transaction: Zap Borrow', function () {
             : await getBalance(user.address, params.debtToken!);
 
         // 1. user obtains a quotation for zap borrow
-        const zapBorrowInfo = await adapter.getZapBorrow(protocolId, marketId, params, user.address, portfolio);
+        const zapBorrowInfo = await adapter.zapBorrow(protocolId, marketId, params, user.address, portfolio);
         const estimateResult = zapBorrowInfo.estimateResult;
 
         // 2. user needs to permit the Protocolink user agent to borrow on behalf of the user

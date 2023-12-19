@@ -189,7 +189,7 @@ describe('Lending AaveV3 SDK', function () {
   context('Test ZapBorrow', function () {
     zapBorrowTestCases.forEach((params, i) => {
       it(`case ${i + 1}`, async function () {
-        const ZapBorrowInfo = await adapter.getZapBorrow(protocolId, marketId, params, account, portfolio);
+        const ZapBorrowInfo = await adapter.zapBorrow(protocolId, marketId, params, account, portfolio);
 
         expect(ZapBorrowInfo).to.include.all.keys('fields', 'logics');
         expect(parseFloat(ZapBorrowInfo.fields.destAmount!)).above(0);

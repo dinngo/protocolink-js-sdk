@@ -160,7 +160,7 @@ export class Adapter extends common.Web3Toolkit {
   // 4. deposit dest token
   // 5. withdraw src token, if protocol is collateral tokenized, perform the following actions first:
   // 5-1. return dest protocol token to user
-  // 5-2. add src protocol token to router
+  // 5-2. add src protocol token to agent
   // 6. flashloan repay src token
   // @param srcToken Old deposit token
   // @param destToken New deposit token
@@ -245,7 +245,7 @@ export class Adapter extends common.Web3Toolkit {
             returnFundsLogic.fields.balanceBps = common.BPS_BASE;
             output.logics.push(returnFundsLogic);
 
-            // 5-1-2. add src protocol token to router
+            // 5-1-2. add src protocol token to agent
             const addFundsLogic = apisdk.protocols.permit2.newPullTokenLogic({ input: withdrawLogic.fields.input });
             output.logics.push(addFundsLogic);
 
@@ -659,7 +659,7 @@ export class Adapter extends common.Web3Toolkit {
             const withdrawLogic = protocol.newWithdrawLogic({ marketId, output: withdrawOutput });
             // 9-1. if protocol is collateral tokenized
             if (protocol.isCollateralTokenized) {
-              // 9-1-1. add src protocol token to router
+              // 9-1-1. add src protocol token to agent
               const addFundsLogic = apisdk.protocols.permit2.newPullTokenLogic({ input: withdrawLogic.fields.input });
               output.logics.push(addFundsLogic);
 
@@ -763,11 +763,7 @@ export class Adapter extends common.Web3Toolkit {
       // 2-2. the src token is not equal to dest token
       else {
         const swapper = this.findSwapper([srcToken, destToken]);
-        const swapQuotation = await swapper.quote({
-          input: withdrawOutput,
-          tokenOut: destToken,
-          slippage,
-        });
+        const swapQuotation = await swapper.quote({ input: withdrawOutput, tokenOut: destToken, slippage });
         const swapTokenLogic = swapper.newSwapTokenLogic(swapQuotation);
         // 2-2-1. use BalanceLink to prevent protocol token shortages during the transfer
         if (protocol.isCollateralTokenized) {
@@ -786,76 +782,41 @@ export class Adapter extends common.Web3Toolkit {
   // 2. swap srcToken to destToken
   // @param srcToken Borrowed token
   // @param destToken Any token
-  async getZapBorrow(
-    protocolId: string,
-    marketId: string,
-    params: BaseParams,
-    account: string,
-    portfolio?: Portfolio
-  ): Promise<BaseFields> {
-    const { srcAmount } = params;
-    const srcToken = common.classifying(params.srcToken);
-    const destToken = common.classifying(params.destToken);
-
-    const zapBorrowlogics: apisdk.Logic<any>[] = [];
-    const protocol = this.getProtocol(protocolId);
-
-    portfolio = portfolio || (await protocol.getPortfolio(account, marketId));
-    const afterPortfolio = portfolio.clone();
-
-    // init with borrow token amount
-    let outputTokenAmount = new common.TokenAmount(srcToken, srcAmount);
-
-    // ---------- borrow ----------
-    const borrowLogic = protocol.newBorrowLogic({
-      output: { token: srcToken, amount: srcAmount },
-      interestRateMode: defaultInterestRateMode,
-      marketId,
-    });
-    zapBorrowlogics.push(borrowLogic);
-
-    afterPortfolio.borrow(srcToken, srcAmount);
-
-    // ---------- swap ----------
-    if (!srcToken.unwrapped.is(destToken.unwrapped)) {
-      const swapper = this.findSwapper([srcToken, destToken]);
-      const swapQuotation = await swapper.quote({
-        input: { token: srcToken, amount: srcAmount },
-        tokenOut: destToken,
-        slippage: defaultSlippage,
-      });
-      outputTokenAmount = swapQuotation.output;
-      const swapTokenLogic = swapper.newSwapTokenLogic(swapQuotation);
-      zapBorrowlogics.push(swapTokenLogic);
-    }
-    // ---------- tx related ----------
-    const estimateResult = await apisdk.estimateRouterData(
-      {
-        chainId: this.chainId,
-        account,
-        logics: zapBorrowlogics,
-      },
-      this.permitType
-    );
-
-    const buildRouterTransactionRequest = (
-      args?: Omit<apisdk.RouterData, 'chainId' | 'account' | 'logics'>
-    ): Promise<common.TransactionRequest> =>
-      apisdk.buildRouterTransactionRequest({ ...args, chainId: this.chainId, account, logics: zapBorrowlogics });
-
-    return {
-      fields: {
-        srcToken,
-        srcAmount,
-        destToken,
-        destAmount: outputTokenAmount.amount,
-        portfolio,
-        afterPortfolio,
-      },
-      estimateResult,
-      buildRouterTransactionRequest,
-      logics: zapBorrowlogics,
+  async zapBorrow({ portfolio, srcToken, srcAmount, destToken, slippage = defaultSlippage }: OperationInput) {
+    const output: OperationOutput = {
+      destAmount: '0',
+      afterPortfolio: portfolio.clone(),
+      logics: [],
     };
+
+    if (Number(srcAmount) > 0) {
+      const { protocolId, marketId } = portfolio;
+      const protocol = this.getProtocol(protocolId);
+
+      // 1. ---------- borrow ----------
+      const borrowOutput = new common.TokenAmount(srcToken, srcAmount);
+      const borrowLogic = protocol.newBorrowLogic({ marketId, output: borrowOutput });
+      output.logics.push(borrowLogic);
+      output.afterPortfolio.borrow(borrowOutput.token, borrowOutput.amount);
+
+      // 2. ---------- swap ----------
+      // 2-1. the src token is equal to dest token
+      if (srcToken.unwrapped.is(destToken.unwrapped)) {
+        // 2-1-1. set dest amount
+        output.destAmount = borrowOutput.amount;
+      }
+      // 2-2. the src token is not equal to dest token
+      else {
+        const swapper = this.findSwapper([srcToken, destToken]);
+        const swapQuotation = await swapper.quote({ input: borrowOutput, tokenOut: destToken, slippage });
+        const swapTokenLogic = swapper.newSwapTokenLogic(swapQuotation);
+        output.logics.push(swapTokenLogic);
+        // 2-2-2. set dest amount
+        output.destAmount = swapQuotation.output.amount;
+      }
+    }
+
+    return output;
   }
 
   // 1. swap srcToken to destToken
