@@ -287,7 +287,6 @@ export class Adapter extends common.Web3Toolkit {
       if (srcBorrow && destBorrow) {
         // 1. validate src amount
         if (new BigNumberJS(srcAmount).gt(srcBorrow.balances[0])) {
-          // 放大 slippage
           output.error = { name: 'srcAmount', code: 'INSUFFICIENT_AMOUNT' };
         }
         output.afterPortfolio.repay(srcBorrow.token, srcAmount);
@@ -362,7 +361,7 @@ export class Adapter extends common.Web3Toolkit {
     srcAmount,
     destToken,
     slippage = defaultSlippage,
-  }: OperationInput): Promise<OperationOutput> {
+  }: OperationInput) {
     const output: OperationOutput = {
       destAmount: '0',
       afterPortfolio: portfolio.clone(),
@@ -403,7 +402,7 @@ export class Adapter extends common.Web3Toolkit {
 
         // 4. ---------- supply ----------
         const supplyInput = swapQuotation.output;
-        const supplyLogic = await protocol.newSupplyLogic({ marketId, account, input: supplyInput });
+        const supplyLogic = protocol.newSupplyLogic({ marketId, input: supplyInput });
         // 4-1. use BalanceLink to prevent swap slippage
         supplyLogic.fields.balanceBps = common.BPS_BASE;
         output.logics.push(supplyLogic);
@@ -417,6 +416,7 @@ export class Adapter extends common.Web3Toolkit {
             input: supplyLogic.fields.output,
             recipient: account,
           });
+          returnFundsLogic.fields.balanceBps = common.BPS_BASE;
           output.logics.push(returnFundsLogic);
         }
 
@@ -425,7 +425,7 @@ export class Adapter extends common.Web3Toolkit {
         const borrowLogic = protocol.newBorrowLogic({ marketId, output: borrowOutput });
         output.logics.push(borrowLogic);
         output.afterPortfolio.borrow(borrowOutput.token, borrowOutput.amount);
-        // 7-1. set dest amount
+        // 6-1. set dest amount
         output.destAmount = borrowOutput.amount;
 
         // 7. append flash loan repay cube
@@ -444,109 +444,79 @@ export class Adapter extends common.Web3Toolkit {
   // 6. flashloan repay srcToken
   // @param srcToken Flashloan token, borrowed token
   // @param destToken Deposit token, collateral token
-  async getLeverageShort(
-    protocolId: string,
-    marketId: string,
-    params: BaseParams,
-    account: string,
-    portfolio?: Portfolio
-  ): Promise<BaseFields> {
-    const { srcAmount } = params;
-    const srcToken = common.classifying(params.srcToken);
-    const destToken = common.classifying(params.destToken);
-    const wrappedSrcToken = srcToken.wrapped;
-    const wrappedDestToken = destToken.wrapped;
+  async leverageShort({
+    account,
+    portfolio,
+    srcToken,
+    srcAmount,
+    destToken,
+    slippage = defaultSlippage,
+  }: OperationInput) {
+    const output: OperationOutput = {
+      destAmount: '0',
+      afterPortfolio: portfolio.clone(),
+      logics: [],
+    };
 
-    const leverageShortlogics: apisdk.Logic<any>[] = [];
-    const protocol = this.getProtocol(protocolId);
+    if (Number(srcAmount) > 0) {
+      const { protocolId, marketId } = portfolio;
+      const protocol = this.getProtocol(protocolId);
+      const srcBorrow = portfolio.findBorrow(srcToken);
+      const destCollateral = portfolio.findSupply(destToken);
 
-    portfolio = portfolio || (await protocol.getPortfolio(account, marketId));
-    const afterPortfolio = portfolio.clone();
+      if (srcBorrow && destCollateral) {
+        // 1. ---------- flashloan ----------
+        const flashLoanAggregatorQuotation = await apisdk.protocols.utility.getFlashLoanAggregatorQuotation(
+          this.chainId,
+          { loans: [{ token: srcToken.wrapped, amount: srcAmount }] }
+        );
+        const [flashLoanLoanLogic, flashLoanRepayLogic] = apisdk.protocols.utility.newFlashLoanAggregatorLogicPair(
+          flashLoanAggregatorQuotation.protocolId,
+          flashLoanAggregatorQuotation.loans.toArray()
+        );
+        output.logics.push(flashLoanLoanLogic);
 
-    // ---------- flashloan ----------
-    const flashLoanAggregatorQuotation = await apisdk.protocols.utility.getFlashLoanAggregatorQuotation(this.chainId, {
-      loans: [{ token: wrappedSrcToken, amount: srcAmount }],
-    });
+        // 2. ---------- swap ----------
+        const swapper = this.findSwapper([srcToken.wrapped, destToken.wrapped]);
+        const swapInput = flashLoanAggregatorQuotation.loans.get(srcToken.wrapped);
+        const swapQuotation = await swapper.quote({ input: swapInput, tokenOut: destToken.wrapped, slippage });
+        const swapTokenLogic = swapper.newSwapTokenLogic(swapQuotation);
+        output.logics.push(swapTokenLogic);
 
-    const flashLoanTokenAmount = flashLoanAggregatorQuotation.loans.tokenAmountMap[wrappedSrcToken.address];
+        // 3. ---------- supply ----------
+        const supplyInput = swapQuotation.output;
+        const supplyLogic = protocol.newSupplyLogic({ marketId, input: supplyInput });
+        // 3-1. use BalanceLink to prevent swap slippage
+        supplyLogic.fields.balanceBps = common.BPS_BASE;
+        output.logics.push(supplyLogic);
+        output.afterPortfolio.supply(supplyInput.token, supplyInput.amount);
 
-    const [flashLoanLoanLogic, flashLoanRepayLogic] = apisdk.protocols.utility.newFlashLoanAggregatorLogicPair(
-      flashLoanAggregatorQuotation.protocolId,
-      flashLoanAggregatorQuotation.loans.toArray()
-    );
-    leverageShortlogics.push(flashLoanLoanLogic);
+        // 4. ---------- return funds ----------
+        // 4-1. if protocol is collateral tokenized
+        if (protocol.isCollateralTokenized) {
+          // 4-1-1. return protocol token to user
+          const returnFundsLogic = apisdk.protocols.utility.newSendTokenLogic({
+            input: supplyLogic.fields.output,
+            recipient: account,
+          });
+          returnFundsLogic.fields.balanceBps = common.BPS_BASE;
+          output.logics.push(returnFundsLogic);
+        }
 
-    // ---------- swap ----------
-    const swapper = this.findSwapper([wrappedSrcToken, wrappedDestToken]);
-    const swapQuotation = await swapper.quote({
-      input: flashLoanTokenAmount,
-      tokenOut: wrappedDestToken,
-      slippage: defaultSlippage,
-    });
-    const swapTokenLogic = swapper.newSwapTokenLogic(swapQuotation);
-    leverageShortlogics.push(swapTokenLogic);
+        // 5. ---------- borrow ----------
+        const borrowOutput = flashLoanAggregatorQuotation.repays.get(srcToken.wrapped);
+        const borrowLogic = protocol.newBorrowLogic({ marketId, output: borrowOutput });
+        output.logics.push(borrowLogic);
+        output.afterPortfolio.borrow(borrowOutput.token, borrowOutput.amount);
+        // 5-1. set dest amount
+        output.destAmount = borrowOutput.amount;
 
-    // ---------- supply ----------
-    const supplyLogic = await protocol.newSupplyLogic({ input: swapQuotation.output, marketId, account });
-    leverageShortlogics.push(supplyLogic);
-
-    afterPortfolio.supply(swapQuotation.output.token, swapQuotation.output.amount);
-
-    // ---------- return funds ----------
-    if (supplyLogic.fields.output) {
-      const returnLogic = apisdk.protocols.utility.newSendTokenLogic({
-        input: supplyLogic.fields.output,
-        recipient: account,
-      });
-      leverageShortlogics.push(returnLogic);
+        // 6. append flash loan repay cube
+        output.logics.push(flashLoanRepayLogic);
+      }
     }
 
-    // ---------- borrow ----------
-    const borrowTokenAmount = flashLoanAggregatorQuotation.repays.tokenAmountMap[wrappedSrcToken.address];
-    const borrowLogic = protocol.newBorrowLogic({
-      output: borrowTokenAmount,
-      interestRateMode: defaultInterestRateMode,
-      marketId,
-    });
-    leverageShortlogics.push(borrowLogic);
-
-    afterPortfolio.borrow(borrowTokenAmount.token, borrowTokenAmount.amount);
-
-    // ---------- flashloan repay ----------
-    leverageShortlogics.push(flashLoanRepayLogic);
-
-    // ---------- tx related ----------
-    const estimateResult = await apisdk.estimateRouterData(
-      {
-        chainId: this.chainId,
-        account,
-        logics: leverageShortlogics,
-      },
-      this.permitType
-    );
-
-    const buildRouterTransactionRequest = (
-      args?: Omit<apisdk.RouterData, 'chainId' | 'account' | 'logics'>,
-      apiKey?: string
-    ): Promise<common.TransactionRequest> =>
-      apisdk.buildRouterTransactionRequest(
-        { ...args, chainId: this.chainId, account, logics: leverageShortlogics },
-        apiKey ? { 'x-api-key': apiKey } : undefined
-      );
-
-    return {
-      fields: {
-        srcToken,
-        srcAmount,
-        destToken,
-        destAmount: supplyLogic.fields.input.amount,
-        portfolio,
-        afterPortfolio,
-      },
-      estimateResult,
-      buildRouterTransactionRequest,
-      logics: leverageShortlogics,
-    };
+    return output;
   }
 
   // 1. flashloan destToken

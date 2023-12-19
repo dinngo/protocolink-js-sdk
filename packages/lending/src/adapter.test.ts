@@ -142,7 +142,7 @@ describe('Lending AaveV3 SDK', function () {
   context('Test LeverageShort', function () {
     leverageShortTestCases.forEach((params, i) => {
       it(`case ${i + 1}`, async function () {
-        const leverageShortInfo = await adapter.getLeverageShort(protocolId, marketId, params, account, portfolio);
+        const leverageShortInfo = await adapter.leverageShort(protocolId, marketId, params, account, portfolio);
 
         expect(leverageShortInfo).to.include.all.keys('fields', 'logics');
         expect(leverageShortInfo.logics).to.have.lengthOf(6);

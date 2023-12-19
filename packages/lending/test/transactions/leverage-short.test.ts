@@ -59,7 +59,7 @@ describe('Transaction: Leverage Short', function () {
         await utils.borrowAaveV3(user, lendingPoolAddress, borrowAmount);
 
         // 3. user obtains a quotation for leveraging short src token
-        const leverageShortInfo = await adapter.getLeverageShort(protocolId, marketId, params, user.address, portfolio);
+        const leverageShortInfo = await adapter.leverageShort(protocolId, marketId, params, user.address, portfolio);
         const estimateResult = leverageShortInfo.estimateResult;
         const leverageAmount = new common.TokenAmount(leverageShortInfo.logics[1].fields.output);
 
