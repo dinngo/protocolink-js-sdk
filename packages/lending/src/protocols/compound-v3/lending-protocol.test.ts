@@ -73,10 +73,10 @@ describe('Test Compound V3 LendingProtocol', function () {
             {
               token: {
                 chainId: 1,
-                address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+                address: '0x0000000000000000000000000000000000000000',
                 decimals: 18,
-                symbol: 'WETH',
-                name: 'Wrapped Ether',
+                symbol: 'ETH',
+                name: 'Ethereum',
               },
               price: '1933.940035',
               balance: '0',
@@ -153,10 +153,10 @@ describe('Test Compound V3 LendingProtocol', function () {
             {
               token: {
                 chainId: 1,
-                address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+                address: '0x0000000000000000000000000000000000000000',
                 decimals: 18,
-                symbol: 'WETH',
-                name: 'Wrapped Ether',
+                symbol: 'ETH',
+                name: 'Ethereum',
               },
               price: '1933.940035',
               balance: '4.636625160941150824',
@@ -203,10 +203,10 @@ describe('Test Compound V3 LendingProtocol', function () {
             {
               token: {
                 chainId: 1,
-                address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+                address: '0x0000000000000000000000000000000000000000',
                 decimals: 18,
-                symbol: 'WETH',
-                name: 'Wrapped Ether',
+                symbol: 'ETH',
+                name: 'Ethereum',
               },
               price: '1933.940035',
               balances: ['0'],
@@ -281,10 +281,10 @@ describe('Test Compound V3 LendingProtocol', function () {
             {
               token: {
                 chainId: 137,
-                address: '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270',
+                address: '0x0000000000000000000000000000000000001010',
                 decimals: 18,
-                symbol: 'WMATIC',
-                name: 'Wrapped Matic',
+                symbol: 'MATIC',
+                name: 'Matic Token',
               },
               price: '0.75599807',
               balance: '0',
@@ -377,10 +377,10 @@ describe('Test Compound V3 LendingProtocol', function () {
             {
               token: {
                 chainId: 42161,
-                address: '0x82aF49447D8a07e3bd95BD0d56f35241523fBab1',
+                address: '0x0000000000000000000000000000000000000000',
                 decimals: 18,
-                symbol: 'WETH',
-                name: 'Wrapped Ether',
+                symbol: 'ETH',
+                name: 'Ethereum',
               },
               price: '1588.58',
               balance: '0',
@@ -489,10 +489,10 @@ describe('Test Compound V3 LendingProtocol', function () {
             {
               token: {
                 chainId: 42161,
-                address: '0x82aF49447D8a07e3bd95BD0d56f35241523fBab1',
+                address: '0x0000000000000000000000000000000000000000',
                 decimals: 18,
-                symbol: 'WETH',
-                name: 'Wrapped Ether',
+                symbol: 'ETH',
+                name: 'Ethereum',
               },
               price: '1588.58',
               balance: '0',

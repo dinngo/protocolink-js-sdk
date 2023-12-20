@@ -284,7 +284,7 @@ export class LendingProtocol extends Protocol {
 
       let usageAsCollateralEnabled = reserveData.usageAsCollateralEnabled;
       if (Number(userBalance.supplyBalance) > 0) {
-        usageAsCollateralEnabled = userBalance.usageAsCollateralEnabled;
+        usageAsCollateralEnabled = usageAsCollateralEnabled && userBalance.usageAsCollateralEnabled;
       }
 
       supplies.push({

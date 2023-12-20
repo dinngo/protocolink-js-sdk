@@ -3,12 +3,10 @@
 /* eslint-disable */
 export type { AToken } from './AToken';
 export type { ETHPriceFeed } from './ETHPriceFeed';
-export type { LendingPool } from './LendingPool';
 export type { PriceOracle } from './PriceOracle';
 export type { ProtocolDataProvider } from './ProtocolDataProvider';
 export * as factories from './factories';
 export { AToken__factory } from './factories/AToken__factory';
 export { ETHPriceFeed__factory } from './factories/ETHPriceFeed__factory';
-export { LendingPool__factory } from './factories/LendingPool__factory';
 export { PriceOracle__factory } from './factories/PriceOracle__factory';
 export { ProtocolDataProvider__factory } from './factories/ProtocolDataProvider__factory';
