@@ -1,10 +1,8 @@
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 import { approve } from '@protocolink/test-helpers';
 import * as common from '@protocolink/common';
-import * as core from '@protocolink/core';
 import { defaultInterestRateMode } from 'src/protocol.type';
 import { expect } from 'chai';
-import hre from 'hardhat';
 import * as logics from '@protocolink/logics';
 
 export async function depositRadiantV2(

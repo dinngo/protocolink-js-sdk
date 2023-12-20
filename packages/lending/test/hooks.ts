@@ -1,14 +1,11 @@
-import { LendingProtocol as AaveV2Lending } from 'src/protocols/aave-v2/lending-protocol';
-import { LendingProtocol as AaveV3Lending } from 'src/protocols/aave-v3/lending-protocol';
 import { Adapter } from 'src/adapter';
-import { LendingProtocol as CompoundV3Lending } from 'src/protocols/compound-v3/lending-protocol';
-import { LendingSwapper } from 'src/swappers/paraswap-v5/lending-swapper';
-import { LendingProtocol as RadiantV2Lending } from 'src/protocols/radiant-v2/lending-protocol';
+import { aavev2, aavev3, compoundv3, radiantv2 } from 'src/protocols';
+import { paraswapv5 } from 'src/swappers';
 
 export async function setup() {
-  Adapter.registerProtocol(AaveV2Lending);
-  Adapter.registerProtocol(AaveV3Lending);
-  Adapter.registerProtocol(CompoundV3Lending);
-  Adapter.registerProtocol(RadiantV2Lending);
-  Adapter.registerSwapper(LendingSwapper);
+  Adapter.registerProtocol(aavev2.LendingProtocol);
+  Adapter.registerProtocol(aavev3.LendingProtocol);
+  Adapter.registerProtocol(compoundv3.LendingProtocol);
+  Adapter.registerProtocol(radiantv2.LendingProtocol);
+  Adapter.registerSwapper(paraswapv5.LendingSwapper);
 }

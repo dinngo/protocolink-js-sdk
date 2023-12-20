@@ -10,11 +10,6 @@ import flatten from 'lodash/flatten';
 import { providers } from 'ethers';
 import { scaleRepayAmount } from './adapter.utils';
 
-type Options = {
-  permitType?: apisdk.Permit2Type;
-  apiKey?: string;
-};
-
 export class Adapter extends common.Web3Toolkit {
   static Protocols: ProtocolClass[] = [];
 
@@ -30,10 +25,8 @@ export class Adapter extends common.Web3Toolkit {
 
   protocolMap: Record<string, Protocol> = {};
   swappers: Swapper[] = [];
-  permitType: apisdk.Permit2Type = 'permit';
-  apiKey?: string;
 
-  constructor(chainId: number, provider: providers.Provider, { permitType, apiKey }: Options = {}) {
+  constructor(chainId: number, provider: providers.Provider) {
     super(chainId, provider);
 
     for (const Protocol of Adapter.Protocols) {
@@ -47,9 +40,6 @@ export class Adapter extends common.Web3Toolkit {
         this.swappers.push(new Swapper(chainId, provider));
       }
     }
-
-    if (permitType) this.permitType = permitType;
-    if (apiKey) this.apiKey = apiKey;
   }
 
   get protocolIds() {

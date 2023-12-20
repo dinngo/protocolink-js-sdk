@@ -23,7 +23,7 @@ describe('Transaction: Zap Withdraw', function () {
   let service: logics.compoundv3.Service;
 
   before(async function () {
-    adapter = new Adapter(chainId, hre.ethers.provider, { permitType: 'approve' });
+    adapter = new Adapter(chainId, hre.ethers.provider);
     service = new logics.compoundv3.Service(chainId, hre.ethers.provider);
   });
 
