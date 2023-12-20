@@ -662,4 +662,82 @@ describe('Test Compound V3 LendingProtocol', function () {
       });
     });
   });
+
+  context('Test isAssetTokenized', function () {
+    const testCases = [
+      {
+        chainId: common.ChainId.mainnet,
+        marketId: logics.compoundv3.MarketId.USDC,
+        asset: mainnetTokens.USDC,
+        expected: true,
+      },
+      {
+        chainId: common.ChainId.mainnet,
+        marketId: logics.compoundv3.MarketId.USDC,
+        asset: mainnetTokens.WBTC,
+        expected: false,
+      },
+      {
+        chainId: common.ChainId.mainnet,
+        marketId: logics.compoundv3.MarketId.ETH,
+        asset: mainnetTokens.ETH,
+        expected: true,
+      },
+      {
+        chainId: common.ChainId.mainnet,
+        marketId: logics.compoundv3.MarketId.ETH,
+        asset: mainnetTokens.WETH,
+        expected: true,
+      },
+      {
+        chainId: common.ChainId.mainnet,
+        marketId: logics.compoundv3.MarketId.ETH,
+        asset: mainnetTokens.cbETH,
+        expected: false,
+      },
+      {
+        chainId: common.ChainId.polygon,
+        marketId: logics.compoundv3.MarketId.USDC,
+        asset: polygonTokens.USDC,
+        expected: true,
+      },
+      {
+        chainId: common.ChainId.polygon,
+        marketId: logics.compoundv3.MarketId.USDC,
+        asset: polygonTokens.WBTC,
+        expected: false,
+      },
+      {
+        chainId: common.ChainId.arbitrum,
+        marketId: logics.compoundv3.MarketId.USDCe,
+        asset: arbitrumTokens['USDC.e'],
+        expected: true,
+      },
+      {
+        chainId: common.ChainId.arbitrum,
+        marketId: logics.compoundv3.MarketId.USDCe,
+        asset: arbitrumTokens.WBTC,
+        expected: false,
+      },
+      {
+        chainId: common.ChainId.arbitrum,
+        marketId: logics.compoundv3.MarketId.USDC,
+        asset: arbitrumTokens.USDC,
+        expected: true,
+      },
+      {
+        chainId: common.ChainId.arbitrum,
+        marketId: logics.compoundv3.MarketId.USDC,
+        asset: arbitrumTokens.WBTC,
+        expected: false,
+      },
+    ];
+
+    testCases.forEach(({ chainId, marketId, asset, expected }) => {
+      it(`${common.toNetworkId(chainId)} ${marketId} market - ${asset.symbol}`, async function () {
+        const protocol = new LendingProtocol(chainId);
+        expect(protocol.isAssetTokenized(marketId, asset)).to.eq(expected);
+      });
+    });
+  });
 });

@@ -58,7 +58,7 @@ export class LendingProtocol extends Protocol {
   }
 
   override isAssetTokenized(marketId: string, assetToken: common.Token) {
-    return !assetToken.wrapped.is(getMarketConfig(this.chainId, marketId).baseToken);
+    return assetToken.wrapped.is(getMarketConfig(this.chainId, marketId).baseToken);
   }
 
   private _cometIface?: CometInterface;
