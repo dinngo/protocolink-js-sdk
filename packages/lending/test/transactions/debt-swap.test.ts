@@ -67,52 +67,51 @@ describe('Transaction: Debt swap', function () {
       },
     ];
 
-    for (const [
-      i,
-      { protocolId, marketId, account, srcToken, srcAmount, srcDebtToken, destToken, destDebtToken, expects },
-    ] of testCases.entries()) {
-      it(`case ${i + 1} - ${protocolId}:${marketId}`, async function () {
-        user = await hre.ethers.getImpersonatedSigner(account);
-        portfolio = await adapter.getPortfolio(user.address, protocolId, marketId);
+    testCases.forEach(
+      ({ protocolId, marketId, account, srcToken, srcAmount, srcDebtToken, destToken, destDebtToken, expects }, i) => {
+        it(`case ${i + 1} - ${protocolId}:${marketId}`, async function () {
+          user = await hre.ethers.getImpersonatedSigner(account);
+          portfolio = await adapter.getPortfolio(user.address, protocolId, marketId);
 
-        // 1. user obtains a quotation for debt swap
-        const debtSwapInfo = await adapter.debtSwap({
-          account,
-          portfolio,
-          srcToken,
-          srcAmount,
-          destToken,
+          // 1. user obtains a quotation for debt swap
+          const debtSwapInfo = await adapter.debtSwap({
+            account,
+            portfolio,
+            srcToken,
+            srcAmount,
+            destToken,
+          });
+
+          // 2. user needs to permit the Protocolink user agent to borrow on behalf of the user
+          const estimateResult = await apisdk.estimateRouterData(
+            { chainId, account, logics: debtSwapInfo.logics },
+            permit2Type
+          );
+          expect(estimateResult.approvals.length).to.eq(expects.approvalLength);
+          for (const approval of estimateResult.approvals) {
+            await expect(user.sendTransaction(approval)).to.not.be.reverted;
+          }
+
+          // 3. user obtains a debt swap transaction request
+          expect(debtSwapInfo.logics.length).to.eq(expects.logicLength);
+          const transactionRequest = await apisdk.buildRouterTransactionRequest({
+            chainId,
+            account,
+            logics: debtSwapInfo.logics,
+          });
+          await expect(user.sendTransaction(transactionRequest)).to.not.be.reverted;
+
+          // 4. user's src token borrow balance should decrease.
+          // 4-1. debt grows when the block of getting api data is different from the block of executing tx
+          const repayAmount = srcAmount;
+          expect(user.address).changeBalance(srcDebtToken, -repayAmount, slippage);
+
+          // 5. user's dest token borrow balance should increase
+          // 5-1. debt grows when the block of getting api data is different from the block of executing tx
+          const borrowAmount = debtSwapInfo.destAmount!;
+          expect(user.address).changeBalance(destDebtToken, borrowAmount, slippage);
         });
-
-        // 2. user needs to permit the Protocolink user agent to borrow on behalf of the user
-        const estimateResult = await apisdk.estimateRouterData(
-          { chainId, account, logics: debtSwapInfo.logics },
-          permit2Type
-        );
-        expect(estimateResult.approvals.length).to.eq(expects.approvalLength);
-        for (const approval of estimateResult.approvals) {
-          await expect(user.sendTransaction(approval)).to.not.be.reverted;
-        }
-
-        // 3. user obtains a debt swap transaction request
-        expect(debtSwapInfo.logics.length).to.eq(expects.logicLength);
-        const transactionRequest = await apisdk.buildRouterTransactionRequest({
-          chainId,
-          account,
-          logics: debtSwapInfo.logics,
-        });
-        await expect(user.sendTransaction(transactionRequest)).to.not.be.reverted;
-
-        // 4. user's src token borrow balance should decrease.
-        // 4-1. debt grows when the block of getting api data is different from the block of executing tx
-        const repayAmount = srcAmount;
-        expect(user.address).changeBalance(srcDebtToken, -repayAmount, slippage);
-
-        // 5. user's dest token borrow balance should increase
-        // 5-1. debt grows when the block of getting api data is different from the block of executing tx
-        const borrowAmount = debtSwapInfo.destAmount!;
-        expect(user.address).changeBalance(destDebtToken, borrowAmount, slippage);
-      });
-    }
+      }
+    );
   });
 });

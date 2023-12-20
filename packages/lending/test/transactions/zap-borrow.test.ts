@@ -81,10 +81,7 @@ describe('Transaction: Zap Borrow', function () {
       },
     ];
 
-    for (const [
-      i,
-      { account, protocolId, marketId, srcToken, srcAmount, srcDebtToken, destToken, expects },
-    ] of testCases.entries()) {
+    testCases.forEach(({ account, protocolId, marketId, srcToken, srcAmount, srcDebtToken, destToken, expects }, i) => {
       it(`case ${i + 1} - ${protocolId}:${marketId}`, async function () {
         user = await hre.ethers.getImpersonatedSigner(account);
         portfolio = await adapter.getPortfolio(user.address, protocolId, marketId);
@@ -140,6 +137,6 @@ describe('Transaction: Zap Borrow', function () {
         // 5-1. rate may change when the block of getting api data is different from the block of executing tx
         await expect(user.address).to.changeBalance(destToken, zapBorrowInfo.destAmount, slippage);
       });
-    }
+    });
   });
 });

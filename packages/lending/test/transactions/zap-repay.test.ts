@@ -88,10 +88,7 @@ describe('Transaction: Zap Repay', function () {
       },
     ];
 
-    for (const [
-      i,
-      { protocolId, marketId, account, srcToken, srcAmount, srcDebtToken, destToken, expects },
-    ] of testCases.entries()) {
+    testCases.forEach(({ account, protocolId, marketId, srcToken, srcAmount, srcDebtToken, destToken, expects }, i) => {
       it(`case ${i + 1} - ${protocolId}:${marketId}`, async function () {
         user = await hre.ethers.getImpersonatedSigner(account);
         portfolio = await adapter.getPortfolio(user.address, protocolId, marketId);
@@ -147,6 +144,6 @@ describe('Transaction: Zap Repay', function () {
         // 6. user's dest token balance should decrease
         await expect(user.address).to.changeBalance(destToken, -zapRepayInfo.destAmount);
       });
-    }
+    });
   });
 });

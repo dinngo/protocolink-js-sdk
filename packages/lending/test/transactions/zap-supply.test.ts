@@ -81,10 +81,7 @@ describe('Transaction: Zap Supply', function () {
       },
     ];
 
-    for (const [
-      i,
-      { protocolId, marketId, srcToken, srcAmount, destToken, destAToken, expects },
-    ] of testCases.entries()) {
+    testCases.forEach(({ protocolId, marketId, srcToken, srcAmount, destToken, destAToken, expects }, i) => {
       it(`case ${i + 1} - ${protocolId}:${marketId}`, async function () {
         const account = user.address;
         portfolio = await adapter.getPortfolio(user.address, protocolId, marketId);
@@ -123,7 +120,7 @@ describe('Transaction: Zap Supply', function () {
         // 4. user's balance will increase.
         await expect(user.address).to.changeBalance(destAToken, zapDepositInfo.destAmount, slippage);
       });
-    }
+    });
   });
 
   context('Test Zap Supply Collateral', function () {
@@ -141,7 +138,7 @@ describe('Transaction: Zap Supply', function () {
       },
     ];
 
-    for (const [i, { protocolId, marketId, srcToken, srcAmount, destToken, expects }] of testCases.entries()) {
+    testCases.forEach(({ protocolId, marketId, srcToken, srcAmount, destToken, expects }, i) => {
       it(`case ${i + 1} - ${protocolId}:${marketId}`, async function () {
         const account = user.address;
         portfolio = await adapter.getPortfolio(user.address, protocolId, marketId);
@@ -190,6 +187,6 @@ describe('Transaction: Zap Supply', function () {
         expect(collateralBalance.lte(maxDestAmount)).to.be.true;
         expect(collateralBalance.gte(minDestAmount)).to.be.true;
       });
-    }
+    });
   });
 });

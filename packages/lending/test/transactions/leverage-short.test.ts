@@ -71,61 +71,60 @@ describe('Transaction: Leverage Short', function () {
       },
     ];
 
-    for (const [
-      i,
-      { protocolId, marketId, account, srcToken, srcAmount, srcDebtToken, destToken, destAToken, expects },
-    ] of testCases.entries()) {
-      it(`case ${i + 1} - ${protocolId}:${marketId}`, async function () {
-        user = await hre.ethers.getImpersonatedSigner(account);
-        portfolio = await adapter.getPortfolio(user.address, protocolId, marketId);
+    testCases.forEach(
+      ({ protocolId, marketId, account, srcToken, srcAmount, srcDebtToken, destToken, destAToken, expects }, i) => {
+        it(`case ${i + 1} - ${protocolId}:${marketId}`, async function () {
+          user = await hre.ethers.getImpersonatedSigner(account);
+          portfolio = await adapter.getPortfolio(user.address, protocolId, marketId);
 
-        const initSupplyBalance = await getBalance(user.address, destAToken!);
-        const initBorrowBalance = await getBalance(user.address, srcDebtToken!);
+          const initSupplyBalance = await getBalance(user.address, destAToken!);
+          const initBorrowBalance = await getBalance(user.address, srcDebtToken!);
 
-        // 1. user obtains a quotation for leveraging short src token
-        const leverageShortInfo = await adapter.leverageShort({
-          account,
-          portfolio,
-          srcToken,
-          srcAmount,
-          destToken,
+          // 1. user obtains a quotation for leveraging short src token
+          const leverageShortInfo = await adapter.leverageShort({
+            account,
+            portfolio,
+            srcToken,
+            srcAmount,
+            destToken,
+          });
+
+          const leverageAmount = new common.TokenAmount(leverageShortInfo.logics[1].fields.output);
+
+          // 2. user needs to permit the Protocolink user agent to borrow for the user
+          const estimateResult = await apisdk.estimateRouterData(
+            { chainId, account, logics: leverageShortInfo.logics },
+            permit2Type
+          );
+          expect(estimateResult.approvals.length).to.eq(expects.approvalLength);
+          for (const approval of estimateResult.approvals) {
+            await expect(user.sendTransaction(approval)).to.not.be.reverted;
+          }
+
+          // 3. user obtains a leverage short transaction request
+          const transactionRequest = await apisdk.buildRouterTransactionRequest({
+            chainId,
+            account,
+            logics: leverageShortInfo.logics,
+          });
+          expect(leverageShortInfo.logics.length).to.eq(expects.logicLength);
+          await expect(user.sendTransaction(transactionRequest)).to.not.be.reverted;
+
+          // 4. user's supply balance will increase.
+          // 4-1. due to the slippage caused by the swap, we need to calculate the minimum leverage amount.
+          const supplyBalance = await getBalance(user.address, destAToken);
+          const minimumLeverageAmount = new common.TokenAmount(leverageAmount.token).setWei(
+            common.calcSlippage(leverageAmount.amountWei, slippage)
+          );
+          expect(supplyBalance.gte(initSupplyBalance.clone().add(minimumLeverageAmount.amount))).to.be.true;
+
+          // 5. user's borrow balance will increase.
+          // 5-1. As the block number increases, the initial borrow balance will also increase.
+          const borrowBalance = await getBalance(user.address, srcDebtToken);
+          const leverageBorrowAmount = new common.TokenAmount(leverageShortInfo.logics[4].fields.output);
+          expect(borrowBalance.gte(initBorrowBalance.clone().add(leverageBorrowAmount.amount))).to.be.true;
         });
-
-        const leverageAmount = new common.TokenAmount(leverageShortInfo.logics[1].fields.output);
-
-        // 2. user needs to permit the Protocolink user agent to borrow for the user
-        const estimateResult = await apisdk.estimateRouterData(
-          { chainId, account, logics: leverageShortInfo.logics },
-          permit2Type
-        );
-        expect(estimateResult.approvals.length).to.eq(expects.approvalLength);
-        for (const approval of estimateResult.approvals) {
-          await expect(user.sendTransaction(approval)).to.not.be.reverted;
-        }
-
-        // 3. user obtains a leverage short transaction request
-        const transactionRequest = await apisdk.buildRouterTransactionRequest({
-          chainId,
-          account,
-          logics: leverageShortInfo.logics,
-        });
-        expect(leverageShortInfo.logics.length).to.eq(expects.logicLength);
-        await expect(user.sendTransaction(transactionRequest)).to.not.be.reverted;
-
-        // 4. user's supply balance will increase.
-        // 4-1. due to the slippage caused by the swap, we need to calculate the minimum leverage amount.
-        const supplyBalance = await getBalance(user.address, destAToken);
-        const minimumLeverageAmount = new common.TokenAmount(leverageAmount.token).setWei(
-          common.calcSlippage(leverageAmount.amountWei, slippage)
-        );
-        expect(supplyBalance.gte(initSupplyBalance.clone().add(minimumLeverageAmount.amount))).to.be.true;
-
-        // 5. user's borrow balance will increase.
-        // 5-1. As the block number increases, the initial borrow balance will also increase.
-        const borrowBalance = await getBalance(user.address, srcDebtToken);
-        const leverageBorrowAmount = new common.TokenAmount(leverageShortInfo.logics[4].fields.output);
-        expect(borrowBalance.gte(initBorrowBalance.clone().add(leverageBorrowAmount.amount))).to.be.true;
-      });
-    }
+      }
+    );
   });
 });

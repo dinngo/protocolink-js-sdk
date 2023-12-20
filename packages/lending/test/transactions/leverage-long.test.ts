@@ -89,75 +89,74 @@ describe('Transaction: Leverage Long', function () {
       },
     ];
 
-    for (const [
-      i,
-      { protocolId, marketId, account, srcToken, srcAmount, srcAToken, destToken, destDebtToken, expects },
-    ] of testCases.entries()) {
-      it(`case ${i + 1} - ${protocolId}:${marketId}`, async function () {
-        user = await hre.ethers.getImpersonatedSigner(account);
-        portfolio = await adapter.getPortfolio(user.address, protocolId, marketId);
-        const leverageAmount = new common.TokenAmount(srcToken, srcAmount);
+    testCases.forEach(
+      ({ protocolId, marketId, account, srcToken, srcAmount, srcAToken, destToken, destDebtToken, expects }, i) => {
+        it(`case ${i + 1} - ${protocolId}:${marketId}`, async function () {
+          user = await hre.ethers.getImpersonatedSigner(account);
+          portfolio = await adapter.getPortfolio(user.address, protocolId, marketId);
+          const leverageAmount = new common.TokenAmount(srcToken, srcAmount);
 
-        // 1. get user positions
-        let initSupplyBalance, initBorrowBalance;
-        if (protocolId === 'compound-v3') {
-          const service = new logics.compoundv3.Service(chainId, hre.ethers.provider);
-          initSupplyBalance = await service.getCollateralBalance(marketId, user.address, leverageAmount.token);
-          initBorrowBalance = await service.getBorrowBalance(marketId, user.address);
-        } else {
-          initSupplyBalance = await getBalance(user.address, srcAToken!);
-          initBorrowBalance = await getBalance(user.address, destDebtToken!);
-        }
+          // 1. get user positions
+          let initSupplyBalance, initBorrowBalance;
+          if (protocolId === 'compound-v3') {
+            const service = new logics.compoundv3.Service(chainId, hre.ethers.provider);
+            initSupplyBalance = await service.getCollateralBalance(marketId, user.address, leverageAmount.token);
+            initBorrowBalance = await service.getBorrowBalance(marketId, user.address);
+          } else {
+            initSupplyBalance = await getBalance(user.address, srcAToken!);
+            initBorrowBalance = await getBalance(user.address, destDebtToken!);
+          }
 
-        // 2. user obtains a quotation for leveraging src token
-        const leverageLongInfo = await adapter.leverageLong({ account, portfolio, srcToken, srcAmount, destToken });
+          // 2. user obtains a quotation for leveraging src token
+          const leverageLongInfo = await adapter.leverageLong({ account, portfolio, srcToken, srcAmount, destToken });
 
-        // 3. user needs to permit the Protocolink user agent to borrow for the user
-        const estimateResult = await apisdk.estimateRouterData(
-          { chainId, account, logics: leverageLongInfo.logics },
-          permit2Type
-        );
-        expect(estimateResult.approvals.length).to.eq(expects.approvalLength);
-        for (const approval of estimateResult.approvals) {
-          await expect(user.sendTransaction(approval)).to.not.be.reverted;
-        }
+          // 3. user needs to permit the Protocolink user agent to borrow for the user
+          const estimateResult = await apisdk.estimateRouterData(
+            { chainId, account, logics: leverageLongInfo.logics },
+            permit2Type
+          );
+          expect(estimateResult.approvals.length).to.eq(expects.approvalLength);
+          for (const approval of estimateResult.approvals) {
+            await expect(user.sendTransaction(approval)).to.not.be.reverted;
+          }
 
-        // 4. user obtains a leverage long transaction request
-        expect(leverageLongInfo.logics.length).to.eq(expects.logicLength);
-        const transactionRequest = await apisdk.buildRouterTransactionRequest({
-          chainId,
-          account,
-          logics: leverageLongInfo.logics,
+          // 4. user obtains a leverage long transaction request
+          expect(leverageLongInfo.logics.length).to.eq(expects.logicLength);
+          const transactionRequest = await apisdk.buildRouterTransactionRequest({
+            chainId,
+            account,
+            logics: leverageLongInfo.logics,
+          });
+          await expect(user.sendTransaction(transactionRequest)).to.not.be.reverted;
+
+          // 5. user's supply balance will increase.
+          // 5-1. due to the slippage caused by the swap, we need to calculate the minimum leverage amount.
+          let supplyBalance;
+          if (protocolId === 'compound-v3') {
+            const service = new logics.compoundv3.Service(chainId, hre.ethers.provider);
+            supplyBalance = await service.getCollateralBalance(marketId, user.address, leverageAmount.token);
+          } else {
+            supplyBalance = await getBalance(user.address, srcAToken!);
+          }
+          const minimumLeverageAmount = new common.TokenAmount(leverageAmount.token).setWei(
+            common.calcSlippage(leverageAmount.amountWei, slippage)
+          );
+          expect(supplyBalance.gte(initSupplyBalance.clone().add(minimumLeverageAmount.amount))).to.be.true;
+
+          // 6. user's borrow balance will increase.
+          // 6-1. As the block number increases, the initial borrow balance will also increase.
+          let borrowBalance, leverageBorrowAmount;
+          if (protocolId === 'compound-v3') {
+            const service = new logics.compoundv3.Service(chainId, hre.ethers.provider);
+            borrowBalance = await service.getBorrowBalance(marketId, user.address);
+            leverageBorrowAmount = new common.TokenAmount(leverageLongInfo.logics[3].fields.output);
+          } else {
+            borrowBalance = await getBalance(user.address, destDebtToken!);
+            leverageBorrowAmount = new common.TokenAmount(leverageLongInfo.logics[4].fields.output);
+          }
+          expect(borrowBalance.gte(initBorrowBalance.clone().add(leverageBorrowAmount.amount))).to.be.true;
         });
-        await expect(user.sendTransaction(transactionRequest)).to.not.be.reverted;
-
-        // 5. user's supply balance will increase.
-        // 5-1. due to the slippage caused by the swap, we need to calculate the minimum leverage amount.
-        let supplyBalance;
-        if (protocolId === 'compound-v3') {
-          const service = new logics.compoundv3.Service(chainId, hre.ethers.provider);
-          supplyBalance = await service.getCollateralBalance(marketId, user.address, leverageAmount.token);
-        } else {
-          supplyBalance = await getBalance(user.address, srcAToken!);
-        }
-        const minimumLeverageAmount = new common.TokenAmount(leverageAmount.token).setWei(
-          common.calcSlippage(leverageAmount.amountWei, slippage)
-        );
-        expect(supplyBalance.gte(initSupplyBalance.clone().add(minimumLeverageAmount.amount))).to.be.true;
-
-        // 6. user's borrow balance will increase.
-        // 6-1. As the block number increases, the initial borrow balance will also increase.
-        let borrowBalance, leverageBorrowAmount;
-        if (protocolId === 'compound-v3') {
-          const service = new logics.compoundv3.Service(chainId, hre.ethers.provider);
-          borrowBalance = await service.getBorrowBalance(marketId, user.address);
-          leverageBorrowAmount = new common.TokenAmount(leverageLongInfo.logics[3].fields.output);
-        } else {
-          borrowBalance = await getBalance(user.address, destDebtToken!);
-          leverageBorrowAmount = new common.TokenAmount(leverageLongInfo.logics[4].fields.output);
-        }
-        expect(borrowBalance.gte(initBorrowBalance.clone().add(leverageBorrowAmount.amount))).to.be.true;
-      });
-    }
+      }
+    );
   });
 });

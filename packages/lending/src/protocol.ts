@@ -75,7 +75,7 @@ export abstract class Protocol extends common.Web3Toolkit {
 }
 
 export interface ProtocolClass {
-  new (chainId: number, library: providers.Provider): Protocol;
+  new (chainId: number, library?: providers.Provider): Protocol;
   readonly markets: Market[];
   isSupported: (chainId: number) => boolean;
 }

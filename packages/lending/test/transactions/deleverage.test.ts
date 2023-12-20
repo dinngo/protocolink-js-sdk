@@ -1,7 +1,7 @@
 import { Adapter } from 'src/adapter';
 import { Portfolio } from 'src/protocol.portfolio';
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
-import * as aaveV2 from 'src/protocols/aave-v2/tokens';
+// import * as aaveV2 from 'src/protocols/aave-v2/tokens';
 import * as aaveV3 from 'src/protocols/aave-v3/tokens';
 import * as apisdk from '@protocolink/api';
 import * as common from '@protocolink/common';
@@ -86,72 +86,71 @@ describe('Transaction: Deleverage', function () {
       },
     ];
 
-    for (const [
-      i,
-      { protocolId, marketId, account, srcToken, srcAmount, srcDebtToken, destToken, destAToken, expects },
-    ] of testCases.entries()) {
-      it(`case ${i + 1} - ${protocolId}:${marketId}`, async function () {
-        user = await hre.ethers.getImpersonatedSigner(account);
-        portfolio = await adapter.getPortfolio(user.address, protocolId, marketId);
+    testCases.forEach(
+      ({ protocolId, marketId, account, srcToken, srcAmount, srcDebtToken, destToken, destAToken, expects }, i) => {
+        it(`case ${i + 1} - ${protocolId}:${marketId}`, async function () {
+          user = await hre.ethers.getImpersonatedSigner(account);
+          portfolio = await adapter.getPortfolio(user.address, protocolId, marketId);
 
-        let initCollateralBalance, initBorrowBalance;
-        if (protocolId === 'compound-v3') {
-          const service = new logics.compoundv3.Service(chainId, hre.ethers.provider);
-          initCollateralBalance = await service.getCollateralBalance(marketId, user.address, destToken);
-          initBorrowBalance = await service.getBorrowBalance(marketId, user.address);
-        } else {
-          initCollateralBalance = await getBalance(user.address, destAToken!);
-          initBorrowBalance = await getBalance(user.address, srcDebtToken!);
-        }
+          let initCollateralBalance, initBorrowBalance;
+          if (protocolId === 'compound-v3') {
+            const service = new logics.compoundv3.Service(chainId, hre.ethers.provider);
+            initCollateralBalance = await service.getCollateralBalance(marketId, user.address, destToken);
+            initBorrowBalance = await service.getBorrowBalance(marketId, user.address);
+          } else {
+            initCollateralBalance = await getBalance(user.address, destAToken!);
+            initBorrowBalance = await getBalance(user.address, srcDebtToken!);
+          }
 
-        // 1. user obtains a quotation for deleveraging dest token
-        const deleverageInfo = await adapter.deleverage({ account, portfolio, srcToken, srcAmount, destToken });
+          // 1. user obtains a quotation for deleveraging dest token
+          const deleverageInfo = await adapter.deleverage({ account, portfolio, srcToken, srcAmount, destToken });
 
-        // 2. user needs to permit the Protocolink user agent to borrow on behalf of the user
-        const estimateResult = await apisdk.estimateRouterData(
-          { chainId, account, logics: deleverageInfo.logics },
-          permit2Type
-        );
-        expect(estimateResult.approvals.length).to.eq(expects.approvalLength);
-        for (const approval of estimateResult.approvals) {
-          await expect(user.sendTransaction(approval)).to.not.be.reverted;
-        }
+          // 2. user needs to permit the Protocolink user agent to borrow on behalf of the user
+          const estimateResult = await apisdk.estimateRouterData(
+            { chainId, account, logics: deleverageInfo.logics },
+            permit2Type
+          );
+          expect(estimateResult.approvals.length).to.eq(expects.approvalLength);
+          for (const approval of estimateResult.approvals) {
+            await expect(user.sendTransaction(approval)).to.not.be.reverted;
+          }
 
-        // 3. user obtains a deleverage transaction request
-        expect(deleverageInfo.logics.length).to.eq(expects.logicLength);
-        const transactionRequest = await apisdk.buildRouterTransactionRequest({
-          chainId,
-          account,
-          logics: deleverageInfo.logics,
+          // 3. user obtains a deleverage transaction request
+          expect(deleverageInfo.logics.length).to.eq(expects.logicLength);
+          const transactionRequest = await apisdk.buildRouterTransactionRequest({
+            chainId,
+            account,
+            logics: deleverageInfo.logics,
+          });
+          await expect(user.sendTransaction(transactionRequest)).to.not.be.reverted;
+
+          let collateralBalance, deleverageWithdrawAmount, borrowBalance;
+          if (protocolId === 'compound-v3') {
+            const service = new logics.compoundv3.Service(chainId, hre.ethers.provider);
+            collateralBalance = await service.getCollateralBalance(marketId, user.address, destToken);
+            deleverageWithdrawAmount = new common.TokenAmount(deleverageInfo.logics[3].fields.output);
+            borrowBalance = await service.getBorrowBalance(marketId, user.address);
+          } else {
+            collateralBalance = await getBalance(user.address, destAToken!);
+            deleverageWithdrawAmount = new common.TokenAmount(deleverageInfo.logics[3].fields.input);
+            borrowBalance = await getBalance(user.address, srcDebtToken!);
+          }
+
+          // 4. user's collateral balance should decrease.
+          // 4-1. collateral grows when the block of getting api data is different from the block of executing tx
+          expect(collateralBalance.gte(initCollateralBalance.clone().sub(deleverageWithdrawAmount))).to.be.true;
+
+          // 5. user's borrow balance should decrease.
+          const borrowDifference = initBorrowBalance.clone().sub(borrowBalance);
+          const repayAmount = new common.TokenAmount(srcToken, srcAmount);
+
+          // 5-1. debt grows when the block of getting api data is different from the block of executing tx
+          const [minRepay] = utils.bpsBound(repayAmount.amount, 100);
+          const minRepayAmount = repayAmount.clone().set(minRepay);
+          expect(borrowDifference.gte(minRepayAmount)).to.be.true;
+          expect(borrowDifference.lte(repayAmount)).to.be.true;
         });
-        await expect(user.sendTransaction(transactionRequest)).to.not.be.reverted;
-
-        let collateralBalance, deleverageWithdrawAmount, borrowBalance;
-        if (protocolId === 'compound-v3') {
-          const service = new logics.compoundv3.Service(chainId, hre.ethers.provider);
-          collateralBalance = await service.getCollateralBalance(marketId, user.address, destToken);
-          deleverageWithdrawAmount = new common.TokenAmount(deleverageInfo.logics[3].fields.output);
-          borrowBalance = await service.getBorrowBalance(marketId, user.address);
-        } else {
-          collateralBalance = await getBalance(user.address, destAToken!);
-          deleverageWithdrawAmount = new common.TokenAmount(deleverageInfo.logics[3].fields.input);
-          borrowBalance = await getBalance(user.address, srcDebtToken!);
-        }
-
-        // 4. user's collateral balance should decrease.
-        // 4-1. collateral grows when the block of getting api data is different from the block of executing tx
-        expect(collateralBalance.gte(initCollateralBalance.clone().sub(deleverageWithdrawAmount))).to.be.true;
-
-        // 5. user's borrow balance should decrease.
-        const borrowDifference = initBorrowBalance.clone().sub(borrowBalance);
-        const repayAmount = new common.TokenAmount(srcToken, srcAmount);
-
-        // 5-1. debt grows when the block of getting api data is different from the block of executing tx
-        const [minRepay] = utils.bpsBound(repayAmount.amount, 100);
-        const minRepayAmount = repayAmount.clone().set(minRepay);
-        expect(borrowDifference.gte(minRepayAmount)).to.be.true;
-        expect(borrowDifference.lte(repayAmount)).to.be.true;
-      });
-    }
+      }
+    );
   });
 });

@@ -85,10 +85,7 @@ describe('Transaction: Zap Withdraw', function () {
       },
     ];
 
-    for (const [
-      i,
-      { protocolId, marketId, account, srcToken, srcAmount, srcAToken, destToken, expects },
-    ] of testCases.entries()) {
+    testCases.forEach(({ protocolId, marketId, account, srcToken, srcAmount, srcAToken, destToken, expects }, i) => {
       it(`case ${i + 1} - ${protocolId}:${marketId}`, async function () {
         user = await hre.ethers.getImpersonatedSigner(account);
         portfolio = await adapter.getPortfolio(user.address, protocolId, marketId);
@@ -128,7 +125,7 @@ describe('Transaction: Zap Withdraw', function () {
         // 5. user's dest token balance should increase
         await expect(user.address).to.changeBalance(destToken, zapWithdrawInfo.destAmount, slippage);
       });
-    }
+    });
   });
 
   context('Test ZapWithdraw Collateral', function () {
@@ -147,7 +144,7 @@ describe('Transaction: Zap Withdraw', function () {
       },
     ];
 
-    for (const [i, { protocolId, marketId, account, srcToken, srcAmount, destToken, expects }] of testCases.entries()) {
+    testCases.forEach(({ protocolId, marketId, account, srcToken, srcAmount, destToken, expects }, i) => {
       it(`case ${i + 1} - ${protocolId}:${marketId}`, async function () {
         user = await hre.ethers.getImpersonatedSigner(account);
         portfolio = await adapter.getPortfolio(user.address, protocolId, marketId);
@@ -190,6 +187,6 @@ describe('Transaction: Zap Withdraw', function () {
         // 5. user's dest token balance should increase
         await expect(user.address).to.changeBalance(destToken, zapWithdrawInfo.destAmount, slippage);
       });
-    }
+    });
   });
 });

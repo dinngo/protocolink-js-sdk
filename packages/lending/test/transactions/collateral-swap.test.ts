@@ -84,74 +84,73 @@ describe('Transaction: Collateral swap', function () {
       },
     ];
 
-    for (const [
-      i,
-      { protocolId, marketId, account, srcToken, srcAmount, srcAToken, destToken, destAToken, expects },
-    ] of testCases.entries()) {
-      it(`case ${i + 1} - ${protocolId}:${marketId}`, async function () {
-        user = await hre.ethers.getImpersonatedSigner(account);
-        portfolio = await adapter.getPortfolio(user.address, protocolId, marketId);
+    testCases.forEach(
+      ({ protocolId, marketId, account, srcToken, srcAmount, srcAToken, destToken, destAToken, expects }, i) => {
+        it(`case ${i + 1} - ${protocolId}:${marketId}`, async function () {
+          user = await hre.ethers.getImpersonatedSigner(account);
+          portfolio = await adapter.getPortfolio(user.address, protocolId, marketId);
 
-        let initSrcBalance, initDestBalance;
-        if (protocolId === 'compound-v3') {
-          const service = new logics.compoundv3.Service(chainId, hre.ethers.provider);
-          initSrcBalance = await service.getCollateralBalance(marketId, user.address, srcToken);
-          initDestBalance = await service.getCollateralBalance(marketId, user.address, destToken);
-        } else {
-          initSrcBalance = await getBalance(user.address, srcAToken!);
-          initDestBalance = await getBalance(user.address, destAToken!);
-        }
+          let initSrcBalance, initDestBalance;
+          if (protocolId === 'compound-v3') {
+            const service = new logics.compoundv3.Service(chainId, hre.ethers.provider);
+            initSrcBalance = await service.getCollateralBalance(marketId, user.address, srcToken);
+            initDestBalance = await service.getCollateralBalance(marketId, user.address, destToken);
+          } else {
+            initSrcBalance = await getBalance(user.address, srcAToken!);
+            initDestBalance = await getBalance(user.address, destAToken!);
+          }
 
-        // 1. user obtains a quotation for collateral swap srcToken to destToken
-        const collateralSwapInfo = await adapter.collateralSwap({
-          account,
-          portfolio,
-          srcToken,
-          srcAmount,
-          destToken,
+          // 1. user obtains a quotation for collateral swap srcToken to destToken
+          const collateralSwapInfo = await adapter.collateralSwap({
+            account,
+            portfolio,
+            srcToken,
+            srcAmount,
+            destToken,
+          });
+
+          // 2. user needs to allow the Protocolink user agent to withdraw on behalf of the user
+          const estimateResult = await apisdk.estimateRouterData(
+            { chainId, account, logics: collateralSwapInfo.logics },
+            permit2Type
+          );
+          expect(estimateResult.approvals.length).to.eq(expects.approvalLength);
+          for (const approval of estimateResult.approvals) {
+            await expect(user.sendTransaction(approval)).to.not.be.reverted;
+          }
+
+          // 3. user obtains a collateral swap transaction request
+          expect(collateralSwapInfo.logics.length).to.eq(expects.logicLength);
+          const transactionRequest = await apisdk.buildRouterTransactionRequest({
+            chainId,
+            account,
+            logics: collateralSwapInfo.logics,
+          });
+          await expect(user.sendTransaction(transactionRequest)).to.not.be.reverted;
+
+          let srcBalance, destBalance;
+          if (protocolId === 'compound-v3') {
+            const service = new logics.compoundv3.Service(chainId, hre.ethers.provider);
+            srcBalance = await service.getCollateralBalance(marketId, user.address, srcToken);
+            destBalance = await service.getCollateralBalance(marketId, user.address, destToken);
+          } else {
+            srcBalance = await getBalance(user.address, srcAToken!);
+            destBalance = await getBalance(user.address, destAToken!);
+          }
+
+          // 4. user's src token balance will decrease.
+          expect(srcBalance.gte(initSrcBalance.clone().sub(srcAmount))).to.be.true;
+
+          // 5. user's dest token balance will increase.
+          // 5-1. rate may change when the block of getting api data is different from the block of executing tx
+          const supplyAmount = new common.TokenAmount(destToken, collateralSwapInfo.destAmount);
+          const [min, max] = utils.bpsBound(supplyAmount.amount);
+          const maxSupplyAmount = supplyAmount.clone().set(max);
+          const minSupplyAmount = supplyAmount.clone().set(min);
+          expect(destBalance.clone().sub(initDestBalance).lte(maxSupplyAmount)).to.be.true;
+          expect(destBalance.clone().sub(initDestBalance).gte(minSupplyAmount)).to.be.true;
         });
-
-        // 2. user needs to allow the Protocolink user agent to withdraw on behalf of the user
-        const estimateResult = await apisdk.estimateRouterData(
-          { chainId, account, logics: collateralSwapInfo.logics },
-          permit2Type
-        );
-        expect(estimateResult.approvals.length).to.eq(expects.approvalLength);
-        for (const approval of estimateResult.approvals) {
-          await expect(user.sendTransaction(approval)).to.not.be.reverted;
-        }
-
-        // 3. user obtains a collateral swap transaction request
-        expect(collateralSwapInfo.logics.length).to.eq(expects.logicLength);
-        const transactionRequest = await apisdk.buildRouterTransactionRequest({
-          chainId,
-          account,
-          logics: collateralSwapInfo.logics,
-        });
-        await expect(user.sendTransaction(transactionRequest)).to.not.be.reverted;
-
-        let srcBalance, destBalance;
-        if (protocolId === 'compound-v3') {
-          const service = new logics.compoundv3.Service(chainId, hre.ethers.provider);
-          srcBalance = await service.getCollateralBalance(marketId, user.address, srcToken);
-          destBalance = await service.getCollateralBalance(marketId, user.address, destToken);
-        } else {
-          srcBalance = await getBalance(user.address, srcAToken!);
-          destBalance = await getBalance(user.address, destAToken!);
-        }
-
-        // 4. user's src token balance will decrease.
-        expect(srcBalance.gte(initSrcBalance.clone().sub(srcAmount))).to.be.true;
-
-        // 5. user's dest token balance will increase.
-        // 5-1. rate may change when the block of getting api data is different from the block of executing tx
-        const supplyAmount = new common.TokenAmount(destToken, collateralSwapInfo.destAmount);
-        const [min, max] = utils.bpsBound(supplyAmount.amount);
-        const maxSupplyAmount = supplyAmount.clone().set(max);
-        const minSupplyAmount = supplyAmount.clone().set(min);
-        expect(destBalance.clone().sub(initDestBalance).lte(maxSupplyAmount)).to.be.true;
-        expect(destBalance.clone().sub(initDestBalance).gte(minSupplyAmount)).to.be.true;
-      });
-    }
+      }
+    );
   });
 });

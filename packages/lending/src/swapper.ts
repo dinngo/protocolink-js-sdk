@@ -26,7 +26,7 @@ export abstract class Swapper extends common.Web3Toolkit {
 }
 
 export interface SwapperClass {
-  new (chainId: number, library: providers.Provider): Swapper;
+  new (chainId: number, library?: providers.Provider): Swapper;
   readonly supportedChainIds: number[];
   isSupported: (chainId: number) => boolean;
 }

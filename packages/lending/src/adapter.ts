@@ -26,7 +26,7 @@ export class Adapter extends common.Web3Toolkit {
   protocolMap: Record<string, Protocol> = {};
   swappers: Swapper[] = [];
 
-  constructor(chainId: number, provider: providers.Provider) {
+  constructor(chainId: number, provider?: providers.Provider) {
     super(chainId, provider);
 
     for (const Protocol of Adapter.Protocols) {
@@ -642,7 +642,6 @@ export class Adapter extends common.Web3Toolkit {
               repayLogic.fields.balanceBps = common.BPS_BASE;
             }
             output.logics.push(repayLogic);
-            output.afterPortfolio.repay(repayInput.token, repayInput.amount);
 
             // 9. ---------- withdraw ----------
             const withdrawLogic = protocol.newWithdrawLogic({ marketId, output: withdrawOutput });
@@ -884,7 +883,6 @@ export class Adapter extends common.Web3Toolkit {
             repayLogic.fields.balanceBps = common.BPS_BASE;
           }
           output.logics.push(repayLogic);
-          output.afterPortfolio.repay(repayInput.token, repayInput.amount);
         }
       }
     }
