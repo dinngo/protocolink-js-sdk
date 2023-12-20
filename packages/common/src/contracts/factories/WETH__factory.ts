@@ -2,33 +2,33 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from "ethers";
-import type { Provider } from "@ethersproject/providers";
-import type { WETH, WETHInterface } from "../WETH";
+import { Contract, Signer, utils } from 'ethers';
+import type { Provider } from '@ethersproject/providers';
+import type { WETH, WETHInterface } from '../WETH';
 
 const _abi = [
   {
     constant: false,
     inputs: [],
-    name: "deposit",
+    name: 'deposit',
     outputs: [],
     payable: true,
-    stateMutability: "payable",
-    type: "function",
+    stateMutability: 'payable',
+    type: 'function',
   },
   {
     constant: false,
     inputs: [
       {
-        name: "wad",
-        type: "uint256",
+        name: 'wad',
+        type: 'uint256',
       },
     ],
-    name: "withdraw",
+    name: 'withdraw',
     outputs: [],
     payable: false,
-    stateMutability: "nonpayable",
-    type: "function",
+    stateMutability: 'nonpayable',
+    type: 'function',
   },
 ] as const;
 

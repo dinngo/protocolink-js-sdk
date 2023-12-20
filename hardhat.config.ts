@@ -14,7 +14,7 @@ const config: HardhatUserConfig = {
         initialIndex: 0,
       },
       forking: {
-        url: process.env.HTTP_RPC_URL ?? 'https://rpc.ankr.com/eth',
+        url: process.env.HTTP_RPC_URL ?? 'https://eth.llamarpc.com',
       },
     },
   },
