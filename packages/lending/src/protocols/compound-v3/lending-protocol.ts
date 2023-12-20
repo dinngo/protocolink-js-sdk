@@ -265,7 +265,7 @@ export class LendingProtocol extends Protocol {
 
     const supplies: SupplyObject[] = [
       {
-        token: baseToken,
+        token: baseToken.unwrapped,
         price: baseTokenPrice,
         balance: supplyBalance,
         apy: supplyAPR,
@@ -277,7 +277,7 @@ export class LendingProtocol extends Protocol {
     ];
     for (const { token, borrowCollateralFactor, liquidateCollateralFactor } of assets) {
       supplies.push({
-        token,
+        token: token.unwrapped,
         price: assetPriceMap[token.address],
         balance: collateralBalanceMap[token.address],
         apy: '0',
@@ -289,7 +289,7 @@ export class LendingProtocol extends Protocol {
 
     const borrows: BorrowObject[] = [
       {
-        token: baseToken,
+        token: baseToken.unwrapped,
         price: baseTokenPrice,
         balances: [borrowBalance],
         apys: [borrowAPR],

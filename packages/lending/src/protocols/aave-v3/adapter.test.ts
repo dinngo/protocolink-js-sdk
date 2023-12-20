@@ -830,7 +830,7 @@ describe('Test Adapter for Aave V3', function () {
       const srcBorrow = portfolio.findBorrow(srcToken)!;
       const srcAmount = new common.TokenAmount(srcToken, srcBorrow.balances[0]).addWei(1).amount;
 
-      const { destAmount, afterPortfolio, error, logics } = await adapter.debtSwap({
+      const { destAmount, afterPortfolio, error, logics } = await adapter.zapRepay({
         account,
         portfolio,
         srcToken,
