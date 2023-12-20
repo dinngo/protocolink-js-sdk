@@ -20,7 +20,7 @@
     "prepublishOnly": "yarn build",
     "test": "mocha",
     "test:e2e": "hardhat test",
-    "test:unit": "mocha --recursive src examples"
+    "test:unit": "mocha --recursive src"
   },
   "dependencies": {
     "@aave/math-utils": "^1.21.0",
