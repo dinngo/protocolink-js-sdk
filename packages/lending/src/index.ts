@@ -1,7 +1,3 @@
-import * as apisdk from '@protocolink/api';
-
-apisdk.init({ baseURL: 'https://api-beta.protocolink.com' });
-
 export * from './adapter';
 export * from './adapter.type';
 export * from './protocol';
