@@ -2,7 +2,7 @@ import { LendingProtocol as AaveV2Lending } from 'src/protocols/aave-v2/lending-
 import { LendingProtocol as AaveV3Lending } from 'src/protocols/aave-v3/lending-protocol';
 import { Adapter } from 'src/adapter';
 import { LendingProtocol as CompoundV3Lending } from 'src/protocols/compound-v3/lending-protocol';
-import { LendingSwapper } from 'src/protocols/paraswap-v5/lending-swapper';
+import { LendingSwapper } from 'src/swappers/paraswap-v5/lending-swapper';
 import { LendingProtocol as RadiantV2Lending } from 'src/protocols/radiant-v2/lending-protocol';
 
 export async function setup() {

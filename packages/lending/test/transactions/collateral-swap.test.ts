@@ -3,9 +3,10 @@ import { Portfolio } from 'src/protocol.portfolio';
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 import * as aaveV2 from 'src/protocols/aave-v2/tokens';
 import * as aaveV3 from 'src/protocols/aave-v3/tokens';
-import { claimToken, getBalance, mainnetTokens, snapshotAndRevertEach } from '@protocolink/test-helpers';
+import * as apisdk from '@protocolink/api';
 import * as common from '@protocolink/common';
 import { expect } from 'chai';
+import { getBalance, mainnetTokens, snapshotAndRevertEach } from '@protocolink/test-helpers';
 import hre from 'hardhat';
 import * as logics from '@protocolink/logics';
 import * as radiantV2 from 'src/protocols/radiant-v2/tokens';
@@ -13,6 +14,7 @@ import * as utils from 'test/utils';
 
 describe('Transaction: Collateral swap', function () {
   const chainId = 1;
+  const permit2Type = 'approve';
 
   let portfolio: Portfolio;
   let user: SignerWithAddress;
@@ -20,9 +22,6 @@ describe('Transaction: Collateral swap', function () {
 
   before(async function () {
     adapter = new Adapter(chainId, hre.ethers.provider);
-    [, user] = await hre.ethers.getSigners();
-
-    await claimToken(chainId, user.address, mainnetTokens.WETH, '5');
   });
 
   snapshotAndRevertEach();
@@ -32,150 +31,126 @@ describe('Transaction: Collateral swap', function () {
       {
         protocolId: 'aave-v2',
         marketId: 'mainnet',
-        params: {
-          srcToken: mainnetTokens.WETH,
-          srcAmount: '1',
-          srcAToken: aaveV2.mainnetTokens.aWETH,
-          destToken: mainnetTokens.WBTC,
-          destAToken: aaveV2.mainnetTokens.aWBTC,
-        },
+        account: '0x7F67F6A09bcb2159b094B64B4acc53D5193AEa2E',
+        srcToken: mainnetTokens.WBTC,
+        srcAmount: '1',
+        srcAToken: aaveV2.mainnetTokens.aWBTC,
+        destToken: mainnetTokens.WETH,
+        destAToken: aaveV2.mainnetTokens.aWETH,
         expects: {
-          approveTimes: 1,
+          approvalLength: 2,
           logicLength: 7,
         },
       },
       {
         protocolId: 'radiant-v2',
         marketId: 'mainnet',
-        params: {
-          srcToken: mainnetTokens.WETH,
-          srcAmount: '1',
-          srcAToken: radiantV2.mainnetTokens.rWETH,
-          destToken: mainnetTokens.WBTC,
-          destAToken: radiantV2.mainnetTokens.rWBTC,
-        },
+        account: '0xA38D6E3Aa9f3E4F81D4cEf9B8bCdC58aB37d066A',
+        srcToken: mainnetTokens.WBTC,
+        srcAmount: '1',
+        srcAToken: radiantV2.mainnetTokens.rWBTC,
+        destToken: mainnetTokens.WETH,
+        destAToken: radiantV2.mainnetTokens.rWETH,
         expects: {
-          approveTimes: 1,
+          approvalLength: 2,
           logicLength: 7,
         },
       },
       {
         protocolId: 'aave-v3',
         marketId: 'mainnet',
-        params: {
-          srcToken: mainnetTokens.WETH,
-          srcAmount: '1',
-          srcAToken: aaveV3.mainnetTokens.aEthWETH,
-          destToken: mainnetTokens.WBTC,
-          destAToken: aaveV3.mainnetTokens.aEthWBTC,
-        },
+        account: '0x06e4Cb4f3ba9A2916B6384aCbdeAa74dAAF91550',
+        srcToken: mainnetTokens.WBTC,
+        srcAmount: '1',
+        srcAToken: aaveV3.mainnetTokens.aEthWBTC,
+        destToken: mainnetTokens.WETH,
+        destAToken: aaveV3.mainnetTokens.aEthWETH,
         expects: {
-          approveTimes: 1,
+          approvalLength: 2,
           logicLength: 7,
         },
       },
       {
         protocolId: 'compound-v3',
         marketId: logics.compoundv3.MarketId.USDC,
-        params: {
-          srcToken: mainnetTokens.WETH,
-          srcAmount: '1',
-          destToken: mainnetTokens.WBTC,
-        },
+        account: '0x53fb0162bC8d5EEc2fB1532923C4f8997BAce111',
+        srcToken: mainnetTokens.WBTC,
+        srcAmount: '1',
+        destToken: mainnetTokens.WETH,
         expects: {
-          approveTimes: 1,
+          approvalLength: 1,
           logicLength: 5,
         },
       },
     ];
 
-    for (const [i, { protocolId, marketId, params, expects }] of testCases.entries()) {
+    for (const [
+      i,
+      { protocolId, marketId, account, srcToken, srcAmount, srcAToken, destToken, destAToken, expects },
+    ] of testCases.entries()) {
       it(`case ${i + 1} - ${protocolId}:${marketId}`, async function () {
-        const supplyAmount = new common.TokenAmount(params.srcToken, '5');
-        const borrowAmount = new common.TokenAmount(mainnetTokens.USDC, '2000');
+        user = await hre.ethers.getImpersonatedSigner(account);
+        portfolio = await adapter.getPortfolio(user.address, protocolId, marketId);
 
-        // 1. user supply and borrow token
-        let service, lendingPoolAddress;
-        switch (protocolId) {
-          case 'aave-v2':
-            service = new logics.aavev2.Service(chainId, hre.ethers.provider);
-            lendingPoolAddress = await service.getLendingPoolAddress();
-            await utils.depositAaveV2(user, lendingPoolAddress, supplyAmount);
-            await utils.borrowAaveV2(user, lendingPoolAddress, borrowAmount);
-            break;
-          case 'radiant-v2':
-            service = new logics.radiantv2.Service(chainId, hre.ethers.provider);
-            lendingPoolAddress = await service.getLendingPoolAddress();
-            await utils.depositRadiantV2(user, lendingPoolAddress, supplyAmount);
-            await utils.borrowRadiantV2(user, lendingPoolAddress, borrowAmount);
-            break;
-          case 'aave-v3':
-            service = new logics.aavev3.Service(chainId, hre.ethers.provider);
-            lendingPoolAddress = await service.getPoolAddress();
-            await utils.supplyAaveV3(user, lendingPoolAddress, supplyAmount);
-            await utils.borrowAaveV3(user, lendingPoolAddress, borrowAmount);
-            break;
-          case 'compound-v3':
-            service = new logics.compoundv3.Service(chainId, hre.ethers.provider);
-            await utils.supply(chainId, user, marketId, supplyAmount);
-            await utils.borrow(chainId, user, marketId, borrowAmount);
-            break;
-          default:
-            expect(protocolId).to.eq('unsupported'); // throw error
+        let initSrcBalance, initDestBalance;
+        if (protocolId === 'compound-v3') {
+          const service = new logics.compoundv3.Service(chainId, hre.ethers.provider);
+          initSrcBalance = await service.getCollateralBalance(marketId, user.address, srcToken);
+          initDestBalance = await service.getCollateralBalance(marketId, user.address, destToken);
+        } else {
+          initSrcBalance = await getBalance(user.address, srcAToken!);
+          initDestBalance = await getBalance(user.address, destAToken!);
         }
 
-        // 3. user obtains a quotation for collateral swap srcToken to destToken
-        const collateralSwapInfo = await adapter.collateralSwap(protocolId, marketId, params, user.address, portfolio);
-        const estimateResult = collateralSwapInfo.estimateResult;
+        // 1. user obtains a quotation for collateral swap srcToken to destToken
+        const collateralSwapInfo = await adapter.collateralSwap({
+          account,
+          portfolio,
+          srcToken,
+          srcAmount,
+          destToken,
+        });
 
-        // 4. user needs to allow the Protocolink user agent to borrow on behalf of the user
-        expect(estimateResult.approvals.length).to.eq(expects.approveTimes);
+        // 2. user needs to allow the Protocolink user agent to withdraw on behalf of the user
+        const estimateResult = await apisdk.estimateRouterData(
+          { chainId, account, logics: collateralSwapInfo.logics },
+          permit2Type
+        );
+        expect(estimateResult.approvals.length).to.eq(expects.approvalLength);
         for (const approval of estimateResult.approvals) {
           await expect(user.sendTransaction(approval)).to.not.be.reverted;
         }
-        expect(estimateResult).to.include.all.keys('funds', 'balances', 'approvals');
 
-        // 5. user obtains a collateral swap transaction request
-        let transactionRequest;
-        if (protocolId !== 'compound-v3') {
-          const permitData = estimateResult.permitData;
-          expect(permitData).to.not.be.undefined;
-          const { domain, types, values } = permitData!;
-          const permitSig = await user._signTypedData(domain, types, values);
-
-          transactionRequest = await collateralSwapInfo.buildRouterTransactionRequest({
-            permitData,
-            permitSig,
-          });
-        } else {
-          transactionRequest = await collateralSwapInfo.buildRouterTransactionRequest();
-        }
+        // 3. user obtains a collateral swap transaction request
         expect(collateralSwapInfo.logics.length).to.eq(expects.logicLength);
-        expect(transactionRequest).to.include.all.keys('to', 'data', 'value');
+        const transactionRequest = await apisdk.buildRouterTransactionRequest({
+          chainId,
+          account,
+          logics: collateralSwapInfo.logics,
+        });
         await expect(user.sendTransaction(transactionRequest)).to.not.be.reverted;
 
-        let collateralBalance, destBalance, quoteDestAmount;
+        let srcBalance, destBalance;
         if (protocolId === 'compound-v3') {
-          service = new logics.compoundv3.Service(chainId, hre.ethers.provider);
-          collateralBalance = await service.getCollateralBalance(marketId, user.address, params.srcToken);
-          destBalance = await service.getCollateralBalance(marketId, user.address, params.destToken);
-          quoteDestAmount = new common.TokenAmount(params.destToken, collateralSwapInfo.fields.destAmount);
+          const service = new logics.compoundv3.Service(chainId, hre.ethers.provider);
+          srcBalance = await service.getCollateralBalance(marketId, user.address, srcToken);
+          destBalance = await service.getCollateralBalance(marketId, user.address, destToken);
         } else {
-          collateralBalance = await getBalance(user.address, params.srcAToken!);
-          destBalance = await getBalance(user.address, params.destAToken!);
-          quoteDestAmount = new common.TokenAmount(params.destToken, collateralSwapInfo.fields.destAmount);
+          srcBalance = await getBalance(user.address, srcAToken!);
+          destBalance = await getBalance(user.address, destAToken!);
         }
 
-        // 6. user's src token balance will decrease.
-        expect(collateralBalance.gte(supplyAmount.clone().sub(params.srcAmount))).to.be.true;
+        // 4. user's src token balance will decrease.
+        expect(srcBalance.gte(initSrcBalance.clone().sub(srcAmount))).to.be.true;
 
-        // 7. user's dest token balance will increase.
-        // 7-1. rate may change when the block of getting api data is different from the block of executing tx
-        const [min, max] = utils.bpsBound(quoteDestAmount.amount);
-        const maxDestAmount = quoteDestAmount.clone().set(max);
-        const minDestAmount = quoteDestAmount.clone().set(min);
-        expect(destBalance.lte(maxDestAmount)).to.be.true;
-        expect(destBalance.gte(minDestAmount)).to.be.true;
+        // 5. user's dest token balance will increase.
+        // 5-1. rate may change when the block of getting api data is different from the block of executing tx
+        const supplyAmount = new common.TokenAmount(destToken, collateralSwapInfo.destAmount);
+        const [min, max] = utils.bpsBound(supplyAmount.amount);
+        const maxSupplyAmount = supplyAmount.clone().set(max);
+        const minSupplyAmount = supplyAmount.clone().set(min);
+        expect(destBalance.clone().sub(initDestBalance).lte(maxSupplyAmount)).to.be.true;
+        expect(destBalance.clone().sub(initDestBalance).gte(minSupplyAmount)).to.be.true;
       });
     }
   });
