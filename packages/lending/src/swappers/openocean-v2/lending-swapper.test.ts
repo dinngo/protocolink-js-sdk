@@ -4,8 +4,8 @@ import * as common from '@protocolink/common';
 import { expect } from 'chai';
 import { metisTokens } from 'src/tokens';
 
-describe('Test Radiant V2 LendingProtocol', function () {
-  context('Test getPortfolio', function () {
+describe('Test OpenOcean V2 LendingSwapper', function () {
+  context('Test quote', function () {
     const testCases: { chainId: common.ChainId; params: SwapperQuoteParams }[] = [
       {
         chainId: common.ChainId.metis,
