@@ -63,7 +63,7 @@ export abstract class Protocol extends common.Web3Toolkit {
     return true;
   }
 
-  preferredFlashLoanerId?: string;
+  preferredFlashLoanProtocolId?: string;
 
   abstract newSupplyLogic(params: SupplyParams): api.Logic<SupplyFields>;
 

@@ -91,6 +91,7 @@ describe('Test Adapter for Radiant V2', function () {
 
       expect(logics).has.length(7);
       expect(logics[0].rid).to.eq('utility:flash-loan-aggregator');
+      expect(logics[0].fields.protocolId).to.eq('radiant-v2');
       expect(logics[1].rid).to.contain('swap-token');
       expect(logics[2].rid).to.eq('radiant-v2:deposit');
       expect(logics[2].fields.balanceBps).to.eq(common.BPS_BASE);
@@ -181,6 +182,7 @@ describe('Test Adapter for Radiant V2', function () {
 
       expect(logics).has.length(5);
       expect(logics[0].rid).to.eq('utility:flash-loan-aggregator');
+      expect(logics[0].fields.protocolId).to.eq('radiant-v2');
       expect(logics[1].rid).to.contain('swap-token');
       expect(logics[2].rid).to.eq('radiant-v2:repay');
       expect(logics[2].fields.balanceBps).to.eq(common.BPS_BASE);
@@ -241,6 +243,7 @@ describe('Test Adapter for Radiant V2', function () {
 
       expect(logics).has.length(5);
       expect(logics[0].rid).to.eq('utility:flash-loan-aggregator');
+      expect(logics[0].fields.protocolId).to.eq('radiant-v2');
       expect(logics[1].rid).to.eq('radiant-v2:deposit');
       expect(logics[1].fields.balanceBps).to.be.undefined;
       expect(logics[2].rid).to.eq('utility:send-token');
@@ -274,6 +277,7 @@ describe('Test Adapter for Radiant V2', function () {
 
       expect(logics).has.length(6);
       expect(logics[0].rid).to.eq('utility:flash-loan-aggregator');
+      expect(logics[0].fields.protocolId).to.eq('radiant-v2');
       expect(logics[1].rid).to.contain('swap-token');
       expect(logics[2].rid).to.eq('radiant-v2:deposit');
       expect(logics[2].fields.balanceBps).to.eq(common.BPS_BASE);
@@ -330,13 +334,14 @@ describe('Test Adapter for Radiant V2', function () {
 
       const expectedAfterPortfolio = portfolio.clone();
       expectedAfterPortfolio.supply(destToken, destAmount);
-      expectedAfterPortfolio.borrow(srcToken, srcAmount);
+      expectedAfterPortfolio.borrow(srcToken, logics[3].fields.output.amount);
       expect(JSON.stringify(expectedAfterPortfolio)).to.eq(JSON.stringify(afterPortfolio));
 
       expect(error).to.be.undefined;
 
       expect(logics).has.length(5);
       expect(logics[0].rid).to.eq('utility:flash-loan-aggregator');
+      expect(logics[0].fields.protocolId).to.eq('radiant-v2');
       expect(logics[1].rid).to.eq('radiant-v2:deposit');
       expect(logics[1].fields.balanceBps).to.be.undefined;
       expect(logics[2].rid).to.eq('utility:send-token');
@@ -370,6 +375,7 @@ describe('Test Adapter for Radiant V2', function () {
 
       expect(logics).has.length(6);
       expect(logics[0].rid).to.eq('utility:flash-loan-aggregator');
+      expect(logics[0].fields.protocolId).to.eq('radiant-v2');
       expect(logics[1].rid).to.contain('swap-token');
       expect(logics[2].rid).to.eq('radiant-v2:deposit');
       expect(logics[2].fields.balanceBps).to.eq(common.BPS_BASE);
@@ -484,6 +490,7 @@ describe('Test Adapter for Radiant V2', function () {
 
       expect(logics).has.length(5);
       expect(logics[0].rid).to.eq('utility:flash-loan-aggregator');
+      expect(logics[0].fields.protocolId).to.eq('radiant-v2');
       expect(logics[1].rid).to.eq('radiant-v2:repay');
       expect(logics[1].fields.balanceBps).to.be.undefined;
       expect(logics[2].rid).to.eq('permit2:pull-token');
@@ -516,6 +523,7 @@ describe('Test Adapter for Radiant V2', function () {
 
       expect(logics).has.length(6);
       expect(logics[0].rid).to.eq('utility:flash-loan-aggregator');
+      expect(logics[0].fields.protocolId).to.eq('radiant-v2');
       expect(logics[1].rid).to.contain('swap-token');
       expect(logics[2].rid).to.eq('radiant-v2:repay');
       expect(logics[2].fields.balanceBps).to.eq(common.BPS_BASE);

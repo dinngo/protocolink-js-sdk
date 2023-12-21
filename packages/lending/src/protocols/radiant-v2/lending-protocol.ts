@@ -45,6 +45,7 @@ export class LendingProtocol extends Protocol {
 
   readonly id = ID;
   readonly market: Market;
+  readonly preferredFlashLoanProtocolId = logics.radiantv2.FlashLoanLogic.protocolId;
 
   constructor(chainId: number, provider?: providers.Provider) {
     super(chainId, provider);

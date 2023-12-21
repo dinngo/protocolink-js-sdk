@@ -191,7 +191,7 @@ export class Adapter extends common.Web3Toolkit {
           }
           const flashLoanAggregatorQuotation = await apisdk.protocols.utility.getFlashLoanAggregatorQuotation(
             this.chainId,
-            { repays: [flashLoanRepay] }
+            { repays: [flashLoanRepay], protocolId: protocol.preferredFlashLoanProtocolId }
           );
           const [flashLoanLoanLogic, flashLoanRepayLogic] = apisdk.protocols.utility.newFlashLoanAggregatorLogicPair(
             flashLoanAggregatorQuotation.protocolId,
@@ -300,7 +300,7 @@ export class Adapter extends common.Web3Toolkit {
           // flash loan dest amount and insert before swap token logic
           const flashLoanAggregatorQuotation = await apisdk.protocols.utility.getFlashLoanAggregatorQuotation(
             this.chainId,
-            { loans: [swapQuotation.input] }
+            { loans: [swapQuotation.input], protocolId: protocol.preferredFlashLoanProtocolId }
           );
           const [flashLoanLoanLogic, flashLoanRepayLogic] = apisdk.protocols.utility.newFlashLoanAggregatorLogicPair(
             flashLoanAggregatorQuotation.protocolId,
@@ -394,7 +394,7 @@ export class Adapter extends common.Web3Toolkit {
         // 2. ---------- flashloan ----------
         const flashLoanAggregatorQuotation = await apisdk.protocols.utility.getFlashLoanAggregatorQuotation(
           this.chainId,
-          { loans: [flashLoanLoan] }
+          { loans: [flashLoanLoan], protocolId: protocol.preferredFlashLoanProtocolId }
         );
         const [flashLoanLoanLogic, flashLoanRepayLogic] = apisdk.protocols.utility.newFlashLoanAggregatorLogicPair(
           flashLoanAggregatorQuotation.protocolId,
@@ -477,7 +477,7 @@ export class Adapter extends common.Web3Toolkit {
         // 1. ---------- flashloan ----------
         const flashLoanAggregatorQuotation = await apisdk.protocols.utility.getFlashLoanAggregatorQuotation(
           this.chainId,
-          { loans: [{ token: srcToken.wrapped, amount: srcAmount }] }
+          { loans: [{ token: srcToken.wrapped, amount: srcAmount }], protocolId: protocol.preferredFlashLoanProtocolId }
         );
         const [flashLoanLoanLogic, flashLoanRepayLogic] = apisdk.protocols.utility.newFlashLoanAggregatorLogicPair(
           flashLoanAggregatorQuotation.protocolId,
@@ -603,7 +603,7 @@ export class Adapter extends common.Web3Toolkit {
           // 4. obtain the flash loan quotation
           const flashLoanAggregatorQuotation = await apisdk.protocols.utility.getFlashLoanAggregatorQuotation(
             this.chainId,
-            { loans: [flashLoanLoan] }
+            { loans: [flashLoanLoan], protocolId: protocol.preferredFlashLoanProtocolId }
           );
 
           // 5. validate withdraw
