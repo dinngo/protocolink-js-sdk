@@ -506,7 +506,7 @@ export const configs: Config[] = [
       {
         asset: avalancheTokens.MAI,
         aToken: avalancheTokens.aAvaMAI,
-        used: { withdraw: true, repay: true },
+        used: { deposit: true, withdraw: true, borrow: true, repay: true, flashLoan: true },
       },
     ],
   },
