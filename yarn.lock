@@ -1085,7 +1085,7 @@
     node-addon-api "^3.2.1"
     node-gyp-build "^4.3.0"
 
-"@protocolink/logics@^1.0.1", "@protocolink/logics@^1.0.3":
+"@protocolink/logics@^1.0.3":
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/@protocolink/logics/-/logics-1.0.3.tgz#77165f4be3325d8aa80ed84ff34ef45711ea0de1"
   integrity sha512-2Xp+W4er5Q5AoGlmEQ/Pbg/efPZmyK5YeCCgtF6yBamik2pbHIuZ8pkPG5eBbHK8icpDPJ9quxC9x9fgNICyNQ==
