@@ -369,5 +369,19 @@
     "decimals": 18,
     "symbol": "aEthFXS",
     "name": "Aave Ethereum FXS"
+  },
+  "crvUSD": {
+    "chainId": 1,
+    "address": "0xf939E0A03FB07F59A73314E73794Be0E57ac1b4E",
+    "decimals": 18,
+    "symbol": "crvUSD",
+    "name": "Curve.Fi USD Stablecoin"
+  },
+  "aEthcrvUSD": {
+    "chainId": 1,
+    "address": "0xb82fa9f31612989525992FCfBB09AB22Eff5c85A",
+    "decimals": 18,
+    "symbol": "aEthcrvUSD",
+    "name": "Aave Ethereum crvUSD"
   }
 }

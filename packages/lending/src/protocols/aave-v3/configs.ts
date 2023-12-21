@@ -154,6 +154,16 @@ export const configs: Config[] = [
         aToken: mainnetTokens.aEthSTG,
         used: { deposit: true, withdraw: true, flashLoan: true },
       },
+      {
+        asset: mainnetTokens.FXS,
+        aToken: mainnetTokens.aEthFXS,
+        used: { deposit: true, withdraw: true, flashLoan: true },
+      },
+      {
+        asset: mainnetTokens.crvUSD,
+        aToken: mainnetTokens.aEthcrvUSD,
+        used: { deposit: true, withdraw: true, borrow: true, repay: true, flashLoan: true },
+      },
     ],
   },
   // https://github.com/bgd-labs/aave-address-book/blob/main/src/AaveV3Polygon.sol
@@ -492,6 +502,11 @@ export const configs: Config[] = [
         asset: avalancheTokens.AVAX,
         aToken: avalancheTokens.aAvaWAVAX,
         used: { deposit: true, withdraw: true, borrow: true, repay: true },
+      },
+      {
+        asset: avalancheTokens.MAI,
+        aToken: avalancheTokens.aAvaMAI,
+        used: { withdraw: true, repay: true },
       },
     ],
   },
