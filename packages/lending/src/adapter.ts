@@ -291,7 +291,7 @@ export class Adapter extends common.Web3Toolkit {
           const swapper = this.findSwapper([destToken.wrapped, srcToken.wrapped]);
           let swapQuotation = await swapper.quote({
             tokenIn: destToken.wrapped,
-            output: { token: srcToken.wrapped, amount: srcAmount },
+            output: new common.TokenAmount(srcToken.wrapped, srcAmount),
           });
           // 3-1. convert swap type to exact in
           swapQuotation = await swapper.quote({ input: swapQuotation.input, tokenOut: srcToken.wrapped, slippage });
@@ -381,7 +381,7 @@ export class Adapter extends common.Web3Toolkit {
           // 1-2-1. retrieve the amount needed to borrow based on the collateral token and amount
           swapQuotation = await swapper.quote({
             tokenIn: destToken.wrapped,
-            output: { token: srcToken.wrapped, amount: srcAmount },
+            output: new common.TokenAmount(srcToken.wrapped, srcAmount),
           });
           // 1-2-2. convert swap type to exact in
           swapQuotation = await swapper.quote({ input: swapQuotation.input, tokenOut: srcToken.wrapped, slippage });
@@ -593,7 +593,7 @@ export class Adapter extends common.Web3Toolkit {
             // 2-2-2. get the quotation for how much dest token is needed to exchange for the src amount
             swapQuotation = await swapper.quote({
               tokenIn: destToken.wrapped,
-              output: { token: srcToken.wrapped, amount: srcAmount },
+              output: new common.TokenAmount(srcToken.wrapped, srcAmount),
             });
             // 2-2-3. convert swap type to exact in
             swapQuotation = await swapper.quote({ input: swapQuotation.input, tokenOut: srcToken.wrapped, slippage });
@@ -695,7 +695,7 @@ export class Adapter extends common.Web3Toolkit {
       else {
         const swapper = this.findSwapper([srcToken, destToken]);
         const swapQuotation = await swapper.quote({
-          input: { token: srcToken, amount: srcAmount },
+          input: new common.TokenAmount(srcToken, srcAmount),
           tokenOut: destToken.wrapped,
           slippage,
         });
@@ -870,7 +870,7 @@ export class Adapter extends common.Web3Toolkit {
             // 2-2-2. get the quotation for how much dest token is needed to exchange for the src amount
             let swapQuotation = await swapper.quote({
               tokenIn: destToken,
-              output: { token: srcToken.wrapped, amount: srcAmount },
+              output: new common.TokenAmount(srcToken.wrapped, srcAmount),
             });
             // 2-2-3. convert swap type to exact in
             swapQuotation = await swapper.quote({ input: swapQuotation.input, tokenOut: srcToken.wrapped, slippage });

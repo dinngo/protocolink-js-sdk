@@ -1,5 +1,6 @@
 import { ID, supportedChainIds } from './configs';
 import { Swapper } from 'src/swapper';
+import { SwapperQuoteParams } from 'src/swapper.type';
 import * as apisdk from '@protocolink/api';
 import * as common from '@protocolink/common';
 
@@ -22,7 +23,7 @@ export class LendingSwapper extends Swapper {
     return this._tokens;
   }
 
-  async quote(params: apisdk.protocols.paraswapv5.SwapTokenParams) {
+  async quote(params: SwapperQuoteParams) {
     return apisdk.protocols.paraswapv5.getSwapTokenQuotation(this.chainId, { ...params, excludeDEXS: ['BalancerV2'] });
   }
 
