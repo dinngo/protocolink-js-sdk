@@ -155,6 +155,11 @@ export const configs: Config[] = [
         used: { deposit: true, withdraw: true, flashLoan: true },
       },
       {
+        asset: mainnetTokens.KNC,
+        aToken: mainnetTokens.aEthKNC,
+        used: { deposit: true, withdraw: true, borrow: true, repay: true, flashLoan: true },
+      },
+      {
         asset: mainnetTokens.FXS,
         aToken: mainnetTokens.aEthFXS,
         used: { deposit: true, withdraw: true, flashLoan: true },
