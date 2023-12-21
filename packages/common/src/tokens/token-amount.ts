@@ -39,7 +39,7 @@ export class TokenAmount {
   }
 
   static precise(amount: string, decimals: number) {
-    return BigNumberJS(amount).decimalPlaces(decimals, BigNumberJS.ROUND_DOWN).toString();
+    return BigNumberJS(amount).decimalPlaces(decimals, BigNumberJS.ROUND_DOWN).toFixed();
   }
 
   get amountWei() {
@@ -73,22 +73,22 @@ export class TokenAmount {
   add(amount: string): TokenAmount;
   add(tokenAmount: TokenAmount): TokenAmount;
   add(arg0: any) {
-    this.amount = BigNumberJS(this.amount).plus(this.precise(arg0)).toString();
+    this.amount = BigNumberJS(this.amount).plus(this.precise(arg0)).toFixed();
     return this;
   }
   addWei(amountWei: BigNumberish) {
-    this.amount = BigNumberJS(this.amount).plus(toBigUnit(amountWei, this.token.decimals)).toString();
+    this.amount = BigNumberJS(this.amount).plus(toBigUnit(amountWei, this.token.decimals)).toFixed();
     return this;
   }
 
   sub(amount: string): TokenAmount;
   sub(tokenAmount: TokenAmount): TokenAmount;
   sub(arg0: any) {
-    this.amount = BigNumberJS(this.amount).minus(this.precise(arg0)).toString();
+    this.amount = BigNumberJS(this.amount).minus(this.precise(arg0)).toFixed();
     return this;
   }
   subWei(amountWei: BigNumberish) {
-    this.amount = BigNumberJS(this.amount).minus(toBigUnit(amountWei, this.token.decimals)).toString();
+    this.amount = BigNumberJS(this.amount).minus(toBigUnit(amountWei, this.token.decimals)).toFixed();
     return this;
   }
 

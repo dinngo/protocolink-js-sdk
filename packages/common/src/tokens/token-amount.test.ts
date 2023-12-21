@@ -170,6 +170,20 @@ describe('TokenAmount', function () {
     });
   });
 
+  context('Test small amount operations', function () {
+    const tokenAmount1 = new TokenAmount(mainnetTokens.ETH).setWei(1);
+    tokenAmount1.add('0.000000000000000009');
+    expect(tokenAmount1.amount).to.eq('0.00000000000000001');
+    tokenAmount1.addWei(5);
+    expect(tokenAmount1.amount).to.eq('0.000000000000000015');
+
+    const tokenAmount2 = new TokenAmount(mainnetTokens.ETH).setWei(100);
+    tokenAmount2.sub('0.00000000000000001');
+    expect(tokenAmount2.amount).to.eq('0.00000000000000009');
+    tokenAmount2.subWei(5);
+    expect(tokenAmount2.amount).to.eq('0.000000000000000085');
+  });
+
   context('Test toJSON', function () {
     const testCases = [
       {
