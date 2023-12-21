@@ -1,5 +1,12 @@
 # @protocolink/core
 
+## 0.4.5
+
+### Patch Changes
+
+- df9e218: Updated dependencies
+  - @protocolink/common@0.3.5
+
 ## 0.4.4
 
 ### Patch Changes
