@@ -1,5 +1,12 @@
 # @protocolink/test-helpers
 
+## 0.3.4
+
+### Patch Changes
+
+- b9d1fd5: Updated dependencies
+  - @protocolink/common@0.3.5
+
 ## 0.3.3
 
 ### Patch Changes
