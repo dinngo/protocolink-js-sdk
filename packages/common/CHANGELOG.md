@@ -1,5 +1,11 @@
 # @protocolink/common
 
+## 0.3.5
+
+### Patch Changes
+
+- edfa828: fixed TokenAmount converting to scientific notation when dealing with small units issue
+
 ## 0.3.4
 
 ### Patch Changes
