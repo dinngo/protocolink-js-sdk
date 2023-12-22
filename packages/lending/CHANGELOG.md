@@ -1,5 +1,11 @@
 # @protocolink/lending
 
+## 1.0.3
+
+### Patch Changes
+
+- 20e6cc4: fix portfolio utilization issue
+
 ## 1.0.2
 
 ### Patch Changes
