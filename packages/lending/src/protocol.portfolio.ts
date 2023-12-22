@@ -203,7 +203,9 @@ export class Portfolio {
 
   get utilization() {
     return this.totalBorrowCapacityUSD.isZero()
-      ? '0'
+      ? this.totalBorrowUSD.isZero()
+        ? '0'
+        : '1'
       : this.hasBorrowCapacity
       ? calcUtilization(this.totalBorrowCapacityUSD, this.totalBorrowUSD)
       : '1';
