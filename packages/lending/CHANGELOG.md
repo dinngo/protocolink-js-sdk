@@ -1,5 +1,11 @@
 # @protocolink/lending
 
+## 1.0.4
+
+### Patch Changes
+
+- b842583: fix radiant v2 USDC symbol to USDC.e
+
 ## 1.0.3
 
 ### Patch Changes
