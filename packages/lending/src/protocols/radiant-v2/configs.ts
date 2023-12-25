@@ -87,7 +87,7 @@ export const configs: Config[] = [
         used: { deposit: true, withdraw: true, borrow: true, repay: true, flashLoan: true },
       },
       {
-        asset: arbitrumTokens.USDC, // USDC.e
+        asset: arbitrumTokens['USDC.e'],
         rToken: arbitrumTokens.rUSDC,
         used: { deposit: true, withdraw: true, borrow: true, repay: true, flashLoan: true },
       },
