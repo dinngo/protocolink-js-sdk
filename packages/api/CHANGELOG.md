@@ -1,5 +1,11 @@
 # @furucombo/composable-router-api
 
+## 1.0.4
+
+### Patch Changes
+
+- 0cbddac: estimateRouterData add apiKey option
+
 ## 1.0.3
 
 ### Patch Changes
