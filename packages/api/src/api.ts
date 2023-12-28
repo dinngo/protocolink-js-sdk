@@ -1,5 +1,5 @@
 import { Permit2Type, RouterData, RouterDataEstimateResult } from './types';
-import axios, { AxiosRequestConfig } from 'axios';
+import axios from 'axios';
 import axiosRetry from 'axios-retry';
 import * as common from '@protocolink/common';
 
@@ -41,22 +41,24 @@ export async function quote(chainId: number, rid: string, data: any) {
 
 export async function estimateRouterData(
   routerData: RouterData,
-  permit2Type?: Permit2Type
+  options: { permit2Type?: Permit2Type; apiKey?: string } = {}
 ): Promise<RouterDataEstimateResult> {
   const resp = await client.post(
-    `/v1/transactions/estimate${permit2Type ? `?permit2Type=${permit2Type}` : ''}`,
-    routerData
+    `/v1/transactions/estimate${options.permit2Type ? `?permit2Type=${options.permit2Type}` : ''}`,
+    routerData,
+    options.apiKey ? { headers: { 'x-api-key': options.apiKey } } : undefined
   );
   return common.classifying(resp.data);
 }
 
 export async function buildRouterTransactionRequest(
   routerData: RouterData,
-  headers?: Record<string, string>
+  options: { apiKey?: string } = {}
 ): Promise<common.TransactionRequest> {
-  const config: AxiosRequestConfig = {
-    headers: headers || {},
-  };
-  const resp = await client.post('/v1/transactions/build', routerData, config);
+  const resp = await client.post(
+    '/v1/transactions/build',
+    routerData,
+    options.apiKey ? { headers: { 'x-api-key': options.apiKey } } : undefined
+  );
   return resp.data;
 }

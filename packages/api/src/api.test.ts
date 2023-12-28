@@ -52,7 +52,7 @@ describe('API client', function () {
   });
 
   it('Test estimateRouterData with approve permit2Type', async function () {
-    const estimateResult = await estimateRouterData(routerData, 'approve');
+    const estimateResult = await estimateRouterData(routerData, { permit2Type: 'approve' });
     expect(estimateResult).to.include.all.keys('funds', 'balances', 'fees', 'approvals');
   });
 
