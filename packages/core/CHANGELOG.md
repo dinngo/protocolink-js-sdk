@@ -1,5 +1,11 @@
 # @protocolink/core
 
+## 0.4.6
+
+### Patch Changes
+
+- d79f5c9: add Router address to Goerli
+
 ## 0.4.5
 
 ### Patch Changes
