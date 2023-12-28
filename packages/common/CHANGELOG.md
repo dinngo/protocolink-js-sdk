@@ -1,5 +1,11 @@
 # @protocolink/common
 
+## 0.3.6
+
+### Patch Changes
+
+- f81d5c5: add Goerli information
+
 ## 0.3.5
 
 ### Patch Changes
