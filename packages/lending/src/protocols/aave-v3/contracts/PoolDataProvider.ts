@@ -6,39 +6,100 @@ import type { FunctionFragment, Result } from '@ethersproject/abi';
 import type { Listener, Provider } from '@ethersproject/providers';
 import type { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from './common';
 
+export declare namespace IPoolDataProvider {
+  export type TokenDataStruct = { symbol: string; tokenAddress: string };
+
+  export type TokenDataStructOutput = [string, string] & {
+    symbol: string;
+    tokenAddress: string;
+  };
+}
+
 export interface PoolDataProviderInterface extends utils.Interface {
   functions: {
-    'getReserveConfigurationData(address)': FunctionFragment;
-    'getReserveTokensAddresses(address)': FunctionFragment;
-    'getUserReserveData(address,address)': FunctionFragment;
-    'getReserveData(address)': FunctionFragment;
+    'ADDRESSES_PROVIDER()': FunctionFragment;
+    'getATokenTotalSupply(address)': FunctionFragment;
+    'getAllATokens()': FunctionFragment;
+    'getAllReservesTokens()': FunctionFragment;
     'getDebtCeiling(address)': FunctionFragment;
+    'getDebtCeilingDecimals()': FunctionFragment;
     'getFlashLoanEnabled(address)': FunctionFragment;
+    'getInterestRateStrategyAddress(address)': FunctionFragment;
+    'getLiquidationProtocolFee(address)': FunctionFragment;
+    'getPaused(address)': FunctionFragment;
+    'getReserveCaps(address)': FunctionFragment;
+    'getReserveConfigurationData(address)': FunctionFragment;
+    'getReserveData(address)': FunctionFragment;
+    'getReserveEModeCategory(address)': FunctionFragment;
+    'getReserveTokensAddresses(address)': FunctionFragment;
+    'getSiloedBorrowing(address)': FunctionFragment;
+    'getTotalDebt(address)': FunctionFragment;
+    'getUnbackedMintCap(address)': FunctionFragment;
+    'getUserReserveData(address,address)': FunctionFragment;
   };
 
   getFunction(
     nameOrSignatureOrTopic:
-      | 'getReserveConfigurationData'
-      | 'getReserveTokensAddresses'
-      | 'getUserReserveData'
-      | 'getReserveData'
+      | 'ADDRESSES_PROVIDER'
+      | 'getATokenTotalSupply'
+      | 'getAllATokens'
+      | 'getAllReservesTokens'
       | 'getDebtCeiling'
+      | 'getDebtCeilingDecimals'
       | 'getFlashLoanEnabled'
+      | 'getInterestRateStrategyAddress'
+      | 'getLiquidationProtocolFee'
+      | 'getPaused'
+      | 'getReserveCaps'
+      | 'getReserveConfigurationData'
+      | 'getReserveData'
+      | 'getReserveEModeCategory'
+      | 'getReserveTokensAddresses'
+      | 'getSiloedBorrowing'
+      | 'getTotalDebt'
+      | 'getUnbackedMintCap'
+      | 'getUserReserveData'
   ): FunctionFragment;
 
-  encodeFunctionData(functionFragment: 'getReserveConfigurationData', values: [string]): string;
-  encodeFunctionData(functionFragment: 'getReserveTokensAddresses', values: [string]): string;
-  encodeFunctionData(functionFragment: 'getUserReserveData', values: [string, string]): string;
-  encodeFunctionData(functionFragment: 'getReserveData', values: [string]): string;
+  encodeFunctionData(functionFragment: 'ADDRESSES_PROVIDER', values?: undefined): string;
+  encodeFunctionData(functionFragment: 'getATokenTotalSupply', values: [string]): string;
+  encodeFunctionData(functionFragment: 'getAllATokens', values?: undefined): string;
+  encodeFunctionData(functionFragment: 'getAllReservesTokens', values?: undefined): string;
   encodeFunctionData(functionFragment: 'getDebtCeiling', values: [string]): string;
+  encodeFunctionData(functionFragment: 'getDebtCeilingDecimals', values?: undefined): string;
   encodeFunctionData(functionFragment: 'getFlashLoanEnabled', values: [string]): string;
+  encodeFunctionData(functionFragment: 'getInterestRateStrategyAddress', values: [string]): string;
+  encodeFunctionData(functionFragment: 'getLiquidationProtocolFee', values: [string]): string;
+  encodeFunctionData(functionFragment: 'getPaused', values: [string]): string;
+  encodeFunctionData(functionFragment: 'getReserveCaps', values: [string]): string;
+  encodeFunctionData(functionFragment: 'getReserveConfigurationData', values: [string]): string;
+  encodeFunctionData(functionFragment: 'getReserveData', values: [string]): string;
+  encodeFunctionData(functionFragment: 'getReserveEModeCategory', values: [string]): string;
+  encodeFunctionData(functionFragment: 'getReserveTokensAddresses', values: [string]): string;
+  encodeFunctionData(functionFragment: 'getSiloedBorrowing', values: [string]): string;
+  encodeFunctionData(functionFragment: 'getTotalDebt', values: [string]): string;
+  encodeFunctionData(functionFragment: 'getUnbackedMintCap', values: [string]): string;
+  encodeFunctionData(functionFragment: 'getUserReserveData', values: [string, string]): string;
 
-  decodeFunctionResult(functionFragment: 'getReserveConfigurationData', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'getReserveTokensAddresses', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'getUserReserveData', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'getReserveData', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'ADDRESSES_PROVIDER', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'getATokenTotalSupply', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'getAllATokens', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'getAllReservesTokens', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'getDebtCeiling', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'getDebtCeilingDecimals', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'getFlashLoanEnabled', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'getInterestRateStrategyAddress', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'getLiquidationProtocolFee', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'getPaused', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'getReserveCaps', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'getReserveConfigurationData', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'getReserveData', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'getReserveEModeCategory', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'getReserveTokensAddresses', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'getSiloedBorrowing', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'getTotalDebt', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'getUnbackedMintCap', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'getUserReserveData', data: BytesLike): Result;
 
   events: {};
 }
@@ -66,6 +127,34 @@ export interface PoolDataProvider extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
+    ADDRESSES_PROVIDER(overrides?: CallOverrides): Promise<[string]>;
+
+    getATokenTotalSupply(asset: string, overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    getAllATokens(overrides?: CallOverrides): Promise<[IPoolDataProvider.TokenDataStructOutput[]]>;
+
+    getAllReservesTokens(overrides?: CallOverrides): Promise<[IPoolDataProvider.TokenDataStructOutput[]]>;
+
+    getDebtCeiling(asset: string, overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    getDebtCeilingDecimals(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    getFlashLoanEnabled(asset: string, overrides?: CallOverrides): Promise<[boolean]>;
+
+    getInterestRateStrategyAddress(
+      asset: string,
+      overrides?: CallOverrides
+    ): Promise<[string] & { irStrategyAddress: string }>;
+
+    getLiquidationProtocolFee(asset: string, overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    getPaused(asset: string, overrides?: CallOverrides): Promise<[boolean] & { isPaused: boolean }>;
+
+    getReserveCaps(
+      asset: string,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber, BigNumber] & { borrowCap: BigNumber; supplyCap: BigNumber }>;
+
     getReserveConfigurationData(
       asset: string,
       overrides?: CallOverrides
@@ -81,35 +170,6 @@ export interface PoolDataProvider extends BaseContract {
         stableBorrowRateEnabled: boolean;
         isActive: boolean;
         isFrozen: boolean;
-      }
-    >;
-
-    getReserveTokensAddresses(
-      asset: string,
-      overrides?: CallOverrides
-    ): Promise<
-      [string, string, string] & {
-        aTokenAddress: string;
-        stableDebtTokenAddress: string;
-        variableDebtTokenAddress: string;
-      }
-    >;
-
-    getUserReserveData(
-      asset: string,
-      user: string,
-      overrides?: CallOverrides
-    ): Promise<
-      [BigNumber, BigNumber, BigNumber, BigNumber, BigNumber, BigNumber, BigNumber, number, boolean] & {
-        currentATokenBalance: BigNumber;
-        currentStableDebt: BigNumber;
-        currentVariableDebt: BigNumber;
-        principalStableDebt: BigNumber;
-        scaledVariableDebt: BigNumber;
-        stableBorrowRate: BigNumber;
-        liquidityRate: BigNumber;
-        stableRateLastUpdated: number;
-        usageAsCollateralEnabled: boolean;
       }
     >;
 
@@ -146,10 +206,68 @@ export interface PoolDataProvider extends BaseContract {
       }
     >;
 
-    getDebtCeiling(asset: string, overrides?: CallOverrides): Promise<[BigNumber]>;
+    getReserveEModeCategory(asset: string, overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    getFlashLoanEnabled(asset: string, overrides?: CallOverrides): Promise<[boolean]>;
+    getReserveTokensAddresses(
+      asset: string,
+      overrides?: CallOverrides
+    ): Promise<
+      [string, string, string] & {
+        aTokenAddress: string;
+        stableDebtTokenAddress: string;
+        variableDebtTokenAddress: string;
+      }
+    >;
+
+    getSiloedBorrowing(asset: string, overrides?: CallOverrides): Promise<[boolean]>;
+
+    getTotalDebt(asset: string, overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    getUnbackedMintCap(asset: string, overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    getUserReserveData(
+      asset: string,
+      user: string,
+      overrides?: CallOverrides
+    ): Promise<
+      [BigNumber, BigNumber, BigNumber, BigNumber, BigNumber, BigNumber, BigNumber, number, boolean] & {
+        currentATokenBalance: BigNumber;
+        currentStableDebt: BigNumber;
+        currentVariableDebt: BigNumber;
+        principalStableDebt: BigNumber;
+        scaledVariableDebt: BigNumber;
+        stableBorrowRate: BigNumber;
+        liquidityRate: BigNumber;
+        stableRateLastUpdated: number;
+        usageAsCollateralEnabled: boolean;
+      }
+    >;
   };
+
+  ADDRESSES_PROVIDER(overrides?: CallOverrides): Promise<string>;
+
+  getATokenTotalSupply(asset: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+  getAllATokens(overrides?: CallOverrides): Promise<IPoolDataProvider.TokenDataStructOutput[]>;
+
+  getAllReservesTokens(overrides?: CallOverrides): Promise<IPoolDataProvider.TokenDataStructOutput[]>;
+
+  getDebtCeiling(asset: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+  getDebtCeilingDecimals(overrides?: CallOverrides): Promise<BigNumber>;
+
+  getFlashLoanEnabled(asset: string, overrides?: CallOverrides): Promise<boolean>;
+
+  getInterestRateStrategyAddress(asset: string, overrides?: CallOverrides): Promise<string>;
+
+  getLiquidationProtocolFee(asset: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+  getPaused(asset: string, overrides?: CallOverrides): Promise<boolean>;
+
+  getReserveCaps(
+    asset: string,
+    overrides?: CallOverrides
+  ): Promise<[BigNumber, BigNumber] & { borrowCap: BigNumber; supplyCap: BigNumber }>;
 
   getReserveConfigurationData(
     asset: string,
@@ -166,35 +284,6 @@ export interface PoolDataProvider extends BaseContract {
       stableBorrowRateEnabled: boolean;
       isActive: boolean;
       isFrozen: boolean;
-    }
-  >;
-
-  getReserveTokensAddresses(
-    asset: string,
-    overrides?: CallOverrides
-  ): Promise<
-    [string, string, string] & {
-      aTokenAddress: string;
-      stableDebtTokenAddress: string;
-      variableDebtTokenAddress: string;
-    }
-  >;
-
-  getUserReserveData(
-    asset: string,
-    user: string,
-    overrides?: CallOverrides
-  ): Promise<
-    [BigNumber, BigNumber, BigNumber, BigNumber, BigNumber, BigNumber, BigNumber, number, boolean] & {
-      currentATokenBalance: BigNumber;
-      currentStableDebt: BigNumber;
-      currentVariableDebt: BigNumber;
-      principalStableDebt: BigNumber;
-      scaledVariableDebt: BigNumber;
-      stableBorrowRate: BigNumber;
-      liquidityRate: BigNumber;
-      stableRateLastUpdated: number;
-      usageAsCollateralEnabled: boolean;
     }
   >;
 
@@ -231,11 +320,69 @@ export interface PoolDataProvider extends BaseContract {
     }
   >;
 
-  getDebtCeiling(asset: string, overrides?: CallOverrides): Promise<BigNumber>;
+  getReserveEModeCategory(asset: string, overrides?: CallOverrides): Promise<BigNumber>;
 
-  getFlashLoanEnabled(asset: string, overrides?: CallOverrides): Promise<boolean>;
+  getReserveTokensAddresses(
+    asset: string,
+    overrides?: CallOverrides
+  ): Promise<
+    [string, string, string] & {
+      aTokenAddress: string;
+      stableDebtTokenAddress: string;
+      variableDebtTokenAddress: string;
+    }
+  >;
+
+  getSiloedBorrowing(asset: string, overrides?: CallOverrides): Promise<boolean>;
+
+  getTotalDebt(asset: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+  getUnbackedMintCap(asset: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+  getUserReserveData(
+    asset: string,
+    user: string,
+    overrides?: CallOverrides
+  ): Promise<
+    [BigNumber, BigNumber, BigNumber, BigNumber, BigNumber, BigNumber, BigNumber, number, boolean] & {
+      currentATokenBalance: BigNumber;
+      currentStableDebt: BigNumber;
+      currentVariableDebt: BigNumber;
+      principalStableDebt: BigNumber;
+      scaledVariableDebt: BigNumber;
+      stableBorrowRate: BigNumber;
+      liquidityRate: BigNumber;
+      stableRateLastUpdated: number;
+      usageAsCollateralEnabled: boolean;
+    }
+  >;
 
   callStatic: {
+    ADDRESSES_PROVIDER(overrides?: CallOverrides): Promise<string>;
+
+    getATokenTotalSupply(asset: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    getAllATokens(overrides?: CallOverrides): Promise<IPoolDataProvider.TokenDataStructOutput[]>;
+
+    getAllReservesTokens(overrides?: CallOverrides): Promise<IPoolDataProvider.TokenDataStructOutput[]>;
+
+    getDebtCeiling(asset: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    getDebtCeilingDecimals(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getFlashLoanEnabled(asset: string, overrides?: CallOverrides): Promise<boolean>;
+
+    getInterestRateStrategyAddress(asset: string, overrides?: CallOverrides): Promise<string>;
+
+    getLiquidationProtocolFee(asset: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    getPaused(asset: string, overrides?: CallOverrides): Promise<boolean>;
+
+    getReserveCaps(
+      asset: string,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber, BigNumber] & { borrowCap: BigNumber; supplyCap: BigNumber }>;
+
     getReserveConfigurationData(
       asset: string,
       overrides?: CallOverrides
@@ -251,35 +398,6 @@ export interface PoolDataProvider extends BaseContract {
         stableBorrowRateEnabled: boolean;
         isActive: boolean;
         isFrozen: boolean;
-      }
-    >;
-
-    getReserveTokensAddresses(
-      asset: string,
-      overrides?: CallOverrides
-    ): Promise<
-      [string, string, string] & {
-        aTokenAddress: string;
-        stableDebtTokenAddress: string;
-        variableDebtTokenAddress: string;
-      }
-    >;
-
-    getUserReserveData(
-      asset: string,
-      user: string,
-      overrides?: CallOverrides
-    ): Promise<
-      [BigNumber, BigNumber, BigNumber, BigNumber, BigNumber, BigNumber, BigNumber, number, boolean] & {
-        currentATokenBalance: BigNumber;
-        currentStableDebt: BigNumber;
-        currentVariableDebt: BigNumber;
-        principalStableDebt: BigNumber;
-        scaledVariableDebt: BigNumber;
-        stableBorrowRate: BigNumber;
-        liquidityRate: BigNumber;
-        stableRateLastUpdated: number;
-        usageAsCollateralEnabled: boolean;
       }
     >;
 
@@ -316,38 +434,123 @@ export interface PoolDataProvider extends BaseContract {
       }
     >;
 
-    getDebtCeiling(asset: string, overrides?: CallOverrides): Promise<BigNumber>;
+    getReserveEModeCategory(asset: string, overrides?: CallOverrides): Promise<BigNumber>;
 
-    getFlashLoanEnabled(asset: string, overrides?: CallOverrides): Promise<boolean>;
+    getReserveTokensAddresses(
+      asset: string,
+      overrides?: CallOverrides
+    ): Promise<
+      [string, string, string] & {
+        aTokenAddress: string;
+        stableDebtTokenAddress: string;
+        variableDebtTokenAddress: string;
+      }
+    >;
+
+    getSiloedBorrowing(asset: string, overrides?: CallOverrides): Promise<boolean>;
+
+    getTotalDebt(asset: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    getUnbackedMintCap(asset: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    getUserReserveData(
+      asset: string,
+      user: string,
+      overrides?: CallOverrides
+    ): Promise<
+      [BigNumber, BigNumber, BigNumber, BigNumber, BigNumber, BigNumber, BigNumber, number, boolean] & {
+        currentATokenBalance: BigNumber;
+        currentStableDebt: BigNumber;
+        currentVariableDebt: BigNumber;
+        principalStableDebt: BigNumber;
+        scaledVariableDebt: BigNumber;
+        stableBorrowRate: BigNumber;
+        liquidityRate: BigNumber;
+        stableRateLastUpdated: number;
+        usageAsCollateralEnabled: boolean;
+      }
+    >;
   };
 
   filters: {};
 
   estimateGas: {
-    getReserveConfigurationData(asset: string, overrides?: CallOverrides): Promise<BigNumber>;
+    ADDRESSES_PROVIDER(overrides?: CallOverrides): Promise<BigNumber>;
 
-    getReserveTokensAddresses(asset: string, overrides?: CallOverrides): Promise<BigNumber>;
+    getATokenTotalSupply(asset: string, overrides?: CallOverrides): Promise<BigNumber>;
 
-    getUserReserveData(asset: string, user: string, overrides?: CallOverrides): Promise<BigNumber>;
+    getAllATokens(overrides?: CallOverrides): Promise<BigNumber>;
 
-    getReserveData(asset: string, overrides?: CallOverrides): Promise<BigNumber>;
+    getAllReservesTokens(overrides?: CallOverrides): Promise<BigNumber>;
 
     getDebtCeiling(asset: string, overrides?: CallOverrides): Promise<BigNumber>;
 
+    getDebtCeilingDecimals(overrides?: CallOverrides): Promise<BigNumber>;
+
     getFlashLoanEnabled(asset: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    getInterestRateStrategyAddress(asset: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    getLiquidationProtocolFee(asset: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    getPaused(asset: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    getReserveCaps(asset: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    getReserveConfigurationData(asset: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    getReserveData(asset: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    getReserveEModeCategory(asset: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    getReserveTokensAddresses(asset: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    getSiloedBorrowing(asset: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    getTotalDebt(asset: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    getUnbackedMintCap(asset: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    getUserReserveData(asset: string, user: string, overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
-    getReserveConfigurationData(asset: string, overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    ADDRESSES_PROVIDER(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    getReserveTokensAddresses(asset: string, overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    getATokenTotalSupply(asset: string, overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    getUserReserveData(asset: string, user: string, overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    getAllATokens(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    getReserveData(asset: string, overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    getAllReservesTokens(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     getDebtCeiling(asset: string, overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    getDebtCeilingDecimals(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     getFlashLoanEnabled(asset: string, overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    getInterestRateStrategyAddress(asset: string, overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    getLiquidationProtocolFee(asset: string, overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    getPaused(asset: string, overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    getReserveCaps(asset: string, overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    getReserveConfigurationData(asset: string, overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    getReserveData(asset: string, overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    getReserveEModeCategory(asset: string, overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    getReserveTokensAddresses(asset: string, overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    getSiloedBorrowing(asset: string, overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    getTotalDebt(asset: string, overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    getUnbackedMintCap(asset: string, overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    getUserReserveData(asset: string, user: string, overrides?: CallOverrides): Promise<PopulatedTransaction>;
   };
 }

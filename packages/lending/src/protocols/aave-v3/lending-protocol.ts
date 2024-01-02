@@ -121,6 +121,10 @@ export class LendingProtocol extends Protocol {
       variableBorrowAPY: string;
       liquidityIndex: BigNumberJS;
       debtCeiling: BigNumberJS;
+      supplyCap: string;
+      totalSupply: string;
+      borrowCap: string;
+      totalBorrow: string;
     }
   >;
 
@@ -140,6 +144,10 @@ export class LendingProtocol extends Protocol {
         });
         calls.push({
           target: this.poolDataProvider.address,
+          callData: this.poolDataProviderIface.encodeFunctionData('getReserveCaps', [asset.wrapped.address]),
+        });
+        calls.push({
+          target: this.poolDataProvider.address,
           callData: this.poolDataProviderIface.encodeFunctionData('getDebtCeiling', [asset.wrapped.address]),
         });
       }
@@ -153,8 +161,20 @@ export class LendingProtocol extends Protocol {
           returnData[j]
         );
         j++;
-        const { liquidityRate, variableBorrowRate, stableBorrowRate, liquidityIndex } =
-          this.poolDataProviderIface.decodeFunctionResult('getReserveData', returnData[j]);
+        const {
+          liquidityRate,
+          variableBorrowRate,
+          stableBorrowRate,
+          liquidityIndex,
+          totalAToken,
+          totalVariableDebt,
+          totalStableDebt,
+        } = this.poolDataProviderIface.decodeFunctionResult('getReserveData', returnData[j]);
+        j++;
+        const { supplyCap, borrowCap } = this.poolDataProviderIface.decodeFunctionResult(
+          'getReserveCaps',
+          returnData[j]
+        );
         j++;
         const [debtCeiling] = this.poolDataProviderIface.decodeFunctionResult('getDebtCeiling', returnData[j]);
         j++;
@@ -176,6 +196,10 @@ export class LendingProtocol extends Protocol {
             RAY_DECIMALS
           ),
           liquidityIndex,
+          supplyCap: supplyCap.toString(),
+          totalSupply: common.toBigUnit(totalAToken, asset.decimals),
+          borrowCap: borrowCap.toString(),
+          totalBorrow: common.toBigUnit(totalVariableDebt.add(totalStableDebt), asset.decimals),
           debtCeiling,
         };
       }
@@ -257,7 +281,7 @@ export class LendingProtocol extends Protocol {
       if (hasNativeToken(this.chainId) && token.isWrapped) continue;
 
       const reserveData = reserveDataMap[token.address];
-      const { supplyAPY: apy, ltv, liquidationThreshold, debtCeiling } = reserveData;
+      const { supplyAPY: apy, ltv, liquidationThreshold, supplyCap, totalSupply, debtCeiling } = reserveData;
 
       const price = assetPriceMap[token.address];
 
@@ -279,6 +303,8 @@ export class LendingProtocol extends Protocol {
         usageAsCollateralEnabled,
         ltv,
         liquidationThreshold,
+        supplyCap,
+        totalSupply,
       });
     }
 
@@ -286,7 +312,7 @@ export class LendingProtocol extends Protocol {
     for (const token of tokensForBorrowMap[this.chainId]) {
       if (hasNativeToken(this.chainId) && token.isWrapped) continue;
 
-      const { stableBorrowAPY, variableBorrowAPY } = reserveDataMap[token.address];
+      const { stableBorrowAPY, variableBorrowAPY, borrowCap, totalBorrow } = reserveDataMap[token.address];
       const price = assetPriceMap[token.address];
       const { stableBorrowBalance, variableBorrowBalance } = userBalancesMap[token.address];
 
@@ -295,6 +321,8 @@ export class LendingProtocol extends Protocol {
         price,
         balances: [variableBorrowBalance, stableBorrowBalance],
         apys: [variableBorrowAPY, stableBorrowAPY],
+        borrowCap,
+        totalBorrow,
       });
     }
 

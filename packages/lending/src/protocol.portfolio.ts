@@ -20,6 +20,8 @@ export class Supply implements AssetInfo {
   ltv: string;
   liquidationThreshold: string;
   isNotCollateral: boolean;
+  supplyCap: string;
+  totalSupply: string;
 
   constructor({
     token,
@@ -30,6 +32,8 @@ export class Supply implements AssetInfo {
     ltv,
     liquidationThreshold,
     isNotCollateral = false,
+    supplyCap = '0',
+    totalSupply,
   }: SupplyObject) {
     this.token = token;
     this.price = price;
@@ -39,6 +43,8 @@ export class Supply implements AssetInfo {
     this.ltv = ltv;
     this.liquidationThreshold = liquidationThreshold;
     this.isNotCollateral = isNotCollateral;
+    this.supplyCap = supplyCap;
+    this.totalSupply = totalSupply;
   }
 
   get isCollateral() {
@@ -72,6 +78,14 @@ export class Supply implements AssetInfo {
   getMaxWithdrawAmount(amount: string) {
     return new BigNumberJS(amount).gt(this.balance) ? this.balance : amount;
   }
+
+  validateWithdraw(currentWithdrawAmount: string) {
+    return new BigNumberJS(currentWithdrawAmount).lte(this.balance);
+  }
+
+  validateSupplyCap(currentSupplyAmount: string) {
+    return this.supplyCap === '0' || new BigNumberJS(this.totalSupply).plus(currentSupplyAmount).lte(this.supplyCap);
+  }
 }
 
 export function isSupply(v: any): v is Supply {
@@ -84,13 +98,17 @@ export class Borrow implements AssetInfo {
   balances: string[];
   apys: string[];
   borrowMin: string;
+  borrowCap: string;
+  totalBorrow: string;
 
-  constructor({ token, price, balances, apys, borrowMin = '0' }: BorrowObject) {
+  constructor({ token, price, balances, apys, borrowMin = '0', borrowCap = '0', totalBorrow }: BorrowObject) {
     this.token = token;
     this.price = price;
     this.balances = [...balances];
     this.apys = [...apys];
     this.borrowMin = borrowMin;
+    this.borrowCap = borrowCap;
+    this.totalBorrow = totalBorrow;
   }
 
   get formattedPrice() {
@@ -129,8 +147,16 @@ export class Borrow implements AssetInfo {
     return new BigNumberJS(repayAmount).gt(this.balances[0]) ? this.balances[0] : repayAmount;
   }
 
+  validateRepay(currentRepayAmount: string) {
+    return new BigNumberJS(currentRepayAmount).lte(this.balances[0]);
+  }
+
   validateBorrowMin(currentBorrowAmount: string) {
-    return new BigNumberJS(this.balances[0]).plus(currentBorrowAmount).gte(this.borrowMin);
+    return this.borrowMin == '0' || new BigNumberJS(this.balances[0]).plus(currentBorrowAmount).gte(this.borrowMin);
+  }
+
+  validateBorrowCap(currentBorrowAmount: string) {
+    return this.borrowCap === '0' || new BigNumberJS(this.totalBorrow).plus(currentBorrowAmount).lte(this.borrowCap);
   }
 }
 

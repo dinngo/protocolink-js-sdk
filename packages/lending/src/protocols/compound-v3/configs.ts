@@ -10,6 +10,8 @@ export interface AssetConfig {
   priceFeedAddress: string;
   borrowCollateralFactor: string;
   liquidateCollateralFactor: string;
+  totalSupply: string;
+  supplyCap: string;
 }
 
 export interface MarketConfig {
@@ -26,6 +28,8 @@ export interface MarketInfo extends MarketConfig {
   baseBorrowMin: string;
   utilization: string;
   numAssets: number;
+  totalSupply: string;
+  totalBorrow: string;
 }
 
 export interface Config {

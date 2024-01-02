@@ -34,6 +34,8 @@ describe('Test Radiant V2 LendingProtocol', function () {
               ltv: '0.75',
               liquidationThreshold: '0.78',
               isNotCollateral: false,
+              supplyCap: '0',
+              totalSupply: '5831921.954657',
             },
             {
               token: {
@@ -50,6 +52,8 @@ describe('Test Radiant V2 LendingProtocol', function () {
               ltv: '0.8',
               liquidationThreshold: '0.83',
               isNotCollateral: false,
+              supplyCap: '0',
+              totalSupply: '7894657.691217',
             },
             {
               token: {
@@ -66,6 +70,8 @@ describe('Test Radiant V2 LendingProtocol', function () {
               ltv: '0.8',
               liquidationThreshold: '0.83',
               isNotCollateral: false,
+              supplyCap: '0',
+              totalSupply: '8206.144884311207768305',
             },
             {
               token: {
@@ -82,6 +88,8 @@ describe('Test Radiant V2 LendingProtocol', function () {
               ltv: '0.73',
               liquidationThreshold: '0.78',
               isNotCollateral: false,
+              supplyCap: '0',
+              totalSupply: '934.88422103',
             },
             {
               token: {
@@ -98,6 +106,8 @@ describe('Test Radiant V2 LendingProtocol', function () {
               ltv: '0.8',
               liquidationThreshold: '0.83',
               isNotCollateral: false,
+              supplyCap: '0',
+              totalSupply: '13441.57315134992665744',
             },
             {
               token: {
@@ -114,6 +124,8 @@ describe('Test Radiant V2 LendingProtocol', function () {
               ltv: '0.75',
               liquidationThreshold: '0.8',
               isNotCollateral: false,
+              supplyCap: '0',
+              totalSupply: '2210.188081321430521736',
             },
           ],
           borrows: [
@@ -128,6 +140,9 @@ describe('Test Radiant V2 LendingProtocol', function () {
               price: '0.99961',
               balances: ['2036566.319793'],
               apys: ['0.34885803310031651378'],
+              borrowMin: '0',
+              borrowCap: '0',
+              totalBorrow: '4743772.101778',
             },
             {
               token: {
@@ -140,6 +155,9 @@ describe('Test Radiant V2 LendingProtocol', function () {
               price: '1.00027726',
               balances: ['0'],
               apys: ['0.30895630613608824961'],
+              borrowMin: '0',
+              borrowCap: '0',
+              totalBorrow: '6451466.292218',
             },
             {
               token: {
@@ -152,6 +170,9 @@ describe('Test Radiant V2 LendingProtocol', function () {
               price: '2242.39893',
               balances: ['2116.653363798114056777'],
               apys: ['0.58286757852021725784'],
+              borrowMin: '0',
+              borrowCap: '0',
+              totalBorrow: '6781.209342806900264987',
             },
             {
               token: {
@@ -164,6 +185,9 @@ describe('Test Radiant V2 LendingProtocol', function () {
               price: '42140.09169',
               balances: ['44.30477649'],
               apys: ['0.08556795486415211131'],
+              borrowMin: '0',
+              borrowCap: '0',
+              totalBorrow: '255.88862263',
             },
             {
               token: {
@@ -176,6 +200,9 @@ describe('Test Radiant V2 LendingProtocol', function () {
               price: '2579.31314226',
               balances: ['0'],
               apys: ['0.08352546390718506892'],
+              borrowMin: '0',
+              borrowCap: '0',
+              totalBorrow: '3954.606921120925819826',
             },
             {
               token: {
@@ -188,6 +215,9 @@ describe('Test Radiant V2 LendingProtocol', function () {
               price: '2450.18252296',
               balances: ['0'],
               apys: ['0.1059438357261863594'],
+              borrowMin: '0',
+              borrowCap: '0',
+              totalBorrow: '816.842177473108670771',
             },
           ],
         },
@@ -221,6 +251,8 @@ describe('Test Radiant V2 LendingProtocol', function () {
               ltv: '0.7',
               liquidationThreshold: '0.75',
               isNotCollateral: false,
+              supplyCap: '0',
+              totalSupply: '1623.87981095',
             },
             {
               token: {
@@ -237,6 +269,8 @@ describe('Test Radiant V2 LendingProtocol', function () {
               ltv: '0.8',
               liquidationThreshold: '0.85',
               isNotCollateral: false,
+              supplyCap: '0',
+              totalSupply: '10456412.372008',
             },
             {
               token: {
@@ -253,6 +287,8 @@ describe('Test Radiant V2 LendingProtocol', function () {
               ltv: '0.8',
               liquidationThreshold: '0.85',
               isNotCollateral: false,
+              supplyCap: '0',
+              totalSupply: '40176603.062705',
             },
             {
               token: {
@@ -269,6 +305,8 @@ describe('Test Radiant V2 LendingProtocol', function () {
               ltv: '0.75',
               liquidationThreshold: '0.85',
               isNotCollateral: false,
+              supplyCap: '0',
+              totalSupply: '5578032.237176138122502577',
             },
             {
               token: {
@@ -285,6 +323,8 @@ describe('Test Radiant V2 LendingProtocol', function () {
               ltv: '0.8',
               liquidationThreshold: '0.825',
               isNotCollateral: false,
+              supplyCap: '0',
+              totalSupply: '60336.252515494763460983',
             },
             {
               token: {
@@ -301,6 +341,8 @@ describe('Test Radiant V2 LendingProtocol', function () {
               ltv: '0.7',
               liquidationThreshold: '0.8',
               isNotCollateral: false,
+              supplyCap: '0',
+              totalSupply: '31295.99616240731143495',
             },
             {
               token: {
@@ -317,6 +359,8 @@ describe('Test Radiant V2 LendingProtocol', function () {
               ltv: '0.4',
               liquidationThreshold: '0.5',
               isNotCollateral: false,
+              supplyCap: '0',
+              totalSupply: '16948970.773345873611220716',
             },
           ],
           borrows: [
@@ -331,6 +375,9 @@ describe('Test Radiant V2 LendingProtocol', function () {
               price: '42230.4416495',
               balances: ['67.14350092'],
               apys: ['0.09288334354334835704'],
+              borrowMin: '0',
+              borrowCap: '0',
+              totalBorrow: '669.64946723',
             },
             {
               token: {
@@ -343,6 +390,9 @@ describe('Test Radiant V2 LendingProtocol', function () {
               price: '0.99993522',
               balances: ['0'],
               apys: ['0.24556445414442673749'],
+              borrowMin: '0',
+              borrowCap: '0',
+              totalBorrow: '8524352.067416',
             },
             {
               token: {
@@ -355,6 +405,9 @@ describe('Test Radiant V2 LendingProtocol', function () {
               price: '1.00023692',
               balances: ['239995.369223'],
               apys: ['0.33344635059000808296'],
+              borrowMin: '0',
+              borrowCap: '0',
+              totalBorrow: '32608137.093197',
             },
             {
               token: {
@@ -367,6 +420,9 @@ describe('Test Radiant V2 LendingProtocol', function () {
               price: '1.00005605',
               balances: ['0'],
               apys: ['0.22273058517580570194'],
+              borrowMin: '0',
+              borrowCap: '0',
+              totalBorrow: '4398878.503530040999772765',
             },
             {
               token: {
@@ -379,6 +435,9 @@ describe('Test Radiant V2 LendingProtocol', function () {
               price: '2244.01978972',
               balances: ['8636.117912147309336459'],
               apys: ['0.09927541344639658325'],
+              borrowMin: '0',
+              borrowCap: '0',
+              totalBorrow: '36342.118120508546382957',
             },
             {
               token: {
@@ -391,6 +450,9 @@ describe('Test Radiant V2 LendingProtocol', function () {
               price: '2575.13844791',
               balances: ['0.00000661139690993'],
               apys: ['0.09438182165452173365'],
+              borrowMin: '0',
+              borrowCap: '0',
+              totalBorrow: '9408.58755496762596925',
             },
             {
               token: {
@@ -403,6 +465,9 @@ describe('Test Radiant V2 LendingProtocol', function () {
               price: '1.12526332',
               balances: ['0'],
               apys: ['0.09573188509401746726'],
+              borrowMin: '0',
+              borrowCap: '0',
+              totalBorrow: '5165060.848102571172733266',
             },
           ],
         },

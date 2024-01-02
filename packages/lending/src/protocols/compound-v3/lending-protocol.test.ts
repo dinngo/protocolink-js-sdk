@@ -37,6 +37,8 @@ describe('Test Compound V3 LendingProtocol', function () {
               ltv: '0',
               liquidationThreshold: '0',
               isNotCollateral: true,
+              supplyCap: '0',
+              totalSupply: '376463933.183094',
             },
             {
               token: {
@@ -53,6 +55,8 @@ describe('Test Compound V3 LendingProtocol', function () {
               ltv: '0.65',
               liquidationThreshold: '0.7',
               isNotCollateral: false,
+              supplyCap: '900000',
+              totalSupply: '880449.449526524547533425',
             },
             {
               token: {
@@ -69,6 +73,8 @@ describe('Test Compound V3 LendingProtocol', function () {
               ltv: '0.7',
               liquidationThreshold: '0.77',
               isNotCollateral: false,
+              supplyCap: '12000',
+              totalSupply: '9426.44861298',
             },
             {
               token: {
@@ -85,6 +91,8 @@ describe('Test Compound V3 LendingProtocol', function () {
               ltv: '0.825',
               liquidationThreshold: '0.895',
               isNotCollateral: false,
+              supplyCap: '350000',
+              totalSupply: '211386.072930843352559867',
             },
             {
               token: {
@@ -101,6 +109,8 @@ describe('Test Compound V3 LendingProtocol', function () {
               ltv: '0.75',
               liquidationThreshold: '0.81',
               isNotCollateral: false,
+              supplyCap: '2300000',
+              totalSupply: '2218301.154520531651232401',
             },
             {
               token: {
@@ -117,6 +127,8 @@ describe('Test Compound V3 LendingProtocol', function () {
               ltv: '0.79',
               liquidationThreshold: '0.85',
               isNotCollateral: false,
+              supplyCap: '1250000',
+              totalSupply: '1003607.755629872999969856',
             },
           ],
           borrows: [
@@ -131,6 +143,9 @@ describe('Test Compound V3 LendingProtocol', function () {
               price: '1',
               balances: ['0'],
               apys: ['0.039969999949824'],
+              borrowMin: '100',
+              borrowCap: '0',
+              totalBorrow: '367638468.435308',
             },
           ],
         },
@@ -165,6 +180,8 @@ describe('Test Compound V3 LendingProtocol', function () {
               ltv: '0',
               liquidationThreshold: '0',
               isNotCollateral: true,
+              supplyCap: '0',
+              totalSupply: '51748.404517469527691373',
             },
             {
               token: {
@@ -181,6 +198,8 @@ describe('Test Compound V3 LendingProtocol', function () {
               ltv: '0.9',
               liquidationThreshold: '0.93',
               isNotCollateral: false,
+              supplyCap: '40000',
+              totalSupply: '854.935502499225867094',
             },
             {
               token: {
@@ -197,6 +216,8 @@ describe('Test Compound V3 LendingProtocol', function () {
               ltv: '0.9',
               liquidationThreshold: '0.93',
               isNotCollateral: false,
+              supplyCap: '64500',
+              totalSupply: '26045.113583149797580496',
             },
           ],
           borrows: [
@@ -211,6 +232,9 @@ describe('Test Compound V3 LendingProtocol', function () {
               price: '1933.940035',
               balances: ['0'],
               apys: ['0.032931764469936'],
+              borrowMin: '0.1',
+              borrowCap: '0',
+              totalBorrow: '23001.448694259417393217',
             },
           ],
         },
@@ -245,6 +269,8 @@ describe('Test Compound V3 LendingProtocol', function () {
               ltv: '0',
               liquidationThreshold: '0',
               isNotCollateral: true,
+              supplyCap: '0',
+              totalSupply: '22406282.874219',
             },
             {
               token: {
@@ -261,6 +287,8 @@ describe('Test Compound V3 LendingProtocol', function () {
               ltv: '0.775',
               liquidationThreshold: '0.825',
               isNotCollateral: false,
+              supplyCap: '20000',
+              totalSupply: '7588.387144851820674841',
             },
             {
               token: {
@@ -277,6 +305,8 @@ describe('Test Compound V3 LendingProtocol', function () {
               ltv: '0.7',
               liquidationThreshold: '0.75',
               isNotCollateral: false,
+              supplyCap: '1000',
+              totalSupply: '588.67600969',
             },
             {
               token: {
@@ -293,6 +323,8 @@ describe('Test Compound V3 LendingProtocol', function () {
               ltv: '0.65',
               liquidationThreshold: '0.7',
               isNotCollateral: false,
+              supplyCap: '20000000',
+              totalSupply: '3514791.474058960717011551',
             },
           ],
           borrows: [
@@ -307,6 +339,9 @@ describe('Test Compound V3 LendingProtocol', function () {
               price: '0.99995719',
               balances: ['171.00092'],
               apys: ['0.042873641892576'],
+              borrowMin: '100',
+              borrowCap: '0',
+              totalBorrow: '17844140.383447',
             },
           ],
         },
@@ -341,6 +376,8 @@ describe('Test Compound V3 LendingProtocol', function () {
               ltv: '0',
               liquidationThreshold: '0',
               isNotCollateral: true,
+              supplyCap: '0',
+              totalSupply: '2974381.649898',
             },
             {
               token: {
@@ -357,6 +394,8 @@ describe('Test Compound V3 LendingProtocol', function () {
               ltv: '0.55',
               liquidationThreshold: '0.6',
               isNotCollateral: false,
+              supplyCap: '4000000',
+              totalSupply: '3842456.480882459675256124',
             },
             {
               token: {
@@ -373,6 +412,8 @@ describe('Test Compound V3 LendingProtocol', function () {
               ltv: '0.4',
               liquidationThreshold: '0.45',
               isNotCollateral: false,
+              supplyCap: '50000',
+              totalSupply: '26266.351319453590514252',
             },
             {
               token: {
@@ -389,6 +430,8 @@ describe('Test Compound V3 LendingProtocol', function () {
               ltv: '0.78',
               liquidationThreshold: '0.85',
               isNotCollateral: false,
+              supplyCap: '5000',
+              totalSupply: '777.06579949556887655',
             },
             {
               token: {
@@ -405,6 +448,8 @@ describe('Test Compound V3 LendingProtocol', function () {
               ltv: '0.7',
               liquidationThreshold: '0.77',
               isNotCollateral: false,
+              supplyCap: '300',
+              totalSupply: '29.72377022',
             },
           ],
           borrows: [
@@ -419,6 +464,9 @@ describe('Test Compound V3 LendingProtocol', function () {
               price: '0.99996426',
               balances: ['0'],
               apys: ['0.042868037377728'],
+              borrowMin: '100',
+              borrowCap: '0',
+              totalBorrow: '2368291.100022',
             },
           ],
         },
@@ -453,6 +501,8 @@ describe('Test Compound V3 LendingProtocol', function () {
               ltv: '0',
               liquidationThreshold: '0',
               isNotCollateral: true,
+              supplyCap: '0',
+              totalSupply: '3565656.029511',
             },
             {
               token: {
@@ -469,6 +519,8 @@ describe('Test Compound V3 LendingProtocol', function () {
               ltv: '0.55',
               liquidationThreshold: '0.6',
               isNotCollateral: false,
+              supplyCap: '4000000',
+              totalSupply: '191016.378683608360993273',
             },
             {
               token: {
@@ -485,6 +537,8 @@ describe('Test Compound V3 LendingProtocol', function () {
               ltv: '0.4',
               liquidationThreshold: '0.45',
               isNotCollateral: false,
+              supplyCap: '50000',
+              totalSupply: '518.622904444616914269',
             },
             {
               token: {
@@ -501,6 +555,8 @@ describe('Test Compound V3 LendingProtocol', function () {
               ltv: '0.78',
               liquidationThreshold: '0.85',
               isNotCollateral: false,
+              supplyCap: '5000',
+              totalSupply: '321.943837039533224072',
             },
             {
               token: {
@@ -517,6 +573,8 @@ describe('Test Compound V3 LendingProtocol', function () {
               ltv: '0.7',
               liquidationThreshold: '0.77',
               isNotCollateral: false,
+              supplyCap: '300',
+              totalSupply: '65.59910949',
             },
           ],
           borrows: [
@@ -531,6 +589,9 @@ describe('Test Compound V3 LendingProtocol', function () {
               price: '0.99996426',
               balances: ['550003.795033'],
               apys: ['0.026565827723856'],
+              borrowMin: '0.000001',
+              borrowCap: '0',
+              totalBorrow: '1178280.039698',
             },
           ],
         },

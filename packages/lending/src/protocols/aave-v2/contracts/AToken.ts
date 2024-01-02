@@ -9,13 +9,16 @@ import type { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from './com
 export interface ATokenInterface extends utils.Interface {
   functions: {
     'scaledBalanceOf(address)': FunctionFragment;
+    'totalSupply()': FunctionFragment;
   };
 
-  getFunction(nameOrSignatureOrTopic: 'scaledBalanceOf'): FunctionFragment;
+  getFunction(nameOrSignatureOrTopic: 'scaledBalanceOf' | 'totalSupply'): FunctionFragment;
 
   encodeFunctionData(functionFragment: 'scaledBalanceOf', values: [string]): string;
+  encodeFunctionData(functionFragment: 'totalSupply', values?: undefined): string;
 
   decodeFunctionResult(functionFragment: 'scaledBalanceOf', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'totalSupply', data: BytesLike): Result;
 
   events: {};
 }
@@ -44,21 +47,31 @@ export interface AToken extends BaseContract {
 
   functions: {
     scaledBalanceOf(user: string, overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    totalSupply(overrides?: CallOverrides): Promise<[BigNumber]>;
   };
 
   scaledBalanceOf(user: string, overrides?: CallOverrides): Promise<BigNumber>;
 
+  totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
+
   callStatic: {
     scaledBalanceOf(user: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   filters: {};
 
   estimateGas: {
     scaledBalanceOf(user: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
     scaledBalanceOf(user: string, overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    totalSupply(overrides?: CallOverrides): Promise<PopulatedTransaction>;
   };
 }
