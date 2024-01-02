@@ -83,12 +83,14 @@ export class Borrow implements AssetInfo {
   price: string;
   balances: string[];
   apys: string[];
+  borrowMin: string;
 
-  constructor({ token, price, balances, apys }: BorrowObject) {
+  constructor({ token, price, balances, apys, borrowMin = '0' }: BorrowObject) {
     this.token = token;
     this.price = price;
     this.balances = [...balances];
     this.apys = [...apys];
+    this.borrowMin = borrowMin;
   }
 
   get formattedPrice() {
@@ -125,6 +127,10 @@ export class Borrow implements AssetInfo {
 
   getMaxRepayAmount(repayAmount: string) {
     return new BigNumberJS(repayAmount).gt(this.balances[0]) ? this.balances[0] : repayAmount;
+  }
+
+  validateBorrowMin(currentBorrowAmount: string) {
+    return new BigNumberJS(this.balances[0]).plus(currentBorrowAmount).gte(this.borrowMin);
   }
 }
 

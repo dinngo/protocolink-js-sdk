@@ -257,7 +257,7 @@ export class LendingProtocol extends Protocol {
   }
 
   async getPortfolio(account: string, marketId: string) {
-    const { baseToken, assets } = await this.getMarket(marketId);
+    const { baseToken, assets, baseBorrowMin } = await this.getMarket(marketId);
 
     const { supplyAPR, borrowAPR } = await this.getAPYs(marketId);
     const { baseTokenPrice, assetPriceMap } = await this.getPriceMap(marketId);
@@ -293,6 +293,7 @@ export class LendingProtocol extends Protocol {
         price: baseTokenPrice,
         balances: [borrowBalance],
         apys: [borrowAPR],
+        borrowMin: baseBorrowMin,
       },
     ];
 

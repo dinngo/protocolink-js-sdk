@@ -795,28 +795,37 @@ export class Adapter extends common.Web3Toolkit {
     if (Number(srcAmount) > 0) {
       const { protocolId, marketId } = portfolio;
       const protocol = this.getProtocol(protocolId);
+      const srcBorrow = portfolio.findBorrow(srcToken);
 
-      // 1. ---------- borrow ----------
-      const borrowToken = srcToken.wrapped.is(destToken.wrapped) ? destToken : srcToken.wrapped;
-      const borrowOutput = new common.TokenAmount(borrowToken, srcAmount);
-      const borrowLogic = protocol.newBorrowLogic({ marketId, output: borrowOutput });
-      output.logics.push(borrowLogic);
-      output.afterPortfolio.borrow(borrowOutput.token, borrowOutput.amount);
+      if (srcBorrow) {
+        if (!srcBorrow.validateBorrowMin(srcAmount)) {
+          output.error = { name: 'srcAmount', code: 'BORROW_MIN' };
+        }
+        output.afterPortfolio.borrow(srcToken, srcAmount);
 
-      // 2. ---------- swap ----------
-      // 2-1. the src token is equal to dest token
-      if (srcToken.wrapped.is(destToken.wrapped)) {
-        // 2-1-1. set dest amount
-        output.destAmount = borrowOutput.amount;
-      }
-      // 2-2. the src token is not equal to dest token
-      else {
-        const swapper = this.findSwapper([srcToken, destToken]);
-        const swapQuotation = await swapper.quote({ input: borrowOutput, tokenOut: destToken, slippage });
-        const swapTokenLogic = swapper.newSwapTokenLogic(swapQuotation);
-        output.logics.push(swapTokenLogic);
-        // 2-2-2. set dest amount
-        output.destAmount = swapQuotation.output.amount;
+        if (!output.error) {
+          // 1. ---------- borrow ----------
+          const borrowToken = srcToken.wrapped.is(destToken.wrapped) ? destToken : srcToken.wrapped;
+          const borrowOutput = new common.TokenAmount(borrowToken, srcAmount);
+          const borrowLogic = protocol.newBorrowLogic({ marketId, output: borrowOutput });
+          output.logics.push(borrowLogic);
+
+          // 2. ---------- swap ----------
+          // 2-1. the src token is equal to dest token
+          if (srcToken.wrapped.is(destToken.wrapped)) {
+            // 2-1-1. set dest amount
+            output.destAmount = borrowOutput.amount;
+          }
+          // 2-2. the src token is not equal to dest token
+          else {
+            const swapper = this.findSwapper([srcToken, destToken]);
+            const swapQuotation = await swapper.quote({ input: borrowOutput, tokenOut: destToken, slippage });
+            const swapTokenLogic = swapper.newSwapTokenLogic(swapQuotation);
+            output.logics.push(swapTokenLogic);
+            // 2-2-2. set dest amount
+            output.destAmount = swapQuotation.output.amount;
+          }
+        }
       }
     }
 

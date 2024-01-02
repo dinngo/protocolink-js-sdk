@@ -45,6 +45,7 @@ export interface BorrowObject {
   price: string;
   balances: string[];
   apys: string[];
+  borrowMin?: string;
 }
 
 export interface SupplyParams {
