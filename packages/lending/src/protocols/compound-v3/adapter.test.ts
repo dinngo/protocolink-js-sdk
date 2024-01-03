@@ -1,9 +1,10 @@
 import { Adapter } from 'src/adapter';
+import BigNumberJS from 'bignumber.js';
 import { LendingProtocol } from './lending-protocol';
 import { Portfolio } from 'src/protocol.portfolio';
 import * as common from '@protocolink/common';
+import { compoundv3 } from '@protocolink/logics';
 import { expect } from 'chai';
-import * as logics from '@protocolink/logics';
 import { mainnetTokens } from './tokens';
 
 describe('Test Adapter for Compound V3', function () {
@@ -11,7 +12,7 @@ describe('Test Adapter for Compound V3', function () {
   const blockTag = 18826234;
   const adapter = new Adapter(chainId);
 
-  const marketId = logics.compoundv3.MarketId.ETH;
+  const marketId = compoundv3.MarketId.ETH;
   const protocol = new LendingProtocol(chainId);
   protocol.setBlockTag(blockTag);
 
@@ -354,6 +355,31 @@ describe('Test Adapter for Compound V3', function () {
       expect(destAmount).to.eq('0');
       expect(JSON.stringify(portfolio)).to.eq(JSON.stringify(afterPortfolio));
       expect(error).to.be.undefined;
+      expect(logics).to.be.empty;
+    });
+
+    it('supply cap exceeded', async function () {
+      const srcToken = mainnetTokens.wstETH;
+      const destToken = mainnetTokens.wstETH;
+
+      const destCollateral = portfolio.findSupply(destToken)!;
+      const srcAmount = new BigNumberJS(destCollateral.supplyCap).minus(destCollateral.totalSupply).plus(1).toString();
+
+      const { destAmount, afterPortfolio, error, logics } = await adapter.zapSupply({
+        account,
+        portfolio,
+        srcToken,
+        srcAmount,
+        destToken,
+      });
+
+      expect(destAmount).to.eq(srcAmount);
+
+      const expectedAfterPortfolio = portfolio.clone();
+      expectedAfterPortfolio.supply(destToken, srcAmount);
+      expect(JSON.stringify(expectedAfterPortfolio)).to.eq(JSON.stringify(afterPortfolio));
+
+      expect(error).to.deep.eq({ name: 'destAmount', code: 'SUPPLY_CAP_EXCEEDED' });
       expect(logics).to.be.empty;
     });
 
@@ -812,4 +838,40 @@ describe('Test Adapter for Compound V3', function () {
       expect(logics[1].fields.balanceBps).to.eq(common.BPS_BASE);
     });
   });
+});
+
+describe('Test Adapter errors for Compound V3', function () {
+  it('borrow min error', async function () {
+    const chainId = common.ChainId.mainnet;
+    const blockTag = 18891173;
+    const adapter = new Adapter(chainId);
+
+    const marketId = compoundv3.MarketId.USDC;
+    const protocol = new LendingProtocol(chainId);
+    protocol.setBlockTag(blockTag);
+
+    const account = '0x4eD1eE77c5Ce5Fd6FC98A61812593A80Dbb964e5';
+    const portfolio = await protocol.getPortfolio(account, marketId);
+
+    const srcToken = mainnetTokens.USDC;
+    const srcAmount = '50';
+    const destToken = mainnetTokens.USDC;
+
+    const { destAmount, afterPortfolio, error, logics } = await adapter.zapBorrow({
+      account,
+      portfolio,
+      srcToken,
+      srcAmount,
+      destToken,
+    });
+
+    expect(destAmount).to.eq('0');
+
+    const expectedAfterPortfolio = portfolio.clone();
+    expectedAfterPortfolio.borrow(srcToken, srcAmount);
+    expect(JSON.stringify(expectedAfterPortfolio)).to.eq(JSON.stringify(afterPortfolio));
+
+    expect(error).to.deep.eq({ name: 'srcAmount', code: 'BORROW_MIN' });
+    expect(logics).to.be.empty;
+  }).timeout(60000);
 });

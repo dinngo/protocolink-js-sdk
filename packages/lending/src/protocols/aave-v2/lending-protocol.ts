@@ -140,13 +140,15 @@ export class LendingProtocol extends Protocol {
       supplyAPY: string;
       stableBorrowAPY: string;
       variableBorrowAPY: string;
+      totalSupply: string;
+      totalBorrow: string;
     }
   >;
 
   async getReserveDataMap() {
     if (!this._reserveDataMap) {
       const calls: common.Multicall3.CallStruct[] = [];
-      for (const { asset } of this.reserves) {
+      for (const { asset, aToken } of this.reserves) {
         calls.push({
           target: this.protocolDataProvider.address,
           callData: this.protocolDataProviderIface.encodeFunctionData('getReserveConfigurationData', [
@@ -157,6 +159,10 @@ export class LendingProtocol extends Protocol {
           target: this.protocolDataProvider.address,
           callData: this.protocolDataProviderIface.encodeFunctionData('getReserveData', [asset.wrapped.address]),
         });
+        calls.push({
+          target: aToken.address,
+          callData: this.aTokenIface.encodeFunctionData('totalSupply'),
+        });
       }
       const { returnData } = await this.multicall3.callStatic.aggregate(calls, { blockTag: this.blockTag });
 
@@ -166,8 +172,10 @@ export class LendingProtocol extends Protocol {
         const { ltv, liquidationThreshold, usageAsCollateralEnabled } =
           this.protocolDataProviderIface.decodeFunctionResult('getReserveConfigurationData', returnData[j]);
         j++;
-        const { liquidityRate, variableBorrowRate, stableBorrowRate } =
+        const { liquidityRate, variableBorrowRate, stableBorrowRate, totalVariableDebt, totalStableDebt } =
           this.protocolDataProviderIface.decodeFunctionResult('getReserveData', returnData[j]);
+        j++;
+        const [totalSupply] = this.aTokenIface.decodeFunctionResult('totalSupply', returnData[j]);
         j++;
 
         this._reserveDataMap[asset.address] = {
@@ -186,6 +194,8 @@ export class LendingProtocol extends Protocol {
             calculateCompoundedRate({ rate: variableBorrowRate.toString(), duration: SECONDS_PER_YEAR }),
             RAY_DECIMALS
           ),
+          totalSupply: common.toBigUnit(totalSupply, asset.decimals),
+          totalBorrow: common.toBigUnit(totalVariableDebt.add(totalStableDebt), asset.decimals),
         };
       }
     }
@@ -295,6 +305,7 @@ export class LendingProtocol extends Protocol {
         usageAsCollateralEnabled,
         ltv: reserveData.ltv,
         liquidationThreshold: reserveData.liquidationThreshold,
+        totalSupply: reserveData.totalSupply,
       });
     }
 
@@ -302,7 +313,7 @@ export class LendingProtocol extends Protocol {
     for (const token of tokensForBorrowMap[this.chainId]) {
       if (token.isWrapped) continue;
 
-      const { stableBorrowAPY, variableBorrowAPY } = reserveDataMap[token.address];
+      const { stableBorrowAPY, variableBorrowAPY, totalBorrow } = reserveDataMap[token.address];
       const assetPrice = assetPriceMap[token.address];
       const { stableBorrowBalance, variableBorrowBalance } = userBalancesMap[token.address];
 
@@ -311,6 +322,7 @@ export class LendingProtocol extends Protocol {
         price: assetPrice,
         balances: [variableBorrowBalance, stableBorrowBalance],
         apys: [variableBorrowAPY, stableBorrowAPY],
+        totalBorrow,
       });
     }
 

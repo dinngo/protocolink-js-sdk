@@ -38,6 +38,8 @@ export interface SupplyObject {
   ltv: string;
   liquidationThreshold: string;
   isNotCollateral?: boolean;
+  supplyCap?: string;
+  totalSupply: string;
 }
 
 export interface BorrowObject {
@@ -45,6 +47,9 @@ export interface BorrowObject {
   price: string;
   balances: string[];
   apys: string[];
+  borrowMin?: string;
+  borrowCap?: string;
+  totalBorrow: string;
 }
 
 export interface SupplyParams {

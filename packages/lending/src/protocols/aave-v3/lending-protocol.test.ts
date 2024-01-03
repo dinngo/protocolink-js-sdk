@@ -34,6 +34,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.66',
               liquidationThreshold: '0.73',
               isNotCollateral: false,
+              supplyCap: '1850000',
+              totalSupply: '664698.902796470253474238',
             },
             {
               token: {
@@ -50,6 +52,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.77',
               liquidationThreshold: '0.8',
               isNotCollateral: false,
+              supplyCap: '338000000',
+              totalSupply: '92918136.653764994943597984',
             },
             {
               token: {
@@ -66,6 +70,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.53',
               liquidationThreshold: '0.68',
               isNotCollateral: false,
+              supplyCap: '15000000',
+              totalSupply: '6236919.227547270114317598',
             },
             {
               token: {
@@ -82,6 +88,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.77',
               liquidationThreshold: '0.8',
               isNotCollateral: false,
+              supplyCap: '18000000',
+              totalSupply: '5896849.384296611014905182',
             },
             {
               token: {
@@ -98,6 +106,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.77',
               liquidationThreshold: '0.8',
               isNotCollateral: false,
+              supplyCap: '1760000000',
+              totalSupply: '451741481.616413',
             },
             {
               token: {
@@ -114,6 +124,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.74',
               liquidationThreshold: '0.76',
               isNotCollateral: false,
+              supplyCap: '600000000',
+              totalSupply: '397684811.506379',
             },
             {
               token: {
@@ -130,6 +142,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.73',
               liquidationThreshold: '0.78',
               isNotCollateral: false,
+              supplyCap: '43000',
+              totalSupply: '11963.09759525',
             },
             {
               token: {
@@ -146,6 +160,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.745',
               liquidationThreshold: '0.77',
               isNotCollateral: false,
+              supplyCap: '60000',
+              totalSupply: '12515.931125102669761257',
             },
             {
               token: {
@@ -162,6 +178,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.745',
               liquidationThreshold: '0.77',
               isNotCollateral: false,
+              supplyCap: '60000',
+              totalSupply: '48356.818649881665030164',
             },
             {
               token: {
@@ -178,6 +196,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.785',
               liquidationThreshold: '0.81',
               isNotCollateral: false,
+              supplyCap: '1100000',
+              totalSupply: '766378.435528436226868079',
             },
             {
               token: {
@@ -194,6 +214,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.805',
               liquidationThreshold: '0.83',
               isNotCollateral: false,
+              supplyCap: '1800000',
+              totalSupply: '456717.169430435071384223',
             },
             {
               token: {
@@ -210,6 +232,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.57',
               liquidationThreshold: '0.62',
               isNotCollateral: false,
+              supplyCap: '700000',
+              totalSupply: '430927.692213809294956654',
             },
             {
               token: {
@@ -226,6 +250,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.35',
               liquidationThreshold: '0.41',
               isNotCollateral: false,
+              supplyCap: '7500000',
+              totalSupply: '2173163.169937050727109039',
             },
             {
               token: {
@@ -242,6 +268,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.39',
               liquidationThreshold: '0.49',
               isNotCollateral: false,
+              supplyCap: '1000000',
+              totalSupply: '44639.909893333904305634',
             },
             {
               token: {
@@ -258,6 +286,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.4',
               liquidationThreshold: '0.5',
               isNotCollateral: false,
+              supplyCap: '6000000',
+              totalSupply: '1063337.005393092033367612',
             },
             {
               token: {
@@ -274,6 +304,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.65',
               liquidationThreshold: '0.7',
               isNotCollateral: false,
+              supplyCap: '22500',
+              totalSupply: '10681.629597624166611382',
             },
             {
               token: {
@@ -290,6 +322,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.49',
               liquidationThreshold: '0.65',
               isNotCollateral: false,
+              supplyCap: '2000000',
+              totalSupply: '640607.360335350777431324',
             },
             {
               token: {
@@ -306,6 +340,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.65',
               liquidationThreshold: '0.77',
               isNotCollateral: false,
+              supplyCap: '4000000',
+              totalSupply: '2408925.806808387476923232',
             },
             {
               token: {
@@ -322,6 +358,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.57',
               liquidationThreshold: '0.67',
               isNotCollateral: false,
+              supplyCap: '22000000',
+              totalSupply: '1284901.062132648467095204',
             },
             {
               token: {
@@ -338,6 +376,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.7',
               liquidationThreshold: '0.75',
               isNotCollateral: false,
+              supplyCap: '15000000',
+              totalSupply: '688658.291640712360126327',
             },
             {
               token: {
@@ -354,6 +394,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0',
               liquidationThreshold: '0',
               isNotCollateral: false,
+              supplyCap: '840000',
+              totalSupply: '451515.769089415208475783',
             },
             {
               token: {
@@ -370,6 +412,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.35',
               liquidationThreshold: '0.4',
               isNotCollateral: false,
+              supplyCap: '10000000',
+              totalSupply: '2004551.693873044729337211',
             },
             {
               token: {
@@ -386,6 +430,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.35',
               liquidationThreshold: '0.4',
               isNotCollateral: false,
+              supplyCap: '1200000',
+              totalSupply: '203598.367259294307723868',
             },
             {
               token: {
@@ -402,6 +448,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.35',
               liquidationThreshold: '0.45',
               isNotCollateral: false,
+              supplyCap: '800000',
+              totalSupply: '14018.815218722342773996',
             },
             {
               token: {
@@ -418,6 +466,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0',
               liquidationThreshold: '0',
               isNotCollateral: false,
+              supplyCap: '60000000',
+              totalSupply: '139063.257077173287449294',
             },
           ],
           borrows: [
@@ -432,6 +482,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '1.00002272',
               balances: ['0', '0'],
               apys: ['0.05077600393079828611', '0.06710875618198908006'],
+              borrowMin: '0',
+              borrowCap: '271000000',
+              totalBorrow: '82838987.172690904611446783',
             },
             {
               token: {
@@ -444,6 +497,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '14.43048',
               balances: ['0', '0'],
               apys: ['0.00469672266338061558', '0.09931331670529735661'],
+              borrowMin: '0',
+              borrowCap: '13000000',
+              totalBorrow: '187871.836490316380222276',
             },
             {
               token: {
@@ -456,6 +512,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '0.99907346',
               balances: ['0', '0'],
               apys: ['0.05064809600568456771', '0.10464693305275143672'],
+              borrowMin: '0',
+              borrowCap: '8000000',
+              totalBorrow: '4661610.161174071343711259',
             },
             {
               token: {
@@ -468,6 +527,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '1.00027726',
               balances: ['0', '0'],
               apys: ['0.05124690480066431282', '0.06715656857308800284'],
+              borrowMin: '0',
+              borrowCap: '1580000000',
+              totalBorrow: '406390100.165723',
             },
             {
               token: {
@@ -480,6 +542,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '0.99961',
               balances: ['0', '0'],
               apys: ['0.05115103904810626772', '0.10506994654348948044'],
+              borrowMin: '0',
+              borrowCap: '500000000',
+              totalBorrow: '357102470.630928',
             },
             {
               token: {
@@ -492,6 +557,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '42070.43411843',
               balances: ['0', '0'],
               apys: ['0.00993905766729966149', '0.08037422156178795619'],
+              borrowMin: '0',
+              borrowCap: '28000',
+              totalBorrow: '1331.04368336',
             },
             {
               token: {
@@ -504,6 +572,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '2367.23327843',
               balances: ['0', '0'],
               apys: ['0.01106206012748106734', '0.10627810524469430904'],
+              borrowMin: '0',
+              borrowCap: '2400',
+              totalBorrow: '885.162922097405223302',
             },
             {
               token: {
@@ -516,6 +587,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '2450.18252296',
               balances: ['0', '0'],
               apys: ['0.01221682491528295028', '0.10754161917542552013'],
+              borrowMin: '0',
+              borrowCap: '19200',
+              totalBorrow: '3774.785469677145439116',
             },
             {
               token: {
@@ -528,6 +602,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '2579.31314226',
               balances: ['0.000000000199591537', '0'],
               apys: ['0.00350052367445749632', '0.0788373364092462398'],
+              borrowMin: '0',
+              borrowCap: '24000',
+              totalBorrow: '7620.954012786860698391',
             },
             {
               token: {
@@ -540,6 +617,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '2242.39893',
               balances: ['22504.439857546496928451', '0'],
               apys: ['0.02832454450272690728', '0.10285378922638927006'],
+              borrowMin: '0',
+              borrowCap: '1400000',
+              totalBorrow: '364472.9473151526740187',
             },
             {
               token: {
@@ -552,6 +632,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '4.00584039',
               balances: ['0', '0'],
               apys: ['0.13079543144860774213', '0.40905787189305682423'],
+              borrowMin: '0',
+              borrowCap: '185000',
+              totalBorrow: '114456.291227146335280441',
             },
             {
               token: {
@@ -564,6 +647,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '0.64126945',
               balances: ['0', '0'],
               apys: ['0.06001629796737378854', '0.20461793125210363743'],
+              borrowMin: '0',
+              borrowCap: '5000000',
+              totalBorrow: '307508.291167649884187053',
             },
             {
               token: {
@@ -576,6 +662,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '8.70661924',
               balances: ['0', '0'],
               apys: ['0.00897751203969010139', '0.14214680657301220611'],
+              borrowMin: '0',
+              borrowCap: '40000',
+              totalBorrow: '1995.184522027963041865',
             },
             {
               token: {
@@ -588,6 +677,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '2.15865322',
               balances: ['0', '0'],
               apys: ['0.00133018338243446772', '0.10790262274477364801'],
+              borrowMin: '0',
+              borrowCap: '3000000',
+              totalBorrow: '9086.759136089184224493',
             },
             {
               token: {
@@ -600,6 +692,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '1325.12484',
               balances: ['0', '0'],
               apys: ['0.0104091053083956077', '0.12663045287848001661'],
+              borrowMin: '0',
+              borrowCap: '3000',
+              totalBorrow: '711.084235034181327029',
             },
             {
               token: {
@@ -612,6 +707,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '4.10424827',
               balances: ['0', '0'],
               apys: ['0.08650980183324964408', '0.26234429188128784448'],
+              borrowMin: '0',
+              borrowCap: '1100000',
+              totalBorrow: '180987.280847909227098604',
             },
             {
               token: {
@@ -624,6 +722,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '6.1537289',
               balances: ['0', '0'],
               apys: ['0.00548898362962160323', '0.11646333399830974161'],
+              borrowMin: '0',
+              borrowCap: '500000',
+              totalBorrow: '84770.250092805917840859',
             },
             {
               token: {
@@ -636,6 +737,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '1',
               balances: ['0', '0'],
               apys: ['0.05358643868526975825', '0'],
+              borrowMin: '0',
+              borrowCap: '35000000',
+              totalBorrow: '35001304.853742346875010307',
             },
             {
               token: {
@@ -648,6 +752,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '0.36715648',
               balances: ['0', '0'],
               apys: ['0.00188410222613479303', '0.13056659684532829206'],
+              borrowMin: '0',
+              borrowCap: '720000',
+              totalBorrow: '12093.125945788493413928',
             },
             {
               token: {
@@ -660,6 +767,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '0.99929064',
               balances: ['0', '0'],
               apys: ['0.0478462503067623037', '0.06681085298796353616'],
+              borrowMin: '0',
+              borrowCap: '12000000',
+              totalBorrow: '579355.922074445957174638',
             },
             {
               token: {
@@ -672,6 +782,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '27.19493893',
               balances: ['0', '0'],
               apys: ['0.04638176421561664829', '0.15066297254037223458'],
+              borrowMin: '0',
+              borrowCap: '480000',
+              totalBorrow: '192691.126841746370860172',
             },
             {
               token: {
@@ -684,6 +797,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '0.70404347',
               balances: ['0', '0'],
               apys: ['0.45228185272606608958', '0.70426853800002545852'],
+              borrowMin: '0',
+              borrowCap: '650000',
+              totalBorrow: '102217.846911972107952927',
             },
             {
               token: {
@@ -696,6 +812,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '0.9987005',
               balances: ['0', '0'],
               apys: ['0.04808656168165237238', '0.22398516776230744936'],
+              borrowMin: '0',
+              borrowCap: '50000000',
+              totalBorrow: '104506.605695275372946496',
             },
           ],
         },
@@ -729,6 +848,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.2',
               liquidationThreshold: '0.45',
               isNotCollateral: false,
+              supplyCap: '361000',
+              totalSupply: '332116.37096012473993438',
             },
             {
               token: {
@@ -745,6 +866,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.35',
               liquidationThreshold: '0.5',
               isNotCollateral: false,
+              supplyCap: '1400000',
+              totalSupply: '1243925.160393188523361867',
             },
             {
               token: {
@@ -761,6 +884,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.76',
               liquidationThreshold: '0.81',
               isNotCollateral: false,
+              supplyCap: '45000000',
+              totalSupply: '11757765.718345078292283641',
             },
             {
               token: {
@@ -777,6 +902,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.2',
               liquidationThreshold: '0.45',
               isNotCollateral: false,
+              supplyCap: '1417',
+              totalSupply: '1225.805610747919462903',
             },
             {
               token: {
@@ -793,6 +920,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.65',
               liquidationThreshold: '0.7',
               isNotCollateral: false,
+              supplyCap: '4000000',
+              totalSupply: '478228.09',
             },
             {
               token: {
@@ -809,6 +938,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0',
               liquidationThreshold: '0.45',
               isNotCollateral: false,
+              supplyCap: '4650000',
+              totalSupply: '2403991.438558377082310659',
             },
             {
               token: {
@@ -825,6 +956,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.53',
               liquidationThreshold: '0.68',
               isNotCollateral: false,
+              supplyCap: '668000',
+              totalSupply: '459268.364894959845142065',
             },
             {
               token: {
@@ -841,6 +974,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.2',
               liquidationThreshold: '0.45',
               isNotCollateral: false,
+              supplyCap: '299320',
+              totalSupply: '262264.488631780775821133',
             },
             {
               token: {
@@ -857,6 +992,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.825',
               liquidationThreshold: '0.85',
               isNotCollateral: false,
+              supplyCap: '150000000',
+              totalSupply: '44856349.19883',
             },
             {
               token: {
@@ -873,6 +1010,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.75',
               liquidationThreshold: '0.8',
               isNotCollateral: false,
+              supplyCap: '45000000',
+              totalSupply: '17765585.32488',
             },
             {
               token: {
@@ -889,6 +1028,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.73',
               liquidationThreshold: '0.78',
               isNotCollateral: false,
+              supplyCap: '3100',
+              totalSupply: '1379.50257416',
             },
             {
               token: {
@@ -905,6 +1046,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.8',
               liquidationThreshold: '0.825',
               isNotCollateral: false,
+              supplyCap: '50000',
+              totalSupply: '22566.582961225082277403',
             },
             {
               token: {
@@ -921,6 +1064,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0',
               liquidationThreshold: '0',
               isNotCollateral: false,
+              supplyCap: '300000',
+              totalSupply: '135391.046287545945967302',
             },
             {
               token: {
@@ -937,6 +1082,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.6',
               liquidationThreshold: '0.7',
               isNotCollateral: false,
+              supplyCap: '70000',
+              totalSupply: '48365.990848695137608973',
             },
             {
               token: {
@@ -953,6 +1100,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.45',
               liquidationThreshold: '0.58',
               isNotCollateral: false,
+              supplyCap: '62000000',
+              totalSupply: '44344793.890912430864551017',
             },
             {
               token: {
@@ -969,6 +1118,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.45',
               liquidationThreshold: '0.56',
               isNotCollateral: false,
+              supplyCap: '57000000',
+              totalSupply: '41777187.144647271832598067',
             },
             {
               token: {
@@ -985,6 +1136,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.68',
               liquidationThreshold: '0.73',
               isNotCollateral: false,
+              supplyCap: '105000000',
+              totalSupply: '56815633.071523981042418925',
             },
             {
               token: {
@@ -1001,6 +1154,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.7',
               liquidationThreshold: '0.79',
               isNotCollateral: false,
+              supplyCap: '3450',
+              totalSupply: '3449.651549049001200752',
             },
           ],
           borrows: [
@@ -1015,6 +1170,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '3.9956512',
               balances: ['0', '0'],
               apys: ['0.12598755980095025475', '0.4030668949606997306'],
+              borrowMin: '0',
+              borrowCap: '290000',
+              totalBorrow: '82923.658920763747192903',
             },
             {
               token: {
@@ -1027,6 +1185,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '0.6443846',
               balances: ['0', '0'],
               apys: ['0.04853267693489157765', '0.19714329899548234933'],
+              borrowMin: '0',
+              borrowCap: '300000',
+              totalBorrow: '108171.132033655133383238',
             },
             {
               token: {
@@ -1039,6 +1200,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '1.00004519',
               balances: ['0', '0'],
               apys: ['0.12860019871044775823', '0.14565680636886070874'],
+              borrowMin: '0',
+              borrowCap: '30000000',
+              totalBorrow: '10693442.759381990111312751',
             },
             {
               token: {
@@ -1051,6 +1215,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '90.38696341',
               balances: ['0', '0'],
               apys: ['0.02820635122551321891', '0.12749685132195629963'],
+              borrowMin: '0',
+              borrowCap: '779',
+              totalBorrow: '153.436208144516356883',
             },
             {
               token: {
@@ -1063,6 +1230,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '1.08955',
               balances: ['0', '0'],
               apys: ['0.0592561702948847833', '0.07766562615736471898'],
+              borrowMin: '0',
+              borrowCap: '1500000',
+              totalBorrow: '367089.9',
             },
             {
               token: {
@@ -1075,6 +1245,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '0.88730933',
               balances: ['0', '0'],
               apys: ['0.00175384687307236684', '0.09417428356469140047'],
+              borrowMin: '0',
+              borrowCap: '220000',
+              totalBorrow: '27080.625444102472145998',
             },
             {
               token: {
@@ -1087,6 +1260,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '14.520532',
               balances: ['0', '0'],
               apys: ['0.0113962663343863007', '0.09417428356469140047'],
+              borrowMin: '0',
+              borrowCap: '163702',
+              totalBorrow: '33456.539779003314828233',
             },
             {
               token: {
@@ -1099,6 +1275,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '1.18695',
               balances: ['0', '0'],
               apys: ['0.05297890599302992645', '0.09417428356469140047'],
+              borrowMin: '0',
+              borrowCap: '180000',
+              totalBorrow: '87037.065899377712761316',
             },
             {
               token: {
@@ -1111,6 +1290,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '1.00019144',
               balances: ['0', '0'],
               apys: ['0.05107156825828361061', '0.06713876822693449513'],
+              borrowMin: '0',
+              borrowCap: '100000000',
+              totalBorrow: '40217978.901735',
             },
             {
               token: {
@@ -1123,6 +1305,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '0.99943231',
               balances: ['0', '0'],
               apys: ['0.05075011837520909759', '0.06710612736203787438'],
+              borrowMin: '0',
+              borrowCap: '30000000',
+              totalBorrow: '15830672.546576',
             },
             {
               token: {
@@ -1135,6 +1320,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '42219.05',
               balances: ['0', '0'],
               apys: ['0.00591410184324957224', '0.06183654648475251348'],
+              borrowMin: '0',
+              borrowCap: '851',
+              totalBorrow: '91.51305234',
             },
             {
               token: {
@@ -1147,6 +1335,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '2247.22899356',
               balances: ['1960.689106321620159627', '0'],
               apys: ['0.02026243331547969329', '0.07809306076386978154'],
+              borrowMin: '0',
+              borrowCap: '14795',
+              totalBorrow: '5503.452780979608911933',
             },
             {
               token: {
@@ -1159,6 +1350,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '1.08955',
               balances: ['0', '0'],
               apys: ['0.03911667701482021137', '0.05632549887408808505'],
+              borrowMin: '0',
+              borrowCap: '250000',
+              totalBorrow: '103908.716884597853041032',
             },
             {
               token: {
@@ -1171,6 +1365,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '0.92878185',
               balances: ['0', '0'],
               apys: ['0.00290530621187056917', '0.06188978484826666567'],
+              borrowMin: '0',
+              borrowCap: '5200000',
+              totalBorrow: '200097.380787154367684047',
             },
             {
               token: {
@@ -1183,6 +1380,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '0.8509',
               balances: ['0', '0'],
               apys: ['0.024699422445879656', '0.07250818117089440143'],
+              borrowMin: '0',
+              borrowCap: '67000000',
+              totalBorrow: '20793996.339870281006989387',
             },
             {
               token: {
@@ -1195,6 +1395,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '2584.86890945',
               balances: ['0', '0'],
               apys: ['0.00769511636504645238', '0.06201246487118937443'],
+              borrowMin: '0',
+              borrowCap: '285',
+              totalBorrow: '178.197618681648862643',
             },
           ],
         },
@@ -1228,6 +1431,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.77',
               liquidationThreshold: '0.82',
               isNotCollateral: false,
+              supplyCap: '50000000',
+              totalSupply: '5802799.486305298865279603',
             },
             {
               token: {
@@ -1244,6 +1449,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.65',
               liquidationThreshold: '0.7',
               isNotCollateral: false,
+              supplyCap: '65000',
+              totalSupply: '43653.6',
             },
             {
               token: {
@@ -1260,6 +1467,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.7',
               liquidationThreshold: '0.775',
               isNotCollateral: false,
+              supplyCap: '1575000',
+              totalSupply: '1187017.315624191844183612',
             },
             {
               token: {
@@ -1276,6 +1485,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.75',
               liquidationThreshold: '0.8',
               isNotCollateral: false,
+              supplyCap: '50000000',
+              totalSupply: '16461226.369026',
             },
             {
               token: {
@@ -1292,6 +1503,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.73',
               liquidationThreshold: '0.78',
               isNotCollateral: false,
+              supplyCap: '4200',
+              totalSupply: '1607.39929695',
             },
             {
               token: {
@@ -1308,6 +1521,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.81',
               liquidationThreshold: '0.86',
               isNotCollateral: false,
+              supplyCap: '150000000',
+              totalSupply: '25860203.010173',
             },
             {
               token: {
@@ -1324,6 +1539,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.5',
               liquidationThreshold: '0.65',
               isNotCollateral: false,
+              supplyCap: '1850',
+              totalSupply: '1846.293710151185479161',
             },
             {
               token: {
@@ -1340,6 +1557,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.825',
               liquidationThreshold: '0.85',
               isNotCollateral: false,
+              supplyCap: '70000',
+              totalSupply: '40893.643339569809416826',
             },
             {
               token: {
@@ -1356,6 +1575,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0',
               liquidationThreshold: '0',
               isNotCollateral: false,
+              supplyCap: '2200000',
+              totalSupply: '2200837.638582608281988083',
             },
             {
               token: {
@@ -1372,6 +1593,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.81',
               liquidationThreshold: '0.86',
               isNotCollateral: false,
+              supplyCap: '64000000',
+              totalSupply: '41776016.125961',
             },
             {
               token: {
@@ -1388,6 +1611,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.67',
               liquidationThreshold: '0.74',
               isNotCollateral: false,
+              supplyCap: '3400',
+              totalSupply: '2679.658858304461309848',
             },
             {
               token: {
@@ -1404,6 +1629,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.7',
               liquidationThreshold: '0.79',
               isNotCollateral: false,
+              supplyCap: '55000',
+              totalSupply: '42396.232933917579044524',
             },
             {
               token: {
@@ -1420,6 +1647,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.5',
               liquidationThreshold: '0.6',
               isNotCollateral: false,
+              supplyCap: '20000000',
+              totalSupply: '12437267.378689126926661304',
             },
             {
               token: {
@@ -1436,6 +1665,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.7',
               liquidationThreshold: '0.75',
               isNotCollateral: false,
+              supplyCap: '7000000',
+              totalSupply: '157217.458596802715259512',
             },
           ],
           borrows: [
@@ -1450,6 +1681,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '1.00005605',
               balances: ['0', '0'],
               apys: ['0.05127426226771750666', '0.06716223809302373125'],
+              borrowMin: '0',
+              borrowCap: '30000000',
+              totalBorrow: '5222607.865415649333024079',
             },
             {
               token: {
@@ -1462,6 +1696,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '1.08955',
               balances: ['0', '0'],
               apys: ['0.04137370221553932538', '0.08544661217971374907'],
+              borrowMin: '0',
+              borrowCap: '65000',
+              totalBorrow: '23598.82',
             },
             {
               token: {
@@ -1474,6 +1711,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '14.48570799',
               balances: ['0', '0'],
               apys: ['0.0147851512314853723', '0.09417428356469140047'],
+              borrowMin: '0',
+              borrowCap: '484490',
+              totalBorrow: '111997.089294151734948866',
             },
             {
               token: {
@@ -1486,6 +1726,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '0.99993522',
               balances: ['0', '0'],
               apys: ['0.07907546292614059152', '0.09762264086619622398'],
+              borrowMin: '0',
+              borrowCap: '35000000',
+              totalBorrow: '14872621.49714',
             },
             {
               token: {
@@ -1498,6 +1741,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '42331.442229',
               balances: ['0', '0'],
               apys: ['0.01144019864042859424', '0.06183654648475251348'],
+              borrowMin: '0',
+              borrowCap: '1115',
+              totalBorrow: '205.70168357',
             },
             {
               token: {
@@ -1510,6 +1756,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '1.00023692',
               balances: ['0', '0'],
               apys: ['0.08567990769323201746', '0.11129654612923720547'],
+              borrowMin: '0',
+              borrowCap: '100000000',
+              totalBorrow: '23413554.598854',
             },
             {
               token: {
@@ -1522,6 +1771,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '2244.01978972',
               balances: ['3689.976655510586505415', '0'],
               apys: ['0.02848063384870475934', '0.10190391507850445994'],
+              borrowMin: '0',
+              borrowCap: '40000',
+              totalBorrow: '27840.229024617206753808',
             },
             {
               token: {
@@ -1534,6 +1786,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '0.99912831',
               balances: ['0', '0'],
               apys: ['0.05007970601435907876', '0.10416882493142522471'],
+              borrowMin: '0',
+              borrowCap: '1800000',
+              totalBorrow: '1720772.406066544886785171',
             },
             {
               token: {
@@ -1546,6 +1801,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '1.00023692',
               balances: ['0', '0'],
               apys: ['0.05109299271756908264', '0.11608895331573361409'],
+              borrowMin: '0',
+              borrowCap: '60000000',
+              totalBorrow: '37471648.392778',
             },
             {
               token: {
@@ -1558,6 +1816,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '2451.95357364',
               balances: ['0', '0'],
               apys: ['0.02845784592439778344', '0.16429092248919515124'],
+              borrowMin: '0',
+              borrowCap: '1360',
+              totalBorrow: '483.382423361694526377',
             },
             {
               token: {
@@ -1570,6 +1831,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '2581.17753165',
               balances: ['0', '0'],
               apys: ['0.00311888292011425678', '0.05654061462482147768'],
+              borrowMin: '0',
+              borrowCap: '2400',
+              totalBorrow: '260.325431380454616496',
             },
             {
               token: {
@@ -1582,6 +1846,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '1.12526332',
               balances: ['0', '0'],
               apys: ['0.02477958780886026724', '0.11013047450903380581'],
+              borrowMin: '0',
+              borrowCap: '16500000',
+              totalBorrow: '1957080.132272229872371464',
             },
             {
               token: {
@@ -1594,6 +1861,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '0.99916755',
               balances: ['0', '0'],
               apys: ['0.05008508530654595292', '0.06703856961926286115'],
+              borrowMin: '0',
+              borrowCap: '5500000',
+              totalBorrow: '138303.941574883442287013',
             },
           ],
         },
@@ -1627,6 +1897,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.78',
               liquidationThreshold: '0.83',
               isNotCollateral: false,
+              supplyCap: '25000000',
+              totalSupply: '2585801.985637176281924099',
             },
             {
               token: {
@@ -1643,6 +1915,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.7',
               liquidationThreshold: '0.75',
               isNotCollateral: false,
+              supplyCap: '210000',
+              totalSupply: '204117.456638770661150949',
             },
             {
               token: {
@@ -1659,6 +1933,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.6',
               liquidationThreshold: '0.75',
               isNotCollateral: false,
+              supplyCap: '20000000',
+              totalSupply: '6281520.249974342500361567',
             },
             {
               token: {
@@ -1675,6 +1951,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.8',
               liquidationThreshold: '0.85',
               isNotCollateral: false,
+              supplyCap: '25000000',
+              totalSupply: '19231384.088047',
             },
             {
               token: {
@@ -1691,6 +1969,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.73',
               liquidationThreshold: '0.78',
               isNotCollateral: false,
+              supplyCap: '1200',
+              totalSupply: '509.84485152',
             },
             {
               token: {
@@ -1707,6 +1987,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.75',
               liquidationThreshold: '0.8',
               isNotCollateral: false,
+              supplyCap: '25000000',
+              totalSupply: '5923879.53636',
             },
             {
               token: {
@@ -1723,6 +2005,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.5',
               liquidationThreshold: '0.65',
               isNotCollateral: false,
+              supplyCap: '45000',
+              totalSupply: '4337.076855148333607792',
             },
             {
               token: {
@@ -1739,6 +2023,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.8',
               liquidationThreshold: '0.825',
               isNotCollateral: false,
+              supplyCap: '35900',
+              totalSupply: '17312.435028802928656026',
             },
             {
               token: {
@@ -1755,6 +2041,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.71',
               liquidationThreshold: '0.8',
               isNotCollateral: false,
+              supplyCap: '34500',
+              totalSupply: '19470.083054554338894097',
             },
             {
               token: {
@@ -1771,6 +2059,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.3',
               liquidationThreshold: '0.4',
               isNotCollateral: false,
+              supplyCap: '10000000',
+              totalSupply: '4580520.485436663242117524',
             },
             {
               token: {
@@ -1787,6 +2077,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.67',
               liquidationThreshold: '0.74',
               isNotCollateral: false,
+              supplyCap: '6000',
+              totalSupply: '576.352858191538500054',
             },
             {
               token: {
@@ -1803,6 +2095,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0',
               liquidationThreshold: '0',
               isNotCollateral: false,
+              supplyCap: '3000000',
+              totalSupply: '132938.933841075547543289',
             },
           ],
           borrows: [
@@ -1817,6 +2111,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '1.00002282',
               balances: ['0', '0'],
               apys: ['0.10214629003321339804', '0.1188030980747120159'],
+              borrowMin: '0',
+              borrowCap: '16000000',
+              totalBorrow: '2343626.307415379179647934',
             },
             {
               token: {
@@ -1829,6 +2126,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '14.64277',
               balances: ['0', '0'],
               apys: ['0.00787257455741770749', '0.09417428356469140047'],
+              borrowMin: '0',
+              borrowCap: '84000',
+              totalBorrow: '10289.83331713380027938',
             },
             {
               token: {
@@ -1841,6 +2141,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '0.99889539',
               balances: ['0', '0'],
               apys: ['0.04566415286176893977', '0.06658848548003054493'],
+              borrowMin: '0',
+              borrowCap: '13000000',
+              totalBorrow: '4487774.83306114914761885',
             },
             {
               token: {
@@ -1853,6 +2156,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '1.00000221',
               balances: ['0', '0'],
               apys: ['0.078596936193978136', '0.09489784134168523575'],
+              borrowMin: '0',
+              borrowCap: '20000000',
+              totalBorrow: '17391545.440889',
             },
             {
               token: {
@@ -1865,6 +2171,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '42472.674242',
               balances: ['0', '0'],
               apys: ['0.00683905789364176548', '0.06183654648475251348'],
+              borrowMin: '0',
+              borrowCap: '250',
+              totalBorrow: '39.09363874',
             },
             {
               token: {
@@ -1877,6 +2186,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '0.99976223',
               balances: ['0', '0'],
               apys: ['0.14946330461076310507', '0.16683521772527190746'],
+              borrowMin: '0',
+              borrowCap: '16000000',
+              totalBorrow: '5402229.774339',
             },
             {
               token: {
@@ -1889,6 +2201,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '2253.0864232',
               balances: ['2745.542414023895564728', '0'],
               apys: ['0.02952515678478624892', '0.10326053566797938295'],
+              borrowMin: '0',
+              borrowCap: '19745',
+              totalBorrow: '12212.252255057979726948',
             },
             {
               token: {
@@ -1901,6 +2216,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '2591.60640163',
               balances: ['0', '0'],
               apys: ['0.00425087768018463859', '0.05838257290304102122'],
+              borrowMin: '0',
+              borrowCap: '1500',
+              totalBorrow: '339.143213014800666487',
             },
             {
               token: {
@@ -1913,6 +2231,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '2461.68955583',
               balances: ['0', '0'],
               apys: ['0.00336234068910269273', '0.11208193145116272024'],
+              borrowMin: '0',
+              borrowCap: '720',
+              totalBorrow: '12.437007329155728376',
             },
             {
               token: {
@@ -1925,6 +2246,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '0.99939599',
               balances: ['0', '0'],
               apys: ['0.13934785921335083626', '0.197763472813677731'],
+              borrowMin: '0',
+              borrowCap: '1210000',
+              totalBorrow: '108812.761681151745153015',
             },
           ],
         },
@@ -1958,6 +2282,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.75',
               liquidationThreshold: '0.8',
               isNotCollateral: false,
+              supplyCap: '1500000',
+              totalSupply: '14344.725459106802371348',
             },
             {
               token: {
@@ -1974,6 +2300,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.825',
               liquidationThreshold: '0.8625',
               isNotCollateral: false,
+              supplyCap: '170000000',
+              totalSupply: '35596545.103386',
             },
             {
               token: {
@@ -1990,6 +2318,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.75',
               liquidationThreshold: '0.81',
               isNotCollateral: false,
+              supplyCap: '100000000',
+              totalSupply: '18138699.03353',
             },
             {
               token: {
@@ -2006,6 +2336,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.7',
               liquidationThreshold: '0.75',
               isNotCollateral: false,
+              supplyCap: '3000',
+              totalSupply: '1130.70421247',
             },
             {
               token: {
@@ -2022,6 +2354,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.75',
               liquidationThreshold: '0.82',
               isNotCollateral: false,
+              supplyCap: '17000000',
+              totalSupply: '3901798.540779609997176857',
             },
             {
               token: {
@@ -2038,6 +2372,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.56',
               liquidationThreshold: '0.71',
               isNotCollateral: false,
+              supplyCap: '440000',
+              totalSupply: '203693.157085879217474773',
             },
             {
               token: {
@@ -2054,6 +2390,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.7',
               liquidationThreshold: '0.75',
               isNotCollateral: false,
+              supplyCap: '2000',
+              totalSupply: '673.8230531',
             },
             {
               token: {
@@ -2070,6 +2408,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.8',
               liquidationThreshold: '0.825',
               isNotCollateral: false,
+              supplyCap: '38000',
+              totalSupply: '14092.062663932627078843',
             },
             {
               token: {
@@ -2086,6 +2426,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.3',
               liquidationThreshold: '0.4',
               isNotCollateral: false,
+              supplyCap: '2200000',
+              totalSupply: '1261669.28668257238781593',
             },
             {
               token: {
@@ -2102,6 +2444,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.6',
               liquidationThreshold: '0.713',
               isNotCollateral: false,
+              supplyCap: '5800',
+              totalSupply: '3804.749540939523419669',
             },
             {
               token: {
@@ -2118,6 +2462,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.68',
               liquidationThreshold: '0.73',
               isNotCollateral: false,
+              supplyCap: '5700000',
+              totalSupply: '3018830.056769793051460555',
             },
             {
               token: {
@@ -2134,6 +2480,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0',
               liquidationThreshold: '0.01',
               isNotCollateral: false,
+              supplyCap: '20000',
+              totalSupply: '15422.625909218799074612',
             },
           ],
           borrows: [
@@ -2148,6 +2496,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '0.99923705',
               balances: ['0', '0'],
               apys: ['0.0390503021725579184', '0.06591193785036693658'],
+              borrowMin: '0',
+              borrowCap: '1000000',
+              totalBorrow: '9891.288478520892757229',
             },
             {
               token: {
@@ -2160,6 +2511,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '1.0002524',
               balances: ['0', '0'],
               apys: ['0.14104271614818463309', '0.15828736836980377194'],
+              borrowMin: '0',
+              borrowCap: '90000000',
+              totalBorrow: '32524422.764595',
             },
             {
               token: {
@@ -2172,6 +2526,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '0.9998278',
               balances: ['0', '0'],
               apys: ['0.13984284203255391256', '0.15706936047979261742'],
+              borrowMin: '0',
+              borrowCap: '80000000',
+              totalBorrow: '16521394.341276',
             },
             {
               token: {
@@ -2184,6 +2541,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '42540.80155',
               balances: ['0', '0'],
               apys: ['0.00599897178397704241', '0.09417428356469140047'],
+              borrowMin: '0',
+              borrowCap: '900',
+              totalBorrow: '43.47547942',
             },
             {
               token: {
@@ -2196,6 +2556,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '1',
               balances: ['0', '0'],
               apys: ['0.05550240589399468333', '0.07145428192496638585'],
+              borrowMin: '0',
+              borrowCap: '17000000',
+              totalBorrow: '3513785.682176854137941475',
             },
             {
               token: {
@@ -2208,6 +2571,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '14.58823',
               balances: ['0', '0'],
               apys: ['0.0147711962077648869', '0.09417428356469140047'],
+              borrowMin: '0',
+              borrowCap: '220000',
+              totalBorrow: '19201.044046325368603457',
             },
             {
               token: {
@@ -2220,6 +2586,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '42540.80155',
               balances: ['0', '0'],
               apys: ['0.00298621616953280854', '0.06183654648475251348'],
+              borrowMin: '0',
+              borrowCap: '1100',
+              totalBorrow: '22.60332888',
             },
             {
               token: {
@@ -2232,6 +2601,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '2255.12839519',
               balances: ['503.56783201033014682', '0'],
               apys: ['0.01754778358317233615', '0.07873045056775466992'],
+              borrowMin: '0',
+              borrowCap: '20500',
+              totalBorrow: '2194.093601314743311969',
             },
             {
               token: {
@@ -2244,6 +2616,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '44.7',
               balances: ['0', '0'],
               apys: ['0.04424966051329394784', '0.12805916065938216792'],
+              borrowMin: '0',
+              borrowCap: '3600000',
+              totalBorrow: '1384331.257203353233737012',
             },
             {
               token: {
@@ -2256,6 +2631,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '0.86985096',
               balances: ['0', '0'],
               apys: ['0.65053507775964222215', '0.19455637448419740629'],
+              borrowMin: '0',
+              borrowCap: '10000',
+              totalBorrow: '8318.143695300422730107',
             },
           ],
         },
@@ -2289,6 +2667,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.75',
               liquidationThreshold: '0.8',
               isNotCollateral: false,
+              supplyCap: '950000',
+              totalSupply: '951629.4657945491884156',
             },
             {
               token: {
@@ -2305,6 +2685,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.8',
               liquidationThreshold: '0.85',
               isNotCollateral: false,
+              supplyCap: '6000000',
+              totalSupply: '5970660.291405',
             },
             {
               token: {
@@ -2321,6 +2703,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.75',
               liquidationThreshold: '0.8',
               isNotCollateral: false,
+              supplyCap: '5000000',
+              totalSupply: '4998004.554061',
             },
             {
               token: {
@@ -2337,6 +2721,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0.8',
               liquidationThreshold: '0.825',
               isNotCollateral: false,
+              supplyCap: '300',
+              totalSupply: '300.057251443015896968',
             },
             {
               token: {
@@ -2353,6 +2739,8 @@ describe('Test Aave V3 LendingProtocol', function () {
               ltv: '0',
               liquidationThreshold: '0',
               isNotCollateral: false,
+              supplyCap: '360000',
+              totalSupply: '268427.170576769985625264',
             },
           ],
           borrows: [
@@ -2367,6 +2755,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '1.00002038',
               balances: ['0', '0'],
               apys: ['0.12397608039130557217', '0.14096280345328555618'],
+              borrowMin: '0',
+              borrowCap: '950000',
+              totalBorrow: '773648.819712205852752126',
             },
             {
               token: {
@@ -2379,6 +2770,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '1.00026504',
               balances: ['1249.319064', '0'],
               apys: ['0.0379114798618386383', '0.06579505386425172688'],
+              borrowMin: '0',
+              borrowCap: '4000000',
+              totalBorrow: '4000496.790864',
             },
             {
               token: {
@@ -2391,6 +2785,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '0.99968',
               balances: ['0', '0'],
               apys: ['0.04547726467489857161', '0.06656942115415879311'],
+              borrowMin: '0',
+              borrowCap: '4000000',
+              totalBorrow: '4003292.757491',
             },
             {
               token: {
@@ -2403,6 +2800,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '2247.8',
               balances: ['19.947502441895519984', '0'],
               apys: ['0.02413266844839324225', '0.08528874624607211218'],
+              borrowMin: '0',
+              borrowCap: '180',
+              totalBorrow: '87.484603062472377336',
             },
             {
               token: {
@@ -2415,6 +2815,9 @@ describe('Test Aave V3 LendingProtocol', function () {
               price: '25.26107283',
               balances: ['9773.266939501875097199', '0'],
               apys: ['0.00822587912740514178', '0.10317482893981782391'],
+              borrowMin: '0',
+              borrowCap: '32000',
+              totalBorrow: '14136.715839367056151531',
             },
           ],
         },
@@ -2427,7 +2830,7 @@ describe('Test Aave V3 LendingProtocol', function () {
         protocol.setBlockTag(blockTag);
         const portfolio = await protocol.getPortfolio(account);
         expect(JSON.stringify(portfolio)).to.eq(JSON.stringify(expected));
-      });
+      }).timeout(30000);
     });
   });
 });

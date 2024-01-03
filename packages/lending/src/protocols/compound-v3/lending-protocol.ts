@@ -83,7 +83,9 @@ export class LendingProtocol extends Protocol {
       let baseTokenPriceFeed: string;
       let numAssets: number;
       let utilization: BigNumber;
-      let baseBorrowMinWei: BigNumber;
+      let baseBorrowMin: BigNumber;
+      let totalSupply: BigNumber;
+      let totalBorrow: BigNumber;
       {
         const calls: common.Multicall3.CallStruct[] = [
           {
@@ -102,33 +104,65 @@ export class LendingProtocol extends Protocol {
             target: cometAddress,
             callData: this.cometIface.encodeFunctionData('getUtilization'),
           },
+          {
+            target: cometAddress,
+            callData: this.cometIface.encodeFunctionData('totalSupply'),
+          },
+          {
+            target: cometAddress,
+            callData: this.cometIface.encodeFunctionData('totalBorrow'),
+          },
         ];
         const { returnData } = await this.multicall3.callStatic.aggregate(calls, { blockTag: this.blockTag });
 
         [baseTokenPriceFeed] = this.cometIface.decodeFunctionResult('baseTokenPriceFeed', returnData[0]);
         [numAssets] = this.cometIface.decodeFunctionResult('numAssets', returnData[1]);
-        [baseBorrowMinWei] = this.cometIface.decodeFunctionResult('baseBorrowMin', returnData[2]);
+        [baseBorrowMin] = this.cometIface.decodeFunctionResult('baseBorrowMin', returnData[2]);
         [utilization] = this.cometIface.decodeFunctionResult('getUtilization', returnData[3]);
+        [totalSupply] = this.cometIface.decodeFunctionResult('totalSupply', returnData[4]);
+        [totalBorrow] = this.cometIface.decodeFunctionResult('totalBorrow', returnData[5]);
       }
 
-      const calls: common.Multicall3.CallStruct[] = [];
-      for (let i = 0; i < numAssets; i++) {
-        calls.push({ target: cometAddress, callData: this.cometIface.encodeFunctionData('getAssetInfo', [i]) });
+      const assetInfos: Omit<AssetConfig, 'totalSupply'>[] = [];
+      {
+        const calls: common.Multicall3.CallStruct[] = [];
+        for (let i = 0; i < numAssets; i++) {
+          calls.push({ target: cometAddress, callData: this.cometIface.encodeFunctionData('getAssetInfo', [i]) });
+        }
+        const { returnData } = await this.multicall3.callStatic.aggregate(calls, { blockTag: this.blockTag });
+
+        for (let i = 0; i < numAssets; i++) {
+          const [{ asset, priceFeed, borrowCollateralFactor, liquidateCollateralFactor, supplyCap }] =
+            this.cometIface.decodeFunctionResult('getAssetInfo', returnData[i]);
+          const token = await this.getToken(asset);
+
+          assetInfos.push({
+            token,
+            priceFeedAddress: priceFeed,
+            borrowCollateralFactor: common.toBigUnit(borrowCollateralFactor, 18),
+            liquidateCollateralFactor: common.toBigUnit(liquidateCollateralFactor, 18),
+            supplyCap: common.toBigUnit(supplyCap, token.decimals),
+          });
+        }
       }
-      const { returnData } = await this.multicall3.callStatic.aggregate(calls, { blockTag: this.blockTag });
 
       const assets: AssetConfig[] = [];
-      for (let i = 0; i < numAssets; i++) {
-        const [{ asset, priceFeed, borrowCollateralFactor, liquidateCollateralFactor }] =
-          this.cometIface.decodeFunctionResult('getAssetInfo', returnData[i]);
-        const token = await this.getToken(asset);
+      {
+        const calls: common.Multicall3.CallStruct[] = assetInfos.map(({ token }) => ({
+          target: cometAddress,
+          callData: this.cometIface.encodeFunctionData('totalsCollateral', [token.address]),
+        }));
+        const { returnData } = await this.multicall3.callStatic.aggregate(calls, { blockTag: this.blockTag });
 
-        assets.push({
-          token,
-          priceFeedAddress: priceFeed,
-          borrowCollateralFactor: common.toBigUnit(borrowCollateralFactor, 18),
-          liquidateCollateralFactor: common.toBigUnit(liquidateCollateralFactor, 18),
-        });
+        for (let i = 0; i < assetInfos.length; i++) {
+          const [totalSupply] = this.cometIface.decodeFunctionResult('totalsCollateral', returnData[i]);
+
+          const assetInfo = assetInfos[i];
+          assets.push({
+            ...assetInfo,
+            totalSupply: common.toBigUnit(totalSupply, assetInfo.token.decimals),
+          });
+        }
       }
 
       this._marketMap[this.chainId][id] = {
@@ -137,7 +171,9 @@ export class LendingProtocol extends Protocol {
         numAssets,
         utilization: utilization.toString(),
         baseTokenPriceFeedAddress: baseTokenPriceFeed,
-        baseBorrowMin: common.toBigUnit(baseBorrowMinWei, market.baseToken.decimals),
+        baseBorrowMin: common.toBigUnit(baseBorrowMin, market.baseToken.decimals),
+        totalSupply: common.toBigUnit(totalSupply, market.baseToken.decimals),
+        totalBorrow: common.toBigUnit(totalBorrow, market.baseToken.decimals),
       };
     }
 
@@ -257,7 +293,7 @@ export class LendingProtocol extends Protocol {
   }
 
   async getPortfolio(account: string, marketId: string) {
-    const { baseToken, assets } = await this.getMarket(marketId);
+    const { baseToken, assets, baseBorrowMin, totalSupply, totalBorrow } = await this.getMarket(marketId);
 
     const { supplyAPR, borrowAPR } = await this.getAPYs(marketId);
     const { baseTokenPrice, assetPriceMap } = await this.getPriceMap(marketId);
@@ -273,9 +309,10 @@ export class LendingProtocol extends Protocol {
         ltv: '0',
         liquidationThreshold: '0',
         isNotCollateral: true,
+        totalSupply,
       },
     ];
-    for (const { token, borrowCollateralFactor, liquidateCollateralFactor } of assets) {
+    for (const { token, borrowCollateralFactor, liquidateCollateralFactor, supplyCap, totalSupply } of assets) {
       supplies.push({
         token: token.unwrapped,
         price: assetPriceMap[token.address],
@@ -284,6 +321,8 @@ export class LendingProtocol extends Protocol {
         usageAsCollateralEnabled: true,
         ltv: borrowCollateralFactor,
         liquidationThreshold: liquidateCollateralFactor,
+        supplyCap,
+        totalSupply,
       });
     }
 
@@ -293,6 +332,8 @@ export class LendingProtocol extends Protocol {
         price: baseTokenPrice,
         balances: [borrowBalance],
         apys: [borrowAPR],
+        borrowMin: baseBorrowMin,
+        totalBorrow,
       },
     ];
 
