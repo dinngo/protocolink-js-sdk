@@ -1,5 +1,12 @@
 # @protocolink/lending
 
+## 1.0.5
+
+### Patch Changes
+
+- b5a7fdb: add supply, borrow caps validation
+- 03e3fb4: zap borrow add borrow min validation
+
 ## 1.0.4
 
 ### Patch Changes
