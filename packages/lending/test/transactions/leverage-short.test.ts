@@ -94,7 +94,7 @@ describe('Transaction: Leverage Short', function () {
           // 2. user needs to permit the Protocolink user agent to borrow for the user
           const estimateResult = await apisdk.estimateRouterData(
             { chainId, account, logics: leverageShortInfo.logics },
-            permit2Type
+            { permit2Type }
           );
           expect(estimateResult.approvals.length).to.eq(expects.approvalLength);
           for (const approval of estimateResult.approvals) {

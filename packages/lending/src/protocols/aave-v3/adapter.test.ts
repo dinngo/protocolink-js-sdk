@@ -1,4 +1,5 @@
 import { Adapter } from 'src/adapter';
+import BigNumberJS from 'bignumber.js';
 import { LendingProtocol } from './lending-protocol';
 import { Portfolio } from 'src/protocol.portfolio';
 import * as common from '@protocolink/common';
@@ -553,6 +554,31 @@ describe('Test Adapter for Aave V3', function () {
       expect(logics).to.be.empty;
     });
 
+    it('supply cap exceeded', async function () {
+      const srcToken = mainnetTokens.USDC;
+      const destToken = mainnetTokens.USDC;
+
+      const destCollateral = portfolio.findSupply(destToken)!;
+      const srcAmount = new BigNumberJS(destCollateral.supplyCap).minus(destCollateral.totalSupply).plus(1).toString();
+
+      const { destAmount, afterPortfolio, error, logics } = await adapter.zapSupply({
+        account,
+        portfolio,
+        srcToken,
+        srcAmount,
+        destToken,
+      });
+
+      expect(destAmount).to.eq(srcAmount);
+
+      const expectedAfterPortfolio = portfolio.clone();
+      expectedAfterPortfolio.supply(destToken, srcAmount);
+      expect(JSON.stringify(expectedAfterPortfolio)).to.eq(JSON.stringify(afterPortfolio));
+
+      expect(error).to.deep.eq({ name: 'destAmount', code: 'SUPPLY_CAP_EXCEEDED' });
+      expect(logics).to.be.empty;
+    });
+
     it('success - src token is equal to dest token', async function () {
       const srcToken = mainnetTokens.USDC;
       const srcAmount = '10000';
@@ -740,6 +766,31 @@ describe('Test Adapter for Aave V3', function () {
       expect(destAmount).to.eq('0');
       expect(JSON.stringify(portfolio)).to.eq(JSON.stringify(afterPortfolio));
       expect(error).to.be.undefined;
+      expect(logics).to.be.empty;
+    });
+
+    it('borrow cap exceeded', async function () {
+      const srcToken = mainnetTokens.USDC;
+      const destToken = mainnetTokens.USDC;
+
+      const srcCollateral = portfolio.findBorrow(srcToken)!;
+      const srcAmount = new BigNumberJS(srcCollateral.borrowCap).minus(srcCollateral.totalBorrow).plus(1).toString();
+
+      const { destAmount, afterPortfolio, error, logics } = await adapter.zapBorrow({
+        account,
+        portfolio,
+        srcToken,
+        srcAmount,
+        destToken,
+      });
+
+      expect(destAmount).to.eq('0');
+
+      const expectedAfterPortfolio = portfolio.clone();
+      expectedAfterPortfolio.borrow(destToken, srcAmount);
+      expect(JSON.stringify(expectedAfterPortfolio)).to.eq(JSON.stringify(afterPortfolio));
+
+      expect(error).to.deep.eq({ name: 'srcAmount', code: 'BORROW_CAP_EXCEEDED' });
       expect(logics).to.be.empty;
     });
 

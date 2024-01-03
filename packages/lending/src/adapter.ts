@@ -534,9 +534,9 @@ export class Adapter extends common.Web3Toolkit {
             // 1-5-1. the supply amount is the swap quotation output
             supplyInput = swapQuotation.output;
           }
-          // 4-2. set dest amount
+          // 1-6. set dest amount
           output.destAmount = supplyInput.amount;
-          // 1-6. validate supply cap
+          // 1-7. validate supply cap
           if (!destCollateral.validateSupplyCap(supplyInput.amount)) {
             output.error = { name: 'destAmount', code: 'SUPPLY_CAP_EXCEEDED' };
           }
@@ -763,6 +763,8 @@ export class Adapter extends common.Web3Toolkit {
           output.error = { name: 'destAmount', code: 'SUPPLY_CAP_EXCEEDED' };
         }
         output.afterPortfolio.supply(supplyInput.token, supplyInput.amount);
+        // 2-1. set dest amount
+        output.destAmount = supplyInput.amount;
 
         if (!output.error) {
           // 3. ---------- supply ----------
@@ -772,8 +774,6 @@ export class Adapter extends common.Web3Toolkit {
             supplyLogic.fields.balanceBps = common.BPS_BASE;
           }
           output.logics.push(supplyLogic);
-          // 3-2. set dest amount
-          output.destAmount = supplyInput.amount;
         }
       }
     }

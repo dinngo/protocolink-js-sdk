@@ -112,7 +112,7 @@ describe('Transaction: Collateral swap', function () {
           // 2. user needs to allow the Protocolink user agent to withdraw on behalf of the user
           const estimateResult = await apisdk.estimateRouterData(
             { chainId, account, logics: collateralSwapInfo.logics },
-            permit2Type
+            { permit2Type }
           );
           expect(estimateResult.approvals.length).to.eq(expects.approvalLength);
           for (const approval of estimateResult.approvals) {

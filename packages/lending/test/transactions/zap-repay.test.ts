@@ -111,7 +111,7 @@ describe('Transaction: Zap Repay', function () {
         // 2. user needs to allow the Protocolink user agent to repay on behalf of the user
         const estimateResult = await apisdk.estimateRouterData(
           { chainId, account, logics: zapRepayInfo.logics },
-          permit2Type
+          { permit2Type }
         );
         expect(estimateResult.approvals.length).to.eq(expects.approvalLength);
         for (const approval of estimateResult.approvals) {

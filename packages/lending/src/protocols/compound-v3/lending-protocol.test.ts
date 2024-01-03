@@ -604,7 +604,7 @@ describe('Test Compound V3 LendingProtocol', function () {
         protocol.setBlockTag(blockTag);
         const portfolio = await protocol.getPortfolio(account, marketId);
         expect(JSON.stringify(portfolio)).to.eq(JSON.stringify(expected));
-      });
+      }).timeout(60000);
     });
   });
 

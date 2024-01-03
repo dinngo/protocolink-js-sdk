@@ -108,7 +108,7 @@ describe('Transaction: Deleverage', function () {
           // 2. user needs to permit the Protocolink user agent to borrow on behalf of the user
           const estimateResult = await apisdk.estimateRouterData(
             { chainId, account, logics: deleverageInfo.logics },
-            permit2Type
+            { permit2Type }
           );
           expect(estimateResult.approvals.length).to.eq(expects.approvalLength);
           for (const approval of estimateResult.approvals) {
