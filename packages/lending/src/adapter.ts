@@ -956,7 +956,7 @@ export class Adapter extends common.Web3Toolkit {
           }
 
           // 3. ---------- repay ----------
-          const repayLogic = await protocol.newRepayLogic({ marketId, account, input: repayInput });
+          const repayLogic = protocol.newRepayLogic({ marketId, account, input: repayInput });
           // 3-1. if the src token is not equal to dest token, use BalanceLink to prevent swap slippage
           if (!srcToken.wrapped.is(destToken.wrapped)) {
             repayLogic.fields.balanceBps = common.BPS_BASE;
