@@ -1,5 +1,11 @@
 # @furucombo/composable-router-api
 
+## 1.0.5
+
+### Patch Changes
+
+- bb7ecfe: add Morphoblue, skip Morphoblue test
+
 ## 1.0.4
 
 ### Patch Changes
