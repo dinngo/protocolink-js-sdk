@@ -1,5 +1,11 @@
 # @furucombo/composable-router-api
 
+## 1.0.6
+
+### Patch Changes
+
+- 1beb782: add Morphoblue Flashloan, skip Morphoblue Flashloan test
+
 ## 1.0.5
 
 ### Patch Changes
