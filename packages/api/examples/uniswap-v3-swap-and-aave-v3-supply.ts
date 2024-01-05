@@ -59,6 +59,8 @@ it('Uniswap V3 Swap + Aave V3 Supply', async function () {
   // Step 4.
   // Use `api.protocols.aavev3.newSupplyLogic` to build the supply Logic data.
   const supplyLogic = api.protocols.aavev3.newSupplyLogic(supplyQuotation);
+  // Use BalanceLink to prevent swap slippage
+  supplyLogic.fields.balanceBps = common.BPS_BASE;
 
   // Step 5.
   // Next, prepare the Router Data, which will basically include chainId, account, and logics data.
