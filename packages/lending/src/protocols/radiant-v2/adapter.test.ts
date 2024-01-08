@@ -63,7 +63,8 @@ describe('Test Adapter for Radiant V2', function () {
       expectedAfterPortfolio.withdraw(srcCollateral.token, srcAmount);
       expect(JSON.stringify(expectedAfterPortfolio)).to.eq(JSON.stringify(afterPortfolio));
 
-      expect(error).to.deep.eq({ name: 'srcAmount', code: 'INSUFFICIENT_AMOUNT' });
+      expect(error?.name).to.eq('srcAmount');
+      expect(error?.code).to.eq('INSUFFICIENT_AMOUNT');
       expect(logics).to.be.empty;
     });
 
@@ -154,7 +155,8 @@ describe('Test Adapter for Radiant V2', function () {
       expectedAfterPortfolio.repay(srcBorrow.token, srcAmount);
       expect(JSON.stringify(expectedAfterPortfolio)).to.eq(JSON.stringify(afterPortfolio));
 
-      expect(error).to.deep.eq({ name: 'srcAmount', code: 'INSUFFICIENT_AMOUNT' });
+      expect(error?.name).to.eq('srcAmount');
+      expect(error?.code).to.eq('INSUFFICIENT_AMOUNT');
       expect(logics).to.be.empty;
     });
 
@@ -436,7 +438,8 @@ describe('Test Adapter for Radiant V2', function () {
       expectedAfterPortfolio.repay(srcBorrow.token, srcAmount);
       expect(JSON.stringify(expectedAfterPortfolio)).to.eq(JSON.stringify(afterPortfolio));
 
-      expect(error).to.deep.eq({ name: 'srcAmount', code: 'INSUFFICIENT_AMOUNT' });
+      expect(error?.name).to.eq('srcAmount');
+      expect(error?.code).to.eq('INSUFFICIENT_AMOUNT');
       expect(logics).to.be.empty;
     });
 
@@ -462,7 +465,8 @@ describe('Test Adapter for Radiant V2', function () {
       expectedAfterPortfolio.withdraw(destCollateral.token, destAmount);
       expect(JSON.stringify(expectedAfterPortfolio)).to.eq(JSON.stringify(afterPortfolio));
 
-      expect(error).to.deep.eq({ name: 'destAmount', code: 'INSUFFICIENT_AMOUNT' });
+      expect(error?.name).to.eq('destAmount');
+      expect(error?.code).to.eq('INSUFFICIENT_AMOUNT');
       expect(logics).to.be.empty;
     });
 
@@ -665,7 +669,8 @@ describe('Test Adapter for Radiant V2', function () {
       expectedAfterPortfolio.withdraw(srcCollateral.token, srcAmount);
       expect(JSON.stringify(expectedAfterPortfolio)).to.eq(JSON.stringify(afterPortfolio));
 
-      expect(error).to.deep.eq({ name: 'srcAmount', code: 'INSUFFICIENT_AMOUNT' });
+      expect(error?.name).to.eq('srcAmount');
+      expect(error?.code).to.eq('INSUFFICIENT_AMOUNT');
       expect(logics).to.be.empty;
     });
 
@@ -853,7 +858,8 @@ describe('Test Adapter for Radiant V2', function () {
       expectedAfterPortfolio.repay(srcBorrow.token, srcAmount);
       expect(JSON.stringify(expectedAfterPortfolio)).to.eq(JSON.stringify(afterPortfolio));
 
-      expect(error).to.deep.eq({ name: 'srcAmount', code: 'INSUFFICIENT_AMOUNT' });
+      expect(error?.name).to.eq('srcAmount');
+      expect(error?.code).to.eq('INSUFFICIENT_AMOUNT');
       expect(logics).to.be.empty;
     });
 
