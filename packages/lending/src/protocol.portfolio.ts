@@ -338,6 +338,42 @@ export class Portfolio {
     return maxLeverageTimes;
   }
 
+  /**
+   *
+   * @param leverageToken token which be deposited in leverage
+   * @param deleverageToken token which be borrowed in leverage
+   * @param _targetHealthRate
+   */
+  adjustHealthRate(leverageToken: common.Token, deleverageToken: common.Token, _targetHealthRate: BigNumberJS.Value) {
+    let operation: 'leverageLong' | 'deleverage' | undefined = undefined;
+    const supplyLiquidationThreshold = new BigNumberJS(this.supplyMap[leverageToken.address]!.liquidationThreshold);
+    const targetHealthRate = new BigNumberJS(_targetHealthRate);
+    let amount = '0';
+
+    if (this.totalBorrowUSD.isZero() || targetHealthRate.lt(this.healthRate)) {
+      if (this.totalCollateralUSD.isZero()) throw new Error(`can't leverage without collateral`);
+      operation = 'leverageLong';
+      const supplyUSD = this.liquidationLimit
+        .minus(targetHealthRate.times(this.totalBorrowUSD))
+        .div(targetHealthRate.minus(supplyLiquidationThreshold));
+      amount = supplyUSD.div(this.supplyMap[leverageToken.address]!.price).toFixed(leverageToken.decimals, 1);
+    } else {
+      operation = 'deleverage';
+      const withdrawUSD = this.liquidationLimit
+        .minus(targetHealthRate.times(this.totalBorrowUSD))
+        .div(supplyLiquidationThreshold.minus(_targetHealthRate));
+      // repay token amount
+      amount = withdrawUSD.div(this.supplyMap[deleverageToken.address]!.price).toFixed(leverageToken.decimals, 1);
+    }
+
+    return {
+      operation,
+      srcToken: operation === 'leverageLong' ? leverageToken : deleverageToken,
+      srcAmount: amount,
+      dstToken: operation === 'leverageLong' ? deleverageToken : leverageToken,
+    };
+  }
+
   supply(supply: Supply): void;
   supply(token: common.Token, amount: string): void;
   supply(arg0: any, arg1?: any) {
