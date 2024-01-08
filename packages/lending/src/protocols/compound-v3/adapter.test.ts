@@ -65,7 +65,8 @@ describe('Test Adapter for Compound V3', function () {
       expectedAfterPortfolio.withdraw(srcCollateral.token, srcAmount);
       expect(JSON.stringify(expectedAfterPortfolio)).to.eq(JSON.stringify(afterPortfolio));
 
-      expect(error).to.deep.eq({ name: 'srcAmount', code: 'INSUFFICIENT_AMOUNT' });
+      expect(error?.name).to.eq('srcAmount');
+      expect(error?.code).to.eq('INSUFFICIENT_AMOUNT');
       expect(logics).to.be.empty;
     });
 
@@ -211,7 +212,8 @@ describe('Test Adapter for Compound V3', function () {
       expectedAfterPortfolio.repay(srcBorrow.token, srcAmount);
       expect(JSON.stringify(expectedAfterPortfolio)).to.eq(JSON.stringify(afterPortfolio));
 
-      expect(error).to.deep.eq({ name: 'srcAmount', code: 'INSUFFICIENT_AMOUNT' });
+      expect(error?.name).to.eq('srcAmount');
+      expect(error?.code).to.eq('INSUFFICIENT_AMOUNT');
       expect(logics).to.be.empty;
     });
 
@@ -379,7 +381,8 @@ describe('Test Adapter for Compound V3', function () {
       expectedAfterPortfolio.supply(destToken, srcAmount);
       expect(JSON.stringify(expectedAfterPortfolio)).to.eq(JSON.stringify(afterPortfolio));
 
-      expect(error).to.deep.eq({ name: 'destAmount', code: 'SUPPLY_CAP_EXCEEDED' });
+      expect(error?.name).to.eq('destAmount');
+      expect(error?.code).to.eq('SUPPLY_CAP_EXCEEDED');
       expect(logics).to.be.empty;
     });
 
@@ -486,7 +489,8 @@ describe('Test Adapter for Compound V3', function () {
       expectedAfterPortfolio.withdraw(srcCollateral.token, srcAmount);
       expect(JSON.stringify(expectedAfterPortfolio)).to.eq(JSON.stringify(afterPortfolio));
 
-      expect(error).to.deep.eq({ name: 'srcAmount', code: 'INSUFFICIENT_AMOUNT' });
+      expect(error?.name).to.eq('srcAmount');
+      expect(error?.code).to.eq('INSUFFICIENT_AMOUNT');
       expect(logics).to.be.empty;
     });
 
@@ -594,7 +598,8 @@ describe('Test Adapter for Compound V3', function () {
       expectedAfterPortfolio.withdraw(srcCollateral.token, srcAmount);
       expect(JSON.stringify(expectedAfterPortfolio)).to.eq(JSON.stringify(afterPortfolio));
 
-      expect(error).to.deep.eq({ name: 'srcAmount', code: 'INSUFFICIENT_AMOUNT' });
+      expect(error?.name).to.eq('srcAmount');
+      expect(error?.code).to.eq('INSUFFICIENT_AMOUNT');
       expect(logics).to.be.empty;
     });
 
@@ -782,7 +787,8 @@ describe('Test Adapter for Compound V3', function () {
       expectedAfterPortfolio.repay(srcBorrow.token, srcAmount);
       expect(JSON.stringify(expectedAfterPortfolio)).to.eq(JSON.stringify(afterPortfolio));
 
-      expect(error).to.deep.eq({ name: 'srcAmount', code: 'INSUFFICIENT_AMOUNT' });
+      expect(error?.name).to.eq('srcAmount');
+      expect(error?.code).to.eq('INSUFFICIENT_AMOUNT');
       expect(logics).to.be.empty;
     });
 
@@ -871,7 +877,8 @@ describe('Test Adapter errors for Compound V3', function () {
     expectedAfterPortfolio.borrow(srcToken, srcAmount);
     expect(JSON.stringify(expectedAfterPortfolio)).to.eq(JSON.stringify(afterPortfolio));
 
-    expect(error).to.deep.eq({ name: 'srcAmount', code: 'BORROW_MIN' });
+    expect(error?.name).to.eq('srcAmount');
+    expect(error?.code).to.eq('BORROW_MIN');
     expect(logics).to.be.empty;
   }).timeout(60000);
 });

@@ -11,9 +11,15 @@ export interface OperationInput {
   slippage?: number;
 }
 
-export interface OperationError {
+export class OperationError extends Error {
   name: string;
   code: string;
+
+  constructor(name: string, code: string) {
+    super(`${name}: ${code}`);
+    this.name = name;
+    this.code = code;
+  }
 }
 
 export type OperationOutput = {
