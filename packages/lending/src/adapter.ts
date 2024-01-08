@@ -1,5 +1,6 @@
 import BigNumberJS from 'bignumber.js';
 import { OperationError, OperationInput, OperationOutput } from './adapter.type';
+import { Portfolio } from './protocol.portfolio';
 import { Protocol, ProtocolClass } from './protocol';
 import { Swapper, SwapperClass } from './swapper';
 import { SwapperQuoteFields } from './swapper.type';
@@ -14,12 +15,20 @@ import { scaleRepayAmount } from './adapter.utils';
 export class Adapter extends common.Web3Toolkit {
   static Protocols: ProtocolClass[] = [];
 
+  /**
+   * Registers a new protocol to the Adapter.
+   * @param {ProtocolClass} protocol - The protocol class to be registered.
+   */
   static registerProtocol(protocol: ProtocolClass) {
     this.Protocols.push(protocol);
   }
 
   static Swappers: SwapperClass[] = [];
 
+  /**
+   * Registers a new swapper to the Adapter.
+   * @param {SwapperClass} swapper - The swapper class to be registered.
+   */
   static registerSwapper(swapper: SwapperClass) {
     this.Swappers.push(swapper);
   }
@@ -63,12 +72,23 @@ export class Adapter extends common.Web3Toolkit {
     return this.primaryNonstablecoin.wrapped;
   }
 
+  /**
+   * Chooses a suitable token based on the given options.
+   *
+   * @param {Object} options - The options for choosing a token.
+   * @param {common.Token[]} options.tokens - The array of tokens to choose from.
+   * @param {common.Token} [options.priorityToken] - A token that has priority if present in the tokens array. Optional.
+   * @param {common.Token} [options.excludedToken] - A token to be excluded from selection. Optional.
+   * @param {common.Token[]} [options.preferredTokens] - An array of preferred tokens. Optional.
+   * @returns {common.Token} The chosen token based on the provided criteria.
+   * If no specific criteria match, the first token from the tokens array is returned.
+   */
   chooseSuitableToken(options: {
     tokens: common.Token[];
     priorityToken?: common.Token;
     excludedToken?: common.Token;
     preferredTokens?: common.Token[];
-  }) {
+  }): common.Token {
     const {
       tokens,
       priorityToken,
@@ -129,31 +149,65 @@ export class Adapter extends common.Web3Toolkit {
     return bestSwapper;
   }
 
-  async getPortfolios(account: string) {
+  /**
+   * Retrieves an array of portfolios for a given account from all registered protocols.
+   *
+   * @param {string} account - The account identifier for which portfolios are to be retrieved.
+   * @returns {Promise<Portfolio[]>} A promise that resolves to an array of Portfolio objects from all protocols.
+   */
+  async getPortfolios(account: string): Promise<Portfolio[]> {
     const portfolios = await Promise.all(
       Object.values(this.protocolMap).map((protocol) => protocol.getPortfolios(account))
     );
     return flatten(portfolios);
   }
 
-  async getPortfolio(account: string, protocolId: string, _marketId: string) {
-    return await this.protocolMap[protocolId].getPortfolio(account, _marketId);
+  /**
+   * Retrieves the portfolio of a specific protocol and market for a given account.
+   *
+   * @param {string} account - The account identifier for which the portfolio is to be retrieved.
+   * @param {string} protocolId - The identifier of the protocol.
+   * @param {string} marketId - The identifier of the market within the protocol.
+   * @returns {Promise<Portfolio>} A promise that resolves to the Portfolio object of the specified protocol and market.
+   */
+  async getPortfolio(account: string, protocolId: string, marketId: string): Promise<Portfolio> {
+    return await this.protocolMap[protocolId].getPortfolio(account, marketId);
   }
 
-  getProtocol(id: string) {
+  /**
+   * Retrieves a protocol instance by its identifier.
+   *
+   * @param {string} id - The identifier of the protocol.
+   * @returns {Protocol} The Protocol instance associated with the given identifier.
+   */
+
+  getProtocol(id: string): Protocol {
     return this.protocolMap[id];
   }
 
-  // 1. validate src amount
-  // 2. flashloan loan src token
-  // 3. swap src token to dest token
-  // 4. deposit dest token
-  // 5. withdraw src token, if protocol is collateral tokenized, perform the following actions first:
-  // 5-1. return dest protocol token to user
-  // 5-2. add src protocol token to agent
-  // 6. flashloan repay src token
-  // @param srcToken Old deposit token
-  // @param destToken New deposit token
+  /**
+   * Collateral swap enables user to replace one collateral asset
+   * with another in a single step using a flash loan.
+   *
+   * @param {OperationInput} input - The input parameters for the operation.
+   * @param {string} input.account - The account wallet address.
+   * @param {Portfolio} input.portfolio - The portfolio data.
+   * @param {common.Token} input.srcToken - Source token: the collateral to be swapped.
+   * @param {string} input.srcAmount - The amount of source token.
+   * @param {common.Token} input.destToken - Destination token: the collateral to be swapped to.
+   * @param {number} [input.slippage=defaultSlippage] - The slippage tolerance. Optional.
+   * @returns {Promise<OperationOutput>} The result including the destination amount,
+   * after portfolio, potential errors, and logic operations.
+   *
+   * 1. validate src amount
+   * 2. flashloan loan src token
+   * 3. swap src token to dest token
+   * 4. deposit dest token
+   * 5. withdraw src token, if protocol is collateral tokenized, perform the following actions first:
+   * 5-1. return dest protocol token to user
+   * 5-2. add src protocol token to agent
+   * 6. flashloan repay src token
+   */
   async collateralSwap({
     account,
     portfolio,
@@ -161,7 +215,7 @@ export class Adapter extends common.Web3Toolkit {
     srcAmount,
     destToken,
     slippage = defaultSlippage,
-  }: OperationInput) {
+  }: OperationInput): Promise<OperationOutput> {
     const output: OperationOutput = {
       destAmount: '0',
       afterPortfolio: portfolio.clone(),
@@ -270,14 +324,33 @@ export class Adapter extends common.Web3Toolkit {
     return output;
   }
 
-  // 1. flashloan dest token
-  // 2. swap dest token to src token
-  // 3. repay src token
-  // 4. borrow dest token
-  // 5. flashloan repay dest token
-  // @param srcToken Old borrow token
-  // @param destToken New borrow token
-  async debtSwap({ account, portfolio, srcToken, srcAmount, destToken, slippage = defaultSlippage }: OperationInput) {
+  /**
+   * Debt swap enables user to replace one loan asset with another in a single step using a flash loan
+   *
+   * @param {OperationInput} input - The input parameters for the operation.
+   * @param {string} input.account - The account wallet address.
+   * @param {Portfolio} input.portfolio - The portfolio data.
+   * @param {common.Token} input.srcToken - Source token: the debt to be swapped.
+   * @param {string} input.srcAmount - The amount of source token.
+   * @param {common.Token} input.destToken - Destination token: the debt to be swapped to.
+   * @param {number} [input.slippage=defaultSlippage] - The slippage tolerance. Optional.
+   * @returns {Promise<OperationOutput>} The result including the destination amount,
+   * after portfolio, potential errors, and logic operations.
+   *
+   * 1. flashloan dest token
+   * 2. swap dest token to src token
+   * 3. repay src token
+   * 4. borrow dest token
+   * 5. flashloan repay dest token
+   */
+  async debtSwap({
+    account,
+    portfolio,
+    srcToken,
+    srcAmount,
+    destToken,
+    slippage = defaultSlippage,
+  }: OperationInput): Promise<OperationOutput> {
     const output: OperationOutput = {
       destAmount: '0',
       afterPortfolio: portfolio.clone(),
@@ -365,14 +438,26 @@ export class Adapter extends common.Web3Toolkit {
     return output;
   }
 
-  // 1. flashloan destToken
-  // 2. swap destToken to srcToken
-  // 3. deposit srcToken, get aSrcToken
-  // 4. return funds aSrcToken to user
-  // 5. borrow destToken
-  // 6. flashloan repay destToken
-  // @param srcToken Deposit token, collateral token
-  // @param destToken Flashloan token, borrowed token
+  /**
+   * Leverage long enables user to achieve the desired collateral exposure in a single step using a flash loan.
+   *
+   * @param {OperationInput} input - The input parameters for the operation.
+   * @param {string} input.account - The account wallet address.
+   * @param {Portfolio} input.portfolio - The portfolio data.
+   * @param {common.Token} input.srcToken - Source token: the token to be longed.
+   * @param {string} input.srcAmount - The amount of source token.
+   * @param {common.Token} input.destToken - Destination token: the token to be leveraged against.
+   * @param {number} [input.slippage=defaultSlippage] - The slippage tolerance. Optional.
+   * @returns {Promise<OperationOutput>} The result including the destination amount,
+   * after portfolio, potential errors, and logic operations.
+   *
+   * 1. flashloan destToken
+   * 2. swap destToken to srcToken
+   * 3. deposit srcToken, get aSrcToken
+   * 4. return funds aSrcToken to user
+   * 5. borrow destToken
+   * 6. flashloan repay destToken
+   */
   async leverageLong({
     account,
     portfolio,
@@ -380,7 +465,7 @@ export class Adapter extends common.Web3Toolkit {
     srcAmount,
     destToken,
     slippage = defaultSlippage,
-  }: OperationInput) {
+  }: OperationInput): Promise<OperationOutput> {
     const output: OperationOutput = {
       destAmount: '0',
       afterPortfolio: portfolio.clone(),
@@ -494,14 +579,26 @@ export class Adapter extends common.Web3Toolkit {
     return output;
   }
 
-  // 1. flashloan srcToken
-  // 2. swap srcToken to destToken
-  // 3. deposit destToken, get aDestToken
-  // 4. return funds aDestToken to user
-  // 5. borrow srcToken
-  // 6. flashloan repay srcToken
-  // @param srcToken Flashloan token, borrowed token
-  // @param destToken Deposit token, collateral token
+  /**
+   * Leverage short enables user to achieve the desired collateral exposure in a single step using a flash loan.
+   *
+   * @param {OperationInput} input - The input parameters for the operation.
+   * @param {string} input.account - The account wallet address.
+   * @param {Portfolio} input.portfolio - The portfolio data.
+   * @param {common.Token} input.srcToken - Source token: the token to be shorted.
+   * @param {string} input.srcAmount - The amount of source token.
+   * @param {common.Token} input.destToken - Destination token: the token to be leveraged against.
+   * @param {number} [input.slippage=defaultSlippage] - The slippage tolerance. Optional.
+   * @returns {Promise<OperationOutput>} The result including the destination amount,
+   * after portfolio, potential errors, and logic operations.
+   *
+   * 1. flashloan srcToken
+   * 2. swap srcToken to destToken
+   * 3. deposit destToken, get aDestToken
+   * 4. return funds aDestToken to user
+   * 5. borrow srcToken
+   * 6. flashloan repay srcToken
+   */
   async leverageShort({
     account,
     portfolio,
@@ -509,7 +606,7 @@ export class Adapter extends common.Web3Toolkit {
     srcAmount,
     destToken,
     slippage = defaultSlippage,
-  }: OperationInput) {
+  }: OperationInput): Promise<OperationOutput> {
     const output: OperationOutput = {
       destAmount: '0',
       afterPortfolio: portfolio.clone(),
@@ -617,15 +714,35 @@ export class Adapter extends common.Web3Toolkit {
     return output;
   }
 
-  // 1. flashloan destToken
-  // 2. swap destToken to srcToken
-  // 3. repay srcToken
-  // 4. add fund aDestToken
-  // 5. withdraw destToken
-  // 6. flashloan repay destToken
-  // @param srcToken Borrowed token, repaid token
-  // @param destToken Deposit token, collateral token
-  async deleverage({ account, portfolio, srcToken, srcAmount, destToken, slippage = defaultSlippage }: OperationInput) {
+  /**
+   * Deleverage enables user to reduce the collateral exposure in a single step using a flash loan to
+   * repay the borrowed asset.
+   *
+   * @param {OperationInput} input - The input parameters for the operation.
+   * @param {string} input.account - The account wallet address.
+   * @param {Portfolio} input.portfolio - The portfolio data.
+   * @param {common.Token} input.srcToken - Source token: the debt token.
+   * @param {string} input.srcAmount - The amount of source token.
+   * @param {common.Token} input.destToken - Destination token: the collateral token.
+   * @param {number} [input.slippage=defaultSlippage] - The slippage tolerance. Optional.
+   * @returns {Promise<OperationOutput>} The result including the destination amount,
+   * after portfolio, potential errors, and logic operations.
+   *
+   * 1. flashloan destToken
+   * 2. swap destToken to srcToken
+   * 3. repay srcToken
+   * 4. add fund aDestToken
+   * 5. withdraw destToken
+   * 6. flashloan repay destToken
+   */
+  async deleverage({
+    account,
+    portfolio,
+    srcToken,
+    srcAmount,
+    destToken,
+    slippage = defaultSlippage,
+  }: OperationInput): Promise<OperationOutput> {
     const output: OperationOutput = {
       destAmount: '0',
       afterPortfolio: portfolio.clone(),
@@ -755,11 +872,29 @@ export class Adapter extends common.Web3Toolkit {
     return output;
   }
 
-  // 1. swap srcToken to destToken
-  // 2. supply destToken
-  // @param srcToken Any token
-  // @param destToken Deposit token, collateral token
-  async zapSupply({ portfolio, srcToken, srcAmount, destToken, slippage = defaultSlippage }: OperationInput) {
+  /**
+   * Zap supply enables user to swap any token to supply token in one transaction.
+   *
+   * @param {OperationInput} input - The input parameters for the operation.
+   * @param {string} input.account - The account wallet address.
+   * @param {Portfolio} input.portfolio - The portfolio data.
+   * @param {common.Token} input.srcToken - Source token: the token to be provided by user.
+   * @param {string} input.srcAmount - The amount of source token.
+   * @param {common.Token} input.destToken - Destination token: the token to be supplied to lending protocol.
+   * @param {number} [input.slippage=defaultSlippage] - The slippage tolerance. Optional.
+   * @returns {Promise<OperationOutput>} The result including the destination amount,
+   * after portfolio, potential errors, and logic operations.
+   *
+   * 1. swap srcToken to destToken
+   * 2. supply destToken
+   */
+  async zapSupply({
+    portfolio,
+    srcToken,
+    srcAmount,
+    destToken,
+    slippage = defaultSlippage,
+  }: OperationInput): Promise<OperationOutput> {
     const output: OperationOutput = {
       destAmount: '0',
       afterPortfolio: portfolio.clone(),
@@ -822,11 +957,29 @@ export class Adapter extends common.Web3Toolkit {
     return output;
   }
 
-  // 1. withdraw srcToken
-  // 2. swap srcToken to destToken
-  // @param srcToken Deposit token, collateral token
-  // @param destToken Any token
-  async zapWithdraw({ portfolio, srcToken, srcAmount, destToken, slippage = defaultSlippage }: OperationInput) {
+  /**
+   * Zap withdraw enables user to withdraw then swap to any token in one transaction.
+   *
+   * @param {OperationInput} input - The input parameters for the operation.
+   * @param {string} input.account - The account wallet address.
+   * @param {Portfolio} input.portfolio - The portfolio data.
+   * @param {common.Token} input.srcToken - Source token: the token to be withdrawn from lending platform.
+   * @param {string} input.srcAmount - The amount of source token.
+   * @param {common.Token} input.destToken - the token that user receives.
+   * @param {number} [input.slippage=defaultSlippage] - The slippage tolerance. Optional.
+   * @returns {Promise<OperationOutput>} The result including the destination amount,
+   * after portfolio, potential errors, and logic operations.
+   *
+   * 1. withdraw srcToken
+   * 2. swap srcToken to destToken
+   */
+  async zapWithdraw({
+    portfolio,
+    srcToken,
+    srcAmount,
+    destToken,
+    slippage = defaultSlippage,
+  }: OperationInput): Promise<OperationOutput> {
     const output: OperationOutput = {
       destAmount: '0',
       afterPortfolio: portfolio.clone(),
@@ -893,11 +1046,29 @@ export class Adapter extends common.Web3Toolkit {
     return output;
   }
 
-  // 1. borrow srcToken
-  // 2. swap srcToken to destToken
-  // @param srcToken Borrowed token
-  // @param destToken Any token
-  async zapBorrow({ portfolio, srcToken, srcAmount, destToken, slippage = defaultSlippage }: OperationInput) {
+  /**
+   * Zap borrow enables user to borrow then swap to any token in one transaction.
+   *
+   * @param {OperationInput} input - The input parameters for the operation.
+   * @param {string} input.account - The account wallet address.
+   * @param {Portfolio} input.portfolio - The portfolio data.
+   * @param {common.Token} input.srcToken - Source token: the token to be borrowed from lending platform.
+   * @param {string} input.srcAmount - The amount of source token.
+   * @param {common.Token} input.destToken - Destination token: the token that user receives.
+   * @param {number} [input.slippage=defaultSlippage] - The slippage tolerance. Optional.
+   * @returns {Promise<OperationOutput>} The result including the destination amount,
+   * after portfolio, potential errors, and logic operations.
+   *
+   * 1. borrow srcToken
+   * 2. swap srcToken to destToken
+   */
+  async zapBorrow({
+    portfolio,
+    srcToken,
+    srcAmount,
+    destToken,
+    slippage = defaultSlippage,
+  }: OperationInput): Promise<OperationOutput> {
     const output: OperationOutput = {
       destAmount: '0',
       afterPortfolio: portfolio.clone(),
@@ -957,11 +1128,30 @@ export class Adapter extends common.Web3Toolkit {
     return output;
   }
 
-  // 1. swap dest token to src token
-  // 2. repay src token
-  // @param srcToken Borrowed token, repaid token
-  // @param destToken Any token
-  async zapRepay({ account, portfolio, srcToken, srcAmount, destToken, slippage = defaultSlippage }: OperationInput) {
+  /**
+   * Zap repay enables user to swap any token to repay the debt in one transaction.
+   *
+   * @param {OperationInput} input - The input parameters for the operation.
+   * @param {string} input.account - The account wallet address.
+   * @param {Portfolio} input.portfolio - The portfolio data.
+   * @param {common.Token} input.srcToken - Source token: the token to be provided by user.
+   * @param {string} input.srcAmount - The amount of source token.
+   * @param {common.Token} input.destToken - Destination token: the debt token to be repaid.
+   * @param {number} [input.slippage=defaultSlippage] - The slippage tolerance. Optional.
+   * @returns {Promise<OperationOutput>} The result including the destination amount,
+   * after portfolio, potential errors, and logic operations.
+   *
+   * 1. swap dest token to src token
+   * 2. repay src token
+   */
+  async zapRepay({
+    account,
+    portfolio,
+    srcToken,
+    srcAmount,
+    destToken,
+    slippage = defaultSlippage,
+  }: OperationInput): Promise<OperationOutput> {
     const output: OperationOutput = {
       destAmount: '0',
       afterPortfolio: portfolio.clone(),
