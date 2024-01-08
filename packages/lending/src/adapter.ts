@@ -188,13 +188,13 @@ export class Adapter extends common.Web3Toolkit {
    * Collateral swap enables user to replace one collateral asset
    * with another in a single step using a flash loan.
    *
-   * @param {OperationInput} param - The input parameters for the operation.
-   * @param {string} param.account - The account wallet address.
-   * @param {Portfolio} param.portfolio - The portfolio data.
-   * @param {common.Token} param.srcToken - Source token: the collateral to be swapped
-   * @param {string} param.srcAmount - The amount of source token.
-   * @param {common.Token} param.destToken - Destination token: the collateral to be swapped to
-   * @param {number} [param.slippage=defaultSlippage] - The slippage tolerance. Optional.
+   * @param {OperationInput} params - The input parameters for the operation.
+   * @param {string} params.account - The account wallet address.
+   * @param {Portfolio} params.portfolio - The portfolio data.
+   * @param {common.Token} params.srcToken - Source token: the collateral to be swapped.
+   * @param {string} params.srcAmount - The amount of source token.
+   * @param {common.Token} params.destToken - Destination token: the collateral to be swapped to.
+   * @param {number} [params.slippage=defaultSlippage] - The slippage tolerance. Optional.
    * @returns {Promise<OperationOutput>} The result including the destination amount,
    * after portfolio, potential errors, and logic operations.
    *
@@ -318,13 +318,13 @@ export class Adapter extends common.Web3Toolkit {
   /**
    * Debt swap enables user to replace one loan asset with another in a single step using a flash loan
    *
-   * @param {OperationInput} param - The input parameters for the operation.
-   * @param {string} param.account - The account wallet address.
-   * @param {Portfolio} param.portfolio - The portfolio data.
-   * @param {common.Token} param.srcToken - Source token: the debt to be swapped
-   * @param {string} param.srcAmount - The amount of source token.
-   * @param {common.Token} param.destToken - Destination token: the debt to be swapped to
-   * @param {number} [param.slippage=defaultSlippage] - The slippage tolerance. Optional.
+   * @param {OperationInput} params - The input parameters for the operation.
+   * @param {string} params.account - The account wallet address.
+   * @param {Portfolio} params.portfolio - The portfolio data.
+   * @param {common.Token} params.srcToken - Source token: the debt to be swapped.
+   * @param {string} params.srcAmount - The amount of source token.
+   * @param {common.Token} params.destToken - Destination token: the debt to be swapped to.
+   * @param {number} [params.slippage=defaultSlippage] - The slippage tolerance. Optional.
    * @returns {Promise<OperationOutput>} The result including the destination amount,
    * after portfolio, potential errors, and logic operations.
    *
@@ -426,13 +426,13 @@ export class Adapter extends common.Web3Toolkit {
   /**
    * Leverage long enables user to achieve the desired collateral exposure in a single step using a flash loan.
    *
-   * @param {OperationInput} param - The input parameters for the operation.
-   * @param {string} param.account - The account wallet address.
-   * @param {Portfolio} param.portfolio - The portfolio data.
-   * @param {common.Token} param.srcToken - Source token: the token to be longed.
-   * @param {string} param.srcAmount - The amount of source token.
-   * @param {common.Token} param.destToken - Destination token: the token to be leveraged against.
-   * @param {number} [param.slippage=defaultSlippage] - The slippage tolerance. Optional.
+   * @param {OperationInput} params - The input parameters for the operation.
+   * @param {string} params.account - The account wallet address.
+   * @param {Portfolio} params.portfolio - The portfolio data.
+   * @param {common.Token} params.srcToken - Source token: the token to be longed.
+   * @param {string} params.srcAmount - The amount of source token.
+   * @param {common.Token} params.destToken - Destination token: the token to be leveraged against.
+   * @param {number} [params.slippage=defaultSlippage] - The slippage tolerance. Optional.
    * @returns {Promise<OperationOutput>} The result including the destination amount,
    * after portfolio, potential errors, and logic operations.
    *
@@ -563,13 +563,13 @@ export class Adapter extends common.Web3Toolkit {
   /**
    * Leverage short enables user to achieve the desired collateral exposure in a single step using a flash loan.
    *
-   * @param {OperationInput} param - The input parameters for the operation.
-   * @param {string} param.account - The account wallet address.
-   * @param {Portfolio} param.portfolio - The portfolio data.
-   * @param {common.Token} param.srcToken - Source token: the token to be shorted.
-   * @param {string} param.srcAmount - The amount of source token.
-   * @param {common.Token} param.destToken - Destination token: the token to be leveraged against.
-   * @param {number} [param.slippage=defaultSlippage] - The slippage tolerance. Optional.
+   * @param {OperationInput} params - The input parameters for the operation.
+   * @param {string} params.account - The account wallet address.
+   * @param {Portfolio} params.portfolio - The portfolio data.
+   * @param {common.Token} params.srcToken - Source token: the token to be shorted.
+   * @param {string} params.srcAmount - The amount of source token.
+   * @param {common.Token} params.destToken - Destination token: the token to be leveraged against.
+   * @param {number} [params.slippage=defaultSlippage] - The slippage tolerance. Optional.
    * @returns {Promise<OperationOutput>} The result including the destination amount,
    * after portfolio, potential errors, and logic operations.
    *
@@ -688,16 +688,16 @@ export class Adapter extends common.Web3Toolkit {
   }
 
   /**
-   * Leverage long enables user to reduce the collateral exposure in a single step using a flash loan to
+   * Deleverage enables user to reduce the collateral exposure in a single step using a flash loan to
    * repay the borrowed asset.
    *
-   * @param {OperationInput} param - The input parameters for the operation.
-   * @param {string} param.account - The account wallet address.
-   * @param {Portfolio} param.portfolio - The portfolio data.
-   * @param {common.Token} param.srcToken - Source token: the debt token.
-   * @param {string} param.srcAmount - The amount of source token.
-   * @param {common.Token} param.destToken - Destination token: the collateral token.
-   * @param {number} [param.slippage=defaultSlippage] - The slippage tolerance. Optional.
+   * @param {OperationInput} params - The input parameters for the operation.
+   * @param {string} params.account - The account wallet address.
+   * @param {Portfolio} params.portfolio - The portfolio data.
+   * @param {common.Token} params.srcToken - Source token: the debt token.
+   * @param {string} params.srcAmount - The amount of source token.
+   * @param {common.Token} params.destToken - Destination token: the collateral token.
+   * @param {number} [params.slippage=defaultSlippage] - The slippage tolerance. Optional.
    * @returns {Promise<OperationOutput>} The result including the destination amount,
    * after portfolio, potential errors, and logic operations.
    *
@@ -841,13 +841,13 @@ export class Adapter extends common.Web3Toolkit {
   /**
    * Zap supply enables user to swap any token to supply token in one transaction.
    *
-   * @param {OperationInput} param - The input parameters for the operation.
-   * @param {string} param.account - The account wallet address.
-   * @param {Portfolio} param.portfolio - The portfolio data.
-   * @param {common.Token} param.srcToken - Source token: the token to be provided by user.
-   * @param {string} param.srcAmount - The amount of source token.
-   * @param {common.Token} param.destToken - Destination token: the token to be supplied to lending protocol.
-   * @param {number} [param.slippage=defaultSlippage] - The slippage tolerance. Optional.
+   * @param {OperationInput} params - The input parameters for the operation.
+   * @param {string} params.account - The account wallet address.
+   * @param {Portfolio} params.portfolio - The portfolio data.
+   * @param {common.Token} params.srcToken - Source token: the token to be provided by user.
+   * @param {string} params.srcAmount - The amount of source token.
+   * @param {common.Token} params.destToken - Destination token: the token to be supplied to lending protocol.
+   * @param {number} [params.slippage=defaultSlippage] - The slippage tolerance. Optional.
    * @returns {Promise<OperationOutput>} The result including the destination amount,
    * after portfolio, potential errors, and logic operations.
    *
@@ -919,13 +919,13 @@ export class Adapter extends common.Web3Toolkit {
   /**
    * Zap withdraw enables user to withdraw then swap to any token in one transaction.
    *
-   * @param {OperationInput} param - The input parameters for the operation.
-   * @param {string} param.account - The account wallet address.
-   * @param {Portfolio} param.portfolio - The portfolio data.
-   * @param {common.Token} param.srcToken - Source token: the token to be withdrawn from lending platform.
-   * @param {string} param.srcAmount - The amount of source token.
-   * @param {common.Token} param.destToken - the token that user receives.
-   * @param {number} [param.slippage=defaultSlippage] - The slippage tolerance. Optional.
+   * @param {OperationInput} params - The input parameters for the operation.
+   * @param {string} params.account - The account wallet address.
+   * @param {Portfolio} params.portfolio - The portfolio data.
+   * @param {common.Token} params.srcToken - Source token: the token to be withdrawn from lending platform.
+   * @param {string} params.srcAmount - The amount of source token.
+   * @param {common.Token} params.destToken - the token that user receives.
+   * @param {number} [params.slippage=defaultSlippage] - The slippage tolerance. Optional.
    * @returns {Promise<OperationOutput>} The result including the destination amount,
    * after portfolio, potential errors, and logic operations.
    *
@@ -998,13 +998,13 @@ export class Adapter extends common.Web3Toolkit {
   /**
    * Zap borrow enables user to borrow then swap to any token in one transaction.
    *
-   * @param {OperationInput} param - The input parameters for the operation.
-   * @param {string} param.account - The account wallet address.
-   * @param {Portfolio} param.portfolio - The portfolio data.
-   * @param {common.Token} param.srcToken - Source token: the token to be borrowed from lending platform.
-   * @param {string} param.srcAmount - The amount of source token.
-   * @param {common.Token} param.destToken - Destination token: the token that user receives.
-   * @param {number} [param.slippage=defaultSlippage] - The slippage tolerance. Optional.
+   * @param {OperationInput} params - The input parameters for the operation.
+   * @param {string} params.account - The account wallet address.
+   * @param {Portfolio} params.portfolio - The portfolio data.
+   * @param {common.Token} params.srcToken - Source token: the token to be borrowed from lending platform.
+   * @param {string} params.srcAmount - The amount of source token.
+   * @param {common.Token} params.destToken - Destination token: the token that user receives.
+   * @param {number} [params.slippage=defaultSlippage] - The slippage tolerance. Optional.
    * @returns {Promise<OperationOutput>} The result including the destination amount,
    * after portfolio, potential errors, and logic operations.
    *
@@ -1070,13 +1070,13 @@ export class Adapter extends common.Web3Toolkit {
   /**
    * Zap repay enables user to swap any token to repay the debt in one transaction.
    *
-   * @param {OperationInput} param - The input parameters for the operation.
-   * @param {string} param.account - The account wallet address.
-   * @param {Portfolio} param.portfolio - The portfolio data.
-   * @param {common.Token} param.srcToken - Source token: the token to be provided by user.
-   * @param {string} param.srcAmount - The amount of source token.
-   * @param {common.Token} param.destToken - Destination token: the debt token to be repaid.
-   * @param {number} [param.slippage=defaultSlippage] - The slippage tolerance. Optional.
+   * @param {OperationInput} params - The input parameters for the operation.
+   * @param {string} params.account - The account wallet address.
+   * @param {Portfolio} params.portfolio - The portfolio data.
+   * @param {common.Token} params.srcToken - Source token: the token to be provided by user.
+   * @param {string} params.srcAmount - The amount of source token.
+   * @param {common.Token} params.destToken - Destination token: the debt token to be repaid.
+   * @param {number} [params.slippage=defaultSlippage] - The slippage tolerance. Optional.
    * @returns {Promise<OperationOutput>} The result including the destination amount,
    * after portfolio, potential errors, and logic operations.
    *
