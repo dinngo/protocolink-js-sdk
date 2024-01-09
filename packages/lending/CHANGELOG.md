@@ -1,5 +1,12 @@
 # @protocolink/lending
 
+## 1.0.6
+
+### Patch Changes
+
+- 01bd7b2: add jsdoc info to lending
+- a76d70b: add swapper quote error handling
+
 ## 1.0.5
 
 ### Patch Changes
