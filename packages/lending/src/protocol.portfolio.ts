@@ -164,6 +164,10 @@ export function isBorrow(v: any): v is Borrow {
   return v instanceof Borrow;
 }
 
+interface PortfolioAddon {
+  [key: string]: any;
+}
+
 export class Portfolio {
   chainId: number;
   protocolId: string;
@@ -172,6 +176,7 @@ export class Portfolio {
   supplyMap: { [key in string]?: Supply } = {};
   borrows: Borrow[] = [];
   borrowMap: { [key in string]?: Borrow } = {};
+  extraData?: PortfolioAddon;
 
   totalSupplyUSD = new BigNumberJS(0);
   totalCollateralUSD = new BigNumberJS(0);
@@ -186,11 +191,13 @@ export class Portfolio {
     protocolId: string,
     marketId: string,
     supplies: SupplyObject[],
-    borrows: BorrowObject[]
+    borrows: BorrowObject[],
+    extraData?: PortfolioAddon
   ) {
     this.chainId = chainId;
     this.protocolId = protocolId;
     this.marketId = marketId;
+    this.extraData = extraData || {};
 
     for (let i = 0; i < supplies.length; i++) {
       const supply = new Supply(supplies[i]);
@@ -443,6 +450,7 @@ export class Portfolio {
       totalBorrowUSD: this.totalBorrowUSD.toFixed(),
       supplies: this.supplies,
       borrows: this.borrows,
+      ...this.extraData,
     };
   }
 }
