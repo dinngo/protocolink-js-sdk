@@ -1,5 +1,11 @@
 # @furucombo/composable-router-api
 
+## 1.0.10
+
+### Patch Changes
+
+- 29b0c95: change Radiant test from Arbitrum to Ethereum
+
 ## 1.0.9
 
 ### Patch Changes
