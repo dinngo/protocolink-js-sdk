@@ -2,6 +2,7 @@ import { FlashLoanParams, getFlashLoanQuotation, getFlashLoanTokenList } from '.
 import * as common from '@protocolink/common';
 import { expect } from 'chai';
 import * as logics from '@protocolink/logics';
+import { mainnetTokens } from '@protocolink/test-helpers';
 
 describe('RadiantV2 FlashLoanLogic', function () {
   context('Test getTokenList', async function () {
@@ -14,31 +15,31 @@ describe('RadiantV2 FlashLoanLogic', function () {
   });
 
   context('Test getQuotation', async function () {
-    const chainId = common.ChainId.arbitrum;
+    const chainId = common.ChainId.mainnet;
 
     const testCases: FlashLoanParams[] = [
       {
         loans: [
-          { token: logics.radiantv2.arbitrumTokens.WETH, amount: '1' },
-          { token: logics.radiantv2.arbitrumTokens.USDC, amount: '1' },
+          { token: mainnetTokens.WETH, amount: '1' },
+          { token: mainnetTokens.USDC, amount: '1' },
         ],
       },
       {
         repays: [
-          { token: logics.radiantv2.arbitrumTokens.WETH, amount: '1' },
-          { token: logics.radiantv2.arbitrumTokens.USDC, amount: '1' },
+          { token: mainnetTokens.WETH, amount: '1' },
+          { token: mainnetTokens.USDC, amount: '1' },
         ],
       },
       {
         loans: [
-          { token: logics.radiantv2.arbitrumTokens.WBTC, amount: '1' },
-          { token: logics.radiantv2.arbitrumTokens.DAI, amount: '1' },
+          { token: mainnetTokens.WBTC, amount: '1' },
+          { token: mainnetTokens.USDT, amount: '1' },
         ],
       },
       {
         repays: [
-          { token: logics.radiantv2.arbitrumTokens.WBTC, amount: '1' },
-          { token: logics.radiantv2.arbitrumTokens.DAI, amount: '1' },
+          { token: mainnetTokens.WBTC, amount: '1' },
+          { token: mainnetTokens.USDT, amount: '1' },
         ],
       },
     ];

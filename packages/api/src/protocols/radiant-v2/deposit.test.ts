@@ -2,6 +2,7 @@ import { DepositParams, getDepositQuotation, getDepositTokenList } from './depos
 import * as common from '@protocolink/common';
 import { expect } from 'chai';
 import * as logics from '@protocolink/logics';
+import { mainnetTokens } from '@protocolink/test-helpers';
 
 describe('RadiantV2 DepositLogic', function () {
   context('Test getTokenList', async function () {
@@ -14,16 +15,16 @@ describe('RadiantV2 DepositLogic', function () {
   });
 
   context('Test getQuotation', async function () {
-    const chainId = common.ChainId.arbitrum;
+    const chainId = common.ChainId.mainnet;
 
     const testCases: DepositParams[] = [
       {
-        input: { token: logics.radiantv2.arbitrumTokens.ETH, amount: '1' },
-        tokenOut: logics.radiantv2.arbitrumTokens.rWETH,
+        input: { token: mainnetTokens.ETH, amount: '1' },
+        tokenOut: logics.radiantv2.mainnetTokens.rWETH,
       },
       {
-        input: { token: logics.radiantv2.arbitrumTokens.USDC, amount: '1' },
-        tokenOut: logics.radiantv2.arbitrumTokens.rUSDC,
+        input: { token: mainnetTokens.USDC, amount: '1' },
+        tokenOut: logics.radiantv2.mainnetTokens.rUSDC,
       },
     ];
 
