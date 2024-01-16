@@ -1,6 +1,14 @@
 import { BigNumber } from 'ethers';
 import BigNumberJS from 'bignumber.js';
-import { BorrowObject, Market, RepayParams, SupplyObject } from 'src/protocol.type';
+import {
+  BorrowObject,
+  BorrowParams,
+  Market,
+  RepayParams,
+  SupplyObject,
+  SupplyParams,
+  WithdrawParams,
+} from 'src/protocol.type';
 import { DISPLAY_NAME, ID, configMap, getContractAddress, getMarket, marketMap, supportedChainIds } from './configs';
 import { Morpho, Morpho__factory, Oracle__factory, PriceFeed__factory } from './contracts';
 import { MorphoInterface } from './contracts/Morpho';
@@ -10,6 +18,7 @@ import { PriceFeedInterface } from './contracts/PriceFeed';
 import { Protocol } from 'src/protocol';
 import * as apisdk from '@protocolink/api';
 import * as common from '@protocolink/common';
+import { compoundv3 } from '@protocolink/logics';
 
 export class LendingProtocol extends Protocol {
   readonly id = ID;
@@ -57,8 +66,9 @@ export class LendingProtocol extends Protocol {
     return this._oracleIface;
   }
 
-  getMarketName() {
-    return DISPLAY_NAME;
+  getMarketName(id: string) {
+    const { loanToken, collateralToken } = getMarket(this.chainId, id);
+    return `${DISPLAY_NAME} ${loanToken.symbol}(${collateralToken.symbol} collateral)`;
   }
 
   async getPortfolio(account: string, marketId: string) {
@@ -138,7 +148,7 @@ export class LendingProtocol extends Protocol {
       },
     ];
 
-    const portfolio = new Portfolio(this.chainId, this.id, marketId, supplies, borrows, { loanToken, collateralToken });
+    const portfolio = new Portfolio(this.chainId, this.id, marketId, supplies, borrows);
 
     return portfolio;
   }
@@ -163,21 +173,26 @@ export class LendingProtocol extends Protocol {
   }
 
   toUnderlyingToken(marketId: string) {
-    const { loanToken } = getMarket(this.chainId, marketId);
-    return loanToken;
+    const { collateralToken } = getMarket(this.chainId, marketId);
+    return collateralToken;
   }
 
   toProtocolToken(marketId: string) {
-    const { loanToken } = getMarket(this.chainId, marketId);
-    return loanToken;
+    const { collateralToken } = getMarket(this.chainId, marketId);
+    return collateralToken;
   }
 
   isProtocolToken(_marketId: string, _token: common.Token) {
-    return true;
+    return false;
   }
 
-  newSupplyLogic = apisdk.protocols.morphoblue.newSupplyLogic;
-  newWithdrawLogic = apisdk.protocols.morphoblue.newWithdrawLogic;
+  override isAssetTokenized(_marketId: string, _assetToken: common.Token) {
+    return false;
+  }
+
+  newSupplyLogic = apisdk.protocols.morphoblue.newSupplyCollateralLogic;
+
+  newWithdrawLogic = apisdk.protocols.morphoblue.newWithdrawCollateralLogic;
   newBorrowLogic = apisdk.protocols.morphoblue.newBorrowLogic;
 
   newRepayLogic({ marketId, input, account }: RepayParams) {

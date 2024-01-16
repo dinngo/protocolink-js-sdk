@@ -56,20 +56,6 @@ describe('Test Morpho Blue LendingProtocol', function () {
               totalBorrow: '2359558.186903',
             },
           ],
-          loanToken: {
-            chainId: 1,
-            address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
-            decimals: 6,
-            symbol: 'USDC',
-            name: 'USD Coin',
-          },
-          collateralToken: {
-            chainId: 1,
-            address: '0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0',
-            decimals: 18,
-            symbol: 'wstETH',
-            name: 'Wrapped liquid staked Ether 2.0',
-          },
         },
       },
     ];

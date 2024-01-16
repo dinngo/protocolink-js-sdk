@@ -245,6 +245,7 @@ export class Adapter extends common.Web3Toolkit {
           if (protocol.isAssetTokenized(marketId, srcToken)) {
             flashLoanRepay.subWei(2);
           }
+
           const flashLoanAggregatorQuotation = await apisdk.protocols.utility.getFlashLoanAggregatorQuotation(
             this.chainId,
             { repays: [flashLoanRepay], protocolId: protocol.preferredFlashLoanProtocolId }
@@ -573,6 +574,8 @@ export class Adapter extends common.Web3Toolkit {
         } catch (err) {
           output.error = err instanceof OperationError ? err : new OperationError('srcAmount', 'UNEXPECTED_ERROR');
         }
+      } else {
+        output.error = new OperationError('srcAmount', 'NOT_SUPPORTED_TOKEN');
       }
     }
 
@@ -708,6 +711,8 @@ export class Adapter extends common.Web3Toolkit {
         } catch (err) {
           output.error = err instanceof OperationError ? err : new OperationError('srcAmount', 'UNEXPECTED_ERROR');
         }
+      } else {
+        output.error = new OperationError('srcAmount', 'NOT_SUPPORTED_TOKEN');
       }
     }
 
@@ -866,6 +871,8 @@ export class Adapter extends common.Web3Toolkit {
         } catch (err) {
           output.error = err instanceof OperationError ? err : new OperationError('srcAmount', 'UNEXPECTED_ERROR');
         }
+      } else {
+        output.error = new OperationError('srcAmount', 'NOT_SUPPORTED_TOKEN');
       }
     }
 
@@ -1134,9 +1141,9 @@ export class Adapter extends common.Web3Toolkit {
    * @param {OperationInput} input - The input parameters for the operation.
    * @param {string} input.account - The account wallet address.
    * @param {Portfolio} input.portfolio - The portfolio data.
-   * @param {common.Token} input.srcToken - Source token: the token to be provided by user.
+   * @param {common.Token} input.srcToken - Source token: the debt token to be repaid.
    * @param {string} input.srcAmount - The amount of source token.
-   * @param {common.Token} input.destToken - Destination token: the debt token to be repaid.
+   * @param {common.Token} input.destToken - Destination token: the token to be provided by user.
    * @param {number} [input.slippage=defaultSlippage] - The slippage tolerance. Optional.
    * @returns {Promise<OperationOutput>} The result including the destination amount,
    * after portfolio, potential errors, and logic operations.

@@ -9,6 +9,7 @@ import * as common from '@protocolink/common';
 import { expect } from 'chai';
 import hre from 'hardhat';
 import * as logics from '@protocolink/logics';
+import * as morphoblue from 'src/protocols/morphoblue/tokens';
 import * as radiantV2 from 'src/protocols/radiant-v2/tokens';
 
 describe('Transaction: Leverage Long', function () {
@@ -19,6 +20,7 @@ describe('Transaction: Leverage Long', function () {
   let portfolio: Portfolio;
   let user: SignerWithAddress;
   let adapter: Adapter;
+  let service: logics.compoundv3.Service | logics.morphoblue.Service;
 
   before(async function () {
     adapter = new Adapter(chainId, hre.ethers.provider);
@@ -26,6 +28,7 @@ describe('Transaction: Leverage Long', function () {
     await claimToken(chainId, '0xA38D6E3Aa9f3E4F81D4cEf9B8bCdC58aB37d066A', mainnetTokens.USDC, '1000');
     await claimToken(chainId, '0x06e4cb4f3ba9a2916b6384acbdeaa74daaf91550', mainnetTokens.USDC, '1000');
     await claimToken(chainId, '0x53fb0162bC8d5EEc2fB1532923C4f8997BAce111', mainnetTokens.USDC, '1000');
+    await claimToken(chainId, '0xa3C1C91403F0026b9dd086882aDbC8Cdbc3b3cfB', mainnetTokens.USDC, '1000');
   });
 
   snapshotAndRevertEach();
@@ -76,12 +79,28 @@ describe('Transaction: Leverage Long', function () {
         },
       },
       {
+        protocolId: 'morphoblue',
+        marketId: '0xb323495f7e4148be5643a4ea4a8221eef163e4bccfdedc2a6f4696baacbc86cc',
+        account: '0xa3C1C91403F0026b9dd086882aDbC8Cdbc3b3cfB',
+        srcToken: morphoblue.mainnetTokens.wstETH,
+        srcAmount: '0.001',
+        destToken: mainnetTokens.USDC,
+        srcAToken: undefined,
+        destDebtToken: undefined,
+        logicService: logics.morphoblue.Service,
+        expects: {
+          approvalLength: 1,
+          logicLength: 5,
+        },
+      },
+      {
         protocolId: 'compound-v3',
         marketId: logics.compoundv3.MarketId.USDC,
         account: '0x53fb0162bC8d5EEc2fB1532923C4f8997BAce111',
         srcToken: mainnetTokens.WETH,
         srcAmount: '1',
         destToken: mainnetTokens.USDC,
+        logicService: logics.compoundv3.Service,
         expects: {
           approvalLength: 1,
           logicLength: 5,
@@ -90,7 +109,21 @@ describe('Transaction: Leverage Long', function () {
     ];
 
     testCases.forEach(
-      ({ protocolId, marketId, account, srcToken, srcAmount, srcAToken, destToken, destDebtToken, expects }, i) => {
+      (
+        {
+          protocolId,
+          marketId,
+          account,
+          srcToken,
+          srcAmount,
+          srcAToken,
+          destToken,
+          destDebtToken,
+          logicService,
+          expects,
+        },
+        i
+      ) => {
         it(`case ${i + 1} - ${protocolId}:${marketId}`, async function () {
           user = await hre.ethers.getImpersonatedSigner(account);
           portfolio = await adapter.getPortfolio(user.address, protocolId, marketId);
@@ -98,8 +131,9 @@ describe('Transaction: Leverage Long', function () {
 
           // 1. get user positions
           let initSupplyBalance, initBorrowBalance;
-          if (protocolId === 'compound-v3') {
-            const service = new logics.compoundv3.Service(chainId, hre.ethers.provider);
+
+          if (logicService) {
+            service = new logicService(chainId, hre.ethers.provider);
             initSupplyBalance = await service.getCollateralBalance(marketId, user.address, leverageAmount.token);
             initBorrowBalance = await service.getBorrowBalance(marketId, user.address);
           } else {
@@ -131,13 +165,10 @@ describe('Transaction: Leverage Long', function () {
 
           // 5. user's supply balance will increase.
           // 5-1. due to the slippage caused by the swap, we need to calculate the minimum leverage amount.
-          let supplyBalance;
-          if (protocolId === 'compound-v3') {
-            const service = new logics.compoundv3.Service(chainId, hre.ethers.provider);
-            supplyBalance = await service.getCollateralBalance(marketId, user.address, leverageAmount.token);
-          } else {
-            supplyBalance = await getBalance(user.address, srcAToken!);
-          }
+          const supplyBalance = service
+            ? await service.getCollateralBalance(marketId, user.address, leverageAmount.token)
+            : await getBalance(user.address, srcAToken!);
+
           const minimumLeverageAmount = new common.TokenAmount(leverageAmount.token).setWei(
             common.calcSlippage(leverageAmount.amountWei, slippage)
           );
@@ -146,8 +177,7 @@ describe('Transaction: Leverage Long', function () {
           // 6. user's borrow balance will increase.
           // 6-1. As the block number increases, the initial borrow balance will also increase.
           let borrowBalance, leverageBorrowAmount;
-          if (protocolId === 'compound-v3') {
-            const service = new logics.compoundv3.Service(chainId, hre.ethers.provider);
+          if (service) {
             borrowBalance = await service.getBorrowBalance(marketId, user.address);
             leverageBorrowAmount = new common.TokenAmount(leverageLongInfo.logics[3].fields.output);
           } else {
