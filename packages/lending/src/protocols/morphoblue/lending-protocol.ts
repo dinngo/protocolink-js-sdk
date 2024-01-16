@@ -1,24 +1,17 @@
 import { BigNumber } from 'ethers';
 import BigNumberJS from 'bignumber.js';
-import {
-  BorrowObject,
-  BorrowParams,
-  Market,
-  RepayParams,
-  SupplyObject,
-  SupplyParams,
-  WithdrawParams,
-} from 'src/protocol.type';
+import { BorrowObject, Market, RepayParams, SupplyObject } from 'src/protocol.type';
 import { DISPLAY_NAME, ID, configMap, getContractAddress, getMarket, marketMap, supportedChainIds } from './configs';
-import { Morpho, Morpho__factory, Oracle__factory, PriceFeed__factory } from './contracts';
+import { IrmInterface, MarketParamsStruct, MarketStruct } from './contracts/Irm';
+import { Irm__factory, Morpho, Morpho__factory, Oracle__factory, PriceFeed__factory } from './contracts';
 import { MorphoInterface } from './contracts/Morpho';
 import { OracleInterface } from './contracts/Oracle';
 import { Portfolio } from 'src/protocol.portfolio';
 import { PriceFeedInterface } from './contracts/PriceFeed';
 import { Protocol } from 'src/protocol';
+import { SECONDS_PER_YEAR } from '@aave/math-utils';
 import * as apisdk from '@protocolink/api';
 import * as common from '@protocolink/common';
-import { compoundv3 } from '@protocolink/logics';
 
 export class LendingProtocol extends Protocol {
   readonly id = ID;
@@ -66,13 +59,25 @@ export class LendingProtocol extends Protocol {
     return this._oracleIface;
   }
 
+  private _irmIface?: IrmInterface;
+
+  get irmIface() {
+    if (!this._irmIface) {
+      this._irmIface = Irm__factory.createInterface();
+    }
+    return this._irmIface;
+  }
+
   getMarketName(id: string) {
     const { loanToken, collateralToken } = getMarket(this.chainId, id);
     return `${DISPLAY_NAME} ${loanToken.symbol}(${collateralToken.symbol} collateral)`;
   }
 
   async getPortfolio(account: string, marketId: string) {
-    const { loanToken, collateralToken, loanTokenPriceFeedAddress, oracle, lltv } = getMarket(this.chainId, marketId);
+    const { loanToken, collateralToken, loanTokenPriceFeedAddress, oracle, irm, lltv } = getMarket(
+      this.chainId,
+      marketId
+    );
 
     const calls: common.Multicall3.CallStruct[] = [
       {
@@ -96,10 +101,10 @@ export class LendingProtocol extends Protocol {
     const { returnData } = await this.multicall3.callStatic.aggregate(calls, { blockTag: this.blockTag });
 
     const { borrowShares, collateral } = this.morphoIface.decodeFunctionResult('position', returnData[0]);
-    const { totalSupplyAssets, totalBorrowAssets, totalBorrowShares } = this.morphoIface.decodeFunctionResult(
-      'market',
-      returnData[1]
-    );
+
+    const { totalSupplyAssets, totalSupplyShares, totalBorrowAssets, totalBorrowShares, lastUpdate, fee } =
+      this.morphoIface.decodeFunctionResult('market', returnData[1]);
+
     const [_loanTokenPrice] = this.priceFeedIface.decodeFunctionResult('latestAnswer', returnData[2]);
 
     // It corresponds to the price of 10**(collateral token decimals) assets of
@@ -125,6 +130,28 @@ export class LendingProtocol extends Protocol {
     const collateralValue = new BigNumberJS(supplyBalance).times(collateralTokenPrice);
     const ltv = loanValue.div(collateralValue).toFixed(5);
 
+    // Get Borrow Apy
+    const irmContract = Irm__factory.connect(irm, this.provider);
+    const marketParams: MarketParamsStruct = {
+      loanToken: loanToken.address,
+      collateralToken: collateralToken.address,
+      oracle,
+      irm,
+      lltv,
+    };
+    const market: MarketStruct = {
+      totalSupplyAssets,
+      totalSupplyShares,
+      totalBorrowAssets,
+      totalBorrowShares,
+      lastUpdate,
+      fee,
+    };
+    const borrowRateView = await irmContract.borrowRateView(marketParams, market, { blockTag: this.blockTag });
+    const borrowApy = (
+      Math.exp(new BigNumberJS(borrowRateView.toString()).div(1e18).times(SECONDS_PER_YEAR).toNumber()) - 1
+    ).toString();
+
     const supplies: SupplyObject[] = [
       {
         token: collateralToken,
@@ -143,7 +170,7 @@ export class LendingProtocol extends Protocol {
         token: loanToken,
         price: loanTokenPrice,
         balances: [borrowBalance],
-        apys: ['0'],
+        apys: [borrowApy],
         totalBorrow,
       },
     ];
@@ -193,6 +220,7 @@ export class LendingProtocol extends Protocol {
   newSupplyLogic = apisdk.protocols.morphoblue.newSupplyCollateralLogic;
 
   newWithdrawLogic = apisdk.protocols.morphoblue.newWithdrawCollateralLogic;
+
   newBorrowLogic = apisdk.protocols.morphoblue.newBorrowLogic;
 
   newRepayLogic({ marketId, input, account }: RepayParams) {
