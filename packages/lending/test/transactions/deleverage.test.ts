@@ -11,6 +11,7 @@ import hre from 'hardhat';
 import * as logics from '@protocolink/logics';
 import * as morphoblue from 'src/protocols/morphoblue/tokens';
 import * as radiantV2 from 'src/protocols/radiant-v2/tokens';
+import { spark } from '@protocolink/logics';
 import * as utils from 'test/utils';
 
 describe('Transaction: Deleverage', function () {
@@ -68,6 +69,20 @@ describe('Transaction: Deleverage', function () {
         destToken: mainnetTokens.WBTC,
         destAToken: aaveV3.mainnetTokens.aEthWBTC,
         expects: {
+          logicLength: 6,
+        },
+      },
+      {
+        protocolId: 'spark',
+        marketId: 'mainnet',
+        account: '0x8bf7058bfe4cf0d1fdfd41f43816c5555c17431d',
+        srcToken: mainnetTokens.DAI,
+        srcAmount: '1000',
+        srcDebtToken: '0xf705d2B7e92B3F38e6ae7afaDAA2fEE110fE5914', // DAI_variableDebtToken
+        destToken: mainnetTokens.ETH,
+        destAToken: spark.mainnetTokens.spWETH,
+        expects: {
+          approvalLength: 2,
           logicLength: 6,
         },
       },

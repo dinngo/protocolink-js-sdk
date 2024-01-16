@@ -10,6 +10,7 @@ import { getBalance, mainnetTokens, snapshotAndRevertEach } from '@protocolink/t
 import hre from 'hardhat';
 import * as logics from '@protocolink/logics';
 import * as radiantV2 from 'src/protocols/radiant-v2/tokens';
+import * as spark from 'src/protocols/spark/tokens';
 import * as utils from 'test/utils';
 
 describe('Transaction: Collateral swap', function () {
@@ -64,6 +65,20 @@ describe('Transaction: Collateral swap', function () {
         destToken: mainnetTokens.WETH,
         destAToken: aaveV3.mainnetTokens.aEthWETH,
         expects: {
+          logicLength: 7,
+        },
+      },
+      {
+        protocolId: 'spark',
+        marketId: 'mainnet',
+        account: '0x8bf7058bfe4cf0d1fdfd41f43816c5555c17431d',
+        srcToken: mainnetTokens.ETH,
+        srcAmount: '1',
+        srcAToken: spark.mainnetTokens.spWETH,
+        destToken: spark.mainnetTokens.wstETH,
+        destAToken: spark.mainnetTokens.spwstETH,
+        expects: {
+          approvalLength: 2,
           logicLength: 7,
         },
       },

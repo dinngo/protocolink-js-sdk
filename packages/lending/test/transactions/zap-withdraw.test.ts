@@ -12,6 +12,7 @@ import * as logics from '@protocolink/logics';
 import { mainnetTokens, snapshotAndRevertEach } from '@protocolink/test-helpers';
 import * as morphoblue from 'src/protocols/morphoblue/tokens';
 import * as radiantV2 from 'src/protocols/radiant-v2/tokens';
+import { spark } from '@protocolink/logics';
 
 describe('Transaction: Zap Withdraw', function () {
   const chainId = 1;
@@ -64,6 +65,19 @@ describe('Transaction: Zap Withdraw', function () {
         srcAToken: aaveV3.mainnetTokens.aEthWBTC,
         destToken: mainnetTokens.USDC,
         expects: {
+          logicLength: 2,
+        },
+      },
+      {
+        protocolId: 'spark',
+        marketId: 'mainnet',
+        account: '0x8bf7058bfe4cf0d1fdfd41f43816c5555c17431d',
+        srcToken: mainnetTokens.ETH,
+        srcAmount: '1',
+        srcAToken: spark.mainnetTokens.spWETH,
+        destToken: mainnetTokens.USDC,
+        expects: {
+          approvalLength: 2,
           logicLength: 2,
         },
       },

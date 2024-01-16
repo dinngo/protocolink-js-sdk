@@ -5,6 +5,7 @@ import * as apisdk from '@protocolink/api';
 import { expect } from 'chai';
 import hre from 'hardhat';
 import { mainnetTokens, snapshotAndRevertEach } from '@protocolink/test-helpers';
+import * as spark from 'src/protocols/spark/tokens';
 
 describe('Transaction: Debt swap', function () {
   const chainId = 1;
@@ -59,6 +60,20 @@ describe('Transaction: Debt swap', function () {
         destToken: mainnetTokens.DAI,
         destDebtToken: '0xcF8d0c70c850859266f5C338b38F9D663181C314', // variableDebtEthDAI
         expects: {
+          logicLength: 5,
+        },
+      },
+      {
+        protocolId: 'spark',
+        marketId: 'mainnet',
+        account: '0x8bf7058bfe4cf0d1fdfd41f43816c5555c17431d',
+        srcToken: mainnetTokens.DAI,
+        srcAmount: '1000',
+        srcDebtToken: '0xf705d2B7e92B3F38e6ae7afaDAA2fEE110fE5914', // DAI_variableDebtToken
+        destToken: spark.mainnetTokens.wstETH,
+        destDebtToken: '0xd5c3E3B566a42A6110513Ac7670C1a86D76E13E6', // wstETH_variableDebtToken
+        expects: {
+          approvalLength: 1,
           logicLength: 5,
         },
       },

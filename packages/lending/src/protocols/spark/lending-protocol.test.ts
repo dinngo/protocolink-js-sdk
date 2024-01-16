@@ -1,0 +1,226 @@
+import { LendingProtocol } from './lending-protocol';
+import * as common from '@protocolink/common';
+import { expect } from 'chai';
+import { gnosisTokens, mainnetTokens } from 'src/protocols/spark/tokens';
+
+describe('Test Spark LendingProtocol', function () {
+  context('Test getPortfolio', function () {
+    const testCases = [
+      {
+        chainId: common.ChainId.mainnet,
+        account: '0x8bf7058bfe4cf0d1fdfd41f43816c5555c17431d',
+        blockTag: 19011300,
+        expected: {
+          chainId: 1,
+          protocolId: 'spark',
+          marketId: 'mainnet',
+          utilization: '0.49781972433322992467',
+          healthRate: '2.07153302609943033468',
+          netAPY: '-0.01307866074810781196',
+          totalSupplyUSD: '1255886.42608593415570759873263688',
+          totalBorrowUSD: '500164.027542356064665582',
+          supplies: [
+            {
+              token: mainnetTokens.ETH,
+              price: '2511.57322604',
+              balance: '500.039741252574001622',
+              apy: '0.01413885912447143025',
+              usageAsCollateralEnabled: true,
+              ltv: '0.8',
+              liquidationThreshold: '0.825',
+              isNotCollateral: false,
+              supplyCap: '0',
+              totalSupply: '250480.501781157058053475',
+            },
+            {
+              token: mainnetTokens.DAI,
+              price: '1',
+              balance: '0',
+              apy: '0.05330994502077421664',
+              usageAsCollateralEnabled: true,
+              ltv: '0',
+              liquidationThreshold: '0.0001',
+              isNotCollateral: false,
+              supplyCap: '0',
+              totalSupply: '797258503.957984054071228849',
+            },
+            {
+              token: mainnetTokens.wstETH,
+              price: '2897.5275624',
+              balance: '0',
+              apy: '0.00000024900689299442',
+              usageAsCollateralEnabled: true,
+              ltv: '0.685',
+              liquidationThreshold: '0.795',
+              isNotCollateral: false,
+              supplyCap: '800000',
+              totalSupply: '472056.651339893008720507',
+            },
+            {
+              token: mainnetTokens.USDC,
+              price: '1.00008597',
+              balance: '0',
+              apy: '0.0429717483966223299',
+              usageAsCollateralEnabled: false,
+              ltv: '0',
+              liquidationThreshold: '0',
+              isNotCollateral: false,
+              supplyCap: '60000000',
+              totalSupply: '491795.076835',
+            },
+            {
+              token: mainnetTokens.WBTC,
+              price: '42674.08044271',
+              balance: '0',
+              apy: '0.00001033548496045867',
+              usageAsCollateralEnabled: true,
+              ltv: '0.7',
+              liquidationThreshold: '0.75',
+              isNotCollateral: false,
+              supplyCap: '3000',
+              totalSupply: '2999.99785194',
+            },
+          ],
+          borrows: [
+            {
+              token: mainnetTokens.ETH,
+              price: '2511.57322604',
+              balances: ['0', '0'],
+              apys: ['0.02318783322499370895', '0.03251750528835507089'],
+              borrowMin: '0',
+              borrowCap: '1400000',
+              totalBorrow: '161512.555422898470739346',
+            },
+            {
+              token: mainnetTokens.DAI,
+              price: '1',
+              balances: ['500164.027542356064665582', '0'],
+              apys: ['0.05526314689378971429', '0'],
+              borrowMin: '0',
+              borrowCap: '0',
+              totalBorrow: '770088175.922699742211700122',
+            },
+            {
+              token: mainnetTokens.wstETH,
+              price: '2897.5275624',
+              balances: ['0', '0'],
+              apys: ['0.00251482042382401295', '0.04602785987513300031'],
+              borrowMin: '0',
+              borrowCap: '3000',
+              totalBorrow: '55.058630749824329394',
+            },
+            {
+              token: mainnetTokens.USDC,
+              price: '1.00008597',
+              balances: ['0', '0'],
+              apys: ['0.04770004536919663287', '0.04580838881739773619'],
+              borrowMin: '0',
+              borrowCap: '0',
+              totalBorrow: '467635.885281',
+            },
+            {
+              token: mainnetTokens.WBTC,
+              price: '42674.08044271',
+              balances: ['0', '0'],
+              apys: ['0.00065644930648120513', '0.0202013400202857357'],
+              borrowMin: '0',
+              borrowCap: '2000',
+              totalBorrow: '59.0611296',
+            },
+          ],
+        },
+      },
+      {
+        chainId: common.ChainId.gnosis,
+        account: '0xed374ece52ab111bdbaee9f1013429f474c883ba',
+        blockTag: 31934837,
+        expected: {
+          chainId: 100,
+          protocolId: 'spark',
+          marketId: 'gnosis',
+          utilization: '0.00005495973828331927',
+          healthRate: '19494.79027805728625239321',
+          netAPY: '0.03560100032969216787',
+          totalSupplyUSD: '115.00276167832632353369332191',
+          totalBorrowUSD: '0.00442436517749305247494806',
+          supplies: [
+            {
+              token: gnosisTokens.xDAI,
+              price: '0.99976331',
+              balance: '115.029987727002085683',
+              apy: '0.03560001778178743374',
+              usageAsCollateralEnabled: true,
+              ltv: '0.7',
+              liquidationThreshold: '0.75',
+              isNotCollateral: false,
+              supplyCap: '10000000',
+              totalSupply: '5154957.221170456154638562',
+            },
+            {
+              token: gnosisTokens.WETH,
+              price: '2564.17514548',
+              balance: '0',
+              apy: '0.00335016954708220713',
+              usageAsCollateralEnabled: true,
+              ltv: '0.7',
+              liquidationThreshold: '0.75',
+              isNotCollateral: false,
+              supplyCap: '5000',
+              totalSupply: '1590.75570899932187185',
+            },
+            {
+              token: gnosisTokens.wstETH,
+              price: '2957.93828082',
+              balance: '0.000000000134931599',
+              apy: '0.00000085326868036627',
+              usageAsCollateralEnabled: true,
+              ltv: '0.65',
+              liquidationThreshold: '0.725',
+              isNotCollateral: false,
+              supplyCap: '10000',
+              totalSupply: '7087.959127228963766912',
+            },
+          ],
+          borrows: [
+            {
+              token: gnosisTokens.xDAI,
+              price: '0.99976331',
+              balances: ['0', '0'],
+              apys: ['0.04999999999999999996', '0'],
+              borrowMin: '0',
+              borrowCap: '8000000',
+              totalBorrow: '3695940.29315488803966171',
+            },
+            {
+              token: gnosisTokens.WETH,
+              price: '2564.17514548',
+              balances: ['0', '0'],
+              apys: ['0.01156115175100602792', '0.03251750528835507089'],
+              borrowMin: '0',
+              borrowCap: '3000',
+              totalBorrow: '514.315638538581896313',
+            },
+            {
+              token: gnosisTokens.wstETH,
+              price: '2957.93828082',
+              balances: ['0.000001495759802083', '0'],
+              apys: ['0.01005836849277248975', '0.03045453393881288111'],
+              borrowMin: '0',
+              borrowCap: '100',
+              totalBorrow: '0.86328924742788478',
+            },
+          ],
+        },
+      },
+    ];
+
+    testCases.forEach(({ chainId, account, blockTag, expected }) => {
+      it(`${common.toNetworkId(chainId)} market`, async function () {
+        const protocol = new LendingProtocol(chainId);
+        protocol.setBlockTag(blockTag);
+        const portfolio = await protocol.getPortfolio(account);
+        expect(JSON.stringify(portfolio)).to.eq(JSON.stringify(expected));
+      }).timeout(30000);
+    });
+  });
+});
