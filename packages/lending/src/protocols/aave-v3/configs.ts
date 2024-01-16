@@ -1,4 +1,13 @@
-import { arbitrumTokens, avalancheTokens, mainnetTokens, metisTokens, optimismTokens, polygonTokens } from './tokens';
+import {
+  arbitrumTokens,
+  avalancheTokens,
+  baseTokens,
+  gnosisTokens,
+  mainnetTokens,
+  metisTokens,
+  optimismTokens,
+  polygonTokens,
+} from './tokens';
 import * as common from '@protocolink/common';
 
 export const ID = 'aave-v3';
@@ -171,6 +180,57 @@ export const configs: Config[] = [
       },
     ],
   },
+  // https://github.com/bgd-labs/aave-address-book/blob/main/src/AaveV3Gnosis.sol
+  {
+    chainId: common.ChainId.gnosis,
+    contractMap: {
+      Pool: '0xb50201558B00496A145fE76f7424749556E326D8',
+      PoolDataProvider: '0x501B4c19dd9C2e06E94dA7b6D5Ed4ddA013EC741',
+      AaveOracle: '0xeb0a051be10228213BAEb449db63719d6742F7c4',
+    },
+    reserves: [
+      {
+        asset: gnosisTokens.WETH,
+        aToken: gnosisTokens.aGnoWETH,
+        used: { deposit: true, withdraw: true, borrow: true, repay: true, flashLoan: true },
+      },
+      {
+        asset: gnosisTokens.wstETH,
+        aToken: gnosisTokens.aGnowstETH,
+        used: { deposit: true, withdraw: true, borrow: true, repay: true, flashLoan: true },
+      },
+      {
+        asset: gnosisTokens.GNO,
+        aToken: gnosisTokens.aGnoGNO,
+        used: { deposit: true, withdraw: true, borrow: true, repay: true, flashLoan: true },
+      },
+      {
+        asset: gnosisTokens.USDC,
+        aToken: gnosisTokens.aGnoUSDC,
+        used: { deposit: true, withdraw: true, borrow: true, repay: true, flashLoan: true },
+      },
+      {
+        asset: gnosisTokens.xDAI,
+        aToken: gnosisTokens.aGnoWXDAI,
+        used: { deposit: true, withdraw: true, borrow: true, repay: true, flashLoan: true },
+      },
+      {
+        asset: gnosisTokens.WXDAI,
+        aToken: gnosisTokens.aGnoWXDAI,
+        used: { deposit: true, withdraw: true, borrow: true, repay: true, flashLoan: true },
+      },
+      {
+        asset: gnosisTokens.EURe,
+        aToken: gnosisTokens.aGnoEURe,
+        used: { deposit: true, withdraw: true, borrow: true, repay: true, flashLoan: true },
+      },
+      {
+        asset: gnosisTokens.sDAI,
+        aToken: gnosisTokens.aGnosDAI,
+        used: { deposit: true, withdraw: true, borrow: true, repay: true, flashLoan: true },
+      },
+    ],
+  },
   // https://github.com/bgd-labs/aave-address-book/blob/main/src/AaveV3Polygon.sol
   {
     chainId: common.ChainId.polygon,
@@ -273,6 +333,47 @@ export const configs: Config[] = [
       {
         asset: polygonTokens.wstETH,
         aToken: polygonTokens.aPolwstETH,
+        used: { deposit: true, withdraw: true, borrow: true, repay: true, flashLoan: true },
+      },
+    ],
+  },
+  // https://github.com/bgd-labs/aave-address-book/blob/main/src/AaveV3Base.sol
+  {
+    chainId: common.ChainId.base,
+    contractMap: {
+      Pool: '0xA238Dd80C259a72e81d7e4664a9801593F98d1c5',
+      PoolDataProvider: '0x2d8A3C5677189723C4cB8873CfC9C8976FDF38Ac',
+      AaveOracle: '0x2Cc0Fc26eD4563A5ce5e8bdcfe1A2878676Ae156',
+    },
+    reserves: [
+      {
+        asset: baseTokens.ETH,
+        aToken: baseTokens.aBasWETH,
+        used: { deposit: true, withdraw: true, borrow: true, repay: true, flashLoan: true },
+      },
+      {
+        asset: baseTokens.WETH,
+        aToken: baseTokens.aBasWETH,
+        used: { deposit: true, withdraw: true, borrow: true, repay: true, flashLoan: true },
+      },
+      {
+        asset: baseTokens.cbETH,
+        aToken: baseTokens.aBascbETH,
+        used: { deposit: true, withdraw: true, borrow: true, repay: true, flashLoan: true },
+      },
+      {
+        asset: baseTokens.USDbC,
+        aToken: baseTokens.aBasUSDbC,
+        used: { deposit: true, withdraw: true, borrow: true, repay: true, flashLoan: true },
+      },
+      {
+        asset: baseTokens.wstETH,
+        aToken: baseTokens.aBaswstETH,
+        used: { deposit: true, withdraw: true, borrow: true, repay: true, flashLoan: true },
+      },
+      {
+        asset: baseTokens.USDC,
+        aToken: baseTokens.aBasUSDC,
         used: { deposit: true, withdraw: true, borrow: true, repay: true, flashLoan: true },
       },
     ],
