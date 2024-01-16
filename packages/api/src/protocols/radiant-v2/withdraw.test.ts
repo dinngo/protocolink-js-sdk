@@ -2,6 +2,7 @@ import { WithdrawParams, getWithdrawQuotation, getWithdrawTokenList } from './wi
 import * as common from '@protocolink/common';
 import { expect } from 'chai';
 import * as logics from '@protocolink/logics';
+import { mainnetTokens } from '@protocolink/test-helpers';
 
 describe('RadiantV2 WithdrawLogic', function () {
   context('Test getTokenList', async function () {
@@ -14,16 +15,16 @@ describe('RadiantV2 WithdrawLogic', function () {
   });
 
   context('Test getQuotation', async function () {
-    const chainId = common.ChainId.arbitrum;
+    const chainId = common.ChainId.mainnet;
 
     const testCases: WithdrawParams[] = [
       {
-        input: { token: logics.radiantv2.arbitrumTokens.rWETH, amount: '1' },
-        tokenOut: logics.radiantv2.arbitrumTokens.ETH,
+        input: { token: logics.radiantv2.mainnetTokens.rWETH, amount: '1' },
+        tokenOut: mainnetTokens.ETH,
       },
       {
-        input: { token: logics.radiantv2.arbitrumTokens.rUSDC, amount: '1' },
-        tokenOut: logics.radiantv2.arbitrumTokens.USDC,
+        input: { token: logics.radiantv2.mainnetTokens.rUSDC, amount: '1' },
+        tokenOut: mainnetTokens.USDC,
       },
     ];
 
