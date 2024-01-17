@@ -5,12 +5,6 @@ import * as common from '@protocolink/common';
 import { expect } from 'chai';
 import { mainnetTokens } from './tokens';
 
-// Test information
-// account: 0xa3C1C91403F0026b9dd086882aDbC8Cdbc3b3cfB
-// pool: USDC(wstETH collateral)
-// balance: 0.001 wstETH (collateral) and 10 USDC (Loan)
-// blockTag: 18982784
-
 describe('Test Adapter for Morpho Blue', function () {
   const chainId = common.ChainId.mainnet;
   const blockTag = 18982784;
@@ -51,7 +45,7 @@ describe('Test Adapter for Morpho Blue', function () {
       expect(logics).to.be.empty;
     });
 
-    it('success - src token is not collateral token', async function () {
+    it('src token is not collateral token', async function () {
       const srcToken = mainnetTokens.ETH;
       const srcAmount = '0.001';
       const destToken = mainnetTokens.USDC;
@@ -69,11 +63,11 @@ describe('Test Adapter for Morpho Blue', function () {
       expect(JSON.stringify(portfolio.clone())).to.eq(JSON.stringify(afterPortfolio));
 
       expect(error?.name).to.eq('srcAmount');
-      expect(error?.code).to.eq('NOT_SUPPORTED_TOKEN');
+      expect(error?.code).to.eq('UNSUPPORTED_TOKEN');
       expect(logics).has.length(0);
     });
 
-    it('success - dest token is not debt token', async function () {
+    it('dest token is not debt token', async function () {
       const srcToken = mainnetTokens.wstETH;
       const srcAmount = '0.001';
       const destToken = mainnetTokens.ETH;
@@ -90,8 +84,8 @@ describe('Test Adapter for Morpho Blue', function () {
 
       expect(JSON.stringify(portfolio.clone())).to.eq(JSON.stringify(afterPortfolio));
 
-      expect(error?.name).to.eq('srcAmount');
-      expect(error?.code).to.eq('NOT_SUPPORTED_TOKEN');
+      expect(error?.name).to.eq('destAmount');
+      expect(error?.code).to.eq('UNSUPPORTED_TOKEN');
       expect(logics).has.length(0);
     });
 
@@ -117,16 +111,13 @@ describe('Test Adapter for Morpho Blue', function () {
 
       expect(error).to.be.undefined;
 
-      expect(logics).has.length(6);
+      expect(logics).has.length(5);
       expect(logics[0].rid).to.eq('utility:flash-loan-aggregator');
       expect(logics[1].rid).to.contain('swap-token');
-      expect(logics[2].rid).to.eq('morphoblue:supply');
+      expect(logics[2].rid).to.eq('morphoblue:supply-collateral');
       expect(logics[2].fields.balanceBps).to.eq(common.BPS_BASE);
-      expect(logics[3].rid).to.eq('utility:send-token');
-      expect(logics[3].fields.recipient).to.eq(account);
-      expect(logics[3].fields.balanceBps).to.eq(common.BPS_BASE);
-      expect(logics[4].rid).to.eq('morphoblue:borrow');
-      expect(logics[5].rid).to.eq('utility:flash-loan-aggregator');
+      expect(logics[3].rid).to.eq('morphoblue:borrow');
+      expect(logics[4].rid).to.eq('utility:flash-loan-aggregator');
     });
   });
 
@@ -208,7 +199,7 @@ describe('Test Adapter for Morpho Blue', function () {
       expect(logics).to.be.empty;
     });
 
-    it('success - src token is not debt token', async function () {
+    it('src token is not debt token', async function () {
       const srcToken = mainnetTokens.USDC;
       const srcAmount = '10000';
       const destToken = mainnetTokens.USDC;
@@ -225,12 +216,12 @@ describe('Test Adapter for Morpho Blue', function () {
 
       expect(JSON.stringify(portfolio.clone())).to.eq(JSON.stringify(afterPortfolio));
 
-      expect(error?.name).to.eq('srcAmount');
-      expect(error?.code).to.eq('NOT_SUPPORTED_TOKEN');
+      expect(error?.name).to.eq('destAmount');
+      expect(error?.code).to.eq('UNSUPPORTED_TOKEN');
       expect(logics).has.length(0);
     });
 
-    it('success - dest token is not collateral token', async function () {
+    it('dest token is not collateral token', async function () {
       const srcToken = mainnetTokens.wstETH;
       const srcAmount = '10000';
       const destToken = mainnetTokens.wstETH;
@@ -248,7 +239,7 @@ describe('Test Adapter for Morpho Blue', function () {
       expect(JSON.stringify(portfolio.clone())).to.eq(JSON.stringify(afterPortfolio));
 
       expect(error?.name).to.eq('srcAmount');
-      expect(error?.code).to.eq('NOT_SUPPORTED_TOKEN');
+      expect(error?.code).to.eq('UNSUPPORTED_TOKEN');
       expect(logics).has.length(0);
     });
 
@@ -274,15 +265,13 @@ describe('Test Adapter for Morpho Blue', function () {
 
       expect(error).to.be.undefined;
 
-      expect(logics).has.length(6);
+      expect(logics).has.length(5);
       expect(logics[0].rid).to.eq('utility:flash-loan-aggregator');
       expect(logics[1].rid).to.contain('swap-token');
       expect(logics[2].rid).to.eq('morphoblue:repay');
       expect(logics[2].fields.balanceBps).to.eq(common.BPS_BASE);
-      expect(logics[3].rid).to.eq('permit2:pull-token');
-      expect(logics[4].rid).to.eq('morphoblue:withdraw');
-      expect(logics[4].fields.balanceBps).to.eq(common.BPS_BASE);
-      expect(logics[5].rid).to.eq('utility:flash-loan-aggregator');
+      expect(logics[3].rid).to.eq('morphoblue:withdraw-collateral');
+      expect(logics[4].rid).to.eq('utility:flash-loan-aggregator');
     });
   });
 
@@ -314,7 +303,7 @@ describe('Test Adapter for Morpho Blue', function () {
       expect(logics).to.be.empty;
     });
 
-    it('success - src token is equal to dest token', async function () {
+    it('src token is equal to dest token', async function () {
       const srcToken = mainnetTokens.wstETH;
       const srcAmount = '10';
       const destToken = mainnetTokens.wstETH;
@@ -336,11 +325,11 @@ describe('Test Adapter for Morpho Blue', function () {
       expect(error).to.be.undefined;
 
       expect(logics).has.length(1);
-      expect(logics[0].rid).to.eq('morphoblue:supply');
+      expect(logics[0].rid).to.eq('morphoblue:supply-collateral');
       expect(logics[0].fields.balanceBps).to.be.undefined;
     });
 
-    it('success - src token is not equal to dest token', async function () {
+    it('src token is not equal to dest token', async function () {
       const srcToken = mainnetTokens.ETH;
       const srcAmount = '1';
       const destToken = mainnetTokens.wstETH;
@@ -363,7 +352,7 @@ describe('Test Adapter for Morpho Blue', function () {
 
       expect(logics).has.length(2);
       expect(logics[0].rid).to.contain('swap-token');
-      expect(logics[1].rid).to.eq('morphoblue:supply');
+      expect(logics[1].rid).to.eq('morphoblue:supply-collateral');
       expect(logics[1].fields.balanceBps).to.eq(common.BPS_BASE);
     });
   });
@@ -444,8 +433,7 @@ describe('Test Adapter for Morpho Blue', function () {
       expect(error).to.be.undefined;
 
       expect(logics).has.length(1);
-      expect(logics[0].rid).to.eq('morphoblue:withdraw');
-      expect(logics[0].fields.balanceBps).to.eq(common.BPS_BASE);
+      expect(logics[0].rid).to.eq('morphoblue:withdraw-collateral');
     });
 
     it('success - src token is not equal to dest token', async function () {
@@ -470,10 +458,9 @@ describe('Test Adapter for Morpho Blue', function () {
       expect(error).to.be.undefined;
 
       expect(logics).has.length(2);
-      expect(logics[0].rid).to.eq('morphoblue:withdraw');
-      expect(logics[0].fields.balanceBps).to.eq(common.BPS_BASE);
+      expect(logics[0].rid).to.eq('morphoblue:withdraw-collateral');
       expect(logics[1].rid).to.contain('swap-token');
-      expect(logics[1].fields.input.amount).to.eq(new common.TokenAmount(srcToken, srcAmount).subWei(3).amount);
+      expect(logics[1].fields.input.amount).to.eq(srcAmount);
     });
   });
 

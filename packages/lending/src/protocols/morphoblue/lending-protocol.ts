@@ -107,6 +107,7 @@ export class LendingProtocol extends Protocol {
 
     const [_loanTokenPrice] = this.priceFeedIface.decodeFunctionResult('latestAnswer', returnData[2]);
 
+    // https://docs.morpho.org/contracts/morpho-blue/reference/oracles/#price
     // It corresponds to the price of 10**(collateral token decimals) assets of
     // collateral token quoted in 10**(loan token decimals) assets of loan token
     // with `36 + loan token decimals - collateral token decimals` decimals of precision.
@@ -126,19 +127,6 @@ export class LendingProtocol extends Protocol {
       8
     );
 
-    const loanValue = new BigNumberJS(borrowBalance).times(loanTokenPrice);
-    const collateralValue = new BigNumberJS(supplyBalance).times(collateralTokenPrice);
-    const ltv = loanValue.div(collateralValue).toFixed(5);
-
-    // Get Borrow Apy
-    const irmContract = Irm__factory.connect(irm, this.provider);
-    const marketParams: MarketParamsStruct = {
-      loanToken: loanToken.address,
-      collateralToken: collateralToken.address,
-      oracle,
-      irm,
-      lltv,
-    };
     const market: MarketStruct = {
       totalSupplyAssets,
       totalSupplyShares,
@@ -147,10 +135,7 @@ export class LendingProtocol extends Protocol {
       lastUpdate,
       fee,
     };
-    const borrowRateView = await irmContract.borrowRateView(marketParams, market, { blockTag: this.blockTag });
-    const borrowApy = (
-      Math.exp(new BigNumberJS(borrowRateView.toString()).div(1e18).times(SECONDS_PER_YEAR).toNumber()) - 1
-    ).toString();
+    const borrowApy = await this.getBorrowAPY(marketId, market);
 
     const supplies: SupplyObject[] = [
       {
@@ -159,7 +144,7 @@ export class LendingProtocol extends Protocol {
         balance: supplyBalance,
         apy: '0',
         usageAsCollateralEnabled: true,
-        ltv: ltv,
+        ltv: common.toBigUnit(lltv, 18),
         liquidationThreshold: common.toBigUnit(lltv, 18),
         totalSupply,
       },
@@ -191,6 +176,8 @@ export class LendingProtocol extends Protocol {
     return false;
   }
 
+  canLeverageShort = false;
+
   override canLeverage(_marketId: string) {
     return true;
   }
@@ -199,14 +186,12 @@ export class LendingProtocol extends Protocol {
     return true;
   }
 
-  toUnderlyingToken(marketId: string) {
-    const { collateralToken } = getMarket(this.chainId, marketId);
-    return collateralToken;
+  toUnderlyingToken() {
+    return undefined;
   }
 
-  toProtocolToken(marketId: string) {
-    const { collateralToken } = getMarket(this.chainId, marketId);
-    return collateralToken;
+  toProtocolToken() {
+    return undefined;
   }
 
   isProtocolToken(_marketId: string, _token: common.Token) {
@@ -215,6 +200,27 @@ export class LendingProtocol extends Protocol {
 
   override isAssetTokenized(_marketId: string, _assetToken: common.Token) {
     return false;
+  }
+
+  async getBorrowAPY(marketId: string, market: MarketStruct) {
+    const { loanToken, collateralToken, oracle, irm, lltv } = getMarket(this.chainId, marketId);
+
+    const marketParams: MarketParamsStruct = {
+      loanToken: loanToken.address,
+      collateralToken: collateralToken.address,
+      oracle,
+      irm,
+      lltv,
+    };
+
+    const irmContract = Irm__factory.connect(irm, this.provider);
+
+    const borrowRateView = await irmContract.borrowRateView(marketParams, market, { blockTag: this.blockTag });
+    const borrowApy = (
+      Math.exp(new BigNumberJS(borrowRateView.toString()).div(1e18).times(SECONDS_PER_YEAR).toNumber()) - 1
+    ).toString();
+
+    return borrowApy;
   }
 
   newSupplyLogic = apisdk.protocols.morphoblue.newSupplyCollateralLogic;

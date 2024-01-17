@@ -92,7 +92,6 @@ describe('Transaction: Zap Repay', function () {
         account: '0xa3C1C91403F0026b9dd086882aDbC8Cdbc3b3cfB',
         srcToken: mainnetTokens.USDC,
         srcAmount: '0.1',
-        srcDebtToken: undefined,
         destToken: mainnetTokens.USDT,
         logicService: logics.morphoblue.Service,
         expects: {

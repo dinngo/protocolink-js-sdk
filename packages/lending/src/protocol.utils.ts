@@ -84,9 +84,14 @@ export function abbreviateUSD(num: number | string, digits = 2) {
 
 export function toLessThanString(amount: string | BigNumberJS, decimals: number) {
   amount = new BigNumberJS(amount);
-  const minAmount = new BigNumberJS(1).shiftedBy(-decimals);
 
-  return amount.gt(minAmount) ? amount.toFixed() : `<${minAmount.toFixed()}`;
+  if (amount.isZero()) {
+    return '0';
+  } else {
+    const minAmount = new BigNumberJS(1).shiftedBy(-decimals);
+
+    return amount.gt(minAmount) ? amount.toFixed() : `<${minAmount.toFixed()}`;
+  }
 }
 
 export type RoundingMode = 'ceil' | 'round' | 'floor';

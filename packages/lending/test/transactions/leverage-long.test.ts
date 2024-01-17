@@ -85,8 +85,6 @@ describe('Transaction: Leverage Long', function () {
         srcToken: morphoblue.mainnetTokens.wstETH,
         srcAmount: '0.001',
         destToken: mainnetTokens.USDC,
-        srcAToken: undefined,
-        destDebtToken: undefined,
         logicService: logics.morphoblue.Service,
         expects: {
           approvalLength: 1,

@@ -319,6 +319,8 @@ export class Adapter extends common.Web3Toolkit {
         } catch (err) {
           output.error = err instanceof OperationError ? err : new OperationError('srcAmount', 'UNEXPECTED_ERROR');
         }
+      } else {
+        output.error = new OperationError(srcCollateral ? 'destAmount' : 'srcAmount', 'UNSUPPORTED_TOKEN');
       }
     }
 
@@ -433,6 +435,8 @@ export class Adapter extends common.Web3Toolkit {
         } catch (err) {
           output.error = err instanceof OperationError ? err : new OperationError('srcAmount', 'UNEXPECTED_ERROR');
         }
+      } else {
+        output.error = new OperationError(srcBorrow ? 'destAmount' : 'srcAmount', 'UNSUPPORTED_TOKEN');
       }
     }
 
@@ -575,7 +579,7 @@ export class Adapter extends common.Web3Toolkit {
           output.error = err instanceof OperationError ? err : new OperationError('srcAmount', 'UNEXPECTED_ERROR');
         }
       } else {
-        output.error = new OperationError('srcAmount', 'NOT_SUPPORTED_TOKEN');
+        output.error = new OperationError(srcCollateral ? 'destAmount' : 'srcAmount', 'UNSUPPORTED_TOKEN');
       }
     }
 
@@ -712,7 +716,7 @@ export class Adapter extends common.Web3Toolkit {
           output.error = err instanceof OperationError ? err : new OperationError('srcAmount', 'UNEXPECTED_ERROR');
         }
       } else {
-        output.error = new OperationError('srcAmount', 'NOT_SUPPORTED_TOKEN');
+        output.error = new OperationError(srcBorrow ? 'destAmount' : 'srcAmount', 'UNSUPPORTED_TOKEN');
       }
     }
 
@@ -872,7 +876,7 @@ export class Adapter extends common.Web3Toolkit {
           output.error = err instanceof OperationError ? err : new OperationError('srcAmount', 'UNEXPECTED_ERROR');
         }
       } else {
-        output.error = new OperationError('srcAmount', 'NOT_SUPPORTED_TOKEN');
+        output.error = new OperationError(srcBorrow ? 'destAmount' : 'srcAmount', 'UNSUPPORTED_TOKEN');
       }
     }
 
@@ -958,6 +962,8 @@ export class Adapter extends common.Web3Toolkit {
         } catch (err) {
           output.error = err instanceof OperationError ? err : new OperationError('srcAmount', 'UNEXPECTED_ERROR');
         }
+      } else {
+        output.error = new OperationError('destAmount', 'UNSUPPORTED_TOKEN');
       }
     }
 
@@ -1047,6 +1053,8 @@ export class Adapter extends common.Web3Toolkit {
         } catch (err) {
           output.error = err instanceof OperationError ? err : new OperationError('srcAmount', 'UNEXPECTED_ERROR');
         }
+      } else {
+        output.error = new OperationError('srcAmount', 'UNSUPPORTED_TOKEN');
       }
     }
 
@@ -1129,6 +1137,8 @@ export class Adapter extends common.Web3Toolkit {
         } catch (err) {
           output.error = err instanceof OperationError ? err : new OperationError('srcAmount', 'UNEXPECTED_ERROR');
         }
+      } else {
+        output.error = new OperationError('srcAmount', 'UNSUPPORTED_TOKEN');
       }
     }
 
@@ -1229,6 +1239,8 @@ export class Adapter extends common.Web3Toolkit {
         } catch (err) {
           output.error = err instanceof OperationError ? err : new OperationError('srcAmount', 'UNEXPECTED_ERROR');
         }
+      } else {
+        output.error = new OperationError('srcAmount', 'UNSUPPORTED_TOKEN');
       }
     }
 
