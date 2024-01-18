@@ -74,10 +74,7 @@ export class LendingProtocol extends Protocol {
   }
 
   async getPortfolio(account: string, marketId: string) {
-    const { loanToken, collateralToken, loanTokenPriceFeedAddress, oracle, irm, lltv } = getMarket(
-      this.chainId,
-      marketId
-    );
+    const { loanToken, collateralToken, loanTokenPriceFeedAddress, oracle, lltv } = getMarket(this.chainId, marketId);
 
     const calls: common.Multicall3.CallStruct[] = [
       {
@@ -137,6 +134,8 @@ export class LendingProtocol extends Protocol {
     };
     const borrowApy = await this.getBorrowAPY(marketId, market);
 
+    const maxLtv = common.toBigUnit(lltv, 18);
+
     const supplies: SupplyObject[] = [
       {
         token: collateralToken,
@@ -144,8 +143,8 @@ export class LendingProtocol extends Protocol {
         balance: supplyBalance,
         apy: '0',
         usageAsCollateralEnabled: true,
-        ltv: common.toBigUnit(lltv, 18),
-        liquidationThreshold: common.toBigUnit(lltv, 18),
+        ltv: maxLtv,
+        liquidationThreshold: maxLtv,
         totalSupply,
       },
     ];
