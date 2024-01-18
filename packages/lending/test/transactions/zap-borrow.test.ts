@@ -44,7 +44,7 @@ describe('Transaction: Zap Borrow', function () {
       {
         protocolId: 'radiant-v2',
         marketId: 'mainnet',
-        account: '0xA38D6E3Aa9f3E4F81D4cEf9B8bCdC58aB37d066A',
+        account: '0x0E79368B079910b31e71Ce1B2AE510461359128D',
         srcToken: mainnetTokens.USDC,
         srcAmount: '1000',
         srcDebtToken: '0x490726291F6434646FEb2eC96d2Cc566b18a122F', // vdUSDC

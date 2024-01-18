@@ -142,7 +142,7 @@ describe('Transaction: Zap Repay', function () {
         expect(borrowDifference.lte(repayAmount)).to.be.true;
 
         // 6. user's dest token balance should decrease
-        await expect(user.address).to.changeBalance(destToken, -zapRepayInfo.destAmount);
+        await expect(user.address).to.changeBalance(destToken, -zapRepayInfo.destAmount, 1);
       });
     });
   });

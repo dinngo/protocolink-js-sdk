@@ -23,7 +23,7 @@ describe('Transaction: Leverage Long', function () {
   before(async function () {
     adapter = new Adapter(chainId, hre.ethers.provider);
     await claimToken(chainId, '0x7F67F6A09bcb2159b094B64B4acc53D5193AEa2E', mainnetTokens.USDC, '1000');
-    await claimToken(chainId, '0xA38D6E3Aa9f3E4F81D4cEf9B8bCdC58aB37d066A', mainnetTokens.USDC, '1000');
+    await claimToken(chainId, '0x0E79368B079910b31e71Ce1B2AE510461359128D', mainnetTokens.USDC, '1000');
     await claimToken(chainId, '0x06e4cb4f3ba9a2916b6384acbdeaa74daaf91550', mainnetTokens.USDC, '1000');
     await claimToken(chainId, '0x53fb0162bC8d5EEc2fB1532923C4f8997BAce111', mainnetTokens.USDC, '1000');
   });
@@ -47,10 +47,9 @@ describe('Transaction: Leverage Long', function () {
         },
       },
       {
-        // TODO: ERC20: transfer amount exceeds balance (sometimes)
         protocolId: 'radiant-v2',
         marketId: 'mainnet',
-        account: '0xA38D6E3Aa9f3E4F81D4cEf9B8bCdC58aB37d066A',
+        account: '0x0E79368B079910b31e71Ce1B2AE510461359128D',
         srcToken: mainnetTokens.WETH,
         srcAmount: '1',
         srcAToken: radiantV2.mainnetTokens.rWETH,
@@ -94,13 +93,12 @@ describe('Transaction: Leverage Long', function () {
         it(`case ${i + 1} - ${protocolId}:${marketId}`, async function () {
           user = await hre.ethers.getImpersonatedSigner(account);
           portfolio = await adapter.getPortfolio(user.address, protocolId, marketId);
-          const leverageAmount = new common.TokenAmount(srcToken, srcAmount);
 
           // 1. get user positions
           let initSupplyBalance, initBorrowBalance;
           if (protocolId === 'compound-v3') {
             const service = new logics.compoundv3.Service(chainId, hre.ethers.provider);
-            initSupplyBalance = await service.getCollateralBalance(marketId, user.address, leverageAmount.token);
+            initSupplyBalance = await service.getCollateralBalance(marketId, user.address, srcToken);
             initBorrowBalance = await service.getBorrowBalance(marketId, user.address);
           } else {
             initSupplyBalance = await getBalance(user.address, srcAToken!);
@@ -109,6 +107,7 @@ describe('Transaction: Leverage Long', function () {
 
           // 2. user obtains a quotation for leveraging src token
           const leverageLongInfo = await adapter.leverageLong({ account, portfolio, srcToken, srcAmount, destToken });
+          const leverageAmount = new common.TokenAmount(leverageLongInfo.logics[1].fields.output);
 
           // 3. user needs to permit the Protocolink user agent to borrow for the user
           const estimateResult = await apisdk.estimateRouterData(
