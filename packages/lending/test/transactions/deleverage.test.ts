@@ -91,9 +91,9 @@ describe('Transaction: Deleverage', function () {
         protocolId: 'morphoblue',
         marketId: '0xb323495f7e4148be5643a4ea4a8221eef163e4bccfdedc2a6f4696baacbc86cc',
         account: '0xa3C1C91403F0026b9dd086882aDbC8Cdbc3b3cfB',
-        srcToken: morphoblue.mainnetTokens.wstETH,
-        srcAmount: '0.001',
-        destToken: mainnetTokens.USDC,
+        srcToken: mainnetTokens.USDC,
+        srcAmount: '1',
+        destToken: morphoblue.mainnetTokens.wstETH,
         logicService: logics.morphoblue.Service,
         expects: {
           approvalLength: 1,
@@ -177,6 +177,7 @@ describe('Transaction: Deleverage', function () {
           // 5-1. debt grows when the block of getting api data is different from the block of executing tx
           const [minRepay] = utils.bpsBound(repayAmount.amount, 100);
           const minRepayAmount = repayAmount.clone().set(minRepay);
+
           expect(borrowDifference.gte(minRepayAmount)).to.be.true;
           expect(borrowDifference.lte(repayAmount)).to.be.true;
         });
