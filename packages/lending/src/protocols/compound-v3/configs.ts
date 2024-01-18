@@ -81,6 +81,13 @@ export const configs: Config[] = [
         baseToken: baseTokens.USDbC,
         baseTokenPriceFeedAddress: '0x7e860098F58bBFC8648a4311b374B1D669a2bc6B', // USDC price feed
       },
+      {
+        id: logics.compoundv3.MarketId.ETH,
+        cometAddress: baseTokens.cWETHv3.address,
+        cToken: baseTokens.cWETHv3,
+        baseToken: baseTokens.WETH,
+        baseTokenPriceFeedAddress: '0x71041dddad3595f9ced3dccfbe3d1f4b0a16bb70', // ETH price feed
+      },
     ],
   },
   {
