@@ -1,5 +1,13 @@
 # @protocolink/lending
 
+## 1.0.7
+
+### Patch Changes
+
+- a9fb09f: fix leverage short swap quotation issue
+- Updated dependencies [d14aeb2]
+  - @protocolink/api@1.0.11
+
 ## 1.0.6
 
 ### Patch Changes

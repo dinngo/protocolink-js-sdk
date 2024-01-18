@@ -656,7 +656,6 @@ export class Adapter extends common.Web3Toolkit {
           else {
             swapper = this.findSwapper([srcToken.wrapped, destToken.wrapped]);
             const swapInput = flashLoanAggregatorQuotation.loans.get(srcToken.wrapped);
-            let swapQuotation: SwapperQuoteFields;
             try {
               swapQuotation = await swapper.quote({ input: swapInput, tokenOut: destToken.wrapped, slippage });
             } catch {

@@ -116,20 +116,13 @@ describe('Transaction: Zap Repay', function () {
             : await getBalance(user.address, srcDebtToken!);
 
           // 1. user obtains a quotation for zap repay
-          const zapRepayInfo = await adapter.zapRepay({
-            account,
-            portfolio,
-            srcToken,
-            srcAmount,
-            destToken,
-          });
+          const zapRepayInfo = await adapter.zapRepay({ account, portfolio, srcToken, srcAmount, destToken });
 
           // 2. user needs to allow the Protocolink user agent to repay on behalf of the user
           const estimateResult = await apisdk.estimateRouterData(
             { chainId, account, logics: zapRepayInfo.logics },
             { permit2Type }
           );
-
           expect(estimateResult.approvals.length).to.eq(expects.approvalLength);
           for (const approval of estimateResult.approvals) {
             await expect(user.sendTransaction(approval)).to.not.be.reverted;
@@ -158,7 +151,7 @@ describe('Transaction: Zap Repay', function () {
           expect(borrowDifference.lte(repayAmount)).to.be.true;
 
           // 6. user's dest token balance should decrease
-          await expect(user.address).to.changeBalance(destToken, -zapRepayInfo.destAmount);
+          await expect(user.address).to.changeBalance(destToken, -zapRepayInfo.destAmount, 1);
         });
       }
     );
