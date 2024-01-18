@@ -25,9 +25,9 @@
   "dependencies": {
     "@aave/math-utils": "^1.21.0",
     "@protocolink/api": "^1.0.11",
-    "@protocolink/common": "^0.3.5",
-    "@protocolink/core": "^0.4.5",
-    "@protocolink/logics": "^1.0.3",
+    "@protocolink/common": "^0.3.6",
+    "@protocolink/core": "^0.4.6",
+    "@protocolink/logics": "^1.0.9",
     "bignumber.js": "^9.1.1",
     "decimal.js-light": "^2.5.1"
   },

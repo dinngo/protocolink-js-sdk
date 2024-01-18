@@ -47,7 +47,7 @@ describe('Transaction: Zap Withdraw', function () {
       {
         protocolId: 'radiant-v2',
         marketId: 'mainnet',
-        account: '0xA38D6E3Aa9f3E4F81D4cEf9B8bCdC58aB37d066A',
+        account: '0x0E79368B079910b31e71Ce1B2AE510461359128D',
         srcToken: mainnetTokens.WBTC,
         srcAmount: '1',
         srcAToken: radiantV2.mainnetTokens.rWBTC,
