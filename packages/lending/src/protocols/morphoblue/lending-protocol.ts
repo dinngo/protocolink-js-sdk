@@ -2,7 +2,7 @@ import { BigNumber } from 'ethers';
 import BigNumberJS from 'bignumber.js';
 import { BorrowObject, Market, RepayParams, SupplyObject } from 'src/protocol.type';
 import { DISPLAY_NAME, ID, configMap, getContractAddress, getMarket, marketMap, supportedChainIds } from './configs';
-import { IrmInterface, MarketParamsStruct, MarketStruct } from './contracts/Irm';
+import { IrmInterface, MarketStruct } from './contracts/Irm';
 import { Irm__factory, Morpho, Morpho__factory, Oracle__factory, PriceFeed__factory } from './contracts';
 import { MorphoInterface } from './contracts/Morpho';
 import { OracleInterface } from './contracts/Oracle';
@@ -124,15 +124,14 @@ export class LendingProtocol extends Protocol {
       8
     );
 
-    const market: MarketStruct = {
+    const borrowApy = await this.getBorrowAPY(marketId, {
       totalSupplyAssets,
       totalSupplyShares,
       totalBorrowAssets,
       totalBorrowShares,
       lastUpdate,
       fee,
-    };
-    const borrowApy = await this.getBorrowAPY(marketId, market);
+    });
 
     const maxLtv = common.toBigUnit(lltv, 18);
 
@@ -183,18 +182,6 @@ export class LendingProtocol extends Protocol {
 
   override canDeleverage() {
     return true;
-  }
-
-  toUnderlyingToken() {
-    return undefined;
-  }
-
-  toProtocolToken() {
-    return undefined;
-  }
-
-  isProtocolToken(_marketId: string, _token: common.Token) {
-    return false;
   }
 
   override isAssetTokenized(_marketId: string, _assetToken: common.Token) {
