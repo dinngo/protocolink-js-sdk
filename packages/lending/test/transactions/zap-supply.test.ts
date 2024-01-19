@@ -21,6 +21,7 @@ describe('Transaction: Zap Supply', function () {
   let portfolio: Portfolio;
   let user: SignerWithAddress;
   let adapter: Adapter;
+  let service: logics.compoundv3.Service | logics.morphoblue.Service;
 
   before(async function () {
     adapter = new Adapter(chainId, hre.ethers.provider);
@@ -136,7 +137,6 @@ describe('Transaction: Zap Supply', function () {
           approvalLength: 1,
           logicLength: 2,
         },
-        logicService: logics.compoundv3.Service,
       },
       {
         protocolId: 'morphoblue',
@@ -148,11 +148,10 @@ describe('Transaction: Zap Supply', function () {
           approvalLength: 1,
           logicLength: 2,
         },
-        logicService: logics.morphoblue.Service,
       },
     ];
 
-    testCases.forEach(({ protocolId, marketId, srcToken, srcAmount, destToken, expects, logicService }, i) => {
+    testCases.forEach(({ protocolId, marketId, srcToken, srcAmount, destToken, expects }, i) => {
       it(`case ${i + 1} - ${protocolId}:${marketId}`, async function () {
         const account = user.address;
         portfolio = await adapter.getPortfolio(user.address, protocolId, marketId);
@@ -190,7 +189,11 @@ describe('Transaction: Zap Supply', function () {
         await expect(user.sendTransaction(transactionRequest)).to.not.be.reverted;
 
         // 4. user's balance will increase.
-        const service = new logicService(chainId, hre.ethers.provider);
+        if (protocolId === 'compound-v3') {
+          service = new logics.compoundv3.Service(chainId, hre.ethers.provider);
+        } else if (protocolId === 'morphoblue') {
+          service = new logics.morphoblue.Service(chainId, hre.ethers.provider);
+        }
         const collateralBalance = await service.getCollateralBalance(marketId, user.address, destToken);
         const supplyDestAmount = new common.TokenAmount(destToken, zapDepositInfo.destAmount);
 

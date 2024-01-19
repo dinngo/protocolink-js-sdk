@@ -6,7 +6,7 @@ export async function setup() {
   Adapter.registerProtocol(aavev2.LendingProtocol);
   Adapter.registerProtocol(aavev3.LendingProtocol);
   Adapter.registerProtocol(compoundv3.LendingProtocol);
-  Adapter.registerProtocol(radiantv2.LendingProtocol);
   Adapter.registerProtocol(morphoblue.LendingProtocol);
+  Adapter.registerProtocol(radiantv2.LendingProtocol);
   Adapter.registerSwapper(paraswapv5.LendingSwapper);
 }

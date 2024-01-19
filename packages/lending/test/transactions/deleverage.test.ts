@@ -81,7 +81,6 @@ describe('Transaction: Deleverage', function () {
         srcToken: mainnetTokens.USDC,
         srcAmount: '1000',
         destToken: mainnetTokens.WBTC,
-        logicService: logics.compoundv3.Service,
         expects: {
           approvalLength: 1,
           logicLength: 5,
@@ -94,7 +93,6 @@ describe('Transaction: Deleverage', function () {
         srcToken: mainnetTokens.USDC,
         srcAmount: '1',
         destToken: morphoblue.mainnetTokens.wstETH,
-        logicService: logics.morphoblue.Service,
         expects: {
           approvalLength: 1,
           logicLength: 5,
@@ -103,29 +101,20 @@ describe('Transaction: Deleverage', function () {
     ];
 
     testCases.forEach(
-      (
-        {
-          protocolId,
-          marketId,
-          account,
-          srcToken,
-          srcAmount,
-          srcDebtToken,
-          destToken,
-          destAToken,
-          logicService,
-          expects,
-        },
-        i
-      ) => {
+      ({ protocolId, marketId, account, srcToken, srcAmount, srcDebtToken, destToken, destAToken, expects }, i) => {
         it(`case ${i + 1} - ${protocolId}:${marketId}`, async function () {
           user = await hre.ethers.getImpersonatedSigner(account);
           portfolio = await adapter.getPortfolio(user.address, protocolId, marketId);
 
           let initCollateralBalance, initBorrowBalance;
 
-          if (logicService) {
-            service = new logicService(chainId, hre.ethers.provider);
+          if (protocolId === 'compound-v3') {
+            service = new logics.compoundv3.Service(chainId, hre.ethers.provider);
+          } else if (protocolId === 'morphoblue') {
+            service = new logics.morphoblue.Service(chainId, hre.ethers.provider);
+          }
+
+          if (service) {
             initCollateralBalance = await service.getCollateralBalance(marketId, user.address, destToken);
             initBorrowBalance = await service.getBorrowBalance(marketId, user.address);
           } else {
@@ -177,7 +166,6 @@ describe('Transaction: Deleverage', function () {
           // 5-1. debt grows when the block of getting api data is different from the block of executing tx
           const [minRepay] = utils.bpsBound(repayAmount.amount, 100);
           const minRepayAmount = repayAmount.clone().set(minRepay);
-
           expect(borrowDifference.gte(minRepayAmount)).to.be.true;
           expect(borrowDifference.lte(repayAmount)).to.be.true;
         });

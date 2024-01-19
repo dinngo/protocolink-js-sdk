@@ -21,6 +21,7 @@ describe('Transaction: Zap Withdraw', function () {
   let portfolio: Portfolio;
   let user: SignerWithAddress;
   let adapter: Adapter;
+  let service: logics.compoundv3.Service | logics.morphoblue.Service;
 
   before(async function () {
     adapter = new Adapter(chainId, hre.ethers.provider);
@@ -136,7 +137,6 @@ describe('Transaction: Zap Withdraw', function () {
         srcToken: mainnetTokens.WBTC,
         srcAmount: '1',
         destToken: mainnetTokens.USDC,
-        logicService: logics.compoundv3.Service,
         expects: {
           approvalLength: 1,
           logicLength: 2,
@@ -149,7 +149,6 @@ describe('Transaction: Zap Withdraw', function () {
         srcToken: morphoblue.mainnetTokens.wstETH,
         srcAmount: '0.0001',
         destToken: mainnetTokens.USDC,
-        logicService: logics.morphoblue.Service,
         expects: {
           approvalLength: 1,
           logicLength: 2,
@@ -157,12 +156,16 @@ describe('Transaction: Zap Withdraw', function () {
       },
     ];
 
-    testCases.forEach(({ protocolId, marketId, account, srcToken, srcAmount, destToken, logicService, expects }, i) => {
+    testCases.forEach(({ protocolId, marketId, account, srcToken, srcAmount, destToken, expects }, i) => {
       it(`case ${i + 1} - ${protocolId}:${marketId}`, async function () {
         user = await hre.ethers.getImpersonatedSigner(account);
         portfolio = await adapter.getPortfolio(user.address, protocolId, marketId);
 
-        const service = new logicService(chainId, hre.ethers.provider);
+        if (protocolId === 'compound-v3') {
+          service = new logics.compoundv3.Service(chainId, hre.ethers.provider);
+        } else if (protocolId === 'morphoblue') {
+          service = new logics.morphoblue.Service(chainId, hre.ethers.provider);
+        }
         const initCollateralBalance = await service.getCollateralBalance(marketId, user.address, srcToken);
 
         // 1. user obtains a quotation for zap withdraw

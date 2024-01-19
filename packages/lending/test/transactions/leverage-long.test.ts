@@ -84,7 +84,6 @@ describe('Transaction: Leverage Long', function () {
         srcToken: morphoblue.mainnetTokens.wstETH,
         srcAmount: '0.001',
         destToken: mainnetTokens.USDC,
-        logicService: logics.morphoblue.Service,
         expects: {
           approvalLength: 1,
           logicLength: 5,
@@ -97,7 +96,6 @@ describe('Transaction: Leverage Long', function () {
         srcToken: mainnetTokens.WETH,
         srcAmount: '1',
         destToken: mainnetTokens.USDC,
-        logicService: logics.compoundv3.Service,
         expects: {
           approvalLength: 1,
           logicLength: 5,
@@ -106,21 +104,7 @@ describe('Transaction: Leverage Long', function () {
     ];
 
     testCases.forEach(
-      (
-        {
-          protocolId,
-          marketId,
-          account,
-          srcToken,
-          srcAmount,
-          srcAToken,
-          destToken,
-          destDebtToken,
-          logicService,
-          expects,
-        },
-        i
-      ) => {
+      ({ protocolId, marketId, account, srcToken, srcAmount, srcAToken, destToken, destDebtToken, expects }, i) => {
         it(`case ${i + 1} - ${protocolId}:${marketId}`, async function () {
           user = await hre.ethers.getImpersonatedSigner(account);
           portfolio = await adapter.getPortfolio(user.address, protocolId, marketId);
@@ -128,10 +112,14 @@ describe('Transaction: Leverage Long', function () {
           // 1. get user positions
           let initSupplyBalance, initBorrowBalance;
 
-          if (logicService) {
-            service = new logicService(chainId, hre.ethers.provider);
-            initSupplyBalance = await service.getCollateralBalance(marketId, user.address, srcToken);
+          if (protocolId === 'compound-v3') {
+            service = new logics.compoundv3.Service(chainId, hre.ethers.provider);
+          } else if (protocolId === 'morphoblue') {
+            service = new logics.morphoblue.Service(chainId, hre.ethers.provider);
+          }
 
+          if (service) {
+            initSupplyBalance = await service.getCollateralBalance(marketId, user.address, srcToken);
             initBorrowBalance = await service.getBorrowBalance(marketId, user.address);
           } else {
             initSupplyBalance = await getBalance(user.address, srcAToken!);

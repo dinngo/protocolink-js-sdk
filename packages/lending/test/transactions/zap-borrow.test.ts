@@ -73,7 +73,6 @@ describe('Transaction: Zap Borrow', function () {
         srcToken: mainnetTokens.USDC,
         srcAmount: '1000',
         destToken: mainnetTokens.USDT,
-        logicService: logics.compoundv3.Service,
         expects: {
           approvalLength: 1,
           logicLength: 2,
@@ -86,7 +85,6 @@ describe('Transaction: Zap Borrow', function () {
         srcToken: mainnetTokens.USDC,
         srcAmount: '0.5',
         destToken: mainnetTokens.USDT,
-        logicService: logics.morphoblue.Service,
         expects: {
           approvalLength: 1,
           logicLength: 2,
@@ -94,66 +92,66 @@ describe('Transaction: Zap Borrow', function () {
       },
     ];
 
-    testCases.forEach(
-      ({ account, protocolId, marketId, srcToken, srcAmount, srcDebtToken, destToken, logicService, expects }, i) => {
-        it(`case ${i + 1} - ${protocolId}:${marketId}`, async function () {
-          user = await hre.ethers.getImpersonatedSigner(account);
-          portfolio = await adapter.getPortfolio(user.address, protocolId, marketId);
+    testCases.forEach(({ account, protocolId, marketId, srcToken, srcAmount, srcDebtToken, destToken, expects }, i) => {
+      it(`case ${i + 1} - ${protocolId}:${marketId}`, async function () {
+        user = await hre.ethers.getImpersonatedSigner(account);
+        portfolio = await adapter.getPortfolio(user.address, protocolId, marketId);
 
-          if (logicService) {
-            service = new logicService(chainId, hre.ethers.provider);
-          }
+        if (protocolId === 'compound-v3') {
+          service = new logics.compoundv3.Service(chainId, hre.ethers.provider);
+        } else if (protocolId === 'morphoblue') {
+          service = new logics.morphoblue.Service(chainId, hre.ethers.provider);
+        }
 
-          const initBorrowBalance = service
-            ? await service.getBorrowBalance(marketId, user.address, srcToken)
-            : await getBalance(user.address, srcDebtToken!);
+        const initBorrowBalance = service
+          ? await service.getBorrowBalance(marketId, user.address, srcToken)
+          : await getBalance(user.address, srcDebtToken!);
 
-          // 1. user obtains a quotation for zap borrow
-          const zapBorrowInfo = await adapter.zapBorrow({
-            account,
-            portfolio,
-            srcToken,
-            srcAmount,
-            destToken,
-          });
-
-          // 2. user needs to permit the Protocolink user agent to borrow on behalf of the user
-          const estimateResult = await apisdk.estimateRouterData(
-            { chainId, account, logics: zapBorrowInfo.logics },
-            { permit2Type }
-          );
-          expect(estimateResult.approvals.length).to.eq(expects.approvalLength);
-          for (const approval of estimateResult.approvals) {
-            await expect(user.sendTransaction(approval)).to.not.be.reverted;
-          }
-
-          // 3. user obtains a zap borrow transaction request
-          expect(zapBorrowInfo.logics.length).to.eq(expects.logicLength);
-          const transactionRequest = await apisdk.buildRouterTransactionRequest({
-            chainId,
-            account,
-            logics: zapBorrowInfo.logics,
-          });
-          await expect(user.sendTransaction(transactionRequest)).to.not.be.reverted;
-
-          // 4. user's borrow balance should increase.
-          const borrowBalance = service
-            ? await service.getBorrowBalance(marketId, user.address, srcToken)
-            : await getBalance(user.address, srcDebtToken!);
-          const borrowDifference = borrowBalance.clone().sub(initBorrowBalance);
-          const borrowAmount = new common.TokenAmount(srcToken, srcAmount);
-
-          // 4-1. debt grows when the block of getting api data is different from the block of executing tx
-          const [, maxBorrow] = utils.bpsBound(borrowAmount.amount, 500);
-          const maxBorrowAmount = borrowAmount.clone().set(maxBorrow);
-          expect(borrowDifference.lte(maxBorrowAmount)).to.be.true;
-          expect(borrowDifference.gte(borrowAmount)).to.be.true;
-
-          // 5. user's dest token balance should increase
-          // 5-1. rate may change when the block of getting api data is different from the block of executing tx
-          await expect(user.address).to.changeBalance(destToken, zapBorrowInfo.destAmount, slippage);
+        // 1. user obtains a quotation for zap borrow
+        const zapBorrowInfo = await adapter.zapBorrow({
+          account,
+          portfolio,
+          srcToken,
+          srcAmount,
+          destToken,
         });
-      }
-    );
+
+        // 2. user needs to permit the Protocolink user agent to borrow on behalf of the user
+        const estimateResult = await apisdk.estimateRouterData(
+          { chainId, account, logics: zapBorrowInfo.logics },
+          { permit2Type }
+        );
+        expect(estimateResult.approvals.length).to.eq(expects.approvalLength);
+        for (const approval of estimateResult.approvals) {
+          await expect(user.sendTransaction(approval)).to.not.be.reverted;
+        }
+
+        // 3. user obtains a zap borrow transaction request
+        expect(zapBorrowInfo.logics.length).to.eq(expects.logicLength);
+        const transactionRequest = await apisdk.buildRouterTransactionRequest({
+          chainId,
+          account,
+          logics: zapBorrowInfo.logics,
+        });
+        await expect(user.sendTransaction(transactionRequest)).to.not.be.reverted;
+
+        // 4. user's borrow balance should increase.
+        const borrowBalance = service
+          ? await service.getBorrowBalance(marketId, user.address, srcToken)
+          : await getBalance(user.address, srcDebtToken!);
+        const borrowDifference = borrowBalance.clone().sub(initBorrowBalance);
+        const borrowAmount = new common.TokenAmount(srcToken, srcAmount);
+
+        // 4-1. debt grows when the block of getting api data is different from the block of executing tx
+        const [, maxBorrow] = utils.bpsBound(borrowAmount.amount, 500);
+        const maxBorrowAmount = borrowAmount.clone().set(maxBorrow);
+        expect(borrowDifference.lte(maxBorrowAmount)).to.be.true;
+        expect(borrowDifference.gte(borrowAmount)).to.be.true;
+
+        // 5. user's dest token balance should increase
+        // 5-1. rate may change when the block of getting api data is different from the block of executing tx
+        await expect(user.address).to.changeBalance(destToken, zapBorrowInfo.destAmount, slippage);
+      });
+    });
   });
 });

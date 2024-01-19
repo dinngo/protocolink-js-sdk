@@ -80,7 +80,6 @@ describe('Transaction: Zap Repay', function () {
         srcToken: mainnetTokens.USDC,
         srcAmount: '1000',
         destToken: mainnetTokens.USDT,
-        logicService: logics.compoundv3.Service,
         expects: {
           approvalLength: 2,
           logicLength: 2,
@@ -93,7 +92,6 @@ describe('Transaction: Zap Repay', function () {
         srcToken: mainnetTokens.USDC,
         srcAmount: '0.1',
         destToken: mainnetTokens.USDT,
-        logicService: logics.morphoblue.Service,
         expects: {
           approvalLength: 2,
           logicLength: 2,
@@ -101,59 +99,59 @@ describe('Transaction: Zap Repay', function () {
       },
     ];
 
-    testCases.forEach(
-      ({ account, protocolId, marketId, srcToken, srcAmount, srcDebtToken, destToken, logicService, expects }, i) => {
-        it(`case ${i + 1} - ${protocolId}:${marketId}`, async function () {
-          user = await hre.ethers.getImpersonatedSigner(account);
-          portfolio = await adapter.getPortfolio(user.address, protocolId, marketId);
+    testCases.forEach(({ account, protocolId, marketId, srcToken, srcAmount, srcDebtToken, destToken, expects }, i) => {
+      it(`case ${i + 1} - ${protocolId}:${marketId}`, async function () {
+        user = await hre.ethers.getImpersonatedSigner(account);
+        portfolio = await adapter.getPortfolio(user.address, protocolId, marketId);
 
-          if (logicService) {
-            service = new logicService(chainId, hre.ethers.provider);
-          }
+        if (protocolId === 'compound-v3') {
+          service = new logics.compoundv3.Service(chainId, hre.ethers.provider);
+        } else if (protocolId === 'morphoblue') {
+          service = new logics.morphoblue.Service(chainId, hre.ethers.provider);
+        }
 
-          const initBorrowBalance = service
-            ? await service.getBorrowBalance(marketId, user.address, srcToken)
-            : await getBalance(user.address, srcDebtToken!);
+        const initBorrowBalance = service
+          ? await service.getBorrowBalance(marketId, user.address, srcToken)
+          : await getBalance(user.address, srcDebtToken!);
 
-          // 1. user obtains a quotation for zap repay
-          const zapRepayInfo = await adapter.zapRepay({ account, portfolio, srcToken, srcAmount, destToken });
+        // 1. user obtains a quotation for zap repay
+        const zapRepayInfo = await adapter.zapRepay({ account, portfolio, srcToken, srcAmount, destToken });
 
-          // 2. user needs to allow the Protocolink user agent to repay on behalf of the user
-          const estimateResult = await apisdk.estimateRouterData(
-            { chainId, account, logics: zapRepayInfo.logics },
-            { permit2Type }
-          );
-          expect(estimateResult.approvals.length).to.eq(expects.approvalLength);
-          for (const approval of estimateResult.approvals) {
-            await expect(user.sendTransaction(approval)).to.not.be.reverted;
-          }
+        // 2. user needs to allow the Protocolink user agent to repay on behalf of the user
+        const estimateResult = await apisdk.estimateRouterData(
+          { chainId, account, logics: zapRepayInfo.logics },
+          { permit2Type }
+        );
+        expect(estimateResult.approvals.length).to.eq(expects.approvalLength);
+        for (const approval of estimateResult.approvals) {
+          await expect(user.sendTransaction(approval)).to.not.be.reverted;
+        }
 
-          // 3. user obtains a zap repay transaction request
-          expect(zapRepayInfo.logics.length).to.eq(expects.logicLength);
-          const transactionRequest = await apisdk.buildRouterTransactionRequest({
-            chainId,
-            account,
-            logics: zapRepayInfo.logics,
-          });
-          await expect(user.sendTransaction(transactionRequest)).to.not.be.reverted;
-
-          // 4. user's borrow balance should decrease
-          // 4-1. debt grows when the block of getting api data is different from the block of executing tx
-          const borrowBalance = service
-            ? await service.getBorrowBalance(marketId, user.address, srcToken)
-            : await getBalance(user.address, srcDebtToken!);
-          const repayAmount = new common.TokenAmount(srcToken, srcAmount);
-          const borrowDifference = initBorrowBalance.clone().sub(borrowBalance);
-
-          const [minRepay] = utils.bpsBound(repayAmount.amount, 100);
-          const minRepayAmount = repayAmount.clone().set(minRepay);
-          expect(borrowDifference.gte(minRepayAmount)).to.be.true;
-          expect(borrowDifference.lte(repayAmount)).to.be.true;
-
-          // 6. user's dest token balance should decrease
-          await expect(user.address).to.changeBalance(destToken, -zapRepayInfo.destAmount, 1);
+        // 3. user obtains a zap repay transaction request
+        expect(zapRepayInfo.logics.length).to.eq(expects.logicLength);
+        const transactionRequest = await apisdk.buildRouterTransactionRequest({
+          chainId,
+          account,
+          logics: zapRepayInfo.logics,
         });
-      }
-    );
+        await expect(user.sendTransaction(transactionRequest)).to.not.be.reverted;
+
+        // 4. user's borrow balance should decrease
+        // 4-1. debt grows when the block of getting api data is different from the block of executing tx
+        const borrowBalance = service
+          ? await service.getBorrowBalance(marketId, user.address, srcToken)
+          : await getBalance(user.address, srcDebtToken!);
+        const repayAmount = new common.TokenAmount(srcToken, srcAmount);
+        const borrowDifference = initBorrowBalance.clone().sub(borrowBalance);
+
+        const [minRepay] = utils.bpsBound(repayAmount.amount, 100);
+        const minRepayAmount = repayAmount.clone().set(minRepay);
+        expect(borrowDifference.gte(minRepayAmount)).to.be.true;
+        expect(borrowDifference.lte(repayAmount)).to.be.true;
+
+        // 6. user's dest token balance should decrease
+        await expect(user.address).to.changeBalance(destToken, -zapRepayInfo.destAmount, 1);
+      });
+    });
   });
 });

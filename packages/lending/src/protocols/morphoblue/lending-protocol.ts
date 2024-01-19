@@ -204,17 +204,19 @@ export class LendingProtocol extends Protocol {
   async getBorrowAPY(marketId: string, market: MarketStruct) {
     const { loanToken, collateralToken, oracle, irm, lltv } = getMarket(this.chainId, marketId);
 
-    const marketParams: MarketParamsStruct = {
-      loanToken: loanToken.address,
-      collateralToken: collateralToken.address,
-      oracle,
-      irm,
-      lltv,
-    };
-
     const irmContract = Irm__factory.connect(irm, this.provider);
 
-    const borrowRateView = await irmContract.borrowRateView(marketParams, market, { blockTag: this.blockTag });
+    const borrowRateView = await irmContract.borrowRateView(
+      {
+        loanToken: loanToken.address,
+        collateralToken: collateralToken.address,
+        oracle,
+        irm,
+        lltv,
+      },
+      market,
+      { blockTag: this.blockTag }
+    );
     const borrowApy = (
       Math.exp(new BigNumberJS(borrowRateView.toString()).div(1e18).times(SECONDS_PER_YEAR).toNumber()) - 1
     ).toString();
