@@ -284,6 +284,10 @@ export class Portfolio {
     return abbreviateUSD(this.totalBorrowUSD.toFixed());
   }
 
+  get formattedAvailableBorrowCapacityUSD() {
+    return abbreviateUSD(this.availableBorrowCapacityUSD.toFixed());
+  }
+
   get hasPositions() {
     return this.nonZeroSupplies.length > 0 || this.nonZeroBorrows.length > 0;
   }

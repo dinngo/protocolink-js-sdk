@@ -9,6 +9,7 @@ import { expect } from 'chai';
 import { getBalance, mainnetTokens, snapshotAndRevertEach } from '@protocolink/test-helpers';
 import hre from 'hardhat';
 import * as logics from '@protocolink/logics';
+import * as morphoblue from 'src/protocols/morphoblue/tokens';
 import * as radiantV2 from 'src/protocols/radiant-v2/tokens';
 import * as utils from 'test/utils';
 
@@ -19,6 +20,7 @@ describe('Transaction: Deleverage', function () {
   let portfolio: Portfolio;
   let user: SignerWithAddress;
   let adapter: Adapter;
+  let service: logics.compoundv3.Service | logics.morphoblue.Service;
 
   before(async function () {
     adapter = new Adapter(chainId, hre.ethers.provider);
@@ -84,6 +86,18 @@ describe('Transaction: Deleverage', function () {
           logicLength: 5,
         },
       },
+      {
+        protocolId: 'morphoblue',
+        marketId: '0xb323495f7e4148be5643a4ea4a8221eef163e4bccfdedc2a6f4696baacbc86cc',
+        account: '0xa3C1C91403F0026b9dd086882aDbC8Cdbc3b3cfB',
+        srcToken: mainnetTokens.USDC,
+        srcAmount: '1',
+        destToken: morphoblue.mainnetTokens.wstETH,
+        expects: {
+          approvalLength: 1,
+          logicLength: 5,
+        },
+      },
     ];
 
     testCases.forEach(
@@ -93,8 +107,14 @@ describe('Transaction: Deleverage', function () {
           portfolio = await adapter.getPortfolio(user.address, protocolId, marketId);
 
           let initCollateralBalance, initBorrowBalance;
+
           if (protocolId === 'compound-v3') {
-            const service = new logics.compoundv3.Service(chainId, hre.ethers.provider);
+            service = new logics.compoundv3.Service(chainId, hre.ethers.provider);
+          } else if (protocolId === 'morphoblue') {
+            service = new logics.morphoblue.Service(chainId, hre.ethers.provider);
+          }
+
+          if (service) {
             initCollateralBalance = await service.getCollateralBalance(marketId, user.address, destToken);
             initBorrowBalance = await service.getBorrowBalance(marketId, user.address);
           } else {
@@ -125,8 +145,7 @@ describe('Transaction: Deleverage', function () {
           await expect(user.sendTransaction(transactionRequest)).to.not.be.reverted;
 
           let collateralBalance, deleverageWithdrawAmount, borrowBalance;
-          if (protocolId === 'compound-v3') {
-            const service = new logics.compoundv3.Service(chainId, hre.ethers.provider);
+          if (service) {
             collateralBalance = await service.getCollateralBalance(marketId, user.address, destToken);
             deleverageWithdrawAmount = new common.TokenAmount(deleverageInfo.logics[3].fields.output);
             borrowBalance = await service.getBorrowBalance(marketId, user.address);

@@ -10,6 +10,7 @@ import * as compoundV3 from 'src/protocols/compound-v3/tokens';
 import { expect } from 'chai';
 import hre from 'hardhat';
 import * as logics from '@protocolink/logics';
+import * as morphoblue from 'src/protocols/morphoblue/tokens';
 import * as radiantV2 from 'src/protocols/radiant-v2/tokens';
 import * as utils from 'test/utils';
 
@@ -20,6 +21,7 @@ describe('Transaction: Zap Supply', function () {
   let portfolio: Portfolio;
   let user: SignerWithAddress;
   let adapter: Adapter;
+  let service: logics.compoundv3.Service | logics.morphoblue.Service;
 
   before(async function () {
     adapter = new Adapter(chainId, hre.ethers.provider);
@@ -136,6 +138,17 @@ describe('Transaction: Zap Supply', function () {
           logicLength: 2,
         },
       },
+      {
+        protocolId: 'morphoblue',
+        marketId: '0xb323495f7e4148be5643a4ea4a8221eef163e4bccfdedc2a6f4696baacbc86cc',
+        srcToken: mainnetTokens.USDC,
+        srcAmount: '100',
+        destToken: morphoblue.mainnetTokens.wstETH,
+        expects: {
+          approvalLength: 1,
+          logicLength: 2,
+        },
+      },
     ];
 
     testCases.forEach(({ protocolId, marketId, srcToken, srcAmount, destToken, expects }, i) => {
@@ -172,10 +185,15 @@ describe('Transaction: Zap Supply', function () {
           permitData,
           permitSig,
         });
+
         await expect(user.sendTransaction(transactionRequest)).to.not.be.reverted;
 
         // 4. user's balance will increase.
-        const service = new logics.compoundv3.Service(chainId, hre.ethers.provider);
+        if (protocolId === 'compound-v3') {
+          service = new logics.compoundv3.Service(chainId, hre.ethers.provider);
+        } else if (protocolId === 'morphoblue') {
+          service = new logics.morphoblue.Service(chainId, hre.ethers.provider);
+        }
         const collateralBalance = await service.getCollateralBalance(marketId, user.address, destToken);
         const supplyDestAmount = new common.TokenAmount(destToken, zapDepositInfo.destAmount);
 

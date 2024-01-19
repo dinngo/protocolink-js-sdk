@@ -10,6 +10,7 @@ import { expect } from 'chai';
 import hre from 'hardhat';
 import * as logics from '@protocolink/logics';
 import { mainnetTokens, snapshotAndRevertEach } from '@protocolink/test-helpers';
+import * as morphoblue from 'src/protocols/morphoblue/tokens';
 import * as radiantV2 from 'src/protocols/radiant-v2/tokens';
 
 describe('Transaction: Zap Withdraw', function () {
@@ -20,11 +21,10 @@ describe('Transaction: Zap Withdraw', function () {
   let portfolio: Portfolio;
   let user: SignerWithAddress;
   let adapter: Adapter;
-  let service: logics.compoundv3.Service;
+  let service: logics.compoundv3.Service | logics.morphoblue.Service;
 
   before(async function () {
     adapter = new Adapter(chainId, hre.ethers.provider);
-    service = new logics.compoundv3.Service(chainId, hre.ethers.provider);
   });
 
   snapshotAndRevertEach();
@@ -142,6 +142,18 @@ describe('Transaction: Zap Withdraw', function () {
           logicLength: 2,
         },
       },
+      {
+        protocolId: 'morphoblue',
+        marketId: '0xb323495f7e4148be5643a4ea4a8221eef163e4bccfdedc2a6f4696baacbc86cc',
+        account: '0xa3C1C91403F0026b9dd086882aDbC8Cdbc3b3cfB',
+        srcToken: morphoblue.mainnetTokens.wstETH,
+        srcAmount: '0.0001',
+        destToken: mainnetTokens.USDC,
+        expects: {
+          approvalLength: 1,
+          logicLength: 2,
+        },
+      },
     ];
 
     testCases.forEach(({ protocolId, marketId, account, srcToken, srcAmount, destToken, expects }, i) => {
@@ -149,6 +161,11 @@ describe('Transaction: Zap Withdraw', function () {
         user = await hre.ethers.getImpersonatedSigner(account);
         portfolio = await adapter.getPortfolio(user.address, protocolId, marketId);
 
+        if (protocolId === 'compound-v3') {
+          service = new logics.compoundv3.Service(chainId, hre.ethers.provider);
+        } else if (protocolId === 'morphoblue') {
+          service = new logics.morphoblue.Service(chainId, hre.ethers.provider);
+        }
         const initCollateralBalance = await service.getCollateralBalance(marketId, user.address, srcToken);
 
         // 1. user obtains a quotation for zap withdraw

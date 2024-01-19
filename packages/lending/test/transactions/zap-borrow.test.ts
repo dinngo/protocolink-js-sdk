@@ -17,11 +17,10 @@ describe('Transaction: Zap Borrow', function () {
   let portfolio: Portfolio;
   let user: SignerWithAddress;
   let adapter: Adapter;
-  let service: logics.compoundv3.Service;
+  let service: logics.compoundv3.Service | logics.morphoblue.Service;
 
   before(async function () {
     adapter = new Adapter(chainId, hre.ethers.provider);
-    service = new logics.compoundv3.Service(chainId, hre.ethers.provider);
   });
 
   snapshotAndRevertEach();
@@ -79,6 +78,18 @@ describe('Transaction: Zap Borrow', function () {
           logicLength: 2,
         },
       },
+      {
+        protocolId: 'morphoblue',
+        marketId: '0xb323495f7e4148be5643a4ea4a8221eef163e4bccfdedc2a6f4696baacbc86cc',
+        account: '0xa3C1C91403F0026b9dd086882aDbC8Cdbc3b3cfB',
+        srcToken: mainnetTokens.USDC,
+        srcAmount: '0.5',
+        destToken: mainnetTokens.USDT,
+        expects: {
+          approvalLength: 1,
+          logicLength: 2,
+        },
+      },
     ];
 
     testCases.forEach(({ account, protocolId, marketId, srcToken, srcAmount, srcDebtToken, destToken, expects }, i) => {
@@ -86,10 +97,15 @@ describe('Transaction: Zap Borrow', function () {
         user = await hre.ethers.getImpersonatedSigner(account);
         portfolio = await adapter.getPortfolio(user.address, protocolId, marketId);
 
-        const initBorrowBalance =
-          protocolId === 'compound-v3'
-            ? await service.getBorrowBalance(marketId, user.address, srcToken)
-            : await getBalance(user.address, srcDebtToken!);
+        if (protocolId === 'compound-v3') {
+          service = new logics.compoundv3.Service(chainId, hre.ethers.provider);
+        } else if (protocolId === 'morphoblue') {
+          service = new logics.morphoblue.Service(chainId, hre.ethers.provider);
+        }
+
+        const initBorrowBalance = service
+          ? await service.getBorrowBalance(marketId, user.address, srcToken)
+          : await getBalance(user.address, srcDebtToken!);
 
         // 1. user obtains a quotation for zap borrow
         const zapBorrowInfo = await adapter.zapBorrow({
@@ -120,10 +136,9 @@ describe('Transaction: Zap Borrow', function () {
         await expect(user.sendTransaction(transactionRequest)).to.not.be.reverted;
 
         // 4. user's borrow balance should increase.
-        const borrowBalance =
-          protocolId === 'compound-v3'
-            ? await service.getBorrowBalance(marketId, user.address, srcToken)
-            : await getBalance(user.address, srcDebtToken!);
+        const borrowBalance = service
+          ? await service.getBorrowBalance(marketId, user.address, srcToken)
+          : await getBalance(user.address, srcDebtToken!);
         const borrowDifference = borrowBalance.clone().sub(initBorrowBalance);
         const borrowAmount = new common.TokenAmount(srcToken, srcAmount);
 

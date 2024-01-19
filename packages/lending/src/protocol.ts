@@ -53,11 +53,17 @@ export abstract class Protocol extends common.Web3Toolkit {
     return true;
   }
 
-  abstract toUnderlyingToken(marketId: string, protocolToken: common.Token): common.Token;
+  toUnderlyingToken(_marketId: string, _protocolToken: common.Token): common.Token | undefined {
+    return undefined;
+  }
 
-  abstract toProtocolToken(marketId: string, underlyingToken: common.Token): common.Token;
+  toProtocolToken(_marketId: string, _underlyingToken: common.Token): common.Token | undefined {
+    return undefined;
+  }
 
-  abstract isProtocolToken(marketId: string, token: common.Token): boolean;
+  isProtocolToken(_marketId: string, _token: common.Token) {
+    return false;
+  }
 
   isAssetTokenized(_marketId: string, _assetToken: common.Token) {
     return true;

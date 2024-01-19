@@ -16,17 +16,16 @@ describe('Transaction: Zap Repay', function () {
   let portfolio: Portfolio;
   let user: SignerWithAddress;
   let adapter: Adapter;
-  let initBorrowBalance: common.TokenAmount;
-  let service: logics.compoundv3.Service;
+  let service: logics.compoundv3.Service | logics.morphoblue.Service;
 
   before(async function () {
     adapter = new Adapter(chainId, hre.ethers.provider);
-    service = new logics.compoundv3.Service(chainId, hre.ethers.provider);
 
     await claimToken(chainId, '0x7F67F6A09bcb2159b094B64B4acc53D5193AEa2E', mainnetTokens.USDT, '2000');
     await claimToken(chainId, '0xaf0FDd39e5D92499B0eD9F68693DA99C0ec1e92e', mainnetTokens.USDT, '2000');
     await claimToken(chainId, '0x06e4Cb4f3ba9A2916B6384aCbdeAa74dAAF91550', mainnetTokens.USDT, '2000');
     await claimToken(chainId, '0x53fb0162bC8d5EEc2fB1532923C4f8997BAce111', mainnetTokens.USDT, '2000');
+    await claimToken(chainId, '0xa3C1C91403F0026b9dd086882aDbC8Cdbc3b3cfB', mainnetTokens.USDT, '2000');
   });
 
   snapshotAndRevertEach();
@@ -86,6 +85,18 @@ describe('Transaction: Zap Repay', function () {
           logicLength: 2,
         },
       },
+      {
+        protocolId: 'morphoblue',
+        marketId: '0xb323495f7e4148be5643a4ea4a8221eef163e4bccfdedc2a6f4696baacbc86cc',
+        account: '0xa3C1C91403F0026b9dd086882aDbC8Cdbc3b3cfB',
+        srcToken: mainnetTokens.USDC,
+        srcAmount: '0.1',
+        destToken: mainnetTokens.USDT,
+        expects: {
+          approvalLength: 2,
+          logicLength: 2,
+        },
+      },
     ];
 
     testCases.forEach(({ account, protocolId, marketId, srcToken, srcAmount, srcDebtToken, destToken, expects }, i) => {
@@ -94,19 +105,17 @@ describe('Transaction: Zap Repay', function () {
         portfolio = await adapter.getPortfolio(user.address, protocolId, marketId);
 
         if (protocolId === 'compound-v3') {
-          initBorrowBalance = await service.getBorrowBalance(marketId, user.address, srcToken);
-        } else {
-          initBorrowBalance = await getBalance(user.address, srcDebtToken!);
+          service = new logics.compoundv3.Service(chainId, hre.ethers.provider);
+        } else if (protocolId === 'morphoblue') {
+          service = new logics.morphoblue.Service(chainId, hre.ethers.provider);
         }
 
+        const initBorrowBalance = service
+          ? await service.getBorrowBalance(marketId, user.address, srcToken)
+          : await getBalance(user.address, srcDebtToken!);
+
         // 1. user obtains a quotation for zap repay
-        const zapRepayInfo = await adapter.zapRepay({
-          account,
-          portfolio,
-          srcToken,
-          srcAmount,
-          destToken,
-        });
+        const zapRepayInfo = await adapter.zapRepay({ account, portfolio, srcToken, srcAmount, destToken });
 
         // 2. user needs to allow the Protocolink user agent to repay on behalf of the user
         const estimateResult = await apisdk.estimateRouterData(
@@ -129,10 +138,9 @@ describe('Transaction: Zap Repay', function () {
 
         // 4. user's borrow balance should decrease
         // 4-1. debt grows when the block of getting api data is different from the block of executing tx
-        const borrowBalance =
-          protocolId === 'compound-v3'
-            ? await service.getBorrowBalance(marketId, user.address, srcToken)
-            : await getBalance(user.address, srcDebtToken!);
+        const borrowBalance = service
+          ? await service.getBorrowBalance(marketId, user.address, srcToken)
+          : await getBalance(user.address, srcDebtToken!);
         const repayAmount = new common.TokenAmount(srcToken, srcAmount);
         const borrowDifference = initBorrowBalance.clone().sub(borrowBalance);
 
