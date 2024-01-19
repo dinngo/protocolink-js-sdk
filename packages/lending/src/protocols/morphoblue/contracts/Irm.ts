@@ -12,19 +12,10 @@ import type {
   PopulatedTransaction,
   Signer,
   utils,
-} from "ethers";
-import type {
-  FunctionFragment,
-  Result,
-  EventFragment,
-} from "@ethersproject/abi";
-import type { Listener, Provider } from "@ethersproject/providers";
-import type {
-  TypedEventFilter,
-  TypedEvent,
-  TypedListener,
-  OnEvent,
-} from "./common";
+} from 'ethers';
+import type { EventFragment, FunctionFragment, Result } from '@ethersproject/abi';
+import type { Listener, Provider } from '@ethersproject/providers';
+import type { OnEvent, TypedEvent, TypedEventFilter, TypedListener } from './common';
 
 export type MarketParamsStruct = {
   loanToken: string;
@@ -34,13 +25,7 @@ export type MarketParamsStruct = {
   lltv: BigNumberish;
 };
 
-export type MarketParamsStructOutput = [
-  string,
-  string,
-  string,
-  string,
-  BigNumber
-] & {
+export type MarketParamsStructOutput = [string, string, string, string, BigNumber] & {
   loanToken: string;
   collateralToken: string;
   oracle: string;
@@ -57,14 +42,7 @@ export type MarketStruct = {
   fee: BigNumberish;
 };
 
-export type MarketStructOutput = [
-  BigNumber,
-  BigNumber,
-  BigNumber,
-  BigNumber,
-  BigNumber,
-  BigNumber
-] & {
+export type MarketStructOutput = [BigNumber, BigNumber, BigNumber, BigNumber, BigNumber, BigNumber] & {
   totalSupplyAssets: BigNumber;
   totalSupplyShares: BigNumber;
   totalBorrowAssets: BigNumber;
@@ -75,50 +53,29 @@ export type MarketStructOutput = [
 
 export interface IrmInterface extends utils.Interface {
   functions: {
-    "MORPHO()": FunctionFragment;
-    "borrowRate((address,address,address,address,uint256),(uint128,uint128,uint128,uint128,uint128,uint128))": FunctionFragment;
-    "borrowRateView((address,address,address,address,uint256),(uint128,uint128,uint128,uint128,uint128,uint128))": FunctionFragment;
-    "rateAtTarget(bytes32)": FunctionFragment;
+    'MORPHO()': FunctionFragment;
+    'borrowRate((address,address,address,address,uint256),(uint128,uint128,uint128,uint128,uint128,uint128))': FunctionFragment;
+    'borrowRateView((address,address,address,address,uint256),(uint128,uint128,uint128,uint128,uint128,uint128))': FunctionFragment;
+    'rateAtTarget(bytes32)': FunctionFragment;
   };
 
-  getFunction(
-    nameOrSignatureOrTopic:
-      | "MORPHO"
-      | "borrowRate"
-      | "borrowRateView"
-      | "rateAtTarget"
-  ): FunctionFragment;
+  getFunction(nameOrSignatureOrTopic: 'MORPHO' | 'borrowRate' | 'borrowRateView' | 'rateAtTarget'): FunctionFragment;
 
-  encodeFunctionData(functionFragment: "MORPHO", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "borrowRate",
-    values: [MarketParamsStruct, MarketStruct]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "borrowRateView",
-    values: [MarketParamsStruct, MarketStruct]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "rateAtTarget",
-    values: [BytesLike]
-  ): string;
+  encodeFunctionData(functionFragment: 'MORPHO', values?: undefined): string;
+  encodeFunctionData(functionFragment: 'borrowRate', values: [MarketParamsStruct, MarketStruct]): string;
+  encodeFunctionData(functionFragment: 'borrowRateView', values: [MarketParamsStruct, MarketStruct]): string;
+  encodeFunctionData(functionFragment: 'rateAtTarget', values: [BytesLike]): string;
 
-  decodeFunctionResult(functionFragment: "MORPHO", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "borrowRate", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "borrowRateView",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "rateAtTarget",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: 'MORPHO', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'borrowRate', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'borrowRateView', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'rateAtTarget', data: BytesLike): Result;
 
   events: {
-    "BorrowRateUpdate(bytes32,uint256,uint256)": EventFragment;
+    'BorrowRateUpdate(bytes32,uint256,uint256)': EventFragment;
   };
 
-  getEvent(nameOrSignatureOrTopic: "BorrowRateUpdate"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'BorrowRateUpdate'): EventFragment;
 }
 
 export interface BorrowRateUpdateEventObject {
@@ -126,13 +83,9 @@ export interface BorrowRateUpdateEventObject {
   avgBorrowRate: BigNumber;
   rateAtTarget: BigNumber;
 }
-export type BorrowRateUpdateEvent = TypedEvent<
-  [string, BigNumber, BigNumber],
-  BorrowRateUpdateEventObject
->;
+export type BorrowRateUpdateEvent = TypedEvent<[string, BigNumber, BigNumber], BorrowRateUpdateEventObject>;
 
-export type BorrowRateUpdateEventFilter =
-  TypedEventFilter<BorrowRateUpdateEvent>;
+export type BorrowRateUpdateEventFilter = TypedEventFilter<BorrowRateUpdateEvent>;
 
 export interface Irm extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -147,13 +100,9 @@ export interface Irm extends BaseContract {
     toBlock?: string | number | undefined
   ): Promise<Array<TEvent>>;
 
-  listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
-  ): Array<TypedListener<TEvent>>;
+  listeners<TEvent extends TypedEvent>(eventFilter?: TypedEventFilter<TEvent>): Array<TypedListener<TEvent>>;
   listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
-  ): this;
+  removeAllListeners<TEvent extends TypedEvent>(eventFilter: TypedEventFilter<TEvent>): this;
   removeAllListeners(eventName?: string): this;
   off: OnEvent<this>;
   on: OnEvent<this>;
@@ -175,10 +124,7 @@ export interface Irm extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
-    rateAtTarget(
-      arg0: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
+    rateAtTarget(arg0: BytesLike, overrides?: CallOverrides): Promise<[BigNumber]>;
   };
 
   MORPHO(overrides?: CallOverrides): Promise<string>;
@@ -189,22 +135,14 @@ export interface Irm extends BaseContract {
     overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
-  borrowRateView(
-    marketParams: MarketParamsStruct,
-    market: MarketStruct,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
+  borrowRateView(marketParams: MarketParamsStruct, market: MarketStruct, overrides?: CallOverrides): Promise<BigNumber>;
 
   rateAtTarget(arg0: BytesLike, overrides?: CallOverrides): Promise<BigNumber>;
 
   callStatic: {
     MORPHO(overrides?: CallOverrides): Promise<string>;
 
-    borrowRate(
-      marketParams: MarketParamsStruct,
-      market: MarketStruct,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    borrowRate(marketParams: MarketParamsStruct, market: MarketStruct, overrides?: CallOverrides): Promise<BigNumber>;
 
     borrowRateView(
       marketParams: MarketParamsStruct,
@@ -212,23 +150,16 @@ export interface Irm extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    rateAtTarget(
-      arg0: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    rateAtTarget(arg0: BytesLike, overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   filters: {
-    "BorrowRateUpdate(bytes32,uint256,uint256)"(
+    'BorrowRateUpdate(bytes32,uint256,uint256)'(
       id?: BytesLike | null,
       avgBorrowRate?: null,
       rateAtTarget?: null
     ): BorrowRateUpdateEventFilter;
-    BorrowRateUpdate(
-      id?: BytesLike | null,
-      avgBorrowRate?: null,
-      rateAtTarget?: null
-    ): BorrowRateUpdateEventFilter;
+    BorrowRateUpdate(id?: BytesLike | null, avgBorrowRate?: null, rateAtTarget?: null): BorrowRateUpdateEventFilter;
   };
 
   estimateGas: {
@@ -246,10 +177,7 @@ export interface Irm extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    rateAtTarget(
-      arg0: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    rateAtTarget(arg0: BytesLike, overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -267,9 +195,6 @@ export interface Irm extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    rateAtTarget(
-      arg0: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
+    rateAtTarget(arg0: BytesLike, overrides?: CallOverrides): Promise<PopulatedTransaction>;
   };
 }

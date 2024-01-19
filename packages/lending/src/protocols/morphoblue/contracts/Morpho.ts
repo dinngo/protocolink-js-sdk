@@ -12,15 +12,10 @@ import type {
   PopulatedTransaction,
   Signer,
   utils,
-} from "ethers";
-import type { FunctionFragment, Result } from "@ethersproject/abi";
-import type { Listener, Provider } from "@ethersproject/providers";
-import type {
-  TypedEventFilter,
-  TypedEvent,
-  TypedListener,
-  OnEvent,
-} from "./common";
+} from 'ethers';
+import type { FunctionFragment, Result } from '@ethersproject/abi';
+import type { Listener, Provider } from '@ethersproject/providers';
+import type { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from './common';
 
 export type MarketParamsStruct = {
   loanToken: string;
@@ -30,13 +25,7 @@ export type MarketParamsStruct = {
   lltv: BigNumberish;
 };
 
-export type MarketParamsStructOutput = [
-  string,
-  string,
-  string,
-  string,
-  BigNumber
-] & {
+export type MarketParamsStructOutput = [string, string, string, string, BigNumber] & {
   loanToken: string;
   collateralToken: string;
   oracle: string;
@@ -52,13 +41,7 @@ export type AuthorizationStruct = {
   deadline: BigNumberish;
 };
 
-export type AuthorizationStructOutput = [
-  string,
-  string,
-  boolean,
-  BigNumber,
-  BigNumber
-] & {
+export type AuthorizationStructOutput = [string, string, boolean, BigNumber, BigNumber] & {
   authorizer: string;
   authorized: string;
   isAuthorized: boolean;
@@ -76,233 +59,149 @@ export type SignatureStructOutput = [number, string, string] & {
 
 export interface MorphoInterface extends utils.Interface {
   functions: {
-    "DOMAIN_SEPARATOR()": FunctionFragment;
-    "accrueInterest((address,address,address,address,uint256))": FunctionFragment;
-    "borrow((address,address,address,address,uint256),uint256,uint256,address,address)": FunctionFragment;
-    "createMarket((address,address,address,address,uint256))": FunctionFragment;
-    "enableIrm(address)": FunctionFragment;
-    "enableLltv(uint256)": FunctionFragment;
-    "extSloads(bytes32[])": FunctionFragment;
-    "feeRecipient()": FunctionFragment;
-    "flashLoan(address,uint256,bytes)": FunctionFragment;
-    "idToMarketParams(bytes32)": FunctionFragment;
-    "isAuthorized(address,address)": FunctionFragment;
-    "isIrmEnabled(address)": FunctionFragment;
-    "isLltvEnabled(uint256)": FunctionFragment;
-    "liquidate((address,address,address,address,uint256),address,uint256,uint256,bytes)": FunctionFragment;
-    "market(bytes32)": FunctionFragment;
-    "nonce(address)": FunctionFragment;
-    "owner()": FunctionFragment;
-    "position(bytes32,address)": FunctionFragment;
-    "repay((address,address,address,address,uint256),uint256,uint256,address,bytes)": FunctionFragment;
-    "setAuthorization(address,bool)": FunctionFragment;
-    "setAuthorizationWithSig((address,address,bool,uint256,uint256),(uint8,bytes32,bytes32))": FunctionFragment;
-    "setFee((address,address,address,address,uint256),uint256)": FunctionFragment;
-    "setFeeRecipient(address)": FunctionFragment;
-    "setOwner(address)": FunctionFragment;
-    "supply((address,address,address,address,uint256),uint256,uint256,address,bytes)": FunctionFragment;
-    "supplyCollateral((address,address,address,address,uint256),uint256,address,bytes)": FunctionFragment;
-    "withdraw((address,address,address,address,uint256),uint256,uint256,address,address)": FunctionFragment;
-    "withdrawCollateral((address,address,address,address,uint256),uint256,address,address)": FunctionFragment;
+    'DOMAIN_SEPARATOR()': FunctionFragment;
+    'accrueInterest((address,address,address,address,uint256))': FunctionFragment;
+    'borrow((address,address,address,address,uint256),uint256,uint256,address,address)': FunctionFragment;
+    'createMarket((address,address,address,address,uint256))': FunctionFragment;
+    'enableIrm(address)': FunctionFragment;
+    'enableLltv(uint256)': FunctionFragment;
+    'extSloads(bytes32[])': FunctionFragment;
+    'feeRecipient()': FunctionFragment;
+    'flashLoan(address,uint256,bytes)': FunctionFragment;
+    'idToMarketParams(bytes32)': FunctionFragment;
+    'isAuthorized(address,address)': FunctionFragment;
+    'isIrmEnabled(address)': FunctionFragment;
+    'isLltvEnabled(uint256)': FunctionFragment;
+    'liquidate((address,address,address,address,uint256),address,uint256,uint256,bytes)': FunctionFragment;
+    'market(bytes32)': FunctionFragment;
+    'nonce(address)': FunctionFragment;
+    'owner()': FunctionFragment;
+    'position(bytes32,address)': FunctionFragment;
+    'repay((address,address,address,address,uint256),uint256,uint256,address,bytes)': FunctionFragment;
+    'setAuthorization(address,bool)': FunctionFragment;
+    'setAuthorizationWithSig((address,address,bool,uint256,uint256),(uint8,bytes32,bytes32))': FunctionFragment;
+    'setFee((address,address,address,address,uint256),uint256)': FunctionFragment;
+    'setFeeRecipient(address)': FunctionFragment;
+    'setOwner(address)': FunctionFragment;
+    'supply((address,address,address,address,uint256),uint256,uint256,address,bytes)': FunctionFragment;
+    'supplyCollateral((address,address,address,address,uint256),uint256,address,bytes)': FunctionFragment;
+    'withdraw((address,address,address,address,uint256),uint256,uint256,address,address)': FunctionFragment;
+    'withdrawCollateral((address,address,address,address,uint256),uint256,address,address)': FunctionFragment;
   };
 
   getFunction(
     nameOrSignatureOrTopic:
-      | "DOMAIN_SEPARATOR"
-      | "accrueInterest"
-      | "borrow"
-      | "createMarket"
-      | "enableIrm"
-      | "enableLltv"
-      | "extSloads"
-      | "feeRecipient"
-      | "flashLoan"
-      | "idToMarketParams"
-      | "isAuthorized"
-      | "isIrmEnabled"
-      | "isLltvEnabled"
-      | "liquidate"
-      | "market"
-      | "nonce"
-      | "owner"
-      | "position"
-      | "repay"
-      | "setAuthorization"
-      | "setAuthorizationWithSig"
-      | "setFee"
-      | "setFeeRecipient"
-      | "setOwner"
-      | "supply"
-      | "supplyCollateral"
-      | "withdraw"
-      | "withdrawCollateral"
+      | 'DOMAIN_SEPARATOR'
+      | 'accrueInterest'
+      | 'borrow'
+      | 'createMarket'
+      | 'enableIrm'
+      | 'enableLltv'
+      | 'extSloads'
+      | 'feeRecipient'
+      | 'flashLoan'
+      | 'idToMarketParams'
+      | 'isAuthorized'
+      | 'isIrmEnabled'
+      | 'isLltvEnabled'
+      | 'liquidate'
+      | 'market'
+      | 'nonce'
+      | 'owner'
+      | 'position'
+      | 'repay'
+      | 'setAuthorization'
+      | 'setAuthorizationWithSig'
+      | 'setFee'
+      | 'setFeeRecipient'
+      | 'setOwner'
+      | 'supply'
+      | 'supplyCollateral'
+      | 'withdraw'
+      | 'withdrawCollateral'
   ): FunctionFragment;
 
+  encodeFunctionData(functionFragment: 'DOMAIN_SEPARATOR', values?: undefined): string;
+  encodeFunctionData(functionFragment: 'accrueInterest', values: [MarketParamsStruct]): string;
   encodeFunctionData(
-    functionFragment: "DOMAIN_SEPARATOR",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "accrueInterest",
-    values: [MarketParamsStruct]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "borrow",
+    functionFragment: 'borrow',
     values: [MarketParamsStruct, BigNumberish, BigNumberish, string, string]
   ): string;
+  encodeFunctionData(functionFragment: 'createMarket', values: [MarketParamsStruct]): string;
+  encodeFunctionData(functionFragment: 'enableIrm', values: [string]): string;
+  encodeFunctionData(functionFragment: 'enableLltv', values: [BigNumberish]): string;
+  encodeFunctionData(functionFragment: 'extSloads', values: [BytesLike[]]): string;
+  encodeFunctionData(functionFragment: 'feeRecipient', values?: undefined): string;
+  encodeFunctionData(functionFragment: 'flashLoan', values: [string, BigNumberish, BytesLike]): string;
+  encodeFunctionData(functionFragment: 'idToMarketParams', values: [BytesLike]): string;
+  encodeFunctionData(functionFragment: 'isAuthorized', values: [string, string]): string;
+  encodeFunctionData(functionFragment: 'isIrmEnabled', values: [string]): string;
+  encodeFunctionData(functionFragment: 'isLltvEnabled', values: [BigNumberish]): string;
   encodeFunctionData(
-    functionFragment: "createMarket",
-    values: [MarketParamsStruct]
-  ): string;
-  encodeFunctionData(functionFragment: "enableIrm", values: [string]): string;
-  encodeFunctionData(
-    functionFragment: "enableLltv",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "extSloads",
-    values: [BytesLike[]]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "feeRecipient",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "flashLoan",
-    values: [string, BigNumberish, BytesLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "idToMarketParams",
-    values: [BytesLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "isAuthorized",
-    values: [string, string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "isIrmEnabled",
-    values: [string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "isLltvEnabled",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "liquidate",
+    functionFragment: 'liquidate',
     values: [MarketParamsStruct, string, BigNumberish, BigNumberish, BytesLike]
   ): string;
-  encodeFunctionData(functionFragment: "market", values: [BytesLike]): string;
-  encodeFunctionData(functionFragment: "nonce", values: [string]): string;
-  encodeFunctionData(functionFragment: "owner", values?: undefined): string;
+  encodeFunctionData(functionFragment: 'market', values: [BytesLike]): string;
+  encodeFunctionData(functionFragment: 'nonce', values: [string]): string;
+  encodeFunctionData(functionFragment: 'owner', values?: undefined): string;
+  encodeFunctionData(functionFragment: 'position', values: [BytesLike, string]): string;
   encodeFunctionData(
-    functionFragment: "position",
-    values: [BytesLike, string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "repay",
+    functionFragment: 'repay',
     values: [MarketParamsStruct, BigNumberish, BigNumberish, string, BytesLike]
   ): string;
+  encodeFunctionData(functionFragment: 'setAuthorization', values: [string, boolean]): string;
   encodeFunctionData(
-    functionFragment: "setAuthorization",
-    values: [string, boolean]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "setAuthorizationWithSig",
+    functionFragment: 'setAuthorizationWithSig',
     values: [AuthorizationStruct, SignatureStruct]
   ): string;
+  encodeFunctionData(functionFragment: 'setFee', values: [MarketParamsStruct, BigNumberish]): string;
+  encodeFunctionData(functionFragment: 'setFeeRecipient', values: [string]): string;
+  encodeFunctionData(functionFragment: 'setOwner', values: [string]): string;
   encodeFunctionData(
-    functionFragment: "setFee",
-    values: [MarketParamsStruct, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "setFeeRecipient",
-    values: [string]
-  ): string;
-  encodeFunctionData(functionFragment: "setOwner", values: [string]): string;
-  encodeFunctionData(
-    functionFragment: "supply",
+    functionFragment: 'supply',
     values: [MarketParamsStruct, BigNumberish, BigNumberish, string, BytesLike]
   ): string;
   encodeFunctionData(
-    functionFragment: "supplyCollateral",
+    functionFragment: 'supplyCollateral',
     values: [MarketParamsStruct, BigNumberish, string, BytesLike]
   ): string;
   encodeFunctionData(
-    functionFragment: "withdraw",
+    functionFragment: 'withdraw',
     values: [MarketParamsStruct, BigNumberish, BigNumberish, string, string]
   ): string;
   encodeFunctionData(
-    functionFragment: "withdrawCollateral",
+    functionFragment: 'withdrawCollateral',
     values: [MarketParamsStruct, BigNumberish, string, string]
   ): string;
 
-  decodeFunctionResult(
-    functionFragment: "DOMAIN_SEPARATOR",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "accrueInterest",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "borrow", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "createMarket",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "enableIrm", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "enableLltv", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "extSloads", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "feeRecipient",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "flashLoan", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "idToMarketParams",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "isAuthorized",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "isIrmEnabled",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "isLltvEnabled",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "liquidate", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "market", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "nonce", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "position", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "repay", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "setAuthorization",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "setAuthorizationWithSig",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "setFee", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "setFeeRecipient",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "setOwner", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "supply", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "supplyCollateral",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "withdraw", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "withdrawCollateral",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: 'DOMAIN_SEPARATOR', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'accrueInterest', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'borrow', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'createMarket', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'enableIrm', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'enableLltv', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'extSloads', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'feeRecipient', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'flashLoan', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'idToMarketParams', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'isAuthorized', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'isIrmEnabled', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'isLltvEnabled', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'liquidate', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'market', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'nonce', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'owner', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'position', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'repay', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'setAuthorization', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'setAuthorizationWithSig', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'setFee', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'setFeeRecipient', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'setOwner', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'supply', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'supplyCollateral', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'withdraw', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'withdrawCollateral', data: BytesLike): Result;
 
   events: {};
 }
@@ -320,13 +219,9 @@ export interface Morpho extends BaseContract {
     toBlock?: string | number | undefined
   ): Promise<Array<TEvent>>;
 
-  listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
-  ): Array<TypedListener<TEvent>>;
+  listeners<TEvent extends TypedEvent>(eventFilter?: TypedEventFilter<TEvent>): Array<TypedListener<TEvent>>;
   listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
-  ): this;
+  removeAllListeners<TEvent extends TypedEvent>(eventFilter: TypedEventFilter<TEvent>): this;
   removeAllListeners(eventName?: string): this;
   off: OnEvent<this>;
   on: OnEvent<this>;
@@ -355,20 +250,11 @@ export interface Morpho extends BaseContract {
       overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
-    enableIrm(
-      irm: string,
-      overrides?: Overrides & { from?: string }
-    ): Promise<ContractTransaction>;
+    enableIrm(irm: string, overrides?: Overrides & { from?: string }): Promise<ContractTransaction>;
 
-    enableLltv(
-      lltv: BigNumberish,
-      overrides?: Overrides & { from?: string }
-    ): Promise<ContractTransaction>;
+    enableLltv(lltv: BigNumberish, overrides?: Overrides & { from?: string }): Promise<ContractTransaction>;
 
-    extSloads(
-      slots: BytesLike[],
-      overrides?: CallOverrides
-    ): Promise<[string[]] & { res: string[] }>;
+    extSloads(slots: BytesLike[], overrides?: CallOverrides): Promise<[string[]] & { res: string[] }>;
 
     feeRecipient(overrides?: CallOverrides): Promise<[string]>;
 
@@ -392,18 +278,11 @@ export interface Morpho extends BaseContract {
       }
     >;
 
-    isAuthorized(
-      arg0: string,
-      arg1: string,
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
+    isAuthorized(arg0: string, arg1: string, overrides?: CallOverrides): Promise<[boolean]>;
 
     isIrmEnabled(arg0: string, overrides?: CallOverrides): Promise<[boolean]>;
 
-    isLltvEnabled(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
+    isLltvEnabled(arg0: BigNumberish, overrides?: CallOverrides): Promise<[boolean]>;
 
     liquidate(
       marketParams: MarketParamsStruct,
@@ -471,15 +350,9 @@ export interface Morpho extends BaseContract {
       overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
-    setFeeRecipient(
-      newFeeRecipient: string,
-      overrides?: Overrides & { from?: string }
-    ): Promise<ContractTransaction>;
+    setFeeRecipient(newFeeRecipient: string, overrides?: Overrides & { from?: string }): Promise<ContractTransaction>;
 
-    setOwner(
-      newOwner: string,
-      overrides?: Overrides & { from?: string }
-    ): Promise<ContractTransaction>;
+    setOwner(newOwner: string, overrides?: Overrides & { from?: string }): Promise<ContractTransaction>;
 
     supply(
       marketParams: MarketParamsStruct,
@@ -537,15 +410,9 @@ export interface Morpho extends BaseContract {
     overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
-  enableIrm(
-    irm: string,
-    overrides?: Overrides & { from?: string }
-  ): Promise<ContractTransaction>;
+  enableIrm(irm: string, overrides?: Overrides & { from?: string }): Promise<ContractTransaction>;
 
-  enableLltv(
-    lltv: BigNumberish,
-    overrides?: Overrides & { from?: string }
-  ): Promise<ContractTransaction>;
+  enableLltv(lltv: BigNumberish, overrides?: Overrides & { from?: string }): Promise<ContractTransaction>;
 
   extSloads(slots: BytesLike[], overrides?: CallOverrides): Promise<string[]>;
 
@@ -571,18 +438,11 @@ export interface Morpho extends BaseContract {
     }
   >;
 
-  isAuthorized(
-    arg0: string,
-    arg1: string,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
+  isAuthorized(arg0: string, arg1: string, overrides?: CallOverrides): Promise<boolean>;
 
   isIrmEnabled(arg0: string, overrides?: CallOverrides): Promise<boolean>;
 
-  isLltvEnabled(
-    arg0: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
+  isLltvEnabled(arg0: BigNumberish, overrides?: CallOverrides): Promise<boolean>;
 
   liquidate(
     marketParams: MarketParamsStruct,
@@ -650,15 +510,9 @@ export interface Morpho extends BaseContract {
     overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
-  setFeeRecipient(
-    newFeeRecipient: string,
-    overrides?: Overrides & { from?: string }
-  ): Promise<ContractTransaction>;
+  setFeeRecipient(newFeeRecipient: string, overrides?: Overrides & { from?: string }): Promise<ContractTransaction>;
 
-  setOwner(
-    newOwner: string,
-    overrides?: Overrides & { from?: string }
-  ): Promise<ContractTransaction>;
+  setOwner(newOwner: string, overrides?: Overrides & { from?: string }): Promise<ContractTransaction>;
 
   supply(
     marketParams: MarketParamsStruct,
@@ -697,10 +551,7 @@ export interface Morpho extends BaseContract {
   callStatic: {
     DOMAIN_SEPARATOR(overrides?: CallOverrides): Promise<string>;
 
-    accrueInterest(
-      marketParams: MarketParamsStruct,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    accrueInterest(marketParams: MarketParamsStruct, overrides?: CallOverrides): Promise<void>;
 
     borrow(
       marketParams: MarketParamsStruct,
@@ -711,10 +562,7 @@ export interface Morpho extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber, BigNumber]>;
 
-    createMarket(
-      marketParams: MarketParamsStruct,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    createMarket(marketParams: MarketParamsStruct, overrides?: CallOverrides): Promise<void>;
 
     enableIrm(irm: string, overrides?: CallOverrides): Promise<void>;
 
@@ -724,12 +572,7 @@ export interface Morpho extends BaseContract {
 
     feeRecipient(overrides?: CallOverrides): Promise<string>;
 
-    flashLoan(
-      token: string,
-      assets: BigNumberish,
-      data: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    flashLoan(token: string, assets: BigNumberish, data: BytesLike, overrides?: CallOverrides): Promise<void>;
 
     idToMarketParams(
       arg0: BytesLike,
@@ -744,18 +587,11 @@ export interface Morpho extends BaseContract {
       }
     >;
 
-    isAuthorized(
-      arg0: string,
-      arg1: string,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
+    isAuthorized(arg0: string, arg1: string, overrides?: CallOverrides): Promise<boolean>;
 
     isIrmEnabled(arg0: string, overrides?: CallOverrides): Promise<boolean>;
 
-    isLltvEnabled(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
+    isLltvEnabled(arg0: BigNumberish, overrides?: CallOverrides): Promise<boolean>;
 
     liquidate(
       marketParams: MarketParamsStruct,
@@ -805,11 +641,7 @@ export interface Morpho extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber, BigNumber]>;
 
-    setAuthorization(
-      authorized: string,
-      newIsAuthorized: boolean,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    setAuthorization(authorized: string, newIsAuthorized: boolean, overrides?: CallOverrides): Promise<void>;
 
     setAuthorizationWithSig(
       authorization: AuthorizationStruct,
@@ -817,16 +649,9 @@ export interface Morpho extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    setFee(
-      marketParams: MarketParamsStruct,
-      newFee: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    setFee(marketParams: MarketParamsStruct, newFee: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
-    setFeeRecipient(
-      newFeeRecipient: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    setFeeRecipient(newFeeRecipient: string, overrides?: CallOverrides): Promise<void>;
 
     setOwner(newOwner: string, overrides?: CallOverrides): Promise<void>;
 
@@ -870,10 +695,7 @@ export interface Morpho extends BaseContract {
   estimateGas: {
     DOMAIN_SEPARATOR(overrides?: CallOverrides): Promise<BigNumber>;
 
-    accrueInterest(
-      marketParams: MarketParamsStruct,
-      overrides?: Overrides & { from?: string }
-    ): Promise<BigNumber>;
+    accrueInterest(marketParams: MarketParamsStruct, overrides?: Overrides & { from?: string }): Promise<BigNumber>;
 
     borrow(
       marketParams: MarketParamsStruct,
@@ -884,25 +706,13 @@ export interface Morpho extends BaseContract {
       overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
-    createMarket(
-      marketParams: MarketParamsStruct,
-      overrides?: Overrides & { from?: string }
-    ): Promise<BigNumber>;
+    createMarket(marketParams: MarketParamsStruct, overrides?: Overrides & { from?: string }): Promise<BigNumber>;
 
-    enableIrm(
-      irm: string,
-      overrides?: Overrides & { from?: string }
-    ): Promise<BigNumber>;
+    enableIrm(irm: string, overrides?: Overrides & { from?: string }): Promise<BigNumber>;
 
-    enableLltv(
-      lltv: BigNumberish,
-      overrides?: Overrides & { from?: string }
-    ): Promise<BigNumber>;
+    enableLltv(lltv: BigNumberish, overrides?: Overrides & { from?: string }): Promise<BigNumber>;
 
-    extSloads(
-      slots: BytesLike[],
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    extSloads(slots: BytesLike[], overrides?: CallOverrides): Promise<BigNumber>;
 
     feeRecipient(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -913,23 +723,13 @@ export interface Morpho extends BaseContract {
       overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
-    idToMarketParams(
-      arg0: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    idToMarketParams(arg0: BytesLike, overrides?: CallOverrides): Promise<BigNumber>;
 
-    isAuthorized(
-      arg0: string,
-      arg1: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    isAuthorized(arg0: string, arg1: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     isIrmEnabled(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
-    isLltvEnabled(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    isLltvEnabled(arg0: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
     liquidate(
       marketParams: MarketParamsStruct,
@@ -946,11 +746,7 @@ export interface Morpho extends BaseContract {
 
     owner(overrides?: CallOverrides): Promise<BigNumber>;
 
-    position(
-      arg0: BytesLike,
-      arg1: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    position(arg0: BytesLike, arg1: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     repay(
       marketParams: MarketParamsStruct,
@@ -979,15 +775,9 @@ export interface Morpho extends BaseContract {
       overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
-    setFeeRecipient(
-      newFeeRecipient: string,
-      overrides?: Overrides & { from?: string }
-    ): Promise<BigNumber>;
+    setFeeRecipient(newFeeRecipient: string, overrides?: Overrides & { from?: string }): Promise<BigNumber>;
 
-    setOwner(
-      newOwner: string,
-      overrides?: Overrides & { from?: string }
-    ): Promise<BigNumber>;
+    setOwner(newOwner: string, overrides?: Overrides & { from?: string }): Promise<BigNumber>;
 
     supply(
       marketParams: MarketParamsStruct,
@@ -1046,20 +836,11 @@ export interface Morpho extends BaseContract {
       overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
-    enableIrm(
-      irm: string,
-      overrides?: Overrides & { from?: string }
-    ): Promise<PopulatedTransaction>;
+    enableIrm(irm: string, overrides?: Overrides & { from?: string }): Promise<PopulatedTransaction>;
 
-    enableLltv(
-      lltv: BigNumberish,
-      overrides?: Overrides & { from?: string }
-    ): Promise<PopulatedTransaction>;
+    enableLltv(lltv: BigNumberish, overrides?: Overrides & { from?: string }): Promise<PopulatedTransaction>;
 
-    extSloads(
-      slots: BytesLike[],
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
+    extSloads(slots: BytesLike[], overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     feeRecipient(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
@@ -1070,26 +851,13 @@ export interface Morpho extends BaseContract {
       overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
-    idToMarketParams(
-      arg0: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
+    idToMarketParams(arg0: BytesLike, overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    isAuthorized(
-      arg0: string,
-      arg1: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
+    isAuthorized(arg0: string, arg1: string, overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    isIrmEnabled(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
+    isIrmEnabled(arg0: string, overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    isLltvEnabled(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
+    isLltvEnabled(arg0: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     liquidate(
       marketParams: MarketParamsStruct,
@@ -1100,23 +868,13 @@ export interface Morpho extends BaseContract {
       overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
-    market(
-      arg0: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
+    market(arg0: BytesLike, overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    nonce(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
+    nonce(arg0: string, overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    position(
-      arg0: BytesLike,
-      arg1: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
+    position(arg0: BytesLike, arg1: string, overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     repay(
       marketParams: MarketParamsStruct,
@@ -1145,15 +903,9 @@ export interface Morpho extends BaseContract {
       overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
-    setFeeRecipient(
-      newFeeRecipient: string,
-      overrides?: Overrides & { from?: string }
-    ): Promise<PopulatedTransaction>;
+    setFeeRecipient(newFeeRecipient: string, overrides?: Overrides & { from?: string }): Promise<PopulatedTransaction>;
 
-    setOwner(
-      newOwner: string,
-      overrides?: Overrides & { from?: string }
-    ): Promise<PopulatedTransaction>;
+    setOwner(newOwner: string, overrides?: Overrides & { from?: string }): Promise<PopulatedTransaction>;
 
     supply(
       marketParams: MarketParamsStruct,

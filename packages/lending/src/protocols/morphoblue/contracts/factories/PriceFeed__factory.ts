@@ -2,23 +2,23 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from "ethers";
-import type { Provider } from "@ethersproject/providers";
-import type { PriceFeed, PriceFeedInterface } from "../PriceFeed";
+import { Contract, Signer, utils } from 'ethers';
+import type { Provider } from '@ethersproject/providers';
+import type { PriceFeed, PriceFeedInterface } from '../PriceFeed';
 
 const _abi = [
   {
     inputs: [],
-    name: "latestAnswer",
+    name: 'latestAnswer',
     outputs: [
       {
-        internalType: "int256",
-        name: "",
-        type: "int256",
+        internalType: 'int256',
+        name: '',
+        type: 'int256',
       },
     ],
-    stateMutability: "view",
-    type: "function",
+    stateMutability: 'view',
+    type: 'function',
   },
 ] as const;
 
@@ -27,10 +27,7 @@ export class PriceFeed__factory {
   static createInterface(): PriceFeedInterface {
     return new utils.Interface(_abi) as PriceFeedInterface;
   }
-  static connect(
-    address: string,
-    signerOrProvider: Signer | Provider
-  ): PriceFeed {
+  static connect(address: string, signerOrProvider: Signer | Provider): PriceFeed {
     return new Contract(address, _abi, signerOrProvider) as PriceFeed;
   }
 }
