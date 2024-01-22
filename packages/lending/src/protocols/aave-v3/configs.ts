@@ -281,7 +281,7 @@ export const configs: Config[] = [
         used: { deposit: true, withdraw: true, borrow: true, repay: true, flashLoan: true },
       },
       {
-        asset: polygonTokens.USDC,
+        asset: polygonTokens['USDC.e'],
         aToken: polygonTokens.aPolUSDC,
         used: { deposit: true, withdraw: true, borrow: true, repay: true, flashLoan: true },
       },
@@ -489,7 +489,7 @@ export const configs: Config[] = [
         used: { deposit: true, withdraw: true, borrow: true, repay: true, flashLoan: true },
       },
       {
-        asset: optimismTokens.USDC,
+        asset: optimismTokens['USDC.e'],
         aToken: optimismTokens.aOptUSDC,
         used: { deposit: true, withdraw: true, borrow: true, repay: true, flashLoan: true },
       },
