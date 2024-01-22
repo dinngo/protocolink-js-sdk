@@ -458,7 +458,7 @@ describe('Test Compound V3 LendingProtocol', function () {
                 symbol: 'ETH',
                 name: 'Ethereum',
               },
-              price: '1', // TODO: ??
+              price: '1',
               balance: '501.907978384199815578',
               apy: '0.010623922798752',
               usageAsCollateralEnabled: false,
@@ -476,7 +476,7 @@ describe('Test Compound V3 LendingProtocol', function () {
                 symbol: 'cbETH',
                 name: 'Coinbase Wrapped Staked ETH',
               },
-              price: '1.05541524', // TODO: ??
+              price: '1.05541524',
               balance: '0',
               apy: '0',
               usageAsCollateralEnabled: true,
@@ -496,7 +496,7 @@ describe('Test Compound V3 LendingProtocol', function () {
                 symbol: 'ETH',
                 name: 'Ethereum',
               },
-              price: '1', // TODO: ??
+              price: '1',
               balances: ['0'],
               apys: ['0.019873491895584'],
               borrowMin: '0.000001',

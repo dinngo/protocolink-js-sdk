@@ -4,9 +4,9 @@ import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 import * as aaveV2 from 'src/protocols/aave-v2/tokens';
 import * as aaveV3 from 'src/protocols/aave-v3/tokens';
 import * as apisdk from '@protocolink/api';
-import { claimToken, getBalance, mainnetTokens, snapshotAndRevertEach } from '@protocolink/test-helpers';
 import * as common from '@protocolink/common';
 import { expect } from 'chai';
+import { getBalance, mainnetTokens, snapshotAndRevertEach } from '@protocolink/test-helpers';
 import hre from 'hardhat';
 import * as logics from '@protocolink/logics';
 import * as morphoblue from 'src/protocols/morphoblue/tokens';
@@ -25,12 +25,6 @@ describe('Transaction: Leverage Long', function () {
 
   before(async function () {
     adapter = new Adapter(chainId, hre.ethers.provider);
-    await claimToken(chainId, '0x7F67F6A09bcb2159b094B64B4acc53D5193AEa2E', mainnetTokens.USDC, '1000');
-    await claimToken(chainId, '0x0E79368B079910b31e71Ce1B2AE510461359128D', mainnetTokens.USDC, '1000');
-    await claimToken(chainId, '0x06e4cb4f3ba9a2916b6384acbdeaa74daaf91550', mainnetTokens.USDC, '1000');
-    await claimToken(chainId, '0x53fb0162bC8d5EEc2fB1532923C4f8997BAce111', mainnetTokens.USDC, '1000');
-    await claimToken(chainId, '0x9cbf099ff424979439dfba03f00b5961784c06ce', mainnetTokens.USDC, '1000');
-    await claimToken(chainId, '0x8bf7058bfe4cf0d1fdfd41f43816c5555c17431d', mainnetTokens.DAI, '1000');
   });
 
   snapshotAndRevertEach();

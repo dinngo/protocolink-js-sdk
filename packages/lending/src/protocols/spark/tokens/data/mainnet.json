@@ -27,6 +27,27 @@
     "symbol": "sDAI",
     "name": "Savings Dai"
   },
+  "spsDAI": {
+    "chainId": 1,
+    "address": "0x78f897F0fE2d3B5690EbAe7f19862DEacedF10a7",
+    "decimals": 18,
+    "symbol": "spsDAI",
+    "name": "Spark sDAI"
+  },
+  "USDC": {
+    "chainId": 1,
+    "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+    "decimals": 6,
+    "symbol": "USDC",
+    "name": "USD Coin"
+  },
+  "spUSDC": {
+    "chainId": 1,
+    "address": "0x377C3bd93f2a2984E1E7bE6A5C22c525eD4A4815",
+    "decimals": 6,
+    "symbol": "spUSDC",
+    "name": "Spark USDC"
+  },
   "WETH": {
     "chainId": 1,
     "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
@@ -55,20 +76,6 @@
     "symbol": "spwstETH",
     "name": "Spark wstETH"
   },
-  "USDC": {
-    "chainId": 1,
-    "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-    "decimals": 6,
-    "symbol": "USDC",
-    "name": "USD Coin"
-  },
-  "spUSDC": {
-    "chainId": 1,
-    "address": "0x377C3bd93f2a2984E1E7bE6A5C22c525eD4A4815",
-    "decimals": 6,
-    "symbol": "spUSDC",
-    "name": "Spark USDC"
-  },
   "WBTC": {
     "chainId": 1,
     "address": "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
@@ -82,5 +89,33 @@
     "decimals": 8,
     "symbol": "spWBTC",
     "name": "Spark WBTC"
+  },
+  "rETH": {
+    "chainId": 1,
+    "address": "0xae78736Cd615f374D3085123A210448E74Fc6393",
+    "decimals": 18,
+    "symbol": "rETH",
+    "name": "Rocket Pool ETH"
+  },
+  "sprETH": {
+    "chainId": 1,
+    "address": "0x9985dF20D7e9103ECBCeb16a84956434B6f06ae8",
+    "decimals": 18,
+    "symbol": "sprETH",
+    "name": "Spark rETH"
+  },
+  "USDT": {
+    "chainId": 1,
+    "address": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+    "decimals": 6,
+    "symbol": "USDT",
+    "name": "Tether USD"
+  },
+  "spUSDT": {
+    "chainId": 1,
+    "address": "0xe7dF13b8e3d6740fe17CBE928C7334243d86c92f",
+    "decimals": 6,
+    "symbol": "spUSDT",
+    "name": "Spark USDT"
   }
 }

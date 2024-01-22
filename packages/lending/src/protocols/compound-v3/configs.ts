@@ -86,7 +86,9 @@ export const configs: Config[] = [
         cometAddress: baseTokens.cWETHv3.address,
         cToken: baseTokens.cWETHv3,
         baseToken: baseTokens.WETH,
-        baseTokenPriceFeedAddress: '0x71041dddad3595f9ced3dccfbe3d1f4b0a16bb70', // ETH price feed
+        baseTokenPriceFeedAddress: '0x9f485610E26B9c0140439f88Dc0C7742903Bd1CF', // ETH price feed
+        // because the ETH market uses ETH price as the quote, we need to get the price of ETH separately.
+        baseTokenQuotePriceFeedAddress: '0x71041dddad3595f9ced3dccfbe3d1f4b0a16bb70',
       },
     ],
   },

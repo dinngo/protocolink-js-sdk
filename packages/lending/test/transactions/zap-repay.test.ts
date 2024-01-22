@@ -26,6 +26,7 @@ describe('Transaction: Zap Repay', function () {
     await claimToken(chainId, '0x06e4Cb4f3ba9A2916B6384aCbdeAa74dAAF91550', mainnetTokens.USDT, '2000');
     await claimToken(chainId, '0x53fb0162bC8d5EEc2fB1532923C4f8997BAce111', mainnetTokens.USDT, '2000');
     await claimToken(chainId, '0x9cbf099ff424979439dfba03f00b5961784c06ce', mainnetTokens.USDT, '20000');
+    await claimToken(chainId, '0x8bf7058bfe4cf0d1fdfd41f43816c5555c17431d', mainnetTokens.USDT, '2000');
   });
 
   snapshotAndRevertEach();
@@ -77,7 +78,7 @@ describe('Transaction: Zap Repay', function () {
         srcToken: mainnetTokens.DAI,
         srcAmount: '1000',
         srcDebtToken: '0xf705d2B7e92B3F38e6ae7afaDAA2fEE110fE5914', // DAI_variableDebtToken
-        destToken: mainnetTokens.USDC,
+        destToken: mainnetTokens.USDT,
         expects: {
           approvalLength: 2,
           logicLength: 2,

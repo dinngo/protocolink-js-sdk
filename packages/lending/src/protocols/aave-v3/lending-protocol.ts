@@ -335,20 +335,8 @@ export class LendingProtocol extends Protocol {
     return this.getPortfolios(account).then((portfolios) => portfolios[0]);
   }
 
-  override canCollateralSwap() {
-    return this.chainId !== common.ChainId.avalanche;
-  }
-
-  override canDebtSwap() {
-    return this.chainId !== common.ChainId.avalanche;
-  }
-
   override canLeverage(_marketId: string, assetToken: common.Token) {
-    return this.chainId !== common.ChainId.avalanche && assetToken.symbol !== 'GHO';
-  }
-
-  override canDeleverage() {
-    return this.chainId !== common.ChainId.avalanche;
+    return assetToken.symbol !== 'GHO';
   }
 
   toUnderlyingToken(_marketId: string, protocolToken: common.Token) {

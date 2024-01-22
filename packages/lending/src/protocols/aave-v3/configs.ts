@@ -212,7 +212,7 @@ export const configs: Config[] = [
       {
         asset: gnosisTokens.xDAI,
         aToken: gnosisTokens.aGnoWXDAI,
-        used: { deposit: true, withdraw: true, borrow: true, repay: true, flashLoan: true },
+        used: { deposit: true, withdraw: true, borrow: true, repay: true },
       },
       {
         asset: gnosisTokens.WXDAI,
@@ -349,7 +349,7 @@ export const configs: Config[] = [
       {
         asset: baseTokens.ETH,
         aToken: baseTokens.aBasWETH,
-        used: { deposit: true, withdraw: true, borrow: true, repay: true, flashLoan: true },
+        used: { deposit: true, withdraw: true, borrow: true, repay: true },
       },
       {
         asset: baseTokens.WETH,
