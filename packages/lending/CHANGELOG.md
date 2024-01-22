@@ -1,5 +1,12 @@
 # @protocolink/lending
 
+## 1.0.8
+
+### Patch Changes
+
+- d02be87: add morphoblue lending sdk
+- 552726c: fix ci test
+
 ## 1.0.7
 
 ### Patch Changes
