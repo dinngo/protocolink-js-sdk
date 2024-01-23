@@ -87,7 +87,7 @@ describe('Transaction: Deleverage', function () {
         marketId: '0xb323495f7e4148be5643a4ea4a8221eef163e4bccfdedc2a6f4696baacbc86cc',
         account: '0xa3C1C91403F0026b9dd086882aDbC8Cdbc3b3cfB',
         srcToken: mainnetTokens.USDC,
-        srcAmount: '1',
+        srcAmount: '0.001',
         destToken: morphoblue.mainnetTokens.wstETH,
         expects: {
           logicLength: 5,
