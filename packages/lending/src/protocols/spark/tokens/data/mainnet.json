@@ -1,11 +1,4 @@
 {
-  "ETH": {
-    "chainId": 1,
-    "address": "0x0000000000000000000000000000000000000000",
-    "decimals": 18,
-    "symbol": "ETH",
-    "name": "Ethereum"
-  },
   "DAI": {
     "chainId": 1,
     "address": "0x6B175474E89094C44Da98b954EedeAC495271d0F",
@@ -48,6 +41,13 @@
     "symbol": "spUSDC",
     "name": "Spark USDC"
   },
+  "ETH": {
+    "chainId": 1,
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18,
+    "symbol": "ETH",
+    "name": "Ethereum"
+  },
   "WETH": {
     "chainId": 1,
     "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
@@ -76,20 +76,6 @@
     "symbol": "spwstETH",
     "name": "Spark wstETH"
   },
-  "WBTC": {
-    "chainId": 1,
-    "address": "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
-    "decimals": 8,
-    "symbol": "WBTC",
-    "name": "Wrapped BTC"
-  },
-  "spWBTC": {
-    "chainId": 1,
-    "address": "0x4197ba364AE6698015AE5c1468f54087602715b2",
-    "decimals": 8,
-    "symbol": "spWBTC",
-    "name": "Spark WBTC"
-  },
   "rETH": {
     "chainId": 1,
     "address": "0xae78736Cd615f374D3085123A210448E74Fc6393",
@@ -103,6 +89,20 @@
     "decimals": 18,
     "symbol": "sprETH",
     "name": "Spark rETH"
+  },
+  "WBTC": {
+    "chainId": 1,
+    "address": "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
+    "decimals": 8,
+    "symbol": "WBTC",
+    "name": "Wrapped BTC"
+  },
+  "spWBTC": {
+    "chainId": 1,
+    "address": "0x4197ba364AE6698015AE5c1468f54087602715b2",
+    "decimals": 8,
+    "symbol": "spWBTC",
+    "name": "Spark WBTC"
   },
   "USDT": {
     "chainId": 1,

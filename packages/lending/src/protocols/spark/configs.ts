@@ -35,14 +35,24 @@ export const configs: Config[] = [
     },
     reserves: [
       {
-        asset: mainnetTokens.ETH,
-        aToken: mainnetTokens.spWETH,
-        used: { deposit: true, withdraw: true, borrow: true, repay: true },
-      },
-      {
         asset: mainnetTokens.DAI,
         aToken: mainnetTokens.spDAI,
         used: { deposit: true, withdraw: true, borrow: true, repay: true, flashLoan: true },
+      },
+      {
+        asset: mainnetTokens.sDAI,
+        aToken: mainnetTokens.spsDAI,
+        used: { deposit: true, withdraw: true, borrow: true, repay: true, flashLoan: true },
+      },
+      {
+        asset: mainnetTokens.USDC,
+        aToken: mainnetTokens.spUSDC,
+        used: { deposit: true, withdraw: true, borrow: true, repay: true, flashLoan: true },
+      },
+      {
+        asset: mainnetTokens.ETH,
+        aToken: mainnetTokens.spWETH,
+        used: { deposit: true, withdraw: true, borrow: true, repay: true },
       },
       {
         asset: mainnetTokens.WETH,
@@ -55,8 +65,8 @@ export const configs: Config[] = [
         used: { deposit: true, withdraw: true, borrow: true, repay: true, flashLoan: true },
       },
       {
-        asset: mainnetTokens.USDC,
-        aToken: mainnetTokens.spUSDC,
+        asset: mainnetTokens.rETH,
+        aToken: mainnetTokens.sprETH,
         used: { deposit: true, withdraw: true, borrow: true, repay: true, flashLoan: true },
       },
       {
@@ -93,6 +103,11 @@ export const configs: Config[] = [
       {
         asset: gnosisTokens.wstETH,
         aToken: gnosisTokens.spwstETH,
+        used: { deposit: true, withdraw: true, borrow: true, repay: true, flashLoan: true },
+      },
+      {
+        asset: gnosisTokens.GNO,
+        aToken: gnosisTokens.spGNO,
         used: { deposit: true, withdraw: true, borrow: true, repay: true, flashLoan: true },
       },
     ],

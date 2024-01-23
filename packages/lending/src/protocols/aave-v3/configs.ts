@@ -335,6 +335,11 @@ export const configs: Config[] = [
         aToken: polygonTokens.aPolwstETH,
         used: { deposit: true, withdraw: true, borrow: true, repay: true, flashLoan: true },
       },
+      {
+        asset: polygonTokens.USDC,
+        aToken: polygonTokens.aPolUSDCn,
+        used: { deposit: true, withdraw: true, borrow: true, repay: true, flashLoan: true },
+      },
     ],
   },
   // https://github.com/bgd-labs/aave-address-book/blob/main/src/AaveV3Base.sol
@@ -536,6 +541,11 @@ export const configs: Config[] = [
       {
         asset: optimismTokens.LUSD,
         aToken: optimismTokens.aOptLUSD,
+        used: { deposit: true, withdraw: true, borrow: true, repay: true, flashLoan: true },
+      },
+      {
+        asset: optimismTokens.USDC,
+        aToken: optimismTokens.aOptUSDCn,
         used: { deposit: true, withdraw: true, borrow: true, repay: true, flashLoan: true },
       },
     ],
