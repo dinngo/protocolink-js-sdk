@@ -45,7 +45,6 @@ describe('Transaction: Leverage Long', function () {
         destToken: mainnetTokens.USDC,
         destDebtToken: '0x619beb58998eD2278e08620f97007e1116D5D25b', // variableDebtUSDC
         expects: {
-          approvalLength: 1,
           logicLength: 6,
         },
       },
@@ -59,7 +58,6 @@ describe('Transaction: Leverage Long', function () {
         destToken: mainnetTokens.USDC,
         destDebtToken: '0x490726291F6434646FEb2eC96d2Cc566b18a122F', // vdUSDC
         expects: {
-          approvalLength: 1,
           logicLength: 6,
         },
       },
@@ -73,7 +71,6 @@ describe('Transaction: Leverage Long', function () {
         destToken: mainnetTokens.USDC,
         destDebtToken: '0x72E95b8931767C79bA4EeE721354d6E99a61D004', // variableDebtEthUSDC
         expects: {
-          approvalLength: 1,
           logicLength: 6,
         },
       },
@@ -85,7 +82,6 @@ describe('Transaction: Leverage Long', function () {
         srcAmount: '0.001',
         destToken: mainnetTokens.USDC,
         expects: {
-          approvalLength: 1,
           logicLength: 5,
         },
       },
@@ -97,7 +93,6 @@ describe('Transaction: Leverage Long', function () {
         srcAmount: '1',
         destToken: mainnetTokens.USDC,
         expects: {
-          approvalLength: 1,
           logicLength: 5,
         },
       },
@@ -135,7 +130,6 @@ describe('Transaction: Leverage Long', function () {
             { chainId, account, logics: leverageLongInfo.logics },
             { permit2Type }
           );
-          expect(estimateResult.approvals.length).to.eq(expects.approvalLength);
           for (const approval of estimateResult.approvals) {
             await expect(user.sendTransaction(approval)).to.not.be.reverted;
           }

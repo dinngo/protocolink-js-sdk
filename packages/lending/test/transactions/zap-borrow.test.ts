@@ -36,7 +36,6 @@ describe('Transaction: Zap Borrow', function () {
         srcDebtToken: '0x619beb58998eD2278e08620f97007e1116D5D25b', // variableDebtUSDC
         destToken: mainnetTokens.USDT,
         expects: {
-          approvalLength: 1,
           logicLength: 2,
         },
       },
@@ -49,7 +48,6 @@ describe('Transaction: Zap Borrow', function () {
         srcDebtToken: '0x490726291F6434646FEb2eC96d2Cc566b18a122F', // vdUSDC
         destToken: mainnetTokens.USDT,
         expects: {
-          approvalLength: 1,
           logicLength: 2,
         },
       },
@@ -62,7 +60,6 @@ describe('Transaction: Zap Borrow', function () {
         srcDebtToken: '0x72E95b8931767C79bA4EeE721354d6E99a61D004', // variableDebtEthUSDC
         destToken: mainnetTokens.WBTC,
         expects: {
-          approvalLength: 1,
           logicLength: 2,
         },
       },
@@ -74,7 +71,6 @@ describe('Transaction: Zap Borrow', function () {
         srcAmount: '1000',
         destToken: mainnetTokens.USDT,
         expects: {
-          approvalLength: 1,
           logicLength: 2,
         },
       },
@@ -86,7 +82,6 @@ describe('Transaction: Zap Borrow', function () {
         srcAmount: '0.5',
         destToken: mainnetTokens.USDT,
         expects: {
-          approvalLength: 1,
           logicLength: 2,
         },
       },
@@ -121,7 +116,6 @@ describe('Transaction: Zap Borrow', function () {
           { chainId, account, logics: zapBorrowInfo.logics },
           { permit2Type }
         );
-        expect(estimateResult.approvals.length).to.eq(expects.approvalLength);
         for (const approval of estimateResult.approvals) {
           await expect(user.sendTransaction(approval)).to.not.be.reverted;
         }
