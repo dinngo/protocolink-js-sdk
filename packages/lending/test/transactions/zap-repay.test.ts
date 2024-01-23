@@ -25,7 +25,7 @@ describe('Transaction: Zap Repay', function () {
     await claimToken(chainId, '0xaf0FDd39e5D92499B0eD9F68693DA99C0ec1e92e', mainnetTokens.USDT, '2000');
     await claimToken(chainId, '0x06e4Cb4f3ba9A2916B6384aCbdeAa74dAAF91550', mainnetTokens.USDT, '2000');
     await claimToken(chainId, '0x53fb0162bC8d5EEc2fB1532923C4f8997BAce111', mainnetTokens.USDT, '2000');
-    await claimToken(chainId, '0xa3C1C91403F0026b9dd086882aDbC8Cdbc3b3cfB', mainnetTokens.USDT, '2000');
+    await claimToken(chainId, '0x9cbf099ff424979439dfba03f00b5961784c06ce', mainnetTokens.USDT, '20000');
   });
 
   snapshotAndRevertEach();
@@ -84,9 +84,9 @@ describe('Transaction: Zap Repay', function () {
       {
         protocolId: 'morphoblue',
         marketId: '0xb323495f7e4148be5643a4ea4a8221eef163e4bccfdedc2a6f4696baacbc86cc',
-        account: '0xa3C1C91403F0026b9dd086882aDbC8Cdbc3b3cfB',
+        account: '0x9cbf099ff424979439dfba03f00b5961784c06ce',
         srcToken: mainnetTokens.USDC,
-        srcAmount: '0.1',
+        srcAmount: '10000',
         destToken: mainnetTokens.USDT,
         expects: {
           logicLength: 2,

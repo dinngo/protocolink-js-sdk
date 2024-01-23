@@ -77,9 +77,9 @@ describe('Transaction: Zap Borrow', function () {
       {
         protocolId: 'morphoblue',
         marketId: '0xb323495f7e4148be5643a4ea4a8221eef163e4bccfdedc2a6f4696baacbc86cc',
-        account: '0xa3C1C91403F0026b9dd086882aDbC8Cdbc3b3cfB',
+        account: '0x9cbf099ff424979439dfba03f00b5961784c06ce',
         srcToken: mainnetTokens.USDC,
-        srcAmount: '0.5',
+        srcAmount: '1000',
         destToken: mainnetTokens.USDT,
         expects: {
           logicLength: 2,

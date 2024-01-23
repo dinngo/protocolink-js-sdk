@@ -28,7 +28,7 @@ describe('Transaction: Leverage Long', function () {
     await claimToken(chainId, '0x0E79368B079910b31e71Ce1B2AE510461359128D', mainnetTokens.USDC, '1000');
     await claimToken(chainId, '0x06e4cb4f3ba9a2916b6384acbdeaa74daaf91550', mainnetTokens.USDC, '1000');
     await claimToken(chainId, '0x53fb0162bC8d5EEc2fB1532923C4f8997BAce111', mainnetTokens.USDC, '1000');
-    await claimToken(chainId, '0xa3C1C91403F0026b9dd086882aDbC8Cdbc3b3cfB', mainnetTokens.USDC, '1000');
+    await claimToken(chainId, '0x9cbf099ff424979439dfba03f00b5961784c06ce', mainnetTokens.USDC, '1000');
   });
 
   snapshotAndRevertEach();
@@ -77,7 +77,7 @@ describe('Transaction: Leverage Long', function () {
       {
         protocolId: 'morphoblue',
         marketId: '0xb323495f7e4148be5643a4ea4a8221eef163e4bccfdedc2a6f4696baacbc86cc',
-        account: '0xa3C1C91403F0026b9dd086882aDbC8Cdbc3b3cfB',
+        account: '0x9cbf099ff424979439dfba03f00b5961784c06ce',
         srcToken: morphoblue.mainnetTokens.wstETH,
         srcAmount: '0.001',
         destToken: mainnetTokens.USDC,
