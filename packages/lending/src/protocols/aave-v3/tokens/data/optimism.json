@@ -29,10 +29,24 @@
   },
   "USDC": {
     "chainId": 10,
-    "address": "0x7F5c764cBc14f9669B88837ca1490cCa17c31607",
+    "address": "0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85",
     "decimals": 6,
     "symbol": "USDC",
     "name": "USD Coin"
+  },
+  "aOptUSDCn": {
+    "chainId": 10,
+    "address": "0x38d693cE1dF5AaDF7bC62595A37D667aD57922e5",
+    "decimals": 6,
+    "symbol": "aOptUSDCn",
+    "name": "Aave Optimism USDCn"
+  },
+  "USDC.e": {
+    "chainId": 10,
+    "address": "0x7F5c764cBc14f9669B88837ca1490cCa17c31607",
+    "decimals": 6,
+    "symbol": "USDC.e",
+    "name": "USD Coin (Bridged from Ethereum)"
   },
   "aOptUSDC": {
     "chainId": 10,

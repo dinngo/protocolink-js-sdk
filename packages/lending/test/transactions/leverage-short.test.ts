@@ -4,11 +4,12 @@ import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 import * as aaveV2 from 'src/protocols/aave-v2/tokens';
 import * as aaveV3 from 'src/protocols/aave-v3/tokens';
 import * as apisdk from '@protocolink/api';
+import { claimToken, getBalance, mainnetTokens, snapshotAndRevertEach } from '@protocolink/test-helpers';
 import * as common from '@protocolink/common';
 import { expect } from 'chai';
-import { getBalance, mainnetTokens, snapshotAndRevertEach } from '@protocolink/test-helpers';
 import hre from 'hardhat';
 import * as radiantV2 from 'src/protocols/radiant-v2/tokens';
+import { spark } from '@protocolink/logics';
 
 describe('Transaction: Leverage Short', function () {
   const chainId = 1;
@@ -62,6 +63,19 @@ describe('Transaction: Leverage Short', function () {
         srcDebtToken: '0x40aAbEf1aa8f0eEc637E0E7d92fbfFB2F26A8b7B', // variableDebtEthWBTC
         destToken: mainnetTokens.USDC,
         destAToken: aaveV3.mainnetTokens.aEthUSDC,
+        expects: {
+          logicLength: 6,
+        },
+      },
+      {
+        protocolId: 'spark',
+        marketId: 'mainnet',
+        account: '0x8bf7058bfe4cf0d1fdfd41f43816c5555c17431d',
+        srcToken: mainnetTokens.DAI,
+        srcAmount: '1',
+        srcDebtToken: '0xf705d2B7e92B3F38e6ae7afaDAA2fEE110fE5914', // DAI_variableDebtToken
+        destToken: mainnetTokens.WETH,
+        destAToken: spark.mainnetTokens.spWETH,
         expects: {
           logicLength: 6,
         },

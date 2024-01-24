@@ -29,9 +29,23 @@
   },
   "USDC": {
     "chainId": 137,
-    "address": "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
+    "address": "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359",
     "decimals": 6,
     "symbol": "USDC",
+    "name": "USD Coin"
+  },
+  "aPolUSDCn": {
+    "chainId": 137,
+    "address": "0xA4D94019934D8333Ef880ABFFbF2FDd611C762BD",
+    "decimals": 6,
+    "symbol": "aPolUSDCn",
+    "name": "Aave Polygon USDCn"
+  },
+  "USDC.e": {
+    "chainId": 137,
+    "address": "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
+    "decimals": 6,
+    "symbol": "USDC.e",
     "name": "USD Coin (PoS)"
   },
   "aPolUSDC": {

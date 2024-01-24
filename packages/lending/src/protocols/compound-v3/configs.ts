@@ -1,4 +1,4 @@
-import { arbitrumTokens, mainnetTokens, polygonTokens } from './tokens';
+import { arbitrumTokens, baseTokens, mainnetTokens, polygonTokens } from './tokens';
 import * as common from '@protocolink/common';
 import * as logics from '@protocolink/logics';
 
@@ -68,6 +68,27 @@ export const configs: Config[] = [
         cToken: polygonTokens.cUSDCv3,
         baseToken: polygonTokens.USDC,
         baseTokenPriceFeedAddress: '0xfE4A8cc5b5B2366C1B58Bea3858e81843581b2F7',
+      },
+    ],
+  },
+  {
+    chainId: common.ChainId.base,
+    markets: [
+      {
+        id: logics.compoundv3.MarketId.USDbC,
+        cometAddress: baseTokens.cUSDbCv3.address,
+        cToken: baseTokens.cUSDbCv3,
+        baseToken: baseTokens.USDbC,
+        baseTokenPriceFeedAddress: '0x7e860098F58bBFC8648a4311b374B1D669a2bc6B', // USDC price feed
+      },
+      {
+        id: logics.compoundv3.MarketId.ETH,
+        cometAddress: baseTokens.cWETHv3.address,
+        cToken: baseTokens.cWETHv3,
+        baseToken: baseTokens.WETH,
+        baseTokenPriceFeedAddress: '0x9f485610E26B9c0140439f88Dc0C7742903Bd1CF', // ETH price feed
+        // because the ETH market uses ETH price as the quote, we need to get the price of ETH separately.
+        baseTokenQuotePriceFeedAddress: '0x71041dddad3595f9ced3dccfbe3d1f4b0a16bb70',
       },
     ],
   },

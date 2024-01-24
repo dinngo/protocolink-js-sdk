@@ -4,13 +4,14 @@ import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 import * as aaveV2 from 'src/protocols/aave-v2/tokens';
 import * as aaveV3 from 'src/protocols/aave-v3/tokens';
 import * as apisdk from '@protocolink/api';
-import { claimToken, getBalance, mainnetTokens, snapshotAndRevertEach } from '@protocolink/test-helpers';
 import * as common from '@protocolink/common';
 import { expect } from 'chai';
+import { getBalance, mainnetTokens, snapshotAndRevertEach } from '@protocolink/test-helpers';
 import hre from 'hardhat';
 import * as logics from '@protocolink/logics';
 import * as morphoblue from 'src/protocols/morphoblue/tokens';
 import * as radiantV2 from 'src/protocols/radiant-v2/tokens';
+import * as spark from 'src/protocols/spark/tokens';
 
 describe('Transaction: Leverage Long', function () {
   const chainId = 1;
@@ -24,11 +25,6 @@ describe('Transaction: Leverage Long', function () {
 
   before(async function () {
     adapter = new Adapter(chainId, hre.ethers.provider);
-    await claimToken(chainId, '0x7F67F6A09bcb2159b094B64B4acc53D5193AEa2E', mainnetTokens.USDC, '1000');
-    await claimToken(chainId, '0x0E79368B079910b31e71Ce1B2AE510461359128D', mainnetTokens.USDC, '1000');
-    await claimToken(chainId, '0x06e4cb4f3ba9a2916b6384acbdeaa74daaf91550', mainnetTokens.USDC, '1000');
-    await claimToken(chainId, '0x53fb0162bC8d5EEc2fB1532923C4f8997BAce111', mainnetTokens.USDC, '1000');
-    await claimToken(chainId, '0x9cbf099ff424979439dfba03f00b5961784c06ce', mainnetTokens.USDC, '1000');
   });
 
   snapshotAndRevertEach();
@@ -75,14 +71,16 @@ describe('Transaction: Leverage Long', function () {
         },
       },
       {
-        protocolId: 'morphoblue',
-        marketId: '0xb323495f7e4148be5643a4ea4a8221eef163e4bccfdedc2a6f4696baacbc86cc',
-        account: '0x9cbf099ff424979439dfba03f00b5961784c06ce',
-        srcToken: morphoblue.mainnetTokens.wstETH,
-        srcAmount: '0.001',
-        destToken: mainnetTokens.USDC,
+        protocolId: 'spark',
+        marketId: 'mainnet',
+        account: '0x8bf7058bfe4cf0d1fdfd41f43816c5555c17431d',
+        srcToken: mainnetTokens.WETH,
+        srcAmount: '1',
+        srcAToken: spark.mainnetTokens.spWETH,
+        destToken: mainnetTokens.DAI,
+        destDebtToken: '0xf705d2B7e92B3F38e6ae7afaDAA2fEE110fE5914', // DAI_variableDebtToken
         expects: {
-          logicLength: 5,
+          logicLength: 6,
         },
       },
       {
@@ -91,6 +89,17 @@ describe('Transaction: Leverage Long', function () {
         account: '0x53fb0162bC8d5EEc2fB1532923C4f8997BAce111',
         srcToken: mainnetTokens.WETH,
         srcAmount: '1',
+        destToken: mainnetTokens.USDC,
+        expects: {
+          logicLength: 5,
+        },
+      },
+      {
+        protocolId: 'morphoblue',
+        marketId: '0xb323495f7e4148be5643a4ea4a8221eef163e4bccfdedc2a6f4696baacbc86cc',
+        account: '0x9cbf099ff424979439dfba03f00b5961784c06ce',
+        srcToken: morphoblue.mainnetTokens.wstETH,
+        srcAmount: '0.001',
         destToken: mainnetTokens.USDC,
         expects: {
           logicLength: 5,

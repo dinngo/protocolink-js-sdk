@@ -335,10 +335,6 @@ export class LendingProtocol extends Protocol {
     return this.getPortfolios(account).then((portfolios) => portfolios[0]);
   }
 
-  override canLeverage(_marketId: string, assetToken: common.Token) {
-    return assetToken.symbol !== 'GHO';
-  }
-
   toUnderlyingToken(_marketId: string, protocolToken: common.Token) {
     return toToken(this.chainId, protocolToken);
   }
@@ -352,31 +348,31 @@ export class LendingProtocol extends Protocol {
   }
 
   newSupplyLogic({ marketId, input }: SupplyParams) {
-    return apisdk.protocols.aavev3.newSupplyLogic({
+    return apisdk.protocols.spark.newSupplyLogic({
       input,
       output: new common.TokenAmount(this.toProtocolToken(marketId, input.token), input.amount),
     });
   }
 
   newWithdrawLogic({ marketId, output }: WithdrawParams) {
-    return apisdk.protocols.aavev3.newWithdrawLogic({
+    return apisdk.protocols.spark.newWithdrawLogic({
       input: new common.TokenAmount(this.toProtocolToken(marketId, output.token), output.amount),
       output,
     });
   }
 
   newBorrowLogic({ output }: BorrowParams) {
-    return apisdk.protocols.aavev3.newBorrowLogic({
+    return apisdk.protocols.spark.newBorrowLogic({
       output,
-      interestRateMode: logics.aavev3.InterestRateMode.variable,
+      interestRateMode: logics.spark.InterestRateMode.variable,
     });
   }
 
   newRepayLogic({ input, account }: RepayParams) {
-    return apisdk.protocols.aavev3.newRepayLogic({
+    return apisdk.protocols.spark.newRepayLogic({
       input,
       borrower: account,
-      interestRateMode: logics.aavev3.InterestRateMode.variable,
+      interestRateMode: logics.spark.InterestRateMode.variable,
     });
   }
 }

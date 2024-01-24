@@ -1,0 +1,65 @@
+{
+  "xDAI": {
+    "chainId": 100,
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18,
+    "symbol": "xDAI",
+    "name": "xDai"
+  },
+  "WXDAI": {
+    "chainId": 100,
+    "address": "0xe91D153E0b41518A2Ce8Dd3D7944Fa863463a97d",
+    "decimals": 18,
+    "symbol": "DAI",
+    "name": "Wrapped XDAI"
+  },
+  "spWXDAI": {
+    "chainId": 100,
+    "address": "0xC9Fe2D32E96Bb364c7d29f3663ed3b27E30767bB",
+    "decimals": 18,
+    "symbol": "spWXDAI",
+    "name": "Spark WXDAI"
+  },
+  "WETH": {
+    "chainId": 100,
+    "address": "0x6A023CCd1ff6F2045C3309768eAd9E68F978f6e1",
+    "decimals": 18,
+    "symbol": "WETH",
+    "name": "Wrapped Ether on xDai"
+  },
+  "spWETH": {
+    "chainId": 100,
+    "address": "0x629D562E92fED431122e865Cc650Bc6bdE6B96b0",
+    "decimals": 18,
+    "symbol": "spWETH",
+    "name": "Spark WETH"
+  },
+  "wstETH": {
+    "chainId": 100,
+    "address": "0x6C76971f98945AE98dD7d4DFcA8711ebea946eA6",
+    "decimals": 18,
+    "symbol": "wstETH",
+    "name": "Wrapped liquid staked Ether 2.0 from Mainnet"
+  },
+  "spwstETH": {
+    "chainId": 100,
+    "address": "0x9Ee4271E17E3a427678344fd2eE64663Cb78B4be",
+    "decimals": 18,
+    "symbol": "spwstETH",
+    "name": "Spark wstETH"
+  },
+  "GNO": {
+    "chainId": 100,
+    "address": "0x9c58bacc331c9aa871afd802db6379a98e80cedb",
+    "decimals": 18,
+    "symbol": "GNO",
+    "name": "Gnosis Token on xDai"
+  },
+  "spGNO": {
+    "chainId": 100,
+    "address": "0x5671b0B8aC13DC7813D36B99C21c53F6cd376a14",
+    "decimals": 18,
+    "symbol": "spGNO",
+    "name": "Spark GNO"
+  }
+}

@@ -12,6 +12,7 @@ import hre from 'hardhat';
 import * as logics from '@protocolink/logics';
 import * as morphoblue from 'src/protocols/morphoblue/tokens';
 import * as radiantV2 from 'src/protocols/radiant-v2/tokens';
+import { spark } from '@protocolink/logics';
 import * as utils from 'test/utils';
 
 describe('Transaction: Zap Supply', function () {
@@ -62,6 +63,17 @@ describe('Transaction: Zap Supply', function () {
         srcAmount: '100',
         destToken: mainnetTokens.WBTC,
         destAToken: aaveV3.mainnetTokens.aEthWBTC,
+        expects: {
+          logicLength: 2,
+        },
+      },
+      {
+        protocolId: 'spark',
+        marketId: 'mainnet',
+        srcToken: mainnetTokens.USDC,
+        srcAmount: '100',
+        destToken: mainnetTokens.WETH,
+        destAToken: spark.mainnetTokens.spWETH,
         expects: {
           logicLength: 2,
         },
