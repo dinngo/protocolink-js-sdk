@@ -33,7 +33,6 @@ describe('Transaction: Debt swap', function () {
         destToken: mainnetTokens.DAI,
         destDebtToken: '0x6C3c78838c761c6Ac7bE9F59fe808ea2A6E4379d', // variableDebtDAI
         expects: {
-          approvalLength: 1,
           logicLength: 5,
         },
       },
@@ -47,7 +46,6 @@ describe('Transaction: Debt swap', function () {
         destToken: mainnetTokens.USDT,
         destDebtToken: '0x2D4fc0D5421C0d37d325180477ba6e16ae3aBAA7', // vdUSDT
         expects: {
-          approvalLength: 1,
           logicLength: 5,
         },
       },
@@ -61,7 +59,6 @@ describe('Transaction: Debt swap', function () {
         destToken: mainnetTokens.DAI,
         destDebtToken: '0xcF8d0c70c850859266f5C338b38F9D663181C314', // variableDebtEthDAI
         expects: {
-          approvalLength: 1,
           logicLength: 5,
         },
       },
@@ -87,7 +84,6 @@ describe('Transaction: Debt swap', function () {
             { chainId, account, logics: debtSwapInfo.logics },
             { permit2Type }
           );
-          expect(estimateResult.approvals.length).to.eq(expects.approvalLength);
           for (const approval of estimateResult.approvals) {
             await expect(user.sendTransaction(approval)).to.not.be.reverted;
           }

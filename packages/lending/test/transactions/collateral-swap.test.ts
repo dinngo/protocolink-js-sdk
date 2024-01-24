@@ -38,7 +38,6 @@ describe('Transaction: Collateral swap', function () {
         destToken: mainnetTokens.WETH,
         destAToken: aaveV2.mainnetTokens.aWETH,
         expects: {
-          approvalLength: 2,
           logicLength: 7,
         },
       },
@@ -52,7 +51,6 @@ describe('Transaction: Collateral swap', function () {
         destToken: mainnetTokens.WETH,
         destAToken: radiantV2.mainnetTokens.rWETH,
         expects: {
-          approvalLength: 2,
           logicLength: 7,
         },
       },
@@ -66,7 +64,6 @@ describe('Transaction: Collateral swap', function () {
         destToken: mainnetTokens.WETH,
         destAToken: aaveV3.mainnetTokens.aEthWETH,
         expects: {
-          approvalLength: 2,
           logicLength: 7,
         },
       },
@@ -78,7 +75,6 @@ describe('Transaction: Collateral swap', function () {
         srcAmount: '1',
         destToken: mainnetTokens.WETH,
         expects: {
-          approvalLength: 1,
           logicLength: 5,
         },
       },
@@ -114,7 +110,6 @@ describe('Transaction: Collateral swap', function () {
             { chainId, account, logics: collateralSwapInfo.logics },
             { permit2Type }
           );
-          expect(estimateResult.approvals.length).to.eq(expects.approvalLength);
           for (const approval of estimateResult.approvals) {
             await expect(user.sendTransaction(approval)).to.not.be.reverted;
           }

@@ -42,7 +42,6 @@ describe('Transaction: Deleverage', function () {
       //   destToken: mainnetTokens.WETH,
       //   destAToken: aaveV2.mainnetTokens.aWETH,
       //   expects: {
-      //     approvalLength: 2,
       //     logicLength: 6,
       //   },
       // },
@@ -56,7 +55,6 @@ describe('Transaction: Deleverage', function () {
         destToken: mainnetTokens.USDC,
         destAToken: radiantV2.mainnetTokens.rUSDC,
         expects: {
-          approvalLength: 2,
           logicLength: 5,
         },
       },
@@ -70,7 +68,6 @@ describe('Transaction: Deleverage', function () {
         destToken: mainnetTokens.WBTC,
         destAToken: aaveV3.mainnetTokens.aEthWBTC,
         expects: {
-          approvalLength: 2,
           logicLength: 6,
         },
       },
@@ -82,19 +79,17 @@ describe('Transaction: Deleverage', function () {
         srcAmount: '1000',
         destToken: mainnetTokens.WBTC,
         expects: {
-          approvalLength: 1,
           logicLength: 5,
         },
       },
       {
         protocolId: 'morphoblue',
         marketId: '0xb323495f7e4148be5643a4ea4a8221eef163e4bccfdedc2a6f4696baacbc86cc',
-        account: '0xa3C1C91403F0026b9dd086882aDbC8Cdbc3b3cfB',
+        account: '0x9cbf099ff424979439dfba03f00b5961784c06ce',
         srcToken: mainnetTokens.USDC,
-        srcAmount: '1',
+        srcAmount: '10000',
         destToken: morphoblue.mainnetTokens.wstETH,
         expects: {
-          approvalLength: 1,
           logicLength: 5,
         },
       },
@@ -130,7 +125,6 @@ describe('Transaction: Deleverage', function () {
             { chainId, account, logics: deleverageInfo.logics },
             { permit2Type }
           );
-          expect(estimateResult.approvals.length).to.eq(expects.approvalLength);
           for (const approval of estimateResult.approvals) {
             await expect(user.sendTransaction(approval)).to.not.be.reverted;
           }

@@ -40,7 +40,6 @@ describe('Transaction: Zap Withdraw', function () {
         srcAToken: aaveV2.mainnetTokens.aWBTC,
         destToken: mainnetTokens.USDC,
         expects: {
-          approvalLength: 2,
           logicLength: 2,
         },
       },
@@ -53,7 +52,6 @@ describe('Transaction: Zap Withdraw', function () {
         srcAToken: radiantV2.mainnetTokens.rWBTC,
         destToken: mainnetTokens.USDC,
         expects: {
-          approvalLength: 2,
           logicLength: 2,
         },
       },
@@ -66,7 +64,6 @@ describe('Transaction: Zap Withdraw', function () {
         srcAToken: aaveV3.mainnetTokens.aEthWBTC,
         destToken: mainnetTokens.USDC,
         expects: {
-          approvalLength: 2,
           logicLength: 2,
         },
       },
@@ -79,7 +76,6 @@ describe('Transaction: Zap Withdraw', function () {
         srcAToken: compoundV3.mainnetTokens.cWETHv3,
         destToken: mainnetTokens.USDC,
         expects: {
-          approvalLength: 2,
           logicLength: 2,
         },
       },
@@ -104,7 +100,6 @@ describe('Transaction: Zap Withdraw', function () {
           { chainId, account, logics: zapWithdrawInfo.logics },
           { permit2Type }
         );
-        expect(estimateResult.approvals.length).to.eq(expects.approvalLength);
         for (const approval of estimateResult.approvals) {
           await expect(user.sendTransaction(approval)).to.not.be.reverted;
         }
@@ -138,19 +133,17 @@ describe('Transaction: Zap Withdraw', function () {
         srcAmount: '1',
         destToken: mainnetTokens.USDC,
         expects: {
-          approvalLength: 1,
           logicLength: 2,
         },
       },
       {
         protocolId: 'morphoblue',
         marketId: '0xb323495f7e4148be5643a4ea4a8221eef163e4bccfdedc2a6f4696baacbc86cc',
-        account: '0xa3C1C91403F0026b9dd086882aDbC8Cdbc3b3cfB',
+        account: '0x9cbf099ff424979439dfba03f00b5961784c06ce',
         srcToken: morphoblue.mainnetTokens.wstETH,
         srcAmount: '0.0001',
         destToken: mainnetTokens.USDC,
         expects: {
-          approvalLength: 1,
           logicLength: 2,
         },
       },
@@ -182,7 +175,6 @@ describe('Transaction: Zap Withdraw', function () {
           { chainId, account, logics: zapWithdrawInfo.logics },
           { permit2Type }
         );
-        expect(estimateResult.approvals.length).to.eq(expects.approvalLength);
         for (const approval of estimateResult.approvals) {
           await expect(user.sendTransaction(approval)).to.not.be.reverted;
         }

@@ -4,6 +4,9 @@ on:
   push:
   pull_request:
 
+env:
+  MAINNET_RPC_URL: ${{ secrets.MAINNET_RPC_URL }}
+
 jobs:
   run-e2e-test:
     name: Run e2e test

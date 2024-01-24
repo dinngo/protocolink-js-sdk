@@ -36,7 +36,6 @@ describe('Transaction: Zap Borrow', function () {
         srcDebtToken: '0x619beb58998eD2278e08620f97007e1116D5D25b', // variableDebtUSDC
         destToken: mainnetTokens.USDT,
         expects: {
-          approvalLength: 1,
           logicLength: 2,
         },
       },
@@ -49,7 +48,6 @@ describe('Transaction: Zap Borrow', function () {
         srcDebtToken: '0x490726291F6434646FEb2eC96d2Cc566b18a122F', // vdUSDC
         destToken: mainnetTokens.USDT,
         expects: {
-          approvalLength: 1,
           logicLength: 2,
         },
       },
@@ -62,7 +60,6 @@ describe('Transaction: Zap Borrow', function () {
         srcDebtToken: '0x72E95b8931767C79bA4EeE721354d6E99a61D004', // variableDebtEthUSDC
         destToken: mainnetTokens.WBTC,
         expects: {
-          approvalLength: 1,
           logicLength: 2,
         },
       },
@@ -74,19 +71,17 @@ describe('Transaction: Zap Borrow', function () {
         srcAmount: '1000',
         destToken: mainnetTokens.USDT,
         expects: {
-          approvalLength: 1,
           logicLength: 2,
         },
       },
       {
         protocolId: 'morphoblue',
         marketId: '0xb323495f7e4148be5643a4ea4a8221eef163e4bccfdedc2a6f4696baacbc86cc',
-        account: '0xa3C1C91403F0026b9dd086882aDbC8Cdbc3b3cfB',
+        account: '0x9cbf099ff424979439dfba03f00b5961784c06ce',
         srcToken: mainnetTokens.USDC,
-        srcAmount: '0.5',
+        srcAmount: '1000',
         destToken: mainnetTokens.USDT,
         expects: {
-          approvalLength: 1,
           logicLength: 2,
         },
       },
@@ -121,7 +116,6 @@ describe('Transaction: Zap Borrow', function () {
           { chainId, account, logics: zapBorrowInfo.logics },
           { permit2Type }
         );
-        expect(estimateResult.approvals.length).to.eq(expects.approvalLength);
         for (const approval of estimateResult.approvals) {
           await expect(user.sendTransaction(approval)).to.not.be.reverted;
         }

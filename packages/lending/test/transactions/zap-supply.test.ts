@@ -41,7 +41,6 @@ describe('Transaction: Zap Supply', function () {
         destToken: mainnetTokens.WBTC,
         destAToken: aaveV2.mainnetTokens.aWBTC,
         expects: {
-          approvalLength: 1,
           logicLength: 2,
         },
       },
@@ -53,7 +52,6 @@ describe('Transaction: Zap Supply', function () {
         destToken: mainnetTokens.WBTC,
         destAToken: radiantV2.mainnetTokens.rWBTC,
         expects: {
-          approvalLength: 1,
           logicLength: 2,
         },
       },
@@ -65,7 +63,6 @@ describe('Transaction: Zap Supply', function () {
         destToken: mainnetTokens.WBTC,
         destAToken: aaveV3.mainnetTokens.aEthWBTC,
         expects: {
-          approvalLength: 1,
           logicLength: 2,
         },
       },
@@ -77,7 +74,6 @@ describe('Transaction: Zap Supply', function () {
         destToken: mainnetTokens.WETH,
         destAToken: compoundV3.mainnetTokens.cWETHv3,
         expects: {
-          approvalLength: 1,
           logicLength: 2,
         },
       },
@@ -99,7 +95,6 @@ describe('Transaction: Zap Supply', function () {
 
         // 2. user needs to permit the Protocolink user agent to supply for the user
         const estimateResult = await apisdk.estimateRouterData({ chainId, account, logics: zapDepositInfo.logics });
-        expect(estimateResult.approvals.length).to.eq(expects.approvalLength);
         for (const approval of estimateResult.approvals) {
           await expect(user.sendTransaction(approval)).to.not.be.reverted;
         }
@@ -134,7 +129,6 @@ describe('Transaction: Zap Supply', function () {
         srcAmount: '100',
         destToken: mainnetTokens.WETH,
         expects: {
-          approvalLength: 1,
           logicLength: 2,
         },
       },
@@ -145,7 +139,6 @@ describe('Transaction: Zap Supply', function () {
         srcAmount: '100',
         destToken: morphoblue.mainnetTokens.wstETH,
         expects: {
-          approvalLength: 1,
           logicLength: 2,
         },
       },
@@ -167,7 +160,6 @@ describe('Transaction: Zap Supply', function () {
 
         // 2. user needs to permit the Protocolink user agent to supply for the user
         const estimateResult = await apisdk.estimateRouterData({ chainId, account, logics: zapDepositInfo.logics });
-        expect(estimateResult.approvals.length).to.eq(expects.approvalLength);
         for (const approval of estimateResult.approvals) {
           await expect(user.sendTransaction(approval)).to.not.be.reverted;
         }

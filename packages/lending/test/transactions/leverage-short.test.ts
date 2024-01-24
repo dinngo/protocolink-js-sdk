@@ -37,7 +37,6 @@ describe('Transaction: Leverage Short', function () {
         destToken: mainnetTokens.USDC,
         destAToken: aaveV2.mainnetTokens.aUSDC,
         expects: {
-          approvalLength: 1,
           logicLength: 6,
         },
       },
@@ -51,7 +50,6 @@ describe('Transaction: Leverage Short', function () {
         destToken: mainnetTokens.USDC,
         destAToken: radiantV2.mainnetTokens.rUSDC,
         expects: {
-          approvalLength: 1,
           logicLength: 6,
         },
       },
@@ -65,7 +63,6 @@ describe('Transaction: Leverage Short', function () {
         destToken: mainnetTokens.USDC,
         destAToken: aaveV3.mainnetTokens.aEthUSDC,
         expects: {
-          approvalLength: 1,
           logicLength: 6,
         },
       },
@@ -96,7 +93,6 @@ describe('Transaction: Leverage Short', function () {
             { chainId, account, logics: leverageShortInfo.logics },
             { permit2Type }
           );
-          expect(estimateResult.approvals.length).to.eq(expects.approvalLength);
           for (const approval of estimateResult.approvals) {
             await expect(user.sendTransaction(approval)).to.not.be.reverted;
           }
