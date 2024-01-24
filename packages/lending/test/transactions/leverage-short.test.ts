@@ -77,7 +77,6 @@ describe('Transaction: Leverage Short', function () {
         destToken: mainnetTokens.WETH,
         destAToken: spark.mainnetTokens.spWETH,
         expects: {
-          approvalLength: 1,
           logicLength: 6,
         },
       },

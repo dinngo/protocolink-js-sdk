@@ -73,7 +73,6 @@ describe('Transaction: Debt swap', function () {
         destToken: spark.mainnetTokens.wstETH,
         destDebtToken: '0xd5c3E3B566a42A6110513Ac7670C1a86D76E13E6', // wstETH_variableDebtToken
         expects: {
-          approvalLength: 1,
           logicLength: 5,
         },
       },

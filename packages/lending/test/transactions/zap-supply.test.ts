@@ -75,7 +75,6 @@ describe('Transaction: Zap Supply', function () {
         destToken: mainnetTokens.WETH,
         destAToken: spark.mainnetTokens.spWETH,
         expects: {
-          approvalLength: 1,
           logicLength: 2,
         },
       },

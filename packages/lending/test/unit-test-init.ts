@@ -3,6 +3,9 @@ import { aavev2, aavev3, compoundv3, morphoblue, radiantv2, spark } from 'src/pr
 import * as common from '@protocolink/common';
 import { paraswapv5 } from 'src/swappers';
 
+if (process.env.MAINNET_RPC_URL) {
+  common.setNetwork(common.ChainId.mainnet, { rpcUrl: process.env.MAINNET_RPC_URL });
+}
 common.setNetwork(common.ChainId.arbitrum, { rpcUrl: 'https://arbitrum-one-rpc.allthatnode.com' });
 
 Adapter.registerProtocol(aavev2.LendingProtocol);

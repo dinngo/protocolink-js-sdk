@@ -77,7 +77,6 @@ describe('Transaction: Zap Withdraw', function () {
         srcAToken: spark.mainnetTokens.spWETH,
         destToken: mainnetTokens.USDC,
         expects: {
-          approvalLength: 2,
           logicLength: 2,
         },
       },

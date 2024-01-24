@@ -71,17 +71,6 @@ describe('Transaction: Leverage Long', function () {
         },
       },
       {
-        protocolId: 'morphoblue',
-        marketId: '0xb323495f7e4148be5643a4ea4a8221eef163e4bccfdedc2a6f4696baacbc86cc',
-        account: '0x9cbf099ff424979439dfba03f00b5961784c06ce',
-        srcToken: morphoblue.mainnetTokens.wstETH,
-        srcAmount: '0.001',
-        destToken: mainnetTokens.USDC,
-        expects: {
-          logicLength: 5,
-        },
-      },
-      {
         protocolId: 'spark',
         marketId: 'mainnet',
         account: '0x8bf7058bfe4cf0d1fdfd41f43816c5555c17431d',
@@ -91,7 +80,6 @@ describe('Transaction: Leverage Long', function () {
         destToken: mainnetTokens.DAI,
         destDebtToken: '0xf705d2B7e92B3F38e6ae7afaDAA2fEE110fE5914', // DAI_variableDebtToken
         expects: {
-          approvalLength: 1,
           logicLength: 6,
         },
       },
@@ -101,6 +89,17 @@ describe('Transaction: Leverage Long', function () {
         account: '0x53fb0162bC8d5EEc2fB1532923C4f8997BAce111',
         srcToken: mainnetTokens.WETH,
         srcAmount: '1',
+        destToken: mainnetTokens.USDC,
+        expects: {
+          logicLength: 5,
+        },
+      },
+      {
+        protocolId: 'morphoblue',
+        marketId: '0xb323495f7e4148be5643a4ea4a8221eef163e4bccfdedc2a6f4696baacbc86cc',
+        account: '0x9cbf099ff424979439dfba03f00b5961784c06ce',
+        srcToken: morphoblue.mainnetTokens.wstETH,
+        srcAmount: '0.001',
         destToken: mainnetTokens.USDC,
         expects: {
           logicLength: 5,

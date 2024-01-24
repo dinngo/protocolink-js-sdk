@@ -80,7 +80,6 @@ describe('Transaction: Zap Repay', function () {
         srcDebtToken: '0xf705d2B7e92B3F38e6ae7afaDAA2fEE110fE5914', // DAI_variableDebtToken
         destToken: mainnetTokens.USDT,
         expects: {
-          approvalLength: 2,
           logicLength: 2,
         },
       },

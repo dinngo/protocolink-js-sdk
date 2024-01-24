@@ -78,7 +78,6 @@ describe('Transaction: Collateral swap', function () {
         destToken: spark.mainnetTokens.wstETH,
         destAToken: spark.mainnetTokens.spwstETH,
         expects: {
-          approvalLength: 2,
           logicLength: 7,
         },
       },

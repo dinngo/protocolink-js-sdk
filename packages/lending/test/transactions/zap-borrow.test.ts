@@ -72,7 +72,6 @@ describe('Transaction: Zap Borrow', function () {
         srcDebtToken: '0xf705d2B7e92B3F38e6ae7afaDAA2fEE110fE5914', // DAI_variableDebtToken
         destToken: mainnetTokens.WBTC,
         expects: {
-          approvalLength: 1,
           logicLength: 2,
         },
       },

@@ -4,6 +4,9 @@ on:
   push:
   pull_request:
 
+env:
+  MAINNET_RPC_URL: ${{ secrets.MAINNET_RPC_URL }}
+
 jobs:
   run-unit-test:
     name: Run unit test
