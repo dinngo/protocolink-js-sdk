@@ -9,7 +9,7 @@ import optimismTokensJSON from './data/optimism.json';
 import polygonTokensJSON from './data/polygon.json';
 
 type ArbitrumTokenSymbols = keyof typeof arbitrumTokensJSON;
-type AavalancheTokenSymbols = keyof typeof avalancheTokensJSON;
+type AvalancheTokenSymbols = keyof typeof avalancheTokensJSON;
 type BaseTokenSymbols = keyof typeof baseTokensJSON;
 type GnosisTokenSymbols = keyof typeof gnosisTokensJSON;
 type MainnetTokenSymbols = keyof typeof mainnetTokensJSON;
@@ -18,7 +18,7 @@ type OptimismTokenSymbols = keyof typeof optimismTokensJSON;
 type PolygonTokenSymbols = keyof typeof polygonTokensJSON;
 
 export const arbitrumTokens = common.toTokenMap<ArbitrumTokenSymbols>(arbitrumTokensJSON);
-export const avalancheTokens = common.toTokenMap<AavalancheTokenSymbols>(avalancheTokensJSON);
+export const avalancheTokens = common.toTokenMap<AvalancheTokenSymbols>(avalancheTokensJSON);
 export const baseTokens = common.toTokenMap<BaseTokenSymbols>(baseTokensJSON);
 export const gnosisTokens = common.toTokenMap<GnosisTokenSymbols>(gnosisTokensJSON);
 export const mainnetTokens = common.toTokenMap<MainnetTokenSymbols>(mainnetTokensJSON);

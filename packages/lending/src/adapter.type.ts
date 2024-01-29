@@ -9,6 +9,7 @@ export interface OperationInput {
   srcAmount: string;
   destToken: common.Token;
   slippage?: number;
+  isRepayAll?: boolean;
 }
 
 export class OperationError extends Error {

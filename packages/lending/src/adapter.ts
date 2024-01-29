@@ -337,6 +337,7 @@ export class Adapter extends common.Web3Toolkit {
    * @param {string} input.srcAmount - The amount of source token.
    * @param {common.Token} input.destToken - Destination token: the debt to be swapped to.
    * @param {number} [input.slippage=defaultSlippage] - The slippage tolerance. Optional.
+   * @param {boolean} [input.isRepayAll=false] - Flag to indicate if the entire debt should be repaid. Optional.
    * @returns {Promise<OperationOutput>} The result including the destination amount,
    * after portfolio, potential errors, and logic operations.
    *
@@ -353,6 +354,7 @@ export class Adapter extends common.Web3Toolkit {
     srcAmount,
     destToken,
     slippage = defaultSlippage,
+    isRepayAll = false,
   }: OperationInput): Promise<OperationOutput> {
     const output: OperationOutput = {
       destAmount: '0',
@@ -376,7 +378,7 @@ export class Adapter extends common.Web3Toolkit {
           }
 
           // 2. scale src amount if user wants to repay all
-          if (new BigNumberJS(srcAmount).eq(srcBorrow.balances[0])) {
+          if (isRepayAll || new BigNumberJS(srcAmount).eq(srcBorrow.balances[0])) {
             srcAmount = scaleRepayAmount(srcToken, srcAmount, slippage);
           }
 
@@ -733,6 +735,7 @@ export class Adapter extends common.Web3Toolkit {
    * @param {string} input.srcAmount - The amount of source token.
    * @param {common.Token} input.destToken - Destination token: the collateral token.
    * @param {number} [input.slippage=defaultSlippage] - The slippage tolerance. Optional.
+   * @param {boolean} [input.isRepayAll=false] - Flag to indicate if the entire debt should be repaid. Optional.
    * @returns {Promise<OperationOutput>} The result including the destination amount,
    * after portfolio, potential errors, and logic operations.
    *
@@ -750,6 +753,7 @@ export class Adapter extends common.Web3Toolkit {
     srcAmount,
     destToken,
     slippage = defaultSlippage,
+    isRepayAll = false,
   }: OperationInput): Promise<OperationOutput> {
     const output: OperationOutput = {
       destAmount: '0',
@@ -780,7 +784,7 @@ export class Adapter extends common.Web3Toolkit {
           // 2-1. the src token is equal to dest token
           if (srcToken.wrapped.is(destToken.wrapped)) {
             // 2-1-1. scale src amount if user wants to repay all
-            if (new BigNumberJS(srcAmount).eq(srcBorrow.balances[0])) {
+            if (isRepayAll || new BigNumberJS(srcAmount).eq(srcBorrow.balances[0])) {
               srcAmount = scaleRepayAmount(srcToken, srcAmount, 1);
             }
             // 2-1-2. the flash loan loan amount and repay amount are the src amount
@@ -790,7 +794,7 @@ export class Adapter extends common.Web3Toolkit {
           // 2-2. the src token is not equal to dest token
           else {
             // 2-2-1. scale src amount if user wants to repay all
-            if (new BigNumberJS(srcAmount).eq(srcBorrow.balances[0])) {
+            if (isRepayAll || new BigNumberJS(srcAmount).eq(srcBorrow.balances[0])) {
               srcAmount = scaleRepayAmount(srcToken, srcAmount, slippage);
             }
             swapper = this.findSwapper([destToken.wrapped, srcToken.wrapped]);
@@ -1154,6 +1158,7 @@ export class Adapter extends common.Web3Toolkit {
    * @param {string} input.srcAmount - The amount of source token.
    * @param {common.Token} input.destToken - Destination token: the token to be provided by user.
    * @param {number} [input.slippage=defaultSlippage] - The slippage tolerance. Optional.
+   * @param {boolean} [input.isRepayAll=false] - Flag to indicate if the entire debt should be repaid. Optional.
    * @returns {Promise<OperationOutput>} The result including the destination amount,
    * after portfolio, potential errors, and logic operations.
    *
@@ -1167,6 +1172,7 @@ export class Adapter extends common.Web3Toolkit {
     srcAmount,
     destToken,
     slippage = defaultSlippage,
+    isRepayAll = false,
   }: OperationInput): Promise<OperationOutput> {
     const output: OperationOutput = {
       destAmount: '0',
@@ -1195,7 +1201,7 @@ export class Adapter extends common.Web3Toolkit {
             // 2-1-1. set dest amount
             output.destAmount = srcAmount;
             // 2-1-2. scale src amount if user wants to repay all
-            if (new BigNumberJS(srcAmount).eq(srcBorrow.balances[0])) {
+            if (isRepayAll || new BigNumberJS(srcAmount).eq(srcBorrow.balances[0])) {
               srcAmount = scaleRepayAmount(srcToken, srcAmount, 1);
             }
             // 2-1-3. the repay amount is the src amount
@@ -1205,7 +1211,7 @@ export class Adapter extends common.Web3Toolkit {
           else {
             const swapper = this.findSwapper([destToken, srcToken.wrapped]);
             // 2-2-1. scale src amount if user wants to repay all
-            if (new BigNumberJS(srcAmount).eq(srcBorrow.balances[0])) {
+            if (isRepayAll || new BigNumberJS(srcAmount).eq(srcBorrow.balances[0])) {
               srcAmount = scaleRepayAmount(srcToken, srcAmount, slippage);
             }
             let swapQuotation: SwapperQuoteFields;
