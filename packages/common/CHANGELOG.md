@@ -1,5 +1,11 @@
 # @protocolink/common
 
+## 0.3.7
+
+### Patch Changes
+
+- 95112fc: add setNetwork for mainnet
+
 ## 0.3.6
 
 ### Patch Changes
