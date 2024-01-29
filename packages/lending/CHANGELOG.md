@@ -1,5 +1,18 @@
 # @protocolink/lending
 
+## 1.0.9
+
+### Patch Changes
+
+- 3055522: add mainnet setNetwork in hooks.ts
+- 7f83ad7: rename bridged USDC to USDC.e
+- ae2f2b8: remove approval check in e2e test
+- ea0815c: add Compound V3 on Base
+- 8c2d595: add Spark on Ethereum
+- 3c27c95: add AAVE V3 on Base and Gnosis
+- 6c9c019: add isRepayAll to lending sdk
+- b81282c: add AAVE V3, Compound V3 lending protocol test
+
 ## 1.0.8
 
 ### Patch Changes
