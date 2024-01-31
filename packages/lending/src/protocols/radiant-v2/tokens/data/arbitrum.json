@@ -41,6 +41,20 @@
     "symbol": "rUSDC",
     "name": "Radiant interest bearing USDC"
   },
+  "USDC": {
+    "chainId": 42161,
+    "address": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    "decimals": 6,
+    "symbol": "USDC",
+    "name": "USD Coin"
+  },
+  "rUSDCn": {
+    "chainId": 42161,
+    "address": "0x3a2d44e354f2d88EF6DA7A5A4646fd70182A7F55",
+    "decimals": 6,
+    "symbol": "rUSDCn",
+    "name": "Radiant interest bearing USDCn"
+  },
   "DAI": {
     "chainId": 42161,
     "address": "0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1",

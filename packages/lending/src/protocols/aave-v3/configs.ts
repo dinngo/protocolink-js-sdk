@@ -227,7 +227,7 @@ export const configs: Config[] = [
       {
         asset: gnosisTokens.sDAI,
         aToken: gnosisTokens.aGnosDAI,
-        used: { deposit: true, withdraw: true, borrow: true, repay: true, flashLoan: true },
+        used: { deposit: true, withdraw: true, flashLoan: true },
       },
     ],
   },

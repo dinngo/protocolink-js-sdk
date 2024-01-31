@@ -42,11 +42,16 @@ export const configs: Config[] = [
       {
         asset: mainnetTokens.sDAI,
         aToken: mainnetTokens.spsDAI,
-        used: { deposit: true, withdraw: true, borrow: true, repay: true, flashLoan: true },
+        used: { deposit: true, withdraw: true, flashLoan: true },
       },
       {
         asset: mainnetTokens.USDC,
         aToken: mainnetTokens.spUSDC,
+        used: { deposit: true, withdraw: true, borrow: true, repay: true, flashLoan: true },
+      },
+      {
+        asset: mainnetTokens.USDT,
+        aToken: mainnetTokens.spUSDT,
         used: { deposit: true, withdraw: true, borrow: true, repay: true, flashLoan: true },
       },
       {
@@ -108,7 +113,7 @@ export const configs: Config[] = [
       {
         asset: gnosisTokens.GNO,
         aToken: gnosisTokens.spGNO,
-        used: { deposit: true, withdraw: true, borrow: true, repay: true, flashLoan: true },
+        used: { deposit: true, withdraw: true, flashLoan: true },
       },
     ],
   },
