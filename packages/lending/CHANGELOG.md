@@ -4,7 +4,7 @@
 
 ### Patch Changes
 
-- fix new protocol and chain token list
+- 999793b: fix new protocol and chain token list
 
 ## 1.0.9
 
