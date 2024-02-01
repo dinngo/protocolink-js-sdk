@@ -14,6 +14,222 @@ describe('Test Adapter for Aave V3', function () {
   const protocol = new LendingProtocol(chainId);
   protocol.setBlockTag(blockTag);
 
+  context('Test open', function () {
+    const account = '0x6286b9f080D27f860F6b4bb0226F8EF06CC9F2Fc';
+    const blockTag = 19131880;
+    protocol.setBlockTag(blockTag);
+
+    let portfolio: Portfolio;
+
+    before(async function () {
+      portfolio = await protocol.getPortfolio(account);
+    });
+
+    it('collateralAmount and debtAmount are zero', async function () {
+      const zapToken = mainnetTokens.ETH;
+      const zapAmount = '0';
+      const collateralToken = mainnetTokens.ETH;
+      const collateralAmount = '0';
+      const debtToken = mainnetTokens.USDC;
+      const debtAmount = '0';
+
+      const { destAmount, error } = await adapter.open(
+        account,
+        portfolio,
+        zapToken,
+        zapAmount,
+        collateralToken,
+        collateralAmount,
+        debtToken,
+        debtAmount
+      );
+
+      expect(destAmount).to.eq('0');
+      expect(error?.name).to.eq('open');
+      expect(error?.code).to.eq('ONLY_ONE_ZERO_AMOUNT');
+    });
+
+    it('success - zapAmount = 0', async function () {
+      const zapToken = mainnetTokens.ETH;
+      const zapAmount = '0';
+      const collateralToken = mainnetTokens.ETH;
+      const initCollateralBalance = portfolio.supplyMap[collateralToken.address]?.balance;
+      const collateralAmountDelta = 2;
+      const collateralAmount = (Number(initCollateralBalance) + collateralAmountDelta).toString();
+      const debtToken = mainnetTokens.USDC;
+      const debtAmount = '0';
+
+      const { destAmount, afterPortfolio, error, logics } = await adapter.open(
+        account,
+        portfolio,
+        zapToken,
+        zapAmount,
+        collateralToken,
+        collateralAmount,
+        debtToken,
+        debtAmount
+      );
+
+      expect(destAmount).to.eq(afterPortfolio.borrowMap[debtToken.address]!.balance);
+      expect(Number(afterPortfolio.supplyMap[collateralToken.address]!.balance)).to.be.gte(Number(collateralAmount));
+      expect(error).to.be.undefined;
+
+      expect(logics).has.length(6);
+      expect(logics[0].rid).to.eq('utility:flash-loan-aggregator');
+      expect(logics[1].rid).to.contain('swap-token');
+      expect(logics[2].rid).to.eq('aave-v3:supply');
+      expect(logics[2].fields.balanceBps).to.eq(common.BPS_BASE);
+      expect(logics[3].rid).to.eq('utility:send-token');
+      expect(logics[3].fields.recipient).to.eq(account);
+      expect(logics[3].fields.balanceBps).to.eq(common.BPS_BASE);
+      expect(logics[4].rid).to.eq('aave-v3:borrow');
+      expect(logics[5].rid).to.eq('utility:flash-loan-aggregator');
+    });
+
+    it('success - collateralAmount = 0', async function () {
+      const zapToken = mainnetTokens.ETH;
+      const zapAmount = '1';
+      const collateralToken = mainnetTokens.ETH;
+      const collateralAmount = '0';
+      const debtToken = mainnetTokens.USDC;
+      const initDebtBalance = portfolio.borrowMap[debtToken.address]?.balance;
+      const debtDelta = 100;
+      const debtAmount = (Number(initDebtBalance) + debtDelta).toString();
+
+      const { destAmount, afterPortfolio, error, logics } = await adapter.open(
+        account,
+        portfolio,
+        zapToken,
+        zapAmount,
+        collateralToken,
+        collateralAmount,
+        debtToken,
+        debtAmount
+      );
+
+      expect(destAmount).to.eq(afterPortfolio.supplyMap[collateralToken.address]!.balance);
+      expect(Number(afterPortfolio.borrowMap[debtToken.address]!.balance)).to.be.gte(Number(debtAmount));
+      expect(error).to.be.undefined;
+
+      expect(logics).has.length(7);
+      expect(logics[0].rid).to.eq('aave-v3:supply');
+      expect(logics[1].rid).to.eq('utility:flash-loan-aggregator');
+      expect(logics[2].rid).to.contain('swap-token');
+      expect(logics[3].rid).to.eq('aave-v3:supply');
+      expect(logics[3].fields.balanceBps).to.eq(common.BPS_BASE);
+      expect(logics[4].rid).to.eq('utility:send-token');
+      expect(logics[4].fields.recipient).to.eq(account);
+      expect(logics[4].fields.balanceBps).to.eq(common.BPS_BASE);
+      expect(logics[5].rid).to.eq('aave-v3:borrow');
+      expect(logics[6].rid).to.eq('utility:flash-loan-aggregator');
+    });
+
+    it('success - debtAmount = 0', async function () {
+      const zapToken = mainnetTokens.ETH;
+      const zapAmount = '1';
+      const collateralToken = mainnetTokens.ETH;
+      const initCollateralBalance = portfolio.supplyMap[collateralToken.address]?.balance;
+      const collateralAmountDelta = 2;
+      const collateralAmount = (Number(initCollateralBalance) + collateralAmountDelta).toString();
+      const debtToken = mainnetTokens.USDC;
+      const debtAmount = '0';
+
+      const { destAmount, afterPortfolio, error, logics } = await adapter.open(
+        account,
+        portfolio,
+        zapToken,
+        zapAmount,
+        collateralToken,
+        collateralAmount,
+        debtToken,
+        debtAmount
+      );
+
+      expect(destAmount).to.eq(afterPortfolio.borrowMap[debtToken.address]!.balance);
+      expect(Number(afterPortfolio.supplyMap[collateralToken.address]!.balance)).to.be.gte(Number(collateralAmount));
+      expect(error).to.be.undefined;
+
+      expect(logics).has.length(7);
+      expect(logics[0].rid).to.eq('aave-v3:supply');
+      expect(logics[1].rid).to.eq('utility:flash-loan-aggregator');
+      expect(logics[2].rid).to.contain('swap-token');
+      expect(logics[3].rid).to.eq('aave-v3:supply');
+      expect(logics[3].fields.balanceBps).to.eq(common.BPS_BASE);
+      expect(logics[4].rid).to.eq('utility:send-token');
+      expect(logics[4].fields.recipient).to.eq(account);
+      expect(logics[4].fields.balanceBps).to.eq(common.BPS_BASE);
+      expect(logics[5].rid).to.eq('aave-v3:borrow');
+      expect(logics[6].rid).to.eq('utility:flash-loan-aggregator');
+    });
+  });
+
+  context('Test close', function () {
+    const account = '0x6286b9f080D27f860F6b4bb0226F8EF06CC9F2Fc';
+    const blockTag = 19131880;
+    protocol.setBlockTag(blockTag);
+
+    let portfolio: Portfolio;
+
+    before(async function () {
+      portfolio = await protocol.getPortfolio(account);
+    });
+
+    it('no positions', async function () {
+      const account = '0x4838B106FCe9647Bdf1E7877BF73cE8B0BAD5f97';
+      portfolio = await protocol.getPortfolio(account);
+
+      const withdrawalToken = mainnetTokens.ETH;
+
+      const { destAmount, error, logics } = await adapter.close(account, portfolio, withdrawalToken);
+
+      expect(destAmount).to.be.eq('0');
+      expect(error).to.be.undefined;
+      expect(logics).has.length(0);
+    });
+
+    it('success', async function () {
+      const withdrawalToken = mainnetTokens.ETH;
+
+      const { destAmount, afterPortfolio, error, logics } = await adapter.close(account, portfolio, withdrawalToken);
+
+      expect(Number(destAmount)).to.be.greaterThan(0);
+      expect(afterPortfolio.totalBorrowUSD).to.be.eq(0);
+      expect(afterPortfolio.totalSupplyUSD).to.be.eq(0);
+      expect(error).to.be.undefined;
+
+      expect(logics).has.length(9);
+      expect(logics[0].rid).to.eq('utility:flash-loan-aggregator');
+      expect(logics[1].rid).to.contain('swap-token');
+      expect(logics[2].rid).to.eq('aave-v3:repay');
+      expect(logics[2].fields.balanceBps).to.eq(common.BPS_BASE);
+      expect(logics[3].rid).to.contain('swap-token');
+      expect(logics[4].rid).to.eq('aave-v3:repay');
+      expect(logics[4].fields.balanceBps).to.eq(common.BPS_BASE);
+      expect(logics[5].rid).to.eq('aave-v3:withdraw');
+      expect(logics[6].rid).to.contain('swap-token');
+      expect(logics[7].rid).to.eq('aave-v3:withdraw');
+      expect(logics[8].rid).to.eq('utility:flash-loan-aggregator');
+    });
+
+    it('success - collateral positions only', async function () {
+      const account = '0x533b3560b9d20eb5e4cd88fd7fcf17233daa8e22';
+      portfolio = await protocol.getPortfolio(account);
+
+      const withdrawalToken = mainnetTokens.USDT;
+
+      const { destAmount, afterPortfolio, error, logics } = await adapter.close(account, portfolio, withdrawalToken);
+
+      expect(Number(destAmount)).to.be.greaterThan(0);
+      expect(afterPortfolio.totalSupplyUSD).to.be.eq(0);
+      expect(error).to.be.undefined;
+
+      expect(logics).has.length(2);
+      expect(logics[0].rid).to.eq('aave-v3:withdraw');
+      expect(logics[0].fields.balanceBps).to.eq(common.BPS_BASE);
+      expect(logics[1].rid).to.contain('swap-token');
+    });
+  });
+
   context('Test collateralSwap', function () {
     const account = '0x6286b9f080D27f860F6b4bb0226F8EF06CC9F2Fc';
 

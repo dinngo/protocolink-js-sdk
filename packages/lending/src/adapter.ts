@@ -185,6 +185,159 @@ export class Adapter extends common.Web3Toolkit {
     return this.protocolMap[id];
   }
 
+  async open(
+    account: string,
+    portfolio: Portfolio,
+    zapToken: common.Token,
+    zapAmount: string,
+    collateralToken: common.Token,
+    collateralAmount: string,
+    debtToken: common.Token,
+    debtAmount: string
+  ): Promise<OperationOutput> {
+    let output: OperationOutput = {
+      destAmount: '0',
+      afterPortfolio: portfolio.clone(),
+      logics: [],
+    };
+
+    // 1. zap supply
+    output = await this.zapSupply({
+      account,
+      portfolio,
+      srcToken: zapToken,
+      srcAmount: zapAmount,
+      destToken: collateralToken,
+    });
+
+    // 2. check leverage long or short
+    if (!output.error) {
+      const outputLogics = output.logics;
+
+      if (collateralAmount === '0' && debtAmount === '0') {
+        output.error = new OperationError('open', 'ONLY_ONE_ZERO_AMOUNT');
+      } else {
+        if (collateralAmount === '0') {
+          const initDebtAmount = output.afterPortfolio.borrowMap[debtToken.address]?.balance;
+          const leverageAmount = initDebtAmount ? Number(debtAmount) - Number(initDebtAmount) : Number(debtAmount);
+          output = await this.leverageShort({
+            account,
+            portfolio: output.afterPortfolio,
+            srcToken: debtToken,
+            srcAmount: leverageAmount.toString(),
+            destToken: collateralToken,
+          });
+          output.destAmount = output.afterPortfolio.supplyMap[collateralToken.address]!.balance;
+        } else {
+          const initSupplyAmount = output.afterPortfolio.supplyMap[collateralToken.address]?.balance;
+          const leverageAmount = initSupplyAmount
+            ? Number(collateralAmount) - Number(initSupplyAmount)
+            : Number(collateralAmount);
+          output = await this.leverageLong({
+            account,
+            portfolio: output.afterPortfolio,
+            srcToken: collateralToken,
+            srcAmount: leverageAmount.toString(),
+            destToken: debtToken,
+          });
+          output.destAmount = output.afterPortfolio.borrowMap[debtToken.address]!.balance;
+        }
+        outputLogics.push(...output.logics);
+        output.logics = outputLogics;
+      }
+    }
+
+    return output;
+  }
+
+  async close(account: string, portfolio: Portfolio, withdrawalToken: common.Token): Promise<OperationOutput> {
+    const output: OperationOutput = {
+      destAmount: '0',
+      afterPortfolio: portfolio.clone(),
+      logics: [],
+    };
+
+    try {
+      // 1. check debt positions
+      if (portfolio.totalBorrowUSD.gt(BigNumberJS(0))) {
+        // 1.1 flashloan withdrawalToken to repay debt
+        let flashloanAmount = 0;
+        const borrows = portfolio.borrows;
+        const protocol = this.getProtocol(portfolio.protocolId);
+        const zapRepayLogics: apisdk.Logic<any>[] = [];
+
+        for (const borrow of borrows) {
+          if (borrow.balance === '0') continue;
+
+          const zapRepayOutput = await this.zapRepay({
+            account,
+            portfolio: output.afterPortfolio,
+            srcToken: borrow.token,
+            srcAmount: borrow.balance,
+            destToken: withdrawalToken,
+            isRepayAll: true,
+          });
+          if (zapRepayOutput.error) {
+            throw zapRepayOutput.error;
+          }
+          zapRepayLogics.push(...zapRepayOutput.logics);
+          flashloanAmount += Number(zapRepayOutput.destAmount);
+          output.afterPortfolio = zapRepayOutput.afterPortfolio;
+        }
+        const flashLoanRepay = new common.TokenAmount(withdrawalToken.wrapped, flashloanAmount.toString());
+        const flashLoanAggregatorQuotation = await apisdk.protocols.utility.getFlashLoanAggregatorQuotation(
+          this.chainId,
+          { repays: [flashLoanRepay], protocolId: protocol.preferredFlashLoanProtocolId }
+        );
+        const [flashLoanLoanLogic, flashLoanRepayLogic] = apisdk.protocols.utility.newFlashLoanAggregatorLogicPair(
+          flashLoanAggregatorQuotation.protocolId,
+          flashLoanAggregatorQuotation.loans.toArray()
+        );
+        output.destAmount = flashloanAmount.toString();
+        output.logics.push(flashLoanLoanLogic);
+        output.logics.push(...zapRepayLogics);
+        output.logics.push(flashLoanRepayLogic);
+      }
+
+      // 2. check collateral positions
+      if (portfolio.totalSupplyUSD.gt(BigNumberJS(0))) {
+        const supplies = output.afterPortfolio.supplies;
+        let flashLoanRepayLogic;
+        let zapAmount = 0;
+
+        if (output.logics.length > 0) {
+          flashLoanRepayLogic = output.logics.pop();
+        }
+
+        for (const supply of supplies) {
+          const zapWithdraw = await this.zapWithdraw({
+            account,
+            portfolio: output.afterPortfolio,
+            srcToken: supply.token,
+            srcAmount: supply.balance,
+            destToken: withdrawalToken,
+          });
+          if (zapWithdraw.error) {
+            throw zapWithdraw.error;
+          }
+          zapAmount += Number(zapWithdraw.destAmount);
+          output.logics.push(...zapWithdraw.logics);
+          output.afterPortfolio = zapWithdraw.afterPortfolio;
+        }
+
+        output.destAmount = (zapAmount - Number(output.destAmount)).toString();
+
+        if (flashLoanRepayLogic) {
+          output.logics.push(flashLoanRepayLogic);
+        }
+      }
+    } catch (err) {
+      output.error = err instanceof OperationError ? err : new OperationError('close', 'UNEXPECTED_ERROR');
+    }
+
+    return output;
+  }
+
   /**
    * Collateral swap enables user to replace one collateral asset
    * with another in a single step using a flash loan.
