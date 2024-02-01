@@ -1,5 +1,11 @@
 # @protocolink/lending
 
+## 1.0.10
+
+### Patch Changes
+
+- fix new protocol and chain token list
+
 ## 1.0.9
 
 ### Patch Changes
