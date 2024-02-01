@@ -1,5 +1,11 @@
 # @protocolink/lending
 
+## 1.0.11
+
+### Patch Changes
+
+- 2d5a103: add arbitrum radiant v2 native USDC
+
 ## 1.0.10
 
 ### Patch Changes
