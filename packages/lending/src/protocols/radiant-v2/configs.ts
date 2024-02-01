@@ -92,6 +92,11 @@ export const configs: Config[] = [
         used: { deposit: true, withdraw: true, borrow: true, repay: true, flashLoan: true },
       },
       {
+        asset: arbitrumTokens.USDC,
+        rToken: arbitrumTokens.rUSDCn,
+        used: { deposit: true, withdraw: true, borrow: true, repay: true, flashLoan: true },
+      },
+      {
         asset: arbitrumTokens.DAI,
         rToken: arbitrumTokens.rDAI,
         used: { deposit: true, withdraw: true, borrow: true, repay: true, flashLoan: true },
