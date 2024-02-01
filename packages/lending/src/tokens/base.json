@@ -1,0 +1,30 @@
+{
+  "ETH": {
+    "chainId": 8453,
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18,
+    "symbol": "ETH",
+    "name": "Ethereum"
+  },
+  "WETH": {
+    "chainId": 8453,
+    "address": "0x4200000000000000000000000000000000000006",
+    "decimals": 18,
+    "symbol": "WETH",
+    "name": "Wrapped Ether"
+  },
+  "USDC": {
+    "chainId": 8453,
+    "address": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+    "decimals": 6,
+    "symbol": "USDC",
+    "name": "USD Coin"
+  },
+  "USDbC": {
+    "chainId": 8453,
+    "address": "0xd9aAEc86B65D86f6A7B5B1b0c42FFA531710b6CA",
+    "decimals": 6,
+    "symbol": "USDbC",
+    "name": "USD Base Coin"
+  }
+}
