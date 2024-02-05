@@ -103,7 +103,7 @@ describe('Test Adapter for Compound V3', function () {
     });
   });
 
-  context('Test leverageLong', function () {
+  context('Test leverageByCollateral', function () {
     const account = '0x8B58c7c52B4D0784a248fe3AB11ce76546dA4Cb9';
 
     let portfolio: Portfolio;
@@ -117,7 +117,7 @@ describe('Test Adapter for Compound V3', function () {
       const srcAmount = '0';
       const destToken = mainnetTokens.ETH;
 
-      const { destAmount, afterPortfolio, error, logics } = await adapter.leverageLong({
+      const { destAmount, afterPortfolio, error, logics } = await adapter.leverageByCollateral({
         account,
         portfolio,
         srcToken,
@@ -136,7 +136,7 @@ describe('Test Adapter for Compound V3', function () {
       const srcAmount = '1';
       const destToken = mainnetTokens.ETH;
 
-      const { destAmount, afterPortfolio, error, logics } = await adapter.leverageLong({
+      const { destAmount, afterPortfolio, error, logics } = await adapter.leverageByCollateral({
         account,
         portfolio,
         srcToken,

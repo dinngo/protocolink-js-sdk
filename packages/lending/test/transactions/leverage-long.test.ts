@@ -87,7 +87,13 @@ describe('Transaction: Leverage Long', function () {
 
         // 1. user obtains a quotation for leveraging src token
         const portfolio = await adapter.getPortfolio(user.address, protocolId, marketId);
-        const leverageLongInfo = await adapter.leverageLong({ account, portfolio, srcToken, srcAmount, destToken });
+        const leverageLongInfo = await adapter.leverageByCollateral({
+          account,
+          portfolio,
+          srcToken,
+          srcAmount,
+          destToken,
+        });
         const logics = leverageLongInfo.logics;
         expect(leverageLongInfo.error).to.be.undefined;
         expect(logics.length).to.eq(expects.logicLength);

@@ -68,7 +68,7 @@ describe('Transaction: Leverage Short', function () {
 
         // 1. user obtains a quotation for leveraging short src token
         const portfolio = await adapter.getPortfolio(user.address, protocolId, marketId);
-        const leverageShortInfo = await adapter.leverageShort({
+        const leverageShortInfo = await adapter.leverageByDebt({
           account,
           portfolio,
           srcToken,

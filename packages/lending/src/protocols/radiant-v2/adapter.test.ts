@@ -193,7 +193,7 @@ describe('Test Adapter for Radiant V2', function () {
     });
   });
 
-  context('Test leverageLong', function () {
+  context('Test leverageByCollateral', function () {
     const account = '0xBBaCb7F97BA96aa90E5603CFb47EaE09517C8731';
 
     let portfolio: Portfolio;
@@ -207,7 +207,7 @@ describe('Test Adapter for Radiant V2', function () {
       const srcAmount = '0';
       const destToken = mainnetTokens.USDC;
 
-      const { destAmount, afterPortfolio, error, logics } = await adapter.leverageLong({
+      const { destAmount, afterPortfolio, error, logics } = await adapter.leverageByCollateral({
         account,
         portfolio,
         srcToken,
@@ -226,7 +226,7 @@ describe('Test Adapter for Radiant V2', function () {
       const srcAmount = '1';
       const destToken = mainnetTokens.ETH;
 
-      const { destAmount, afterPortfolio, error, logics } = await adapter.leverageLong({
+      const { destAmount, afterPortfolio, error, logics } = await adapter.leverageByCollateral({
         account,
         portfolio,
         srcToken,
@@ -260,7 +260,7 @@ describe('Test Adapter for Radiant V2', function () {
       const srcAmount = '1';
       const destToken = mainnetTokens.USDC;
 
-      const { destAmount, afterPortfolio, error, logics } = await adapter.leverageLong({
+      const { destAmount, afterPortfolio, error, logics } = await adapter.leverageByCollateral({
         account,
         portfolio,
         srcToken,
@@ -291,7 +291,7 @@ describe('Test Adapter for Radiant V2', function () {
     });
   });
 
-  context('Test leverageShort', function () {
+  context('Test leverageByDebt', function () {
     const account = '0xBBaCb7F97BA96aa90E5603CFb47EaE09517C8731';
 
     let portfolio: Portfolio;
@@ -305,7 +305,7 @@ describe('Test Adapter for Radiant V2', function () {
       const srcAmount = '0';
       const destToken = mainnetTokens.USDC;
 
-      const { destAmount, afterPortfolio, error, logics } = await adapter.leverageShort({
+      const { destAmount, afterPortfolio, error, logics } = await adapter.leverageByDebt({
         account,
         portfolio,
         srcToken,
@@ -324,7 +324,7 @@ describe('Test Adapter for Radiant V2', function () {
       const srcAmount = '1';
       const destToken = mainnetTokens.ETH;
 
-      const { destAmount, afterPortfolio, error, logics } = await adapter.leverageShort({
+      const { destAmount, afterPortfolio, error, logics } = await adapter.leverageByDebt({
         account,
         portfolio,
         srcToken,
@@ -358,7 +358,7 @@ describe('Test Adapter for Radiant V2', function () {
       const srcAmount = '1';
       const destToken = mainnetTokens.USDC;
 
-      const { destAmount, afterPortfolio, error, logics } = await adapter.leverageShort({
+      const { destAmount, afterPortfolio, error, logics } = await adapter.leverageByDebt({
         account,
         portfolio,
         srcToken,

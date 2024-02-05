@@ -191,7 +191,7 @@ describe('Test Adapter for Aave V2', function () {
     });
   });
 
-  context('Test leverageLong', function () {
+  context('Test leverageByCollateral', function () {
     const account = '0xc94680947CF2114ec8eE43725898EAA7269a98c5';
 
     let portfolio: Portfolio;
@@ -205,7 +205,7 @@ describe('Test Adapter for Aave V2', function () {
       const srcAmount = '0';
       const destToken = mainnetTokens.USDC;
 
-      const { destAmount, afterPortfolio, error, logics } = await adapter.leverageLong({
+      const { destAmount, afterPortfolio, error, logics } = await adapter.leverageByCollateral({
         account,
         portfolio,
         srcToken,
@@ -224,7 +224,7 @@ describe('Test Adapter for Aave V2', function () {
       const srcAmount = '10000';
       const destToken = mainnetTokens.ETH;
 
-      const { destAmount, afterPortfolio, error, logics } = await adapter.leverageLong({
+      const { destAmount, afterPortfolio, error, logics } = await adapter.leverageByCollateral({
         account,
         portfolio,
         srcToken,
@@ -257,7 +257,7 @@ describe('Test Adapter for Aave V2', function () {
       const srcAmount = '10000';
       const destToken = mainnetTokens.USDC;
 
-      const { destAmount, afterPortfolio, error, logics } = await adapter.leverageLong({
+      const { destAmount, afterPortfolio, error, logics } = await adapter.leverageByCollateral({
         account,
         portfolio,
         srcToken,
@@ -287,7 +287,7 @@ describe('Test Adapter for Aave V2', function () {
     });
   });
 
-  context('Test leverageShort', function () {
+  context('Test leverageByDebt', function () {
     const account = '0xc94680947CF2114ec8eE43725898EAA7269a98c5';
 
     let portfolio: Portfolio;
@@ -301,7 +301,7 @@ describe('Test Adapter for Aave V2', function () {
       const srcAmount = '0';
       const destToken = mainnetTokens.USDC;
 
-      const { destAmount, afterPortfolio, error, logics } = await adapter.leverageShort({
+      const { destAmount, afterPortfolio, error, logics } = await adapter.leverageByDebt({
         account,
         portfolio,
         srcToken,
@@ -320,7 +320,7 @@ describe('Test Adapter for Aave V2', function () {
       const srcAmount = '100';
       const destToken = mainnetTokens.ETH;
 
-      const { destAmount, afterPortfolio, error, logics } = await adapter.leverageShort({
+      const { destAmount, afterPortfolio, error, logics } = await adapter.leverageByDebt({
         account,
         portfolio,
         srcToken,
@@ -353,7 +353,7 @@ describe('Test Adapter for Aave V2', function () {
       const srcAmount = '100';
       const destToken = mainnetTokens.USDC;
 
-      const { destAmount, afterPortfolio, error, logics } = await adapter.leverageShort({
+      const { destAmount, afterPortfolio, error, logics } = await adapter.leverageByDebt({
         account,
         portfolio,
         srcToken,

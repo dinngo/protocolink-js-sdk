@@ -17,7 +17,7 @@ describe('Test Adapter for Morpho Blue', function () {
 
   // Morpho blue - only one collateral token and one debt token
   // leverage only have one scenario - Long collateral token by using debt token
-  context('Test leverageLong', function () {
+  context('Test leverageByCollateral', function () {
     const account = '0xa3C1C91403F0026b9dd086882aDbC8Cdbc3b3cfB';
 
     let portfolio: Portfolio;
@@ -31,7 +31,7 @@ describe('Test Adapter for Morpho Blue', function () {
       const srcAmount = '0';
       const destToken = mainnetTokens.USDC;
 
-      const { destAmount, afterPortfolio, error, logics } = await adapter.leverageLong({
+      const { destAmount, afterPortfolio, error, logics } = await adapter.leverageByCollateral({
         account,
         portfolio,
         srcToken,
@@ -50,7 +50,7 @@ describe('Test Adapter for Morpho Blue', function () {
       const srcAmount = '0.001';
       const destToken = mainnetTokens.USDC;
 
-      const { destAmount, afterPortfolio, error, logics } = await adapter.leverageLong({
+      const { destAmount, afterPortfolio, error, logics } = await adapter.leverageByCollateral({
         account,
         portfolio,
         srcToken,
@@ -72,7 +72,7 @@ describe('Test Adapter for Morpho Blue', function () {
       const srcAmount = '0.001';
       const destToken = mainnetTokens.ETH;
 
-      const { destAmount, afterPortfolio, error, logics } = await adapter.leverageLong({
+      const { destAmount, afterPortfolio, error, logics } = await adapter.leverageByCollateral({
         account,
         portfolio,
         srcToken,
@@ -94,7 +94,7 @@ describe('Test Adapter for Morpho Blue', function () {
       const srcAmount = '0.001';
       const destToken = mainnetTokens.USDC;
 
-      const { destAmount, afterPortfolio, error, logics } = await adapter.leverageLong({
+      const { destAmount, afterPortfolio, error, logics } = await adapter.leverageByCollateral({
         account,
         portfolio,
         srcToken,

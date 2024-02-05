@@ -191,7 +191,7 @@ describe('Test Adapter for Spark', function () {
     });
   });
 
-  context('Test leverageLong', function () {
+  context('Test leverageByCollateral', function () {
     const account = '0x8bf7058bfe4cf0d1fdfd41f43816c5555c17431d';
 
     let portfolio: Portfolio;
@@ -205,7 +205,7 @@ describe('Test Adapter for Spark', function () {
       const srcAmount = '0';
       const destToken = mainnetTokens.DAI;
 
-      const { destAmount, afterPortfolio, error, logics } = await adapter.leverageLong({
+      const { destAmount, afterPortfolio, error, logics } = await adapter.leverageByCollateral({
         account,
         portfolio,
         srcToken,
@@ -224,7 +224,7 @@ describe('Test Adapter for Spark', function () {
       const srcAmount = '1';
       const destToken = mainnetTokens.ETH;
 
-      const { destAmount, afterPortfolio, error, logics } = await adapter.leverageLong({
+      const { destAmount, afterPortfolio, error, logics } = await adapter.leverageByCollateral({
         account,
         portfolio,
         srcToken,
@@ -257,7 +257,7 @@ describe('Test Adapter for Spark', function () {
       const srcAmount = '1';
       const destToken = mainnetTokens.DAI;
 
-      const { destAmount, afterPortfolio, error, logics } = await adapter.leverageLong({
+      const { destAmount, afterPortfolio, error, logics } = await adapter.leverageByCollateral({
         account,
         portfolio,
         srcToken,
@@ -287,7 +287,7 @@ describe('Test Adapter for Spark', function () {
     });
   });
 
-  context('Test leverageShort', function () {
+  context('Test leverageByDebt', function () {
     const account = '0x8bf7058bfe4cf0d1fdfd41f43816c5555c17431d';
 
     let portfolio: Portfolio;
@@ -301,7 +301,7 @@ describe('Test Adapter for Spark', function () {
       const srcAmount = '0';
       const destToken = mainnetTokens.ETH;
 
-      const { destAmount, afterPortfolio, error, logics } = await adapter.leverageShort({
+      const { destAmount, afterPortfolio, error, logics } = await adapter.leverageByDebt({
         account,
         portfolio,
         srcToken,
@@ -320,7 +320,7 @@ describe('Test Adapter for Spark', function () {
       const srcAmount = '1';
       const destToken = mainnetTokens.DAI;
 
-      const { destAmount, afterPortfolio, error, logics } = await adapter.leverageShort({
+      const { destAmount, afterPortfolio, error, logics } = await adapter.leverageByDebt({
         account,
         portfolio,
         srcToken,
@@ -353,7 +353,7 @@ describe('Test Adapter for Spark', function () {
       const srcAmount = '1';
       const destToken = mainnetTokens.ETH;
 
-      const { destAmount, afterPortfolio, error, logics } = await adapter.leverageShort({
+      const { destAmount, afterPortfolio, error, logics } = await adapter.leverageByDebt({
         account,
         portfolio,
         srcToken,

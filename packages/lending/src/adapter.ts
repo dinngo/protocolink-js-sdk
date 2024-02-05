@@ -220,7 +220,7 @@ export class Adapter extends common.Web3Toolkit {
         if (collateralAmount === '0') {
           const initDebtAmount = output.afterPortfolio.borrowMap[debtToken.address]?.balance;
           const leverageAmount = initDebtAmount ? Number(debtAmount) - Number(initDebtAmount) : Number(debtAmount);
-          output = await this.leverageShort({
+          output = await this.leverageByDebt({
             account,
             portfolio: output.afterPortfolio,
             srcToken: debtToken,
@@ -233,7 +233,7 @@ export class Adapter extends common.Web3Toolkit {
           const leverageAmount = initSupplyAmount
             ? Number(collateralAmount) - Number(initSupplyAmount)
             : Number(collateralAmount);
-          output = await this.leverageLong({
+          output = await this.leverageByCollateral({
             account,
             portfolio: output.afterPortfolio,
             srcToken: collateralToken,
@@ -618,7 +618,7 @@ export class Adapter extends common.Web3Toolkit {
    * 5. borrow destToken
    * 6. flashloan repay destToken
    */
-  async leverageLong({
+  async leverageByCollateral({
     account,
     portfolio,
     srcToken,
@@ -761,7 +761,7 @@ export class Adapter extends common.Web3Toolkit {
    * 5. borrow srcToken
    * 6. flashloan repay srcToken
    */
-  async leverageShort({
+  async leverageByDebt({
     account,
     portfolio,
     srcToken,
