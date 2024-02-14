@@ -2,7 +2,7 @@ import { Adapter } from 'src/adapter';
 import { Portfolio } from 'src/protocol.portfolio';
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 import * as apisdk from '@protocolink/api';
-import { claimToken, getBalance, mainnetTokens, snapshotAndRevertEach } from '@protocolink/test-helpers';
+import { claimToken, mainnetTokens, snapshotAndRevertEach } from '@protocolink/test-helpers';
 import * as common from '@protocolink/common';
 import { expect } from 'chai';
 import hre from 'hardhat';
@@ -11,152 +11,185 @@ import * as utils from 'test/utils';
 
 describe('Transaction: Zap Repay', function () {
   const chainId = 1;
-  const permit2Type = 'approve';
+  const slippage = 100;
+  const initSupplyAmount = '1';
 
-  let portfolio: Portfolio;
   let user: SignerWithAddress;
   let adapter: Adapter;
-  let service: logics.compoundv3.Service | logics.morphoblue.Service;
+  let portfolio: Portfolio;
 
   before(async function () {
     adapter = new Adapter(chainId, hre.ethers.provider);
+    [, user] = await hre.ethers.getSigners();
 
-    await claimToken(chainId, '0x7F67F6A09bcb2159b094B64B4acc53D5193AEa2E', mainnetTokens.USDT, '2000');
-    await claimToken(chainId, '0xaf0FDd39e5D92499B0eD9F68693DA99C0ec1e92e', mainnetTokens.USDT, '2000');
-    await claimToken(chainId, '0x06e4Cb4f3ba9A2916B6384aCbdeAa74dAAF91550', mainnetTokens.USDT, '2000');
-    await claimToken(chainId, '0x53fb0162bC8d5EEc2fB1532923C4f8997BAce111', mainnetTokens.USDT, '2000');
-    await claimToken(chainId, '0x9cbf099ff424979439dfba03f00b5961784c06ce', mainnetTokens.USDT, '20000');
-    await claimToken(chainId, '0x8bf7058bfe4cf0d1fdfd41f43816c5555c17431d', mainnetTokens.USDT, '2000');
+    await claimToken(chainId, user.address, mainnetTokens.WETH, initSupplyAmount);
+    await claimToken(chainId, user.address, mainnetTokens.USDT, '500');
+    await claimToken(chainId, '0x4aab5cbfe493fc2ac18c46a68ef42c58ba06c9bd', mainnetTokens.USDT, '500');
   });
 
   snapshotAndRevertEach();
 
-  context('Test ZapRepay', function () {
+  context('Test ZapRepay Permit', function () {
     const testCases = [
-      // {
-      //   // TODO: expect(borrowDifference.gte(minRepayAmount)).to.be.true = false;
-      //   // skip for now: poisition too big result in debt grows too fast
-      //   protocolId: 'aave-v2',
-      //   marketId: 'mainnet',
-      //   account: '0x7F67F6A09bcb2159b094B64B4acc53D5193AEa2E',
-      //   srcToken: mainnetTokens.USDC,
-      //   srcAmount: '1000',
-      //   srcDebtToken: '0x619beb58998eD2278e08620f97007e1116D5D25b', // variableDebtUSDC
-      //   destToken: mainnetTokens.USDT,
-      //   expects: {
-      //     logicLength: 2,
-      //   },
-      // },
+      {
+        protocolId: 'aave-v2',
+        marketId: 'mainnet',
+        supplyToken: mainnetTokens.WETH,
+        srcToken: mainnetTokens.USDC,
+        srcAmount: '100',
+        srcDebtToken: '0x619beb58998eD2278e08620f97007e1116D5D25b', // variableDebtUSDC
+        destToken: mainnetTokens.USDT,
+        expects: { logicLength: 2 },
+      },
       {
         protocolId: 'radiant-v2',
         marketId: 'mainnet',
-        account: '0xaf0FDd39e5D92499B0eD9F68693DA99C0ec1e92e',
+        supplyToken: mainnetTokens.WETH,
         srcToken: mainnetTokens.USDC,
-        srcAmount: '1000',
+        srcAmount: '100',
         srcDebtToken: '0x490726291F6434646FEb2eC96d2Cc566b18a122F', // vdUSDC
         destToken: mainnetTokens.USDT,
-        expects: {
-          logicLength: 2,
-        },
+        expects: { logicLength: 2 },
       },
       {
         protocolId: 'aave-v3',
         marketId: 'mainnet',
-        account: '0x06e4Cb4f3ba9A2916B6384aCbdeAa74dAAF91550',
+        supplyToken: mainnetTokens.WETH,
         srcToken: mainnetTokens.USDC,
-        srcAmount: '1000',
+        srcAmount: '100',
         srcDebtToken: '0x72E95b8931767C79bA4EeE721354d6E99a61D004', // variableDebtEthUSDC
         destToken: mainnetTokens.USDT,
-        expects: {
-          logicLength: 2,
-        },
+        expects: { logicLength: 2 },
       },
       {
         protocolId: 'spark',
         marketId: 'mainnet',
-        account: '0x8bf7058bfe4cf0d1fdfd41f43816c5555c17431d',
+        supplyToken: mainnetTokens.WETH,
         srcToken: mainnetTokens.DAI,
-        srcAmount: '1000',
+        srcAmount: '100',
         srcDebtToken: '0xf705d2B7e92B3F38e6ae7afaDAA2fEE110fE5914', // DAI_variableDebtToken
         destToken: mainnetTokens.USDT,
-        expects: {
-          logicLength: 2,
-        },
-      },
-      {
-        protocolId: 'compound-v3',
-        marketId: logics.compoundv3.MarketId.USDC,
-        account: '0x53fb0162bC8d5EEc2fB1532923C4f8997BAce111',
-        srcToken: mainnetTokens.USDC,
-        srcAmount: '1000',
-        destToken: mainnetTokens.USDT,
-        expects: {
-          logicLength: 2,
-        },
-      },
-      {
-        protocolId: 'morphoblue',
-        marketId: '0xb323495f7e4148be5643a4ea4a8221eef163e4bccfdedc2a6f4696baacbc86cc',
-        account: '0x9cbf099ff424979439dfba03f00b5961784c06ce',
-        srcToken: mainnetTokens.USDC,
-        srcAmount: '10000',
-        destToken: mainnetTokens.USDT,
-        expects: {
-          logicLength: 2,
-        },
+        expects: { logicLength: 2 },
       },
     ];
 
-    testCases.forEach(({ account, protocolId, marketId, srcToken, srcAmount, srcDebtToken, destToken, expects }, i) => {
+    testCases.forEach(
+      ({ protocolId, marketId, supplyToken, srcToken, srcAmount, srcDebtToken, destToken, expects }, i) => {
+        it(`case ${i + 1} - ${protocolId}:${marketId}`, async function () {
+          // 0. prep user positions
+          const account = user.address;
+          await utils.deposit(
+            chainId,
+            protocolId,
+            marketId,
+            user,
+            new common.TokenAmount(supplyToken, initSupplyAmount)
+          );
+          await utils.borrow(chainId, protocolId, marketId, user, new common.TokenAmount(srcToken, srcAmount));
+
+          portfolio = await adapter.getPortfolio(user.address, protocolId, marketId);
+          const initBorrowBalance = await utils.getBorrowBalance(chainId, protocolId, marketId, user, srcDebtToken!);
+
+          // 1. user obtains a quotation for zap repay
+          const zapRepayInfo = await adapter.zapRepay({ account, portfolio, srcToken, srcAmount, destToken });
+          const logics = zapRepayInfo.logics;
+          expect(zapRepayInfo.error).to.be.undefined;
+          expect(logics.length).to.eq(expects.logicLength);
+
+          // 2. user needs to allow the Protocolink user agent to repay on behalf of the user
+          const estimateResult = await apisdk.estimateRouterData({ chainId, account, logics });
+          for (const approval of estimateResult.approvals) {
+            await expect(user.sendTransaction(approval)).to.not.be.reverted;
+          }
+
+          const permitData = estimateResult.permitData;
+          expect(permitData).to.not.be.undefined;
+          // 2-1. user sign permit data
+          const { domain, types, values } = permitData!;
+          const permitSig = await user._signTypedData(domain, types, values);
+
+          // 3. user obtains a zap repay transaction request
+          const transactionRequest = await apisdk.buildRouterTransactionRequest({
+            chainId,
+            account,
+            logics,
+            permitData,
+            permitSig,
+          });
+          await expect(user.sendTransaction(transactionRequest)).to.not.be.reverted;
+
+          // 4. user's borrow balance should decrease
+          // 4-1. debt grows when the block of getting api data is different from the block of executing tx
+          const borrowBalance = await utils.getBorrowBalance(chainId, protocolId, marketId, user, srcDebtToken!);
+          const repayAmount = logics[1].fields.input;
+          const borrowDifference = initBorrowBalance!.clone().sub(borrowBalance!);
+          const [minRepayAmount, maxRepayAmount] = utils.bpsBound(repayAmount.amount, slippage);
+          expect(borrowDifference.gte(minRepayAmount)).to.be.true;
+          expect(borrowDifference.lte(maxRepayAmount)).to.be.true;
+
+          // 5. user's dest token balance should decrease
+          await expect(user.address).to.changeBalance(destToken, -zapRepayInfo.destAmount, 1);
+        });
+      }
+    );
+  });
+
+  context('Test ZapRepay Approve', function () {
+    const testCases = [
+      {
+        protocolId: 'compound-v3',
+        marketId: logics.compoundv3.MarketId.ETH,
+        account: '0x4aab5cbfe493fc2ac18c46a68ef42c58ba06c9bd',
+        srcToken: mainnetTokens.ETH,
+        srcAmount: '0.1',
+        destToken: mainnetTokens.USDT,
+        expects: { logicLength: 2 },
+      },
+      {
+        protocolId: 'morphoblue',
+        marketId: '0xc54d7acf14de29e0e5527cabd7a576506870346a78a11a6762e2cca66322ec41',
+        account: '0x4aab5cbfe493fc2ac18c46a68ef42c58ba06c9bd',
+        srcToken: mainnetTokens.WETH,
+        srcAmount: '0.01',
+        destToken: mainnetTokens.USDT,
+        expects: { logicLength: 2 },
+      },
+    ];
+
+    testCases.forEach(({ protocolId, marketId, account, srcToken, srcAmount, destToken, expects }, i) => {
       it(`case ${i + 1} - ${protocolId}:${marketId}`, async function () {
+        const permit2Type = 'approve';
+
         user = await hre.ethers.getImpersonatedSigner(account);
         portfolio = await adapter.getPortfolio(user.address, protocolId, marketId);
-
-        if (protocolId === 'compound-v3') {
-          service = new logics.compoundv3.Service(chainId, hre.ethers.provider);
-        } else if (protocolId === 'morphoblue') {
-          service = new logics.morphoblue.Service(chainId, hre.ethers.provider);
-        }
-
-        const initBorrowBalance = service
-          ? await service.getBorrowBalance(marketId, user.address, srcToken)
-          : await getBalance(user.address, srcDebtToken!);
+        const initBorrowBalance = await utils.getBorrowBalance(chainId, protocolId, marketId, user);
 
         // 1. user obtains a quotation for zap repay
         const zapRepayInfo = await adapter.zapRepay({ account, portfolio, srcToken, srcAmount, destToken });
+        const logics = zapRepayInfo.logics;
+        expect(zapRepayInfo.error).to.be.undefined;
+        expect(logics.length).to.eq(expects.logicLength);
 
         // 2. user needs to allow the Protocolink user agent to repay on behalf of the user
-        const estimateResult = await apisdk.estimateRouterData(
-          { chainId, account, logics: zapRepayInfo.logics },
-          { permit2Type }
-        );
+        const estimateResult = await apisdk.estimateRouterData({ chainId, account, logics }, { permit2Type });
         for (const approval of estimateResult.approvals) {
           await expect(user.sendTransaction(approval)).to.not.be.reverted;
         }
 
         // 3. user obtains a zap repay transaction request
-        expect(zapRepayInfo.logics.length).to.eq(expects.logicLength);
-        const transactionRequest = await apisdk.buildRouterTransactionRequest({
-          chainId,
-          account,
-          logics: zapRepayInfo.logics,
-        });
+        const transactionRequest = await apisdk.buildRouterTransactionRequest({ chainId, account, logics });
         await expect(user.sendTransaction(transactionRequest)).to.not.be.reverted;
 
         // 4. user's borrow balance should decrease
         // 4-1. debt grows when the block of getting api data is different from the block of executing tx
-        const borrowBalance = service
-          ? await service.getBorrowBalance(marketId, user.address, srcToken)
-          : await getBalance(user.address, srcDebtToken!);
-        const repayAmount = new common.TokenAmount(srcToken, srcAmount);
-        const borrowDifference = initBorrowBalance.clone().sub(borrowBalance);
-
-        const [minRepay] = utils.bpsBound(repayAmount.amount, 100);
-        const minRepayAmount = repayAmount.clone().set(minRepay);
+        const borrowBalance = await utils.getBorrowBalance(chainId, protocolId, marketId, user);
+        const repayAmount = logics[1].fields.input;
+        const borrowDifference = initBorrowBalance!.clone().sub(borrowBalance!);
+        const [minRepayAmount, maxRepayAmount] = utils.bpsBound(repayAmount.amount, slippage);
         expect(borrowDifference.gte(minRepayAmount)).to.be.true;
-        expect(borrowDifference.lte(repayAmount)).to.be.true;
+        expect(borrowDifference.lte(maxRepayAmount)).to.be.true;
 
-        // 6. user's dest token balance should decrease
+        // 5. user's dest token balance should decrease
         await expect(user.address).to.changeBalance(destToken, -zapRepayInfo.destAmount, 1);
       });
     });

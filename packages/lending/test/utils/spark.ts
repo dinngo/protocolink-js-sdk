@@ -6,12 +6,12 @@ import { expect } from 'chai';
 import hre from 'hardhat';
 import * as logics from '@protocolink/logics';
 
-export async function deposit(chainId: number, user: SignerWithAddress, tokenAmount: common.TokenAmount) {
-  const service = new logics.aavev2.Service(chainId, hre.ethers.provider);
-  const lendingPoolAddress = await service.getLendingPoolAddress();
+export async function supply(chainId: number, user: SignerWithAddress, tokenAmount: common.TokenAmount) {
+  const service = new logics.spark.Service(chainId, hre.ethers.provider);
+  const lendingPoolAddress = await service.getPoolAddress();
   await approve(user, lendingPoolAddress, tokenAmount);
   await expect(
-    logics.aavev2.LendingPool__factory.connect(lendingPoolAddress, user).deposit(
+    logics.spark.Pool__factory.connect(lendingPoolAddress, user).supply(
       tokenAmount.token.address,
       tokenAmount.amountWei,
       user.address,
@@ -21,11 +21,11 @@ export async function deposit(chainId: number, user: SignerWithAddress, tokenAmo
 }
 
 export async function borrow(chainId: number, user: SignerWithAddress, tokenAmount: common.TokenAmount) {
-  const service = new logics.aavev2.Service(chainId, hre.ethers.provider);
-  const lendingPoolAddress = await service.getLendingPoolAddress();
+  const service = new logics.spark.Service(chainId, hre.ethers.provider);
+  const lendingPoolAddress = await service.getPoolAddress();
   await approve(user, lendingPoolAddress, tokenAmount);
   await expect(
-    logics.aavev2.LendingPool__factory.connect(lendingPoolAddress, user).borrow(
+    logics.spark.Pool__factory.connect(lendingPoolAddress, user).borrow(
       tokenAmount.token.address,
       tokenAmount.amountWei,
       defaultInterestRateMode,
