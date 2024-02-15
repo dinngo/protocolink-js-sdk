@@ -9,7 +9,7 @@ import * as logics from '@protocolink/logics';
 import * as morphoblue from 'src/protocols/morphoblue/tokens';
 import * as utils from 'test/utils';
 
-describe('Transaction: Leverage Long', function () {
+describe('Transaction: Leverage By Collateral', function () {
   const chainId = 1;
   const initSupplyAmount = '5';
   const slippage = 100;
@@ -26,7 +26,7 @@ describe('Transaction: Leverage Long', function () {
 
   snapshotAndRevertEach();
 
-  context('Test Leverage Long', function () {
+  context('Test Leverage By Collateral', function () {
     const testCases = [
       {
         protocolId: 'aave-v2',

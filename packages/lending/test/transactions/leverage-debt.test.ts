@@ -7,7 +7,7 @@ import { expect } from 'chai';
 import hre from 'hardhat';
 import * as utils from 'test/utils';
 
-describe('Transaction: Leverage Short', function () {
+describe('Transaction: Leverage By Debt', function () {
   const chainId = 1;
   const initSupplyAmount = '5';
   const slippage = 100;
@@ -23,7 +23,7 @@ describe('Transaction: Leverage Short', function () {
 
   snapshotAndRevertEach();
 
-  context('Test Leverage Short', function () {
+  context('Test Leverage By Debt', function () {
     const testCases = [
       {
         protocolId: 'aave-v2',

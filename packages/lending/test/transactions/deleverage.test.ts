@@ -56,7 +56,7 @@ describe('Transaction: Deleverage', function () {
       {
         protocolId: 'spark',
         marketId: 'mainnet',
-        account: '0x8bf7058bfe4cf0d1fdfd41f43816c5555c17431d',
+        account: '0xee2826453a4fd5afeb7ceffeef3ffa2320081268',
         srcToken: mainnetTokens.DAI,
         srcAmount: '100',
         destToken: mainnetTokens.WETH,

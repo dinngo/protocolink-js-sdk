@@ -185,7 +185,7 @@ export class Adapter extends common.Web3Toolkit {
     return this.protocolMap[id];
   }
 
-  async open(
+  async openByCollateral(
     account: string,
     portfolio: Portfolio,
     zapToken: common.Token,
@@ -193,64 +193,189 @@ export class Adapter extends common.Web3Toolkit {
     collateralToken: common.Token,
     collateralAmount: string,
     debtToken: common.Token,
-    debtAmount: string
+    slippage = defaultSlippage
   ): Promise<OperationOutput> {
-    let output: OperationOutput = {
+    const output: OperationOutput = {
       destAmount: '0',
       afterPortfolio: portfolio.clone(),
       logics: [],
     };
+    try {
+      // 1. ---------- validate params ----------
+      if (collateralAmount === '0') throw new OperationError('collateralAmount', 'ZERO_AMOUNT');
 
-    // 1. zap supply
-    output = await this.zapSupply({
-      account,
-      portfolio,
-      srcToken: zapToken,
-      srcAmount: zapAmount,
-      destToken: collateralToken,
-    });
+      const srcCollateral = portfolio.findSupply(collateralToken);
+      if (!srcCollateral) throw new OperationError('collateralToken', 'UNSUPPORTED_TOKEN');
 
-    // 2. check leverage long or short
-    if (!output.error) {
-      const outputLogics = output.logics;
+      const destBorrow = portfolio.findBorrow(debtToken);
+      if (!destBorrow) throw new OperationError('debtToken', 'UNSUPPORTED_TOKEN');
 
-      if (collateralAmount === '0' && debtAmount === '0') {
-        output.error = new OperationError('open', 'ONLY_ONE_ZERO_AMOUNT');
-      } else {
-        if (collateralAmount === '0') {
-          const initDebtAmount = output.afterPortfolio.borrowMap[debtToken.address]?.balance;
-          const leverageAmount = initDebtAmount ? Number(debtAmount) - Number(initDebtAmount) : Number(debtAmount);
-          output = await this.leverageByDebt({
-            account,
-            portfolio: output.afterPortfolio,
-            srcToken: debtToken,
-            srcAmount: leverageAmount.toString(),
-            destToken: collateralToken,
-          });
-          output.destAmount = output.afterPortfolio.supplyMap[collateralToken.address]!.balance;
-        } else {
-          const initSupplyAmount = output.afterPortfolio.supplyMap[collateralToken.address]?.balance;
-          const leverageAmount = initSupplyAmount
-            ? Number(collateralAmount) - Number(initSupplyAmount)
-            : Number(collateralAmount);
-          output = await this.leverageByCollateral({
-            account,
-            portfolio: output.afterPortfolio,
-            srcToken: collateralToken,
-            srcAmount: leverageAmount.toString(),
-            destToken: debtToken,
-          });
-          output.destAmount = output.afterPortfolio.borrowMap[debtToken.address]!.balance;
-        }
-        outputLogics.push(...output.logics);
-        output.logics = outputLogics;
+      const supplyAmountDelta = new common.TokenAmount(collateralToken.wrapped, collateralAmount).sub(
+        srcCollateral.balance
+      );
+      if (!srcCollateral.validateSupplyCap(supplyAmountDelta.amount)) {
+        throw new OperationError('collateralAmount', 'SUPPLY_CAP_EXCEEDED');
       }
+
+      // 2. ---------- zap swap ----------
+      let supplyInput = new common.TokenAmount(collateralToken.wrapped, '0');
+      if (zapAmount !== '0' && !zapToken.wrapped.is(collateralToken.wrapped)) {
+        const swapper = this.findSwapper([zapToken, collateralToken]);
+        let swapQuotation: SwapperQuoteFields;
+        try {
+          swapQuotation = await swapper.quote({
+            input: new common.TokenAmount(zapToken, zapAmount),
+            tokenOut: collateralToken.wrapped,
+            slippage,
+          });
+        } catch {
+          throw new OperationError('zapAmount', 'NO_ROUTE_FOUND_OR_PRICE_IMPACT_TOO_HIGH');
+        }
+        const swapTokenLogic = swapper.newSwapTokenLogic(swapQuotation);
+        output.logics.push(swapTokenLogic);
+        // 2-1. the supply amount is the swap quotation output
+        supplyInput = swapQuotation.output;
+        output.afterPortfolio.supply(supplyInput.token, supplyInput.amount);
+      } else if (zapToken.wrapped.is(collateralToken.wrapped)) {
+        supplyInput = new common.TokenAmount(zapToken, zapAmount);
+        output.afterPortfolio.supply(supplyInput.token, supplyInput.amount);
+      }
+
+      // 3. leverage by collateral
+      const leverageAmount = supplyAmountDelta.sub(supplyInput.amount).amount;
+      const leverageOutput = await this.leverageByCollateral({
+        account,
+        portfolio: output.afterPortfolio,
+        srcToken: supplyInput.token,
+        srcAmount: leverageAmount,
+        destToken: debtToken,
+      });
+
+      if (leverageOutput.error) throw leverageOutput.error;
+
+      // 3-1. find supply logic and add zap supply amount
+      if (!collateralToken.wrapped.is(debtToken.wrapped)) {
+        leverageOutput.logics[2].fields.input.amount = supplyInput.add(
+          leverageOutput.logics[2].fields.input.amount
+        ).amount;
+        leverageOutput.logics[2].fields.balanceBps = common.BPS_BASE;
+      } else {
+        leverageOutput.logics[1].fields.input.amount = supplyInput.add(
+          leverageOutput.logics[1].fields.input.amount
+        ).amount;
+        leverageOutput.logics[1].fields.balanceBps = common.BPS_BASE;
+      }
+      output.logics.push(...leverageOutput.logics);
+      output.afterPortfolio = leverageOutput.afterPortfolio;
+      output.destAmount = output.afterPortfolio.findBorrow(debtToken)!.balance;
+    } catch (err) {
+      output.error = err instanceof OperationError ? err : new OperationError('openByCollateral', 'UNEXPECTED_ERROR');
     }
 
     return output;
   }
 
-  async close(account: string, portfolio: Portfolio, withdrawalToken: common.Token): Promise<OperationOutput> {
+  async openByDebt(
+    account: string,
+    portfolio: Portfolio,
+    zapToken: common.Token,
+    zapAmount: string,
+    collateralToken: common.Token,
+    debtToken: common.Token,
+    debtAmount: string,
+    slippage = defaultSlippage
+  ): Promise<OperationOutput> {
+    const output: OperationOutput = {
+      destAmount: '0',
+      afterPortfolio: portfolio.clone(),
+      logics: [],
+    };
+    try {
+      // 1. ---------- validate params ----------
+      if (debtAmount === '0') throw new OperationError('debtAmount', 'ZERO_AMOUNT');
+
+      const srcCollateral = portfolio.findSupply(collateralToken);
+      if (!srcCollateral) throw new OperationError('collateralToken', 'UNSUPPORTED_TOKEN');
+
+      const destBorrow = portfolio.findBorrow(debtToken);
+      if (!destBorrow) throw new OperationError('debtToken', 'UNSUPPORTED_TOKEN');
+
+      // 2. ---------- swap ----------
+      let supplyInput = new common.TokenAmount(collateralToken.wrapped, '0');
+      if (zapAmount !== '0' && !zapToken.wrapped.is(collateralToken.wrapped)) {
+        const swapper = this.findSwapper([zapToken, collateralToken]);
+        let swapQuotation: SwapperQuoteFields;
+        try {
+          swapQuotation = await swapper.quote({
+            input: new common.TokenAmount(zapToken, zapAmount),
+            tokenOut: collateralToken.wrapped,
+            slippage,
+          });
+        } catch {
+          throw new OperationError('zapAmount', 'NO_ROUTE_FOUND_OR_PRICE_IMPACT_TOO_HIGH');
+        }
+        const swapTokenLogic = swapper.newSwapTokenLogic(swapQuotation);
+        output.logics.push(swapTokenLogic);
+        // 2-1. the supply amount is the swap quotation output
+        supplyInput = swapQuotation.output;
+        output.afterPortfolio.supply(supplyInput.token, supplyInput.amount);
+      } else if (zapToken.wrapped.is(collateralToken.wrapped)) {
+        supplyInput = new common.TokenAmount(zapToken, zapAmount);
+        output.afterPortfolio.supply(supplyInput.token, supplyInput.amount);
+      }
+
+      // 3. leverage by debt
+      const initDebtAmount = new common.TokenAmount(destBorrow.token, destBorrow.balance);
+      const leverageAmount = new common.TokenAmount(destBorrow.token, debtAmount).sub(initDebtAmount).amount;
+      const leverageOutput = await this.leverageByDebt({
+        account,
+        portfolio,
+        srcToken: debtToken.wrapped,
+        srcAmount: leverageAmount,
+        destToken: supplyInput.token,
+      });
+
+      if (leverageOutput.error) throw leverageOutput.error;
+
+      // 3-1. validate supply cap
+      const supplyAmountDelta = supplyInput.add(leverageOutput.destAmount).amount;
+      if (!srcCollateral.validateSupplyCap(supplyAmountDelta)) {
+        throw new OperationError('collateralAmount', 'SUPPLY_CAP_EXCEEDED');
+      }
+
+      // 3-2. find supply logic and add zap supply amount
+      if (!collateralToken.wrapped.is(debtToken.wrapped)) {
+        const leverageSupplyAmount = new common.TokenAmount(
+          collateralToken.wrapped,
+          leverageOutput.logics[2].fields.input.amount
+        );
+        leverageOutput.logics[2].fields.input.amount = leverageSupplyAmount.add(supplyInput.amount).amount;
+        leverageOutput.logics[2].fields.balanceBps = common.BPS_BASE;
+      } else {
+        const leverageSupplyAmount = new common.TokenAmount(
+          collateralToken.wrapped,
+          leverageOutput.logics[1].fields.input.amount
+        );
+        leverageOutput.logics[1].fields.input.amount = leverageSupplyAmount.add(supplyInput.amount).amount;
+        leverageOutput.logics[1].fields.balanceBps = common.BPS_BASE;
+      }
+
+      output.logics.push(...leverageOutput.logics);
+      output.afterPortfolio = leverageOutput.afterPortfolio;
+      output.destAmount = output.afterPortfolio.findSupply(collateralToken)!.balance;
+    } catch (err) {
+      output.error = err instanceof OperationError ? err : new OperationError('openByDebt', 'UNEXPECTED_ERROR');
+    }
+
+    return output;
+  }
+
+  async close(
+    account: string,
+    portfolio: Portfolio,
+    withdrawalToken: common.Token,
+    slippage = defaultSlippage
+  ): Promise<OperationOutput> {
     const output: OperationOutput = {
       destAmount: '0',
       afterPortfolio: portfolio.clone(),
@@ -258,14 +383,15 @@ export class Adapter extends common.Web3Toolkit {
     };
 
     try {
-      // 1. check debt positions
+      // 1. check borrow positions
+      let flashLoanRepayLogic;
+      const flashLoanRepay = new common.TokenAmount(withdrawalToken.wrapped, '0');
+      const { protocolId, marketId } = portfolio;
+      const protocol = this.getProtocol(protocolId);
+
       if (portfolio.totalBorrowUSD.gt(BigNumberJS(0))) {
         // 1.1 flashloan withdrawalToken to repay debt
-        let flashloanAmount = 0;
         const borrows = portfolio.borrows;
-        const protocol = this.getProtocol(portfolio.protocolId);
-        const zapRepayLogics: apisdk.Logic<any>[] = [];
-
         for (const borrow of borrows) {
           if (borrow.balance === '0') continue;
 
@@ -274,61 +400,75 @@ export class Adapter extends common.Web3Toolkit {
             portfolio: output.afterPortfolio,
             srcToken: borrow.token,
             srcAmount: borrow.balance,
-            destToken: withdrawalToken,
+            destToken: withdrawalToken.wrapped,
+            slippage,
             isRepayAll: true,
           });
-          if (zapRepayOutput.error) {
-            throw zapRepayOutput.error;
-          }
-          zapRepayLogics.push(...zapRepayOutput.logics);
-          flashloanAmount += Number(zapRepayOutput.destAmount);
+
+          if (zapRepayOutput.error) throw zapRepayOutput.error;
+
+          output.logics.push(...zapRepayOutput.logics);
+          flashLoanRepay.add(zapRepayOutput.destAmount);
           output.afterPortfolio = zapRepayOutput.afterPortfolio;
         }
-        const flashLoanRepay = new common.TokenAmount(withdrawalToken.wrapped, flashloanAmount.toString());
+
         const flashLoanAggregatorQuotation = await apisdk.protocols.utility.getFlashLoanAggregatorQuotation(
           this.chainId,
           { repays: [flashLoanRepay], protocolId: protocol.preferredFlashLoanProtocolId }
         );
-        const [flashLoanLoanLogic, flashLoanRepayLogic] = apisdk.protocols.utility.newFlashLoanAggregatorLogicPair(
+        const [loanLogic, repayLogic] = apisdk.protocols.utility.newFlashLoanAggregatorLogicPair(
           flashLoanAggregatorQuotation.protocolId,
           flashLoanAggregatorQuotation.loans.toArray()
         );
-        output.destAmount = flashloanAmount.toString();
-        output.logics.push(flashLoanLoanLogic);
-        output.logics.push(...zapRepayLogics);
-        output.logics.push(flashLoanRepayLogic);
+        output.logics.unshift(loanLogic);
+        flashLoanRepayLogic = repayLogic;
       }
 
-      // 2. check collateral positions
+      // 2. check supply positions
       if (portfolio.totalSupplyUSD.gt(BigNumberJS(0))) {
         const supplies = output.afterPortfolio.supplies;
-        let flashLoanRepayLogic;
-        let zapAmount = 0;
-
-        if (output.logics.length > 0) {
-          flashLoanRepayLogic = output.logics.pop();
-        }
+        const zapWithdraw = new common.TokenAmount(withdrawalToken.wrapped, '0');
 
         for (const supply of supplies) {
-          const zapWithdraw = await this.zapWithdraw({
+          if (supply.balance === '0') continue;
+
+          const zapWithdrawOutput = await this.zapWithdraw({
             account,
             portfolio: output.afterPortfolio,
             srcToken: supply.token,
             srcAmount: supply.balance,
-            destToken: withdrawalToken,
+            destToken: withdrawalToken.wrapped,
+            slippage,
           });
-          if (zapWithdraw.error) {
-            throw zapWithdraw.error;
+
+          if (zapWithdrawOutput.error) throw zapWithdrawOutput.error;
+
+          // 2-1. if protocol is collateral tokenized
+          if (protocol.isAssetTokenized(marketId, supply.token)) {
+            // 2-1-1. add src protocol token to agent
+            const withdrawLogic = zapWithdrawOutput.logics[0];
+            const addFundsLogic = apisdk.protocols.permit2.newPullTokenLogic({
+              input: withdrawLogic.fields.input!,
+            });
+            output.logics.push(addFundsLogic);
           }
-          zapAmount += Number(zapWithdraw.destAmount);
-          output.logics.push(...zapWithdraw.logics);
-          output.afterPortfolio = zapWithdraw.afterPortfolio;
+
+          zapWithdraw.add(zapWithdrawOutput.destAmount);
+          output.logics.push(...zapWithdrawOutput.logics);
+          output.afterPortfolio = zapWithdrawOutput.afterPortfolio;
         }
 
-        output.destAmount = (zapAmount - Number(output.destAmount)).toString();
+        const withdrawal = new common.TokenAmount(withdrawalToken, zapWithdraw.clone().sub(flashLoanRepay).amount);
+        output.destAmount = withdrawal.amount;
 
-        if (flashLoanRepayLogic) {
-          output.logics.push(flashLoanRepayLogic);
+        if (flashLoanRepayLogic) output.logics.push(flashLoanRepayLogic);
+
+        if (withdrawalToken.isNative) {
+          const wrapNativeLogic = await apisdk.protocols.utility.newWrappedNativeTokenLogic({
+            input: { token: zapWithdraw.token, amount: withdrawal.amount },
+            output: withdrawal,
+          });
+          output.logics.push(wrapNativeLogic);
         }
       }
     } catch (err) {
