@@ -5,14 +5,14 @@ import { defaultInterestRateMode } from 'src/protocol.type';
 import { expect } from 'chai';
 import hre from 'hardhat';
 import * as logics from '@protocolink/logics';
-import { mainnetTokens } from 'src/tokens';
+import * as spark from 'src/protocols/spark/tokens';
 
-export async function deposit(chainId: number, user: SignerWithAddress, tokenAmount: common.TokenAmount) {
-  const service = new logics.radiantv2.Service(chainId, hre.ethers.provider);
-  const lendingPoolAddress = await service.getLendingPoolAddress();
+export async function supply(chainId: number, user: SignerWithAddress, tokenAmount: common.TokenAmount) {
+  const service = new logics.spark.Service(chainId, hre.ethers.provider);
+  const lendingPoolAddress = await service.getPoolAddress();
   await approve(user, lendingPoolAddress, tokenAmount);
   await expect(
-    logics.radiantv2.LendingPool__factory.connect(lendingPoolAddress, user).deposit(
+    logics.spark.Pool__factory.connect(lendingPoolAddress, user).supply(
       tokenAmount.token.address,
       tokenAmount.amountWei,
       user.address,
@@ -22,11 +22,11 @@ export async function deposit(chainId: number, user: SignerWithAddress, tokenAmo
 }
 
 export async function borrow(chainId: number, user: SignerWithAddress, tokenAmount: common.TokenAmount) {
-  const service = new logics.radiantv2.Service(chainId, hre.ethers.provider);
-  const lendingPoolAddress = await service.getLendingPoolAddress();
+  const service = new logics.spark.Service(chainId, hre.ethers.provider);
+  const lendingPoolAddress = await service.getPoolAddress();
   await approve(user, lendingPoolAddress, tokenAmount);
   await expect(
-    logics.radiantv2.LendingPool__factory.connect(lendingPoolAddress, user).borrow(
+    logics.spark.Pool__factory.connect(lendingPoolAddress, user).borrow(
       tokenAmount.token.address,
       tokenAmount.amountWei,
       defaultInterestRateMode,
@@ -38,10 +38,10 @@ export async function borrow(chainId: number, user: SignerWithAddress, tokenAmou
 
 export function toVariableDebtToken(underlyingToken: common.Token) {
   switch (underlyingToken.address) {
-    case mainnetTokens.USDC.address:
-      return '0x490726291F6434646FEb2eC96d2Cc566b18a122F'; // vdUSDC
-    case mainnetTokens.USDT.address:
-      return '0x2D4fc0D5421C0d37d325180477ba6e16ae3aBAA7'; // vdUSDT
+    case spark.mainnetTokens.DAI.address:
+      return '0xf705d2B7e92B3F38e6ae7afaDAA2fEE110fE5914'; // DAI_variableDebtToken
+    case spark.mainnetTokens.wstETH.address:
+      return '0xd5c3E3B566a42A6110513Ac7670C1a86D76E13E6'; // wstETH_variableDebtToken
     default:
       return undefined;
   }
