@@ -29,7 +29,7 @@ describe('Transaction: Zap Repay', function () {
 
   snapshotAndRevertEach();
 
-  context('Test ZapRepay Permit', function () {
+  context('Test ZapRepay build positions', function () {
     const testCases = [
       {
         protocolId: 'aave-v2',
@@ -37,7 +37,6 @@ describe('Transaction: Zap Repay', function () {
         supplyToken: mainnetTokens.WETH,
         srcToken: mainnetTokens.USDC,
         srcAmount: '100',
-        srcDebtToken: '0x619beb58998eD2278e08620f97007e1116D5D25b', // variableDebtUSDC
         destToken: mainnetTokens.USDT,
         expects: { logicLength: 2 },
       },
@@ -47,7 +46,6 @@ describe('Transaction: Zap Repay', function () {
         supplyToken: mainnetTokens.WETH,
         srcToken: mainnetTokens.USDC,
         srcAmount: '100',
-        srcDebtToken: '0x490726291F6434646FEb2eC96d2Cc566b18a122F', // vdUSDC
         destToken: mainnetTokens.USDT,
         expects: { logicLength: 2 },
       },
@@ -57,7 +55,6 @@ describe('Transaction: Zap Repay', function () {
         supplyToken: mainnetTokens.WETH,
         srcToken: mainnetTokens.USDC,
         srcAmount: '100',
-        srcDebtToken: '0x72E95b8931767C79bA4EeE721354d6E99a61D004', // variableDebtEthUSDC
         destToken: mainnetTokens.USDT,
         expects: { logicLength: 2 },
       },
@@ -67,74 +64,65 @@ describe('Transaction: Zap Repay', function () {
         supplyToken: mainnetTokens.WETH,
         srcToken: mainnetTokens.DAI,
         srcAmount: '100',
-        srcDebtToken: '0xf705d2B7e92B3F38e6ae7afaDAA2fEE110fE5914', // DAI_variableDebtToken
         destToken: mainnetTokens.USDT,
         expects: { logicLength: 2 },
       },
     ];
 
-    testCases.forEach(
-      ({ protocolId, marketId, supplyToken, srcToken, srcAmount, srcDebtToken, destToken, expects }, i) => {
-        it(`case ${i + 1} - ${protocolId}:${marketId}`, async function () {
-          // 0. prep user positions
-          const account = user.address;
-          await utils.deposit(
-            chainId,
-            protocolId,
-            marketId,
-            user,
-            new common.TokenAmount(supplyToken, initSupplyAmount)
-          );
-          await utils.borrow(chainId, protocolId, marketId, user, new common.TokenAmount(srcToken, srcAmount));
+    testCases.forEach(({ protocolId, marketId, supplyToken, srcToken, srcAmount, destToken, expects }, i) => {
+      it(`case ${i + 1} - ${protocolId}:${marketId}`, async function () {
+        // 0. prep user positions
+        const account = user.address;
+        await utils.deposit(chainId, protocolId, marketId, user, new common.TokenAmount(supplyToken, initSupplyAmount));
+        await utils.borrow(chainId, protocolId, marketId, user, new common.TokenAmount(srcToken, srcAmount));
 
-          portfolio = await adapter.getPortfolio(user.address, protocolId, marketId);
-          const initBorrowBalance = await utils.getBorrowBalance(chainId, protocolId, marketId, user, srcDebtToken!);
+        portfolio = await adapter.getPortfolio(user.address, protocolId, marketId);
+        const initBorrowBalance = await utils.getBorrowBalance(chainId, protocolId, marketId, user, srcToken);
 
-          // 1. user obtains a quotation for zap repay
-          const zapRepayInfo = await adapter.zapRepay({ account, portfolio, srcToken, srcAmount, destToken });
-          const logics = zapRepayInfo.logics;
-          expect(zapRepayInfo.error).to.be.undefined;
-          expect(logics.length).to.eq(expects.logicLength);
+        // 1. user obtains a quotation for zap repay
+        const zapRepayInfo = await adapter.zapRepay({ account, portfolio, srcToken, srcAmount, destToken });
+        const logics = zapRepayInfo.logics;
+        expect(zapRepayInfo.error).to.be.undefined;
+        expect(logics.length).to.eq(expects.logicLength);
 
-          // 2. user needs to allow the Protocolink user agent to repay on behalf of the user
-          const estimateResult = await apisdk.estimateRouterData({ chainId, account, logics });
-          for (const approval of estimateResult.approvals) {
-            await expect(user.sendTransaction(approval)).to.not.be.reverted;
-          }
+        // 2. user needs to allow the Protocolink user agent to repay on behalf of the user
+        const estimateResult = await apisdk.estimateRouterData({ chainId, account, logics });
+        for (const approval of estimateResult.approvals) {
+          await expect(user.sendTransaction(approval)).to.not.be.reverted;
+        }
 
-          const permitData = estimateResult.permitData;
-          expect(permitData).to.not.be.undefined;
-          // 2-1. user sign permit data
-          const { domain, types, values } = permitData!;
-          const permitSig = await user._signTypedData(domain, types, values);
+        const permitData = estimateResult.permitData;
+        expect(permitData).to.not.be.undefined;
+        // 2-1. user sign permit data
+        const { domain, types, values } = permitData!;
+        const permitSig = await user._signTypedData(domain, types, values);
 
-          // 3. user obtains a zap repay transaction request
-          const transactionRequest = await apisdk.buildRouterTransactionRequest({
-            chainId,
-            account,
-            logics,
-            permitData,
-            permitSig,
-          });
-          await expect(user.sendTransaction(transactionRequest)).to.not.be.reverted;
-
-          // 4. user's borrow balance should decrease
-          // 4-1. debt grows when the block of getting api data is different from the block of executing tx
-          const borrowBalance = await utils.getBorrowBalance(chainId, protocolId, marketId, user, srcDebtToken!);
-          const repayAmount = logics[1].fields.input;
-          const borrowDifference = initBorrowBalance!.clone().sub(borrowBalance!);
-          const [minRepayAmount, maxRepayAmount] = utils.bpsBound(repayAmount.amount, slippage);
-          expect(borrowDifference.gte(minRepayAmount)).to.be.true;
-          expect(borrowDifference.lte(maxRepayAmount)).to.be.true;
-
-          // 5. user's dest token balance should decrease
-          await expect(user.address).to.changeBalance(destToken, -zapRepayInfo.destAmount, 1);
+        // 3. user obtains a zap repay transaction request
+        const transactionRequest = await apisdk.buildRouterTransactionRequest({
+          chainId,
+          account,
+          logics,
+          permitData,
+          permitSig,
         });
-      }
-    );
+        await expect(user.sendTransaction(transactionRequest)).to.not.be.reverted;
+
+        // 4. user's borrow balance should decrease
+        // 4-1. debt grows when the block of getting api data is different from the block of executing tx
+        const borrowBalance = await utils.getBorrowBalance(chainId, protocolId, marketId, user, srcToken);
+        const repayAmount = logics[1].fields.input;
+        const borrowDifference = initBorrowBalance!.clone().sub(borrowBalance!);
+        const [minRepayAmount, maxRepayAmount] = utils.bpsBound(repayAmount.amount, slippage);
+        expect(borrowDifference.gte(minRepayAmount)).to.be.true;
+        expect(borrowDifference.lte(maxRepayAmount)).to.be.true;
+
+        // 5. user's dest token balance should decrease
+        await expect(user.address).to.changeBalance(destToken, -zapRepayInfo.destAmount, 1);
+      });
+    });
   });
 
-  context('Test ZapRepay Approve', function () {
+  context('Test ZapRepay on-chain positions', function () {
     const testCases = [
       {
         protocolId: 'compound-v3',
@@ -162,7 +150,7 @@ describe('Transaction: Zap Repay', function () {
 
         user = await hre.ethers.getImpersonatedSigner(account);
         portfolio = await adapter.getPortfolio(user.address, protocolId, marketId);
-        const initBorrowBalance = await utils.getBorrowBalance(chainId, protocolId, marketId, user);
+        const initBorrowBalance = await utils.getBorrowBalance(chainId, protocolId, marketId, user, srcToken);
 
         // 1. user obtains a quotation for zap repay
         const zapRepayInfo = await adapter.zapRepay({ account, portfolio, srcToken, srcAmount, destToken });
@@ -182,7 +170,7 @@ describe('Transaction: Zap Repay', function () {
 
         // 4. user's borrow balance should decrease
         // 4-1. debt grows when the block of getting api data is different from the block of executing tx
-        const borrowBalance = await utils.getBorrowBalance(chainId, protocolId, marketId, user);
+        const borrowBalance = await utils.getBorrowBalance(chainId, protocolId, marketId, user, srcToken);
         const repayAmount = logics[1].fields.input;
         const borrowDifference = initBorrowBalance!.clone().sub(borrowBalance!);
         const [minRepayAmount, maxRepayAmount] = utils.bpsBound(repayAmount.amount, slippage);

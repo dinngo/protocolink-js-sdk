@@ -5,6 +5,7 @@ import { defaultInterestRateMode } from 'src/protocol.type';
 import { expect } from 'chai';
 import hre from 'hardhat';
 import * as logics from '@protocolink/logics';
+import * as spark from 'src/protocols/spark/tokens';
 
 export async function supply(chainId: number, user: SignerWithAddress, tokenAmount: common.TokenAmount) {
   const service = new logics.spark.Service(chainId, hre.ethers.provider);
@@ -33,4 +34,15 @@ export async function borrow(chainId: number, user: SignerWithAddress, tokenAmou
       user.address
     )
   ).to.not.be.reverted;
+}
+
+export function toVariableDebtToken(underlyingToken: common.Token) {
+  switch (underlyingToken.address) {
+    case spark.mainnetTokens.DAI.address:
+      return '0xf705d2B7e92B3F38e6ae7afaDAA2fEE110fE5914'; // DAI_variableDebtToken
+    case spark.mainnetTokens.wstETH.address:
+      return '0xd5c3E3B566a42A6110513Ac7670C1a86D76E13E6'; // wstETH_variableDebtToken
+    default:
+      return undefined;
+  }
 }

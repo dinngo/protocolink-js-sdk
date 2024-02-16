@@ -56,18 +56,14 @@ export async function borrow(
   ).to.not.be.reverted;
 }
 
-export async function getCollateralBalance(
-  chainId: number,
-  marketId: string,
-  user: SignerWithAddress,
-  collateral: common.Token
-) {
+export async function getCollateralBalance(chainId: number, marketId: string, user: SignerWithAddress) {
   const morphoAddress = logics.morphoblue.getContractAddress(chainId, 'Morpho');
   const position = await logics.morphoblue.Morpho__factory.connect(morphoAddress, user).position(
     marketId,
     user.address
   );
-
+  const service = new logics.morphoblue.Service(chainId, hre.ethers.provider);
+  const collateral = await service.getCollateralToken(marketId);
   return new common.TokenAmount(collateral).setWei(position.collateral);
 }
 

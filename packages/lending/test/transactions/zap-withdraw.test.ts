@@ -1,16 +1,12 @@
 import { Adapter } from 'src/adapter';
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
-import * as aaveV2 from 'src/protocols/aave-v2/tokens';
-import * as aaveV3 from 'src/protocols/aave-v3/tokens';
 import * as apisdk from '@protocolink/api';
 import { claimToken, mainnetTokens, snapshotAndRevertEach } from '@protocolink/test-helpers';
 import * as common from '@protocolink/common';
-import * as compoundV3 from 'src/protocols/compound-v3/tokens';
 import { expect } from 'chai';
 import hre from 'hardhat';
 import * as logics from '@protocolink/logics';
-import { morphoblue, spark } from '@protocolink/logics';
-import * as radiantV2 from 'src/protocols/radiant-v2/tokens';
+import { morphoblue } from '@protocolink/logics';
 import * as utils from '../utils';
 
 describe('Transaction: Zap Withdraw', function () {
@@ -37,7 +33,6 @@ describe('Transaction: Zap Withdraw', function () {
         marketId: 'mainnet',
         srcToken: mainnetTokens.WETH,
         srcAmount: '1',
-        srcAToken: aaveV2.mainnetTokens.aWETH,
         destToken: mainnetTokens.USDC,
         expects: { logicLength: 2 },
       },
@@ -46,7 +41,6 @@ describe('Transaction: Zap Withdraw', function () {
         marketId: 'mainnet',
         srcToken: mainnetTokens.WETH,
         srcAmount: '1',
-        srcAToken: radiantV2.mainnetTokens.rWETH,
         destToken: mainnetTokens.USDC,
         expects: { logicLength: 2 },
       },
@@ -55,7 +49,6 @@ describe('Transaction: Zap Withdraw', function () {
         marketId: 'mainnet',
         srcToken: mainnetTokens.WETH,
         srcAmount: '1',
-        srcAToken: aaveV3.mainnetTokens.aEthWETH,
         destToken: mainnetTokens.USDC,
         expects: { logicLength: 2 },
       },
@@ -64,7 +57,6 @@ describe('Transaction: Zap Withdraw', function () {
         marketId: 'mainnet',
         srcToken: mainnetTokens.WETH,
         srcAmount: '1',
-        srcAToken: spark.mainnetTokens.spWETH,
         destToken: mainnetTokens.USDC,
         expects: { logicLength: 2 },
       },
@@ -73,13 +65,12 @@ describe('Transaction: Zap Withdraw', function () {
         marketId: logics.compoundv3.MarketId.ETH,
         srcToken: mainnetTokens.WETH,
         srcAmount: '1',
-        srcAToken: compoundV3.mainnetTokens.cWETHv3,
         destToken: mainnetTokens.USDC,
         expects: { logicLength: 2 },
       },
     ];
 
-    testCases.forEach(({ protocolId, marketId, srcToken, srcAmount, srcAToken, destToken, expects }, i) => {
+    testCases.forEach(({ protocolId, marketId, srcToken, srcAmount, destToken, expects }, i) => {
       it(`case ${i + 1} - ${protocolId}:${marketId}`, async function () {
         // 0. prep user positions
         const account = user.address;
@@ -127,6 +118,8 @@ describe('Transaction: Zap Withdraw', function () {
 
         // 4. user's supply balance should decrease.
         // 4-1. supply grows when the block of getting api data is different from the block of executing tx
+        const protocol = adapter.getProtocol(protocolId);
+        const srcAToken = protocol.toProtocolToken(marketId, srcToken);
         await expect(user.address).to.changeBalance(srcAToken, -srcAmount, slippage);
 
         // 5. user's dest token balance should increase
@@ -198,7 +191,8 @@ describe('Transaction: Zap Withdraw', function () {
 
         // 4. user's supply balance should decrease.
         const withdrawalAmount = new common.TokenAmount(srcToken, srcAmount);
-        const collateralBalance = await utils.getCollateralBalance(chainId, protocolId, marketId, user, srcToken);
+        const protocol = adapter.getProtocol(protocolId);
+        const collateralBalance = await utils.getCollateralBalance(chainId, protocol, marketId, user, srcToken);
         expect(collateralBalance!.add(withdrawalAmount).amount).to.be.eq(initSupplyAmount);
 
         // 5. user's dest token balance should increase

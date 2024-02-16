@@ -1,16 +1,12 @@
 import { Adapter } from 'src/adapter';
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
-import * as aaveV2 from 'src/protocols/aave-v2/tokens';
-import * as aaveV3 from 'src/protocols/aave-v3/tokens';
 import * as apisdk from '@protocolink/api';
-import { claimToken, getBalance, mainnetTokens, snapshotAndRevertEach } from '@protocolink/test-helpers';
+import { claimToken, mainnetTokens, snapshotAndRevertEach } from '@protocolink/test-helpers';
 import * as common from '@protocolink/common';
 import { expect } from 'chai';
 import hre from 'hardhat';
 import * as logics from '@protocolink/logics';
 import * as morphoblue from 'src/protocols/morphoblue/tokens';
-import * as radiantV2 from 'src/protocols/radiant-v2/tokens';
-import { spark } from '@protocolink/logics';
 import * as utils from 'test/utils';
 
 describe('Transaction: Deleverage', function () {
@@ -31,16 +27,14 @@ describe('Transaction: Deleverage', function () {
 
   snapshotAndRevertEach();
 
-  context('Test Deleverage Permit', function () {
+  context('Test Deleverage build positions', function () {
     const testCases = [
       {
         protocolId: 'aave-v2',
         marketId: 'mainnet',
         srcToken: mainnetTokens.USDC,
         srcAmount: '100',
-        variableDebtToken: '0x619beb58998eD2278e08620f97007e1116D5D25b', // variableDebtUSDC
         destToken: mainnetTokens.WETH,
-        protocolToken: aaveV2.mainnetTokens.aWETH,
         expects: { logicLength: 6 },
       },
       {
@@ -48,9 +42,7 @@ describe('Transaction: Deleverage', function () {
         marketId: 'mainnet',
         srcToken: mainnetTokens.USDC,
         srcAmount: '100',
-        variableDebtToken: '0x490726291F6434646FEb2eC96d2Cc566b18a122F', // vdUSDC
         destToken: mainnetTokens.WETH,
-        protocolToken: radiantV2.mainnetTokens.rWETH,
         expects: { logicLength: 6 },
       },
       {
@@ -58,9 +50,7 @@ describe('Transaction: Deleverage', function () {
         marketId: 'mainnet',
         srcToken: mainnetTokens.USDC,
         srcAmount: '100',
-        variableDebtToken: '0x72E95b8931767C79bA4EeE721354d6E99a61D004', // variableDebtEthUSDC
         destToken: mainnetTokens.WETH,
-        protocolToken: aaveV3.mainnetTokens.aEthWETH,
         expects: { logicLength: 6 },
       },
       {
@@ -69,79 +59,69 @@ describe('Transaction: Deleverage', function () {
         account: '0x8bf7058bfe4cf0d1fdfd41f43816c5555c17431d',
         srcToken: mainnetTokens.DAI,
         srcAmount: '100',
-        variableDebtToken: '0xf705d2B7e92B3F38e6ae7afaDAA2fEE110fE5914', // DAI_variableDebtToken
         destToken: mainnetTokens.WETH,
-        protocolToken: spark.mainnetTokens.spWETH,
         expects: { logicLength: 6 },
       },
     ];
 
-    testCases.forEach(
-      ({ protocolId, marketId, srcToken, srcAmount, variableDebtToken, destToken, protocolToken, expects }, i) => {
-        it(`case ${i + 1} - ${protocolId}:${marketId}`, async function () {
-          // 0. prep user positions
-          const account = user.address;
-          const initCollateralBalance = new common.TokenAmount(destToken, initSupplyAmount);
-          const initBorrowBalance = new common.TokenAmount(srcToken, initBorrowAmount);
-          await utils.deposit(chainId, protocolId, marketId, user, initCollateralBalance);
-          await utils.borrow(chainId, protocolId, marketId, user, initBorrowBalance);
+    testCases.forEach(({ protocolId, marketId, srcToken, srcAmount, destToken, expects }, i) => {
+      it(`case ${i + 1} - ${protocolId}:${marketId}`, async function () {
+        // 0. prep user positions
+        const account = user.address;
+        const protocol = adapter.getProtocol(protocolId);
+        const initCollateralBalance = new common.TokenAmount(destToken, initSupplyAmount);
+        const initBorrowBalance = new common.TokenAmount(srcToken, initBorrowAmount);
+        await utils.deposit(chainId, protocolId, marketId, user, initCollateralBalance);
+        await utils.borrow(chainId, protocolId, marketId, user, initBorrowBalance);
 
-          // 1. user obtains a quotation for deleveraging dest token
-          const portfolio = await adapter.getPortfolio(user.address, protocolId, marketId);
-          const deleverageInfo = await adapter.deleverage({ account, portfolio, srcToken, srcAmount, destToken });
-          const logics = deleverageInfo.logics;
-          expect(deleverageInfo.error).to.be.undefined;
-          expect(logics.length).to.eq(expects.logicLength);
+        // 1. user obtains a quotation for deleveraging dest token
+        const portfolio = await adapter.getPortfolio(user.address, protocolId, marketId);
+        const deleverageInfo = await adapter.deleverage({ account, portfolio, srcToken, srcAmount, destToken });
+        const logics = deleverageInfo.logics;
+        expect(deleverageInfo.error).to.be.undefined;
+        expect(logics.length).to.eq(expects.logicLength);
 
-          // 2. user needs to permit the Protocolink user agent to borrow on behalf of the user
-          const estimateResult = await apisdk.estimateRouterData({ chainId, account, logics });
-          for (const approval of estimateResult.approvals) {
-            await expect(user.sendTransaction(approval)).to.not.be.reverted;
-          }
-          // 2-1. user sign permit data
-          const permitData = estimateResult.permitData;
-          expect(permitData).to.not.be.undefined;
-          const { domain, types, values } = permitData!;
-          const permitSig = await user._signTypedData(domain, types, values);
+        // 2. user needs to permit the Protocolink user agent to borrow on behalf of the user
+        const estimateResult = await apisdk.estimateRouterData({ chainId, account, logics });
+        for (const approval of estimateResult.approvals) {
+          await expect(user.sendTransaction(approval)).to.not.be.reverted;
+        }
+        // 2-1. user sign permit data
+        const permitData = estimateResult.permitData;
+        expect(permitData).to.not.be.undefined;
+        const { domain, types, values } = permitData!;
+        const permitSig = await user._signTypedData(domain, types, values);
 
-          // 3. user obtains a deleverage transaction request
-          const transactionRequest = await apisdk.buildRouterTransactionRequest({
-            chainId,
-            account,
-            logics,
-            permitData,
-            permitSig,
-          });
-          await expect(user.sendTransaction(transactionRequest)).to.not.be.reverted;
-
-          // 4. user's collateral balance should decrease.
-          // 4-1. collateral grows when the block of getting api data is different from the block of executing tx
-          const deleverageWithdrawAmount = deleverageInfo.destAmount;
-          const collateralBalance = await utils.getCollateralBalance(
-            chainId,
-            protocolId,
-            marketId,
-            user,
-            protocolToken
-          );
-          adapter;
-          const borrowBalance = await utils.getBorrowBalance(chainId, protocolId, marketId, user, variableDebtToken!);
-          expect(collateralBalance!.gte(initCollateralBalance.clone().sub(deleverageWithdrawAmount))).to.be.true;
-
-          // 5. user's borrow balance should decrease.
-          const borrowDifference = initBorrowBalance.clone().sub(borrowBalance!.amount);
-          const repayAmount = logics[2].fields.input;
-
-          // 5-1. debt grows when the block of getting api data is different from the block of executing tx
-          const [minRepayAmount, maxRepayAmount] = utils.bpsBound(repayAmount.amount, slippage);
-          expect(borrowDifference.gte(minRepayAmount)).to.be.true;
-          expect(borrowDifference.lte(maxRepayAmount)).to.be.true;
+        // 3. user obtains a deleverage transaction request
+        const transactionRequest = await apisdk.buildRouterTransactionRequest({
+          chainId,
+          account,
+          logics,
+          permitData,
+          permitSig,
         });
-      }
-    );
+        await expect(user.sendTransaction(transactionRequest)).to.not.be.reverted;
+
+        // 4. user's collateral balance should decrease.
+        // 4-1. collateral grows when the block of getting api data is different from the block of executing tx
+        const deleverageWithdrawAmount = deleverageInfo.destAmount;
+        const collateralBalance = await utils.getCollateralBalance(chainId, protocol, marketId, user, destToken);
+        const borrowBalance = await utils.getBorrowBalance(chainId, protocolId, marketId, user, srcToken);
+        expect(collateralBalance!.gte(initCollateralBalance.clone().sub(deleverageWithdrawAmount))).to.be.true;
+
+        // 5. user's borrow balance should decrease.
+        const borrowDifference = initBorrowBalance.clone().sub(borrowBalance!.amount);
+        const repayAmount = logics[2].fields.input;
+
+        // 5-1. debt grows when the block of getting api data is different from the block of executing tx
+        const [minRepayAmount, maxRepayAmount] = utils.bpsBound(repayAmount.amount, slippage);
+        expect(borrowDifference.gte(minRepayAmount)).to.be.true;
+        expect(borrowDifference.lte(maxRepayAmount)).to.be.true;
+      });
+    });
   });
 
-  context('Test Deleverage Approve', function () {
+  context('Test Deleverage on-chain positions', function () {
     const testCases = [
       {
         protocolId: 'compound-v3',
@@ -166,13 +146,14 @@ describe('Transaction: Deleverage', function () {
     testCases.forEach(({ protocolId, marketId, account, srcToken, srcAmount, destToken, expects }, i) => {
       it(`case ${i + 1} - ${protocolId}:${marketId}`, async function () {
         const permit2Type = 'approve';
+        const protocol = adapter.getProtocol(protocolId);
 
         user = await hre.ethers.getImpersonatedSigner(account);
-        const portfolio = await adapter.getPortfolio(user.address, protocolId, marketId);
-        const initCollateralBalance = await utils.getCollateralBalance(chainId, protocolId, marketId, user, destToken);
-        const initBorrowBalance = await utils.getBorrowBalance(chainId, protocolId, marketId, user);
+        const initCollateralBalance = await utils.getCollateralBalance(chainId, protocol, marketId, user, destToken);
+        const initBorrowBalance = await utils.getBorrowBalance(chainId, protocolId, marketId, user, srcToken);
 
         // 1. user obtains a quotation for deleveraging dest token
+        const portfolio = await adapter.getPortfolio(user.address, protocolId, marketId);
         const deleverageInfo = await adapter.deleverage({ account, portfolio, srcToken, srcAmount, destToken });
         const logics = deleverageInfo.logics;
         expect(deleverageInfo.error).to.be.undefined;
@@ -192,8 +173,8 @@ describe('Transaction: Deleverage', function () {
         // 4. user's collateral balance should decrease.
         // 4-1. collateral grows when the block of getting api data is different from the block of executing tx
         const deleverageWithdrawAmount = deleverageInfo.destAmount;
-        const collateralBalance = await utils.getCollateralBalance(chainId, protocolId, marketId, user, destToken);
-        const borrowBalance = await utils.getBorrowBalance(chainId, protocolId, marketId, user);
+        const collateralBalance = await utils.getCollateralBalance(chainId, protocol, marketId, user, destToken);
+        const borrowBalance = await utils.getBorrowBalance(chainId, protocolId, marketId, user, srcToken);
         expect(collateralBalance!.gte(initCollateralBalance!.clone().sub(deleverageWithdrawAmount))).to.be.true;
 
         // 5. user's borrow balance should decrease.
