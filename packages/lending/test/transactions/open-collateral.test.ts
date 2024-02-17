@@ -1,35 +1,28 @@
 import { Adapter } from 'src/adapter';
-import { Portfolio } from 'src/protocol.portfolio';
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
-import * as aaveV2 from 'src/protocols/aave-v2/tokens';
-import * as aaveV3 from 'src/protocols/aave-v3/tokens';
 import * as apisdk from '@protocolink/api';
-import { claimToken, getBalance, mainnetTokens, snapshotAndRevertEach } from '@protocolink/test-helpers';
+import { claimToken, mainnetTokens, snapshotAndRevertEach } from '@protocolink/test-helpers';
+import * as common from '@protocolink/common';
 import { expect } from 'chai';
 import hre from 'hardhat';
 import * as logics from '@protocolink/logics';
 import * as morphoblue from 'src/protocols/morphoblue/tokens';
-import * as radiantV2 from 'src/protocols/radiant-v2/tokens';
-import * as spark from 'src/protocols/spark/tokens';
 import * as utils from 'test/utils';
 
 describe('Transaction: Open By Collateral', function () {
   const chainId = 1;
-  const permit2Type = 'approve';
+  const slippage = 1000;
+  const initSupplyAmount = '5';
 
-  let portfolio: Portfolio;
   let user: SignerWithAddress;
   let adapter: Adapter;
 
   before(async function () {
     adapter = new Adapter(chainId, hre.ethers.provider);
-    await claimToken(chainId, '0x7F67F6A09bcb2159b094B64B4acc53D5193AEa2E', mainnetTokens.ETH, '15'); // gas
-    await claimToken(chainId, '0x7F67F6A09bcb2159b094B64B4acc53D5193AEa2E', mainnetTokens.USDT, '2000');
-    await claimToken(chainId, '0x0E79368B079910b31e71Ce1B2AE510461359128D', mainnetTokens.USDT, '2000');
-    await claimToken(chainId, '0x06e4Cb4f3ba9A2916B6384aCbdeAa74dAAF91550', mainnetTokens.USDT, '2000');
-    await claimToken(chainId, '0xee2826453a4fd5afeb7ceffeef3ffa2320081268', mainnetTokens.USDT, '2000');
-    await claimToken(chainId, '0x53fb0162bC8d5EEc2fB1532923C4f8997BAce111', mainnetTokens.USDT, '2000');
-    await claimToken(chainId, '0x9cbf099ff424979439dfba03f00b5961784c06ce', mainnetTokens.USDT, '2000');
+    [, user] = await hre.ethers.getSigners();
+    await claimToken(chainId, user.address, mainnetTokens.USDT, '10000');
+    await claimToken(chainId, user.address, mainnetTokens.WETH, initSupplyAmount);
+    await claimToken(chainId, user.address, morphoblue.mainnetTokens.wstETH, initSupplyAmount);
   });
 
   snapshotAndRevertEach();
@@ -39,73 +32,68 @@ describe('Transaction: Open By Collateral', function () {
       {
         protocolId: 'aave-v2',
         marketId: 'mainnet',
-        account: '0x7F67F6A09bcb2159b094B64B4acc53D5193AEa2E',
+        hasCollateral: true,
         zapToken: mainnetTokens.USDT,
         zapAmount: '1000',
         collateralToken: mainnetTokens.WETH,
-        collateralAmountDelta: '1',
-        collateralAToken: aaveV2.mainnetTokens.aWETH,
+        leverageCollateralAmount: '1',
         debtToken: mainnetTokens.USDC,
         expects: { logicLength: 7 },
       },
       {
         protocolId: 'radiant-v2',
         marketId: 'mainnet',
-        account: '0x0E79368B079910b31e71Ce1B2AE510461359128D',
+        hasCollateral: false,
         zapToken: mainnetTokens.USDT,
-        zapAmount: '1000',
+        zapAmount: '10000',
         collateralToken: mainnetTokens.WETH,
-        collateralAmountDelta: '1',
-        collateralAToken: radiantV2.mainnetTokens.rWETH,
+        leverageCollateralAmount: '1',
         debtToken: mainnetTokens.USDC,
         expects: { logicLength: 7 },
       },
       {
         protocolId: 'aave-v3',
         marketId: 'mainnet',
-        account: '0x06e4Cb4f3ba9A2916B6384aCbdeAa74dAAF91550',
+        hasCollateral: true,
         zapToken: mainnetTokens.USDT,
         zapAmount: '1000',
         collateralToken: mainnetTokens.WETH,
-        collateralAmountDelta: '1',
-        collateralAToken: aaveV3.mainnetTokens.aEthWETH,
+        leverageCollateralAmount: '1',
         debtToken: mainnetTokens.USDC,
         expects: { logicLength: 7 },
       },
       {
         protocolId: 'spark',
         marketId: 'mainnet',
-        account: '0xee2826453a4fd5afeb7ceffeef3ffa2320081268',
+        hasCollateral: false,
         zapToken: mainnetTokens.USDT,
-        zapAmount: '1000',
+        zapAmount: '5000',
         collateralToken: mainnetTokens.WETH,
-        collateralAmountDelta: '1',
-        collateralAToken: spark.mainnetTokens.spWETH,
+        leverageCollateralAmount: '1',
+        // collateralAToken: spark.mainnetTokens.spWETH,
         debtToken: mainnetTokens.DAI,
         expects: { logicLength: 7 },
       },
       {
         protocolId: 'compound-v3',
         marketId: logics.compoundv3.MarketId.USDC,
-        account: '0x53fb0162bC8d5EEc2fB1532923C4f8997BAce111',
+        hasCollateral: true,
         zapToken: mainnetTokens.USDT,
         zapAmount: '1000',
         collateralToken: mainnetTokens.WETH,
-        collateralAmountDelta: '1',
+        leverageCollateralAmount: '1',
         debtToken: mainnetTokens.USDC,
-        service: new logics.compoundv3.Service(chainId, hre.ethers.provider),
         expects: { logicLength: 6 },
       },
       {
         protocolId: 'morphoblue',
         marketId: '0xb323495f7e4148be5643a4ea4a8221eef163e4bccfdedc2a6f4696baacbc86cc',
-        account: '0x9cbf099ff424979439dfba03f00b5961784c06ce',
+        hasCollateral: true,
         zapToken: mainnetTokens.USDT,
         zapAmount: '1000',
         collateralToken: morphoblue.mainnetTokens.wstETH,
-        collateralAmountDelta: '1',
+        leverageCollateralAmount: '1',
         debtToken: mainnetTokens.USDC,
-        service: new logics.morphoblue.Service(chainId, hre.ethers.provider),
         expects: { logicLength: 6 },
       },
     ];
@@ -115,38 +103,36 @@ describe('Transaction: Open By Collateral', function () {
         {
           protocolId,
           marketId,
-          account,
+          hasCollateral,
           zapToken,
           zapAmount,
           collateralToken,
-          collateralAmountDelta,
-          collateralAToken,
+          leverageCollateralAmount,
           debtToken,
-          service,
           expects,
         },
         i
       ) => {
         it(`case ${i + 1} - ${protocolId}:${marketId}`, async function () {
-          user = await hre.ethers.getImpersonatedSigner(account);
-          portfolio = await adapter.getPortfolio(user.address, protocolId, marketId);
-
-          const initSupplyBalance = service
-            ? await service.getCollateralBalance(marketId, user.address, collateralToken)
-            : await getBalance(user.address, collateralAToken!);
-
-          const expectedCollateralBalance = initSupplyBalance.add(collateralAmountDelta);
-          const collateralAmount = expectedCollateralBalance.amount;
+          // 0. prep user positions
+          const account = user.address;
+          const initCollateralBalance = new common.TokenAmount(collateralToken, initSupplyAmount);
+          if (hasCollateral) {
+            await utils.deposit(chainId, protocolId, marketId, user, initCollateralBalance);
+          }
 
           // 1. user obtains a quotation for open by collateral
+          const expectedCollateralBalance = initCollateralBalance.clone().add(leverageCollateralAmount);
+          const portfolio = await adapter.getPortfolio(user.address, protocolId, marketId);
           const openCollateralInfo = await adapter.openByCollateral(
             account,
             portfolio,
             zapToken,
             zapAmount,
             collateralToken,
-            collateralAmount,
-            debtToken
+            expectedCollateralBalance.amount,
+            debtToken,
+            slippage
           );
 
           const logics = openCollateralInfo.logics;
@@ -154,28 +140,39 @@ describe('Transaction: Open By Collateral', function () {
           expect(logics.length).to.eq(expects.logicLength);
 
           // 2. user needs to permit the Protocolink user agent to borrow for the user
-          const estimateResult = await apisdk.estimateRouterData({ chainId, account, logics }, { permit2Type });
+          const estimateResult = await apisdk.estimateRouterData({ chainId, account, logics });
           for (const approval of estimateResult.approvals) {
             await expect(user.sendTransaction(approval)).to.not.be.reverted;
           }
+          // 2-1. user sign permit data
+          const permitData = estimateResult.permitData;
+          expect(permitData).to.not.be.undefined;
+          const { domain, types, values } = permitData!;
+          const permitSig = await user._signTypedData(domain, types, values);
 
           // 3. user obtains a leverage by collateral transaction request
           const transactionRequest = await apisdk.buildRouterTransactionRequest({
             chainId,
             account,
             logics,
+            permitData,
+            permitSig,
           });
           await expect(user.sendTransaction(transactionRequest)).to.not.be.reverted;
 
           // 4. user's supply balance will increase.
-          // 4-1. due to the slippage caused by the swap, we need to calculate the minimum leverage amount.
-          const supplyBalance = service
-            ? await service.getCollateralBalance(marketId, user.address, collateralToken)
-            : await getBalance(user.address, collateralAToken!);
-          const [, max] = utils.bpsBound(collateralAmount);
-          const maxExpectedCollateralBalance = expectedCollateralBalance.clone().set(max);
-          expect(supplyBalance.gte(expectedCollateralBalance));
-          expect(supplyBalance.lte(maxExpectedCollateralBalance));
+          const protocol = adapter.getProtocol(protocolId);
+          const collateralBalance = await utils.getCollateralBalance(
+            chainId,
+            protocol,
+            marketId,
+            user,
+            collateralToken
+          );
+          // 4-1. due to the slippage caused by the swap, we need to calculate the minimum and maximum leverage amount.
+          const [minLeverageAmount, maxLeverageAmount] = utils.bpsBound(leverageCollateralAmount, slippage);
+          expect(collateralBalance!.gte(initCollateralBalance.clone().add(minLeverageAmount))).to.be.true;
+          expect(collateralBalance!.lte(initCollateralBalance.clone().add(maxLeverageAmount))).to.be.true;
         });
       }
     );

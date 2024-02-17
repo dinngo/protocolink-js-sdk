@@ -3,13 +3,15 @@ import { Portfolio } from 'src/protocol.portfolio';
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 import * as apisdk from '@protocolink/api';
 import { claimToken, getBalance, mainnetTokens, snapshotAndRevertEach } from '@protocolink/test-helpers';
+import * as common from '@protocolink/common';
 import { expect } from 'chai';
 import hre from 'hardhat';
 import * as utils from 'test/utils';
 
 describe('Transaction: Open By Debt', function () {
   const chainId = 1;
-  const permit2Type = 'approve';
+  const slippage = 1000;
+  const initSupplyAmount = '5';
 
   let portfolio: Portfolio;
   let user: SignerWithAddress;
@@ -17,10 +19,9 @@ describe('Transaction: Open By Debt', function () {
 
   before(async function () {
     adapter = new Adapter(chainId, hre.ethers.provider);
-    await claimToken(chainId, '0x7F67F6A09bcb2159b094B64B4acc53D5193AEa2E', mainnetTokens.USDT, '200');
-    await claimToken(chainId, '0x0E79368B079910b31e71Ce1B2AE510461359128D', mainnetTokens.USDT, '200');
-    await claimToken(chainId, '0x06e4Cb4f3ba9A2916B6384aCbdeAa74dAAF91550', mainnetTokens.USDT, '200');
-    await claimToken(chainId, '0xee2826453a4fd5afeb7ceffeef3ffa2320081268', mainnetTokens.USDT, '200');
+    [, user] = await hre.ethers.getSigners();
+    await claimToken(chainId, user.address, mainnetTokens.USDT, '5000');
+    await claimToken(chainId, user.address, mainnetTokens.WETH, initSupplyAmount);
   });
 
   snapshotAndRevertEach();
@@ -30,49 +31,45 @@ describe('Transaction: Open By Debt', function () {
       {
         protocolId: 'aave-v2',
         marketId: 'mainnet',
-        account: '0x7F67F6A09bcb2159b094B64B4acc53D5193AEa2E',
+        hasCollateral: true,
         zapToken: mainnetTokens.USDT,
         zapAmount: '100',
         collateralToken: mainnetTokens.WETH,
         debtToken: mainnetTokens.USDC,
-        debtAmountDelta: '1000',
-        debtDebtToken: '0x619beb58998eD2278e08620f97007e1116D5D25b', // variableDebtUSDC
+        leverageDebtAmount: '1000',
         expects: { logicLength: 7 },
       },
       {
         protocolId: 'radiant-v2',
         marketId: 'mainnet',
-        account: '0x0E79368B079910b31e71Ce1B2AE510461359128D',
+        hasCollateral: false,
         zapToken: mainnetTokens.USDT,
-        zapAmount: '100',
-        collateralToken: mainnetTokens.USDC,
-        debtToken: mainnetTokens.WETH,
-        debtAmountDelta: '0.1',
-        debtDebtToken: '0xDf1E9234d4F10eF9FED26A7Ae0EF43e5e03bfc31', // vdWETH
+        zapAmount: '5000',
+        collateralToken: mainnetTokens.WETH,
+        debtToken: mainnetTokens.USDC,
+        leverageDebtAmount: '1000',
         expects: { logicLength: 7 },
       },
       {
         protocolId: 'aave-v3',
         marketId: 'mainnet',
-        account: '0x06e4Cb4f3ba9A2916B6384aCbdeAa74dAAF91550',
+        hasCollateral: true,
         zapToken: mainnetTokens.USDT,
         zapAmount: '100',
-        collateralToken: mainnetTokens.WBTC,
+        collateralToken: mainnetTokens.WETH,
         debtToken: mainnetTokens.USDC,
-        debtAmountDelta: '1000',
-        debtDebtToken: '0x72E95b8931767C79bA4EeE721354d6E99a61D004', // variableDebtEthUSDC
+        leverageDebtAmount: '1000',
         expects: { logicLength: 7 },
       },
       {
         protocolId: 'spark',
         marketId: 'mainnet',
-        account: '0xee2826453a4fd5afeb7ceffeef3ffa2320081268',
+        hasCollateral: false,
         zapToken: mainnetTokens.USDT,
-        zapAmount: '100',
-        collateralToken: mainnetTokens.USDC,
-        debtToken: mainnetTokens.WETH,
-        debtAmountDelta: '0.1',
-        debtDebtToken: '0x2e7576042566f8D6990e07A1B61Ad1efd86Ae70d', // WETH_variableDebtToken
+        zapAmount: '5000',
+        collateralToken: mainnetTokens.WETH,
+        debtToken: mainnetTokens.DAI,
+        leverageDebtAmount: '1000',
         expects: { logicLength: 7 },
       },
     ];
@@ -82,26 +79,28 @@ describe('Transaction: Open By Debt', function () {
         {
           protocolId,
           marketId,
-          account,
+          hasCollateral,
           zapToken,
           zapAmount,
           collateralToken,
           debtToken,
-          debtAmountDelta,
-          debtDebtToken,
+          leverageDebtAmount,
           expects,
         },
         i
       ) => {
         it(`case ${i + 1} - ${protocolId}:${marketId}`, async function () {
-          user = await hre.ethers.getImpersonatedSigner(account);
-          portfolio = await adapter.getPortfolio(user.address, protocolId, marketId);
-
-          const initBorrowBalance = await getBalance(user.address, debtDebtToken);
-          const expectedBorrowBalance = initBorrowBalance.add(debtAmountDelta);
-          const debtAmount = expectedBorrowBalance.amount;
+          // 0. prep user positions
+          const account = user.address;
+          const initBorrowBalance = await utils.getBorrowBalance(chainId, protocolId, marketId, user, debtToken);
+          const initCollateralBalance = new common.TokenAmount(collateralToken, initSupplyAmount);
+          if (hasCollateral) {
+            await utils.deposit(chainId, protocolId, marketId, user, initCollateralBalance);
+          }
 
           // 1. user obtains a quotation for open by debt
+          const expectedBorrowBalance = initBorrowBalance!.add(leverageDebtAmount);
+          portfolio = await adapter.getPortfolio(user.address, protocolId, marketId);
           const openDebtInfo = await adapter.openByDebt(
             account,
             portfolio,
@@ -109,33 +108,39 @@ describe('Transaction: Open By Debt', function () {
             zapAmount,
             collateralToken,
             debtToken,
-            debtAmount
+            expectedBorrowBalance.amount,
+            slippage
           );
-
-          expect(openDebtInfo.error).to.be.undefined;
           const logics = openDebtInfo.logics;
+          expect(openDebtInfo.error).to.be.undefined;
+          expect(logics.length).to.eq(expects.logicLength);
 
           // 2. user needs to permit the Protocolink user agent to borrow for the user
-          const estimateResult = await apisdk.estimateRouterData({ chainId, account, logics }, { permit2Type });
+          const estimateResult = await apisdk.estimateRouterData({ chainId, account, logics });
           for (const approval of estimateResult.approvals) {
             await expect(user.sendTransaction(approval)).to.not.be.reverted;
           }
+          // 2-1. user sign permit data
+          const permitData = estimateResult.permitData;
+          expect(permitData).to.not.be.undefined;
+          const { domain, types, values } = permitData!;
+          const permitSig = await user._signTypedData(domain, types, values);
 
           // 3. user obtains a leverage by debt transaction request
-          expect(openDebtInfo.logics.length).to.eq(expects.logicLength);
           const transactionRequest = await apisdk.buildRouterTransactionRequest({
             chainId,
             account,
             logics,
+            permitData,
+            permitSig,
           });
           await expect(user.sendTransaction(transactionRequest)).to.not.be.reverted;
 
           // 4. user's borrow balance should be around debtAmount.
-          const borrowBalance = await getBalance(user.address, debtDebtToken);
-          const [, max] = utils.bpsBound(debtAmount);
-          const maxExpectedBorrowBalance = expectedBorrowBalance.clone().set(max);
-          expect(borrowBalance.gte(expectedBorrowBalance));
-          expect(borrowBalance.lte(maxExpectedBorrowBalance));
+          const borrowBalance = await utils.getBorrowBalance(chainId, protocolId, marketId, user, debtToken);
+          const [, maxExpectedBorrowBalance] = utils.bpsBound(expectedBorrowBalance.amount);
+          expect(borrowBalance!.gte(expectedBorrowBalance));
+          expect(borrowBalance!.lte(maxExpectedBorrowBalance));
         });
       }
     );

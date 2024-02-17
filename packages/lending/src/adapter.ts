@@ -385,7 +385,8 @@ export class Adapter extends common.Web3Toolkit {
     try {
       // 1. check borrow positions
       let flashLoanRepayLogic;
-      const flashLoanRepay = new common.TokenAmount(withdrawalToken.wrapped, '0');
+      const flashLoanLoan = new common.TokenAmount(withdrawalToken.wrapped, '0');
+      const flashLoanRepay = flashLoanLoan.clone();
       const { protocolId, marketId } = portfolio;
       const protocol = this.getProtocol(protocolId);
 
@@ -408,14 +409,16 @@ export class Adapter extends common.Web3Toolkit {
           if (zapRepayOutput.error) throw zapRepayOutput.error;
 
           output.logics.push(...zapRepayOutput.logics);
-          flashLoanRepay.add(zapRepayOutput.destAmount);
+          flashLoanLoan.add(zapRepayOutput.destAmount);
           output.afterPortfolio = zapRepayOutput.afterPortfolio;
         }
 
         const flashLoanAggregatorQuotation = await apisdk.protocols.utility.getFlashLoanAggregatorQuotation(
           this.chainId,
-          { repays: [flashLoanRepay], protocolId: protocol.preferredFlashLoanProtocolId }
+          { loans: [flashLoanLoan], protocolId: protocol.preferredFlashLoanProtocolId }
         );
+        flashLoanRepay.set(flashLoanAggregatorQuotation.repays.get(withdrawalToken.wrapped));
+
         const [loanLogic, repayLogic] = apisdk.protocols.utility.newFlashLoanAggregatorLogicPair(
           flashLoanAggregatorQuotation.protocolId,
           flashLoanAggregatorQuotation.loans.toArray()
@@ -463,7 +466,7 @@ export class Adapter extends common.Web3Toolkit {
 
         if (flashLoanRepayLogic) output.logics.push(flashLoanRepayLogic);
 
-        if (withdrawalToken.isNative) {
+        if (withdrawalToken.isNative && Number(withdrawal.amount) > 0) {
           const wrapNativeLogic = await apisdk.protocols.utility.newWrappedNativeTokenLogic({
             input: { token: zapWithdraw.token, amount: withdrawal.amount },
             output: withdrawal,
@@ -739,14 +742,14 @@ export class Adapter extends common.Web3Toolkit {
   }
 
   /**
-   * Leverage long enables user to achieve the desired collateral exposure in a single step using a flash loan.
+   * Leverage collateral enables user to achieve the desired collateral exposure in a single step using a flash loan.
    *
    * @param {OperationInput} input - The input parameters for the operation.
    * @param {string} input.account - The account wallet address.
    * @param {Portfolio} input.portfolio - The portfolio data.
-   * @param {common.Token} input.srcToken - Source token: the token to be longed.
+   * @param {common.Token} input.srcToken - Source token: the collateral token to be leveraged.
    * @param {string} input.srcAmount - The amount of source token.
-   * @param {common.Token} input.destToken - Destination token: the token to be leveraged against.
+   * @param {common.Token} input.destToken - Destination token: the debt token to be leveraged against.
    * @param {number} [input.slippage=defaultSlippage] - The slippage tolerance. Optional.
    * @returns {Promise<OperationOutput>} The result including the destination amount,
    * after portfolio, potential errors, and logic operations.
@@ -882,14 +885,14 @@ export class Adapter extends common.Web3Toolkit {
   }
 
   /**
-   * Leverage short enables user to achieve the desired collateral exposure in a single step using a flash loan.
+   * Leverage debt enables user to achieve the desired debt exposure in a single step using a flash loan.
    *
    * @param {OperationInput} input - The input parameters for the operation.
    * @param {string} input.account - The account wallet address.
    * @param {Portfolio} input.portfolio - The portfolio data.
-   * @param {common.Token} input.srcToken - Source token: the token to be shorted.
+   * @param {common.Token} input.srcToken - Source token: the debt token to be leveraged.
    * @param {string} input.srcAmount - The amount of source token.
-   * @param {common.Token} input.destToken - Destination token: the token to be leveraged against.
+   * @param {common.Token} input.destToken - Destination token: the collateral token to be leveraged against.
    * @param {number} [input.slippage=defaultSlippage] - The slippage tolerance. Optional.
    * @returns {Promise<OperationOutput>} The result including the destination amount,
    * after portfolio, potential errors, and logic operations.

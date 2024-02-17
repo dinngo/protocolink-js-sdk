@@ -43,11 +43,11 @@ export abstract class Protocol extends common.Web3Toolkit {
     return true;
   }
 
-  canLeverage(_marketId: string, _assetToken: common.Token) {
+  canLeverageByCollateral(_marketId: string, _assetToken: common.Token) {
     return true;
   }
 
-  canLeverageShort = true;
+  canLeverageByDebt = true;
 
   canDeleverage(_marketId: string, _assetToken: common.Token) {
     return true;

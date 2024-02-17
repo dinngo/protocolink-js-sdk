@@ -66,17 +66,17 @@ describe('Transaction: Leverage By Debt', function () {
         const initSupplyBalance = new common.TokenAmount(destToken, initSupplyAmount);
         await utils.deposit(chainId, protocolId, marketId, user, initSupplyBalance);
 
-        // 1. user obtains a quotation for leveraging short src token
+        // 1. user obtains a quotation for leveraging src token
         const portfolio = await adapter.getPortfolio(user.address, protocolId, marketId);
-        const leverageShortInfo = await adapter.leverageByDebt({
+        const leverageDebtInfo = await adapter.leverageByDebt({
           account,
           portfolio,
           srcToken,
           srcAmount,
           destToken,
         });
-        const logics = leverageShortInfo.logics;
-        expect(leverageShortInfo.error).to.be.undefined;
+        const logics = leverageDebtInfo.logics;
+        expect(leverageDebtInfo.error).to.be.undefined;
         expect(logics.length).to.eq(expects.logicLength);
         const leverageAmount = new common.TokenAmount(logics[1].fields.output);
 
@@ -90,13 +90,13 @@ describe('Transaction: Leverage By Debt', function () {
           await expect(user.sendTransaction(approval)).to.not.be.reverted;
         }
 
-        // 3. user obtains a leverage short transaction request
+        // 3. user obtains a leverage debt transaction request
         const transactionRequest = await apisdk.buildRouterTransactionRequest({
           chainId,
           account,
           logics,
         });
-        expect(leverageShortInfo.logics.length).to.eq(expects.logicLength);
+        expect(leverageDebtInfo.logics.length).to.eq(expects.logicLength);
         await expect(user.sendTransaction(transactionRequest)).to.not.be.reverted;
 
         // 4. user's supply balance will increase.
@@ -108,10 +108,10 @@ describe('Transaction: Leverage By Debt', function () {
         );
         expect(supplyBalance!.gte(initSupplyBalance.clone().add(minimumLeverageAmount.amount))).to.be.true;
 
-        // // 5. user's borrow balance will increase.
-        // // 5-1. As the block number increases, the initial borrow balance will also increase.
+        // 5. user's borrow balance will increase.
+        // 5-1. As the block number increases, the initial borrow balance will also increase.
         const borrowBalance = await utils.getBorrowBalance(chainId, protocolId, marketId, user, srcToken);
-        const leverageBorrowAmount = new common.TokenAmount(leverageShortInfo.logics[4].fields.output);
+        const leverageBorrowAmount = new common.TokenAmount(leverageDebtInfo.logics[4].fields.output);
         expect(borrowBalance!.gte(leverageBorrowAmount.amount)).to.be.true;
       });
     });

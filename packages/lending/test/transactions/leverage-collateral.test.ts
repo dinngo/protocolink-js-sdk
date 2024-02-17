@@ -87,25 +87,25 @@ describe('Transaction: Leverage By Collateral', function () {
 
         // 1. user obtains a quotation for leveraging src token
         const portfolio = await adapter.getPortfolio(user.address, protocolId, marketId);
-        const leverageLongInfo = await adapter.leverageByCollateral({
+        const leverageCollateralInfo = await adapter.leverageByCollateral({
           account,
           portfolio,
           srcToken,
           srcAmount,
           destToken,
         });
-        const logics = leverageLongInfo.logics;
-        expect(leverageLongInfo.error).to.be.undefined;
+        const logics = leverageCollateralInfo.logics;
+        expect(leverageCollateralInfo.error).to.be.undefined;
         expect(logics.length).to.eq(expects.logicLength);
         const leverageAmount = new common.TokenAmount(logics[1].fields.output);
 
-        // 3. user needs to permit the Protocolink user agent to borrow for the user
+        // 2. user needs to permit the Protocolink user agent to borrow for the user
         const estimateResult = await apisdk.estimateRouterData({ chainId, account, logics });
         for (const approval of estimateResult.approvals) {
           await expect(user.sendTransaction(approval)).to.not.be.reverted;
         }
 
-        // 4. user obtains a leverage long transaction request
+        // 3. user obtains a leverage collateral transaction request
         const transactionRequest = await apisdk.buildRouterTransactionRequest({
           chainId,
           account,
@@ -113,8 +113,8 @@ describe('Transaction: Leverage By Collateral', function () {
         });
         await expect(user.sendTransaction(transactionRequest)).to.not.be.reverted;
 
-        // 5. user's supply balance will increase.
-        // 5-1. due to the slippage caused by the swap, we need to calculate the minimum leverage amount.
+        // 4. user's supply balance will increase.
+        // 4-1. due to the slippage caused by the swap, we need to calculate the minimum leverage amount.
         const protocol = adapter.getProtocol(protocolId);
         const supplyBalance = await utils.getCollateralBalance(chainId, protocol, marketId, user, srcToken);
         const minimumLeverageAmount = new common.TokenAmount(leverageAmount.token).setWei(
@@ -122,10 +122,10 @@ describe('Transaction: Leverage By Collateral', function () {
         );
         expect(supplyBalance!.gte(initSupplyBalance.clone().add(minimumLeverageAmount.amount))).to.be.true;
 
-        // 6. user's borrow balance will increase.
-        // 6-1. As the block number increases, the initial borrow balance will also increase.
+        // 5. user's borrow balance will increase.
+        // 5-1. As the block number increases, the initial borrow balance will also increase.
         const borrowBalance = await utils.getBorrowBalance(chainId, protocolId, marketId, user, destToken);
-        const leverageBorrowAmount = leverageLongInfo.destAmount;
+        const leverageBorrowAmount = leverageCollateralInfo.destAmount;
         expect(borrowBalance!.gte(leverageBorrowAmount)).to.be.true;
       });
     });
