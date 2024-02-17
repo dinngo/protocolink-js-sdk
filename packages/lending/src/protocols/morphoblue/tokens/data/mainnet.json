@@ -20,11 +20,46 @@
     "symbol": "wstETH",
     "name": "Wrapped liquid staked Ether 2.0"
   },
+  "weETH": {
+    "chainId": 1,
+    "address": "0xCd5fE23C85820F7B72D0926FC9b05b43E359b7ee",
+    "decimals": 18,
+    "symbol": "weETH",
+    "name": "Wrapped eETH"
+  },
+  "osETH": {
+    "chainId": 1,
+    "address": "0xf1C9acDc66974dFB6dEcB12aA385b9cD01190E38",
+    "decimals": 18,
+    "symbol": "osETH",
+    "name": "Staked ETH"
+  },
   "USDC": {
     "chainId": 1,
     "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
     "decimals": 6,
     "symbol": "USDC",
     "name": "USD Coin"
+  },
+  "USDT": {
+    "chainId": 1,
+    "address": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+    "decimals": 6,
+    "symbol": "USDT",
+    "name": "Tether USD"
+  },
+  "PYUSD": {
+    "chainId": 1,
+    "address": "0x6c3ea9036406852006290770BEdFcAbA0e23A0e8",
+    "decimals": 6,
+    "symbol": "PYUSD",
+    "name": "PayPal USD"
+  },
+  "WBTC": {
+    "chainId": 1,
+    "address": "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
+    "decimals": 8,
+    "symbol": "WBTC",
+    "name": "Wrapped BTC"
   }
 }
