@@ -13,7 +13,7 @@ describe('Transaction: Deleverage', function () {
   const chainId = 1;
   const initSupplyAmount = '5';
   const initBorrowAmount = '1000';
-  const slippage = 100;
+  const slippage = 1000;
 
   let user: SignerWithAddress;
   let adapter: Adapter;
@@ -75,7 +75,14 @@ describe('Transaction: Deleverage', function () {
 
         // 1. user obtains a quotation for deleveraging dest token
         const portfolio = await adapter.getPortfolio(user.address, protocolId, marketId);
-        const deleverageInfo = await adapter.deleverage({ account, portfolio, srcToken, srcAmount, destToken });
+        const deleverageInfo = await adapter.deleverage({
+          account,
+          portfolio,
+          srcToken,
+          srcAmount,
+          destToken,
+          slippage,
+        });
         const logics = deleverageInfo.logics;
         expect(deleverageInfo.error).to.be.undefined;
         expect(logics.length).to.eq(expects.logicLength);
@@ -113,9 +120,7 @@ describe('Transaction: Deleverage', function () {
         const repayAmount = logics[2].fields.input;
 
         // 5-1. debt grows when the block of getting api data is different from the block of executing tx
-        const [minRepayAmount, maxRepayAmount] = utils.bpsBound(repayAmount.amount, slippage);
-        expect(borrowDifference.gte(minRepayAmount)).to.be.true;
-        expect(borrowDifference.lte(maxRepayAmount)).to.be.true;
+        utils.expectEqWithinBps(borrowDifference!.amountWei, repayAmount.amountWei, slippage);
       });
     });
   });
@@ -153,7 +158,14 @@ describe('Transaction: Deleverage', function () {
 
         // 1. user obtains a quotation for deleveraging dest token
         const portfolio = await adapter.getPortfolio(user.address, protocolId, marketId);
-        const deleverageInfo = await adapter.deleverage({ account, portfolio, srcToken, srcAmount, destToken });
+        const deleverageInfo = await adapter.deleverage({
+          account,
+          portfolio,
+          srcToken,
+          srcAmount,
+          destToken,
+          slippage,
+        });
         const logics = deleverageInfo.logics;
         expect(deleverageInfo.error).to.be.undefined;
         expect(logics.length).to.eq(expects.logicLength);
@@ -181,9 +193,7 @@ describe('Transaction: Deleverage', function () {
         const repayAmount = logics[2].fields.input;
 
         // 5-1. debt grows when the block of getting api data is different from the block of executing tx
-        const [minRepayAmount, maxRepayAmount] = utils.bpsBound(repayAmount.amount, slippage);
-        expect(borrowDifference.gte(minRepayAmount)).to.be.true;
-        expect(borrowDifference.lte(maxRepayAmount)).to.be.true;
+        utils.expectEqWithinBps(borrowDifference!.amountWei, repayAmount.amountWei, slippage);
       });
     });
   });

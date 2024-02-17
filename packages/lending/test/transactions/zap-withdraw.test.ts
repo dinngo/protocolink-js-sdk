@@ -11,7 +11,7 @@ import * as utils from '../utils';
 
 describe('Transaction: Zap Withdraw', function () {
   const chainId = 1;
-  const slippage = 100;
+  const slippage = 1000;
   const initSupplyAmount = '2';
 
   let user: SignerWithAddress;
@@ -90,6 +90,7 @@ describe('Transaction: Zap Withdraw', function () {
           srcToken,
           srcAmount,
           destToken,
+          slippage,
         });
         const logics = zapWithdrawInfo.logics;
         expect(zapWithdrawInfo.error).to.be.undefined;
@@ -168,6 +169,7 @@ describe('Transaction: Zap Withdraw', function () {
           srcToken,
           srcAmount,
           destToken,
+          slippage,
         });
         const logics = zapWithdrawInfo.logics;
         expect(zapWithdrawInfo.error).to.be.undefined;

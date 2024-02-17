@@ -1,9 +1,10 @@
-import BigNumberJS from 'bignumber.js';
+import { BigNumber } from 'ethers';
+import { expect } from 'chai';
 
-export function bpsBound(amount: string, bps = 100, bpsBase = 10000): [string, string] {
-  const amountBigNum = BigNumberJS(amount);
-  const offset = amountBigNum.times(bps).div(bpsBase);
-  const max = amountBigNum.plus(offset);
-  const min = amountBigNum.minus(offset);
-  return [min.toString(), max.toString()];
+export function expectEqWithinBps(actual: BigNumber, expected: BigNumber, bps = 1, bpsBase = 10000) {
+  const base = BigNumber.from(bpsBase);
+  const upper = expected.mul(base.add(BigNumber.from(bps))).div(base);
+  const lower = expected.mul(base.sub(BigNumber.from(bps))).div(base);
+  expect(actual).to.be.lte(upper);
+  expect(actual).to.be.gte(lower);
 }

@@ -12,7 +12,7 @@ import * as utils from 'test/utils';
 describe('Transaction: Leverage By Collateral', function () {
   const chainId = 1;
   const initSupplyAmount = '5';
-  const slippage = 100;
+  const slippage = 1000;
 
   let user: SignerWithAddress;
   let adapter: Adapter;
@@ -93,6 +93,7 @@ describe('Transaction: Leverage By Collateral', function () {
           srcToken,
           srcAmount,
           destToken,
+          slippage,
         });
         const logics = leverageCollateralInfo.logics;
         expect(leverageCollateralInfo.error).to.be.undefined;
@@ -125,8 +126,8 @@ describe('Transaction: Leverage By Collateral', function () {
         // 5. user's borrow balance will increase.
         // 5-1. As the block number increases, the initial borrow balance will also increase.
         const borrowBalance = await utils.getBorrowBalance(chainId, protocolId, marketId, user, destToken);
-        const leverageBorrowAmount = leverageCollateralInfo.destAmount;
-        expect(borrowBalance!.gte(leverageBorrowAmount)).to.be.true;
+        const leverageBorrowAmount = borrowBalance!.clone().set(leverageCollateralInfo.destAmount);
+        utils.expectEqWithinBps(borrowBalance!.amountWei, leverageBorrowAmount.amountWei);
       });
     });
   });

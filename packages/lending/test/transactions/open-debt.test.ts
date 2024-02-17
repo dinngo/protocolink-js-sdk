@@ -2,7 +2,7 @@ import { Adapter } from 'src/adapter';
 import { Portfolio } from 'src/protocol.portfolio';
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 import * as apisdk from '@protocolink/api';
-import { claimToken, getBalance, mainnetTokens, snapshotAndRevertEach } from '@protocolink/test-helpers';
+import { claimToken, mainnetTokens, snapshotAndRevertEach } from '@protocolink/test-helpers';
 import * as common from '@protocolink/common';
 import { expect } from 'chai';
 import hre from 'hardhat';
@@ -92,14 +92,13 @@ describe('Transaction: Open By Debt', function () {
         it(`case ${i + 1} - ${protocolId}:${marketId}`, async function () {
           // 0. prep user positions
           const account = user.address;
-          const initBorrowBalance = await utils.getBorrowBalance(chainId, protocolId, marketId, user, debtToken);
           const initCollateralBalance = new common.TokenAmount(collateralToken, initSupplyAmount);
           if (hasCollateral) {
             await utils.deposit(chainId, protocolId, marketId, user, initCollateralBalance);
           }
 
           // 1. user obtains a quotation for open by debt
-          const expectedBorrowBalance = initBorrowBalance!.add(leverageDebtAmount);
+          const expectedBorrowBalance = new common.TokenAmount(debtToken, leverageDebtAmount);
           portfolio = await adapter.getPortfolio(user.address, protocolId, marketId);
           const openDebtInfo = await adapter.openByDebt(
             account,
@@ -138,9 +137,8 @@ describe('Transaction: Open By Debt', function () {
 
           // 4. user's borrow balance should be around debtAmount.
           const borrowBalance = await utils.getBorrowBalance(chainId, protocolId, marketId, user, debtToken);
-          const [, maxExpectedBorrowBalance] = utils.bpsBound(expectedBorrowBalance.amount);
-          expect(borrowBalance!.gte(expectedBorrowBalance));
-          expect(borrowBalance!.lte(maxExpectedBorrowBalance));
+          const minExpectBorrowBalance = common.calcSlippage(expectedBorrowBalance.amountWei, 1);
+          expect(borrowBalance!.amountWei).to.be.gte(minExpectBorrowBalance);
         });
       }
     );

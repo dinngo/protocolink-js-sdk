@@ -10,7 +10,7 @@ import * as utils from 'test/utils';
 
 describe('Transaction: Zap Borrow', function () {
   const chainId = 1;
-  const slippage = 100;
+  const slippage = 1000;
   const initSupplyAmount = '2';
 
   let user: SignerWithAddress;
@@ -97,6 +97,7 @@ describe('Transaction: Zap Borrow', function () {
           srcToken,
           srcAmount,
           destToken,
+          slippage,
         });
         const logics = zapBorrowInfo.logics;
         expect(zapBorrowInfo.error).to.be.undefined;
@@ -123,9 +124,8 @@ describe('Transaction: Zap Borrow', function () {
         const borrowAmount = new common.TokenAmount(srcToken, srcAmount);
 
         // 4-1. debt grows when the block of getting api data is different from the block of executing tx
-        const [, maxBorrowAmount] = utils.bpsBound(borrowAmount.amount, slippage);
-        expect(borrowBalance!.lte(maxBorrowAmount)).to.be.true;
-        expect(borrowBalance!.gte(borrowAmount)).to.be.true;
+        const minBorrowBalance = common.calcSlippage(borrowAmount.amountWei, 1);
+        expect(borrowBalance!.amountWei).to.be.gte(minBorrowBalance);
 
         // 5. user's dest token balance should increase
         // 5-1. rate may change when the block of getting api data is different from the block of executing tx

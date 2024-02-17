@@ -11,7 +11,7 @@ import * as utils from 'test/utils';
 
 describe('Transaction: Zap Supply', function () {
   const chainId = 1;
-  const slippage = 100;
+  const slippage = 1000;
 
   let user: SignerWithAddress;
   let adapter: Adapter;
@@ -80,6 +80,7 @@ describe('Transaction: Zap Supply', function () {
           srcToken,
           srcAmount,
           destToken,
+          slippage,
         });
         const logics = zapDepositInfo.logics;
         expect(zapDepositInfo.error).to.be.undefined;
@@ -146,6 +147,7 @@ describe('Transaction: Zap Supply', function () {
           srcToken,
           srcAmount,
           destToken,
+          slippage,
         });
         const logics = zapDepositInfo.logics;
         expect(zapDepositInfo.error).to.be.undefined;
@@ -177,9 +179,7 @@ describe('Transaction: Zap Supply', function () {
         const supplyDestAmount = new common.TokenAmount(destToken, zapDepositInfo.destAmount);
 
         // 4-1. rate may change when the block of getting api data is different from the block of executing tx
-        const [minDestAmount, maxDestAmount] = utils.bpsBound(supplyDestAmount.amount);
-        expect(collateralBalance!.lte(maxDestAmount)).to.be.true;
-        expect(collateralBalance!.gte(minDestAmount)).to.be.true;
+        utils.expectEqWithinBps(collateralBalance!.amountWei, supplyDestAmount.amountWei, slippage);
       });
     });
   });

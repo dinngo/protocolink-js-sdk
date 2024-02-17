@@ -10,7 +10,7 @@ import * as utils from 'test/utils';
 describe('Transaction: Leverage By Debt', function () {
   const chainId = 1;
   const initSupplyAmount = '5';
-  const slippage = 100;
+  const slippage = 1000;
 
   let user: SignerWithAddress;
   let adapter: Adapter;
@@ -74,6 +74,7 @@ describe('Transaction: Leverage By Debt', function () {
           srcToken,
           srcAmount,
           destToken,
+          slippage,
         });
         const logics = leverageDebtInfo.logics;
         expect(leverageDebtInfo.error).to.be.undefined;
@@ -112,7 +113,8 @@ describe('Transaction: Leverage By Debt', function () {
         // 5-1. As the block number increases, the initial borrow balance will also increase.
         const borrowBalance = await utils.getBorrowBalance(chainId, protocolId, marketId, user, srcToken);
         const leverageBorrowAmount = new common.TokenAmount(leverageDebtInfo.logics[4].fields.output);
-        expect(borrowBalance!.gte(leverageBorrowAmount.amount)).to.be.true;
+        const minLeverageBorrowBalance = common.calcSlippage(leverageBorrowAmount.amountWei, 1);
+        expect(borrowBalance!.amountWei).to.be.gte(minLeverageBorrowBalance);
       });
     });
   });

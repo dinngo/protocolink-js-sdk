@@ -70,7 +70,6 @@ describe('Transaction: Open By Collateral', function () {
         zapAmount: '5000',
         collateralToken: mainnetTokens.WETH,
         leverageCollateralAmount: '1',
-        // collateralAToken: spark.mainnetTokens.spWETH,
         debtToken: mainnetTokens.DAI,
         expects: { logicLength: 7 },
       },
@@ -170,9 +169,12 @@ describe('Transaction: Open By Collateral', function () {
             collateralToken
           );
           // 4-1. due to the slippage caused by the swap, we need to calculate the minimum and maximum leverage amount.
-          const [minLeverageAmount, maxLeverageAmount] = utils.bpsBound(leverageCollateralAmount, slippage);
-          expect(collateralBalance!.gte(initCollateralBalance.clone().add(minLeverageAmount))).to.be.true;
-          expect(collateralBalance!.lte(initCollateralBalance.clone().add(maxLeverageAmount))).to.be.true;
+          const leverageCollateralTokenAmount = collateralBalance!.clone().set(leverageCollateralAmount);
+          utils.expectEqWithinBps(
+            collateralBalance!.clone().sub(initCollateralBalance.amount).amountWei,
+            leverageCollateralTokenAmount.amountWei,
+            slippage
+          );
         });
       }
     );

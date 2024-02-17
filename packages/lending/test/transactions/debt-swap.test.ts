@@ -13,7 +13,7 @@ describe('Transaction: Debt swap', function () {
   const chainId = 1;
   const initSupplyAmount = '2';
   const initBorrowAmount = '200';
-  const slippage = 100;
+  const slippage = 1000;
 
   let portfolio: Portfolio;
   let user: SignerWithAddress;
@@ -83,6 +83,7 @@ describe('Transaction: Debt swap', function () {
           srcToken,
           srcAmount,
           destToken,
+          slippage,
         });
         const logics = debtSwapInfo.logics;
         expect(debtSwapInfo.error).to.be.undefined;

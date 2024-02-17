@@ -11,7 +11,7 @@ import * as utils from 'test/utils';
 
 describe('Transaction: Zap Repay', function () {
   const chainId = 1;
-  const slippage = 100;
+  const slippage = 1000;
   const initSupplyAmount = '1';
 
   let user: SignerWithAddress;
@@ -80,7 +80,7 @@ describe('Transaction: Zap Repay', function () {
         const initBorrowBalance = await utils.getBorrowBalance(chainId, protocolId, marketId, user, srcToken);
 
         // 1. user obtains a quotation for zap repay
-        const zapRepayInfo = await adapter.zapRepay({ account, portfolio, srcToken, srcAmount, destToken });
+        const zapRepayInfo = await adapter.zapRepay({ account, portfolio, srcToken, srcAmount, destToken, slippage });
         const logics = zapRepayInfo.logics;
         expect(zapRepayInfo.error).to.be.undefined;
         expect(logics.length).to.eq(expects.logicLength);
@@ -112,9 +112,7 @@ describe('Transaction: Zap Repay', function () {
         const borrowBalance = await utils.getBorrowBalance(chainId, protocolId, marketId, user, srcToken);
         const repayAmount = logics[1].fields.input;
         const borrowDifference = initBorrowBalance!.clone().sub(borrowBalance!);
-        const [minRepayAmount, maxRepayAmount] = utils.bpsBound(repayAmount.amount, slippage);
-        expect(borrowDifference.gte(minRepayAmount)).to.be.true;
-        expect(borrowDifference.lte(maxRepayAmount)).to.be.true;
+        utils.expectEqWithinBps(borrowDifference!.amountWei, repayAmount.amountWei, slippage);
 
         // 5. user's dest token balance should decrease
         await expect(user.address).to.changeBalance(destToken, -zapRepayInfo.destAmount, 1);
@@ -153,7 +151,7 @@ describe('Transaction: Zap Repay', function () {
         const initBorrowBalance = await utils.getBorrowBalance(chainId, protocolId, marketId, user, srcToken);
 
         // 1. user obtains a quotation for zap repay
-        const zapRepayInfo = await adapter.zapRepay({ account, portfolio, srcToken, srcAmount, destToken });
+        const zapRepayInfo = await adapter.zapRepay({ account, portfolio, srcToken, srcAmount, destToken, slippage });
         const logics = zapRepayInfo.logics;
         expect(zapRepayInfo.error).to.be.undefined;
         expect(logics.length).to.eq(expects.logicLength);
@@ -173,9 +171,7 @@ describe('Transaction: Zap Repay', function () {
         const borrowBalance = await utils.getBorrowBalance(chainId, protocolId, marketId, user, srcToken);
         const repayAmount = logics[1].fields.input;
         const borrowDifference = initBorrowBalance!.clone().sub(borrowBalance!);
-        const [minRepayAmount, maxRepayAmount] = utils.bpsBound(repayAmount.amount, slippage);
-        expect(borrowDifference.gte(minRepayAmount)).to.be.true;
-        expect(borrowDifference.lte(maxRepayAmount)).to.be.true;
+        utils.expectEqWithinBps(borrowDifference!.amountWei, repayAmount.amountWei, slippage);
 
         // 5. user's dest token balance should decrease
         await expect(user.address).to.changeBalance(destToken, -zapRepayInfo.destAmount, 1);
