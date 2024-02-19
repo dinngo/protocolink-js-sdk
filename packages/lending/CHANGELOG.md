@@ -1,5 +1,12 @@
 # @protocolink/lending
 
+## 1.0.12
+
+### Patch Changes
+
+- 9213967: add morphoblue markets
+- e527dd5: build positions in e2e tests
+
 ## 1.0.11
 
 ### Patch Changes
