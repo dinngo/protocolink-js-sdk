@@ -99,17 +99,18 @@ describe('Transaction: Open By Debt', function () {
 
           // 1. user obtains a quotation for open by debt
           const expectedBorrowBalance = new common.TokenAmount(debtToken, leverageDebtAmount);
+          const debtAmount = expectedBorrowBalance.amount;
           portfolio = await adapter.getPortfolio(user.address, protocolId, marketId);
-          const openDebtInfo = await adapter.openByDebt(
+          const openDebtInfo = await adapter.openByDebt({
             account,
             portfolio,
             zapToken,
             zapAmount,
             collateralToken,
             debtToken,
-            expectedBorrowBalance.amount,
-            slippage
-          );
+            debtAmount,
+            slippage,
+          });
           const logics = openDebtInfo.logics;
           expect(openDebtInfo.error).to.be.undefined;
           expect(logics.length).to.eq(expects.logicLength);

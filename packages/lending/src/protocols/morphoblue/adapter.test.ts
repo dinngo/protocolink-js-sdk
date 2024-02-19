@@ -33,19 +33,42 @@ describe('Test Adapter for Morpho Blue', function () {
       const collateralAmount = '0';
       const debtToken = mainnetTokens.USDC;
 
-      const { destAmount, error } = await adapter.openByCollateral(
+      const { destAmount, error } = await adapter.openByCollateral({
         account,
         portfolio,
         zapToken,
         zapAmount,
         collateralToken,
         collateralAmount,
-        debtToken
-      );
+        debtToken,
+      });
 
       expect(destAmount).to.eq('0');
       expect(error?.name).to.eq('collateralAmount');
-      expect(error?.code).to.eq('ZERO_AMOUNT');
+      expect(error?.code).to.eq('COLLATERAL_AMOUNT_EXCEEDED');
+    });
+
+    it('collateralAmount <= initCollateralAmount + zapSupplyAmount', async function () {
+      const zapToken = mainnetTokens.ETH;
+      const zapAmount = '1';
+      const collateralToken = mainnetTokens.wstETH;
+      const initCollateralBalance = portfolio.findSupply(collateralToken)!.balance;
+      const collateralAmount = (Number(initCollateralBalance) + 0.1).toString();
+      const debtToken = mainnetTokens.USDC;
+
+      const { destAmount, error } = await adapter.openByCollateral({
+        account,
+        portfolio,
+        zapToken,
+        zapAmount,
+        collateralToken,
+        collateralAmount,
+        debtToken,
+      });
+
+      expect(destAmount).to.eq('0');
+      expect(error?.name).to.eq('collateralAmount');
+      expect(error?.code).to.eq('COLLATERAL_AMOUNT_EXCEEDED');
     });
 
     it('success - zero zapAmount', async function () {
@@ -57,15 +80,15 @@ describe('Test Adapter for Morpho Blue', function () {
       const collateralAmount = (Number(initCollateralBalance) + leverageCollateralAmount).toString();
       const debtToken = mainnetTokens.USDC;
 
-      const { destAmount, afterPortfolio, error, logics } = await adapter.openByCollateral(
+      const { destAmount, afterPortfolio, error, logics } = await adapter.openByCollateral({
         account,
         portfolio,
         zapToken,
         zapAmount,
         collateralToken,
         collateralAmount,
-        debtToken
-      );
+        debtToken,
+      });
 
       expect(error).to.be.undefined;
       expect(destAmount).to.eq(afterPortfolio.findBorrow(debtToken)!.balance);
@@ -89,15 +112,15 @@ describe('Test Adapter for Morpho Blue', function () {
       const collateralAmount = (Number(initCollateralBalance) + leverageCollateralAmount).toString();
       const debtToken = mainnetTokens.USDC;
 
-      const { destAmount, afterPortfolio, error, logics } = await adapter.openByCollateral(
+      const { destAmount, afterPortfolio, error, logics } = await adapter.openByCollateral({
         account,
         portfolio,
         zapToken,
         zapAmount,
         collateralToken,
         collateralAmount,
-        debtToken
-      );
+        debtToken,
+      });
 
       expect(error).to.be.undefined;
       expect(destAmount).to.eq(afterPortfolio.findBorrow(debtToken)!.balance);
@@ -128,7 +151,7 @@ describe('Test Adapter for Morpho Blue', function () {
 
       const withdrawalToken = mainnetTokens.ETH;
 
-      const { destAmount, error, logics } = await adapter.close(account, portfolio, withdrawalToken);
+      const { destAmount, error, logics } = await adapter.close({ account, portfolio, withdrawalToken });
 
       expect(error).to.be.undefined;
       expect(destAmount).to.be.eq('0');
@@ -141,7 +164,11 @@ describe('Test Adapter for Morpho Blue', function () {
 
       const withdrawalToken = mainnetTokens.USDC;
 
-      const { destAmount, afterPortfolio, error, logics } = await adapter.close(account, portfolio, withdrawalToken);
+      const { destAmount, afterPortfolio, error, logics } = await adapter.close({
+        account,
+        portfolio,
+        withdrawalToken,
+      });
 
       expect(error).to.be.undefined;
       expect(Number(destAmount)).to.be.greaterThan(0);
@@ -163,7 +190,11 @@ describe('Test Adapter for Morpho Blue', function () {
 
       const withdrawalToken = mainnetTokens.USDC;
 
-      const { destAmount, afterPortfolio, error, logics } = await adapter.close(account, portfolio, withdrawalToken);
+      const { destAmount, afterPortfolio, error, logics } = await adapter.close({
+        account,
+        portfolio,
+        withdrawalToken,
+      });
 
       expect(error).to.be.undefined;
       expect(Number(destAmount)).to.be.greaterThan(0);

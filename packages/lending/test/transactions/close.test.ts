@@ -74,7 +74,7 @@ describe('Transaction: Close', function () {
 
         // 1. user obtains a quotation for close positions
         const portfolio = await adapter.getPortfolio(user.address, protocolId, marketId);
-        const closeInfo = await adapter.close(account, portfolio, withdrawalToken, slippage);
+        const closeInfo = await adapter.close({ account, portfolio, withdrawalToken, slippage });
         const logics = closeInfo.logics;
         expect(closeInfo.error).to.be.undefined;
         expect(logics.length).to.eq(expects.logicLength);
@@ -145,7 +145,7 @@ describe('Transaction: Close', function () {
 
         // 1. user obtains a quotation for deleveraging dest token
         const portfolio = await adapter.getPortfolio(user.address, protocolId, marketId);
-        const closeInfo = await adapter.close(account, portfolio, withdrawalToken);
+        const closeInfo = await adapter.close({ account, portfolio, withdrawalToken });
         const logics = closeInfo.logics;
         expect(closeInfo.error).to.be.undefined;
         expect(logics.length).to.eq(expects.logicLength);

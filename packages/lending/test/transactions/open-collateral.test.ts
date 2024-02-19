@@ -121,18 +121,18 @@ describe('Transaction: Open By Collateral', function () {
           }
 
           // 1. user obtains a quotation for open by collateral
-          const expectedCollateralBalance = initCollateralBalance.clone().add(leverageCollateralAmount);
+          const collateralAmount = initCollateralBalance.clone().add(leverageCollateralAmount).amount;
           const portfolio = await adapter.getPortfolio(user.address, protocolId, marketId);
-          const openCollateralInfo = await adapter.openByCollateral(
+          const openCollateralInfo = await adapter.openByCollateral({
             account,
             portfolio,
             zapToken,
             zapAmount,
             collateralToken,
-            expectedCollateralBalance.amount,
+            collateralAmount,
             debtToken,
-            slippage
-          );
+            slippage,
+          });
 
           const logics = openCollateralInfo.logics;
           expect(openCollateralInfo.error).to.be.undefined;

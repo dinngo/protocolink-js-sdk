@@ -2,6 +2,25 @@ import { Portfolio } from './protocol.portfolio';
 import * as apisdk from '@protocolink/api';
 import * as common from '@protocolink/common';
 
+export interface OpenOperationInput {
+  account: string;
+  portfolio: Portfolio;
+  zapToken: common.Token;
+  zapAmount: string;
+  collateralToken: common.Token;
+  collateralAmount?: string;
+  debtToken: common.Token;
+  debtAmount?: string;
+  slippage?: number;
+}
+
+export interface CloseOperationInput {
+  account: string;
+  portfolio: Portfolio;
+  withdrawalToken: common.Token;
+  slippage?: number;
+}
+
 export interface OperationInput {
   account: string;
   portfolio: Portfolio;
