@@ -200,7 +200,7 @@ export class Adapter extends common.Web3Toolkit {
    * @param {common.Token} input.zapToken - Zap token: zap the token to the collateral.
    * @param {string} input.zapAmount - The amount of the zap token.
    * @param {common.Token} input.collateralToken - Collateral token: the collateral to be supplied.
-   * @param {string} input.collateralAmount - The supply amount of the collateral.
+   * @param {string} input.collateralAmount - The leverage amount of the collateral.
    * @param {common.Token} input.debtToken - Debt token: the debt to be borrowed.
    * @param {number} [input.slippage=defaultSlippage] - The slippage tolerance. Optional.
    * @returns {Promise<OperationOutput>} The result including the destination amount,
@@ -232,7 +232,7 @@ export class Adapter extends common.Web3Toolkit {
 
       if (srcCollateral && destBorrow) {
         try {
-          // 1. ---------- zap swap ----------
+          // 1. ---------- swap ----------
           const supplyInput = new common.TokenAmount(collateralToken.wrapped, '0');
           if (zapToken.is(collateralToken.wrapped)) {
             // 1-1-1. exclude native zapToken
@@ -354,6 +354,7 @@ export class Adapter extends common.Web3Toolkit {
             supplyInput.set(swapQuotation.output);
           }
 
+          // 2. ---------- leverage ----------
           if (debtAmount && Number(debtAmount) > 0) {
             output.afterPortfolio.supply(supplyInput.token, supplyInput.amount);
 
@@ -367,7 +368,7 @@ export class Adapter extends common.Web3Toolkit {
 
             if (leverageOutput.error) throw leverageOutput.error;
 
-            // 3-1. find supply logic and add zap supply amount
+            // 2-1-1. find supply logic and add zap supply amount
             const logicIndex = collateralToken.wrapped.is(debtToken.wrapped) ? 1 : 2;
             const leverageSupplyAmount = leverageOutput.logics[logicIndex].fields.input;
             const totalSupplyAmount = leverageSupplyAmount.add(supplyInput).amount;
