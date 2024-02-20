@@ -14,6 +14,8 @@ export type Operation =
   | 'withdraw'
   | 'borrow'
   | 'repay'
+  | 'open'
+  | 'close'
   | 'collateral_swap'
   | 'debt_swap'
   | 'leverage'

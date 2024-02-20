@@ -26,9 +26,31 @@ describe('Test Adapter for Morpho Blue', function () {
       portfolio = await protocol.getPortfolio(account, marketId);
     });
 
-    it('zero collateralAmount', async function () {
+    it('zero zapAmount', async function () {
       const zapToken = mainnetTokens.ETH;
       const zapAmount = '0';
+      const collateralToken = mainnetTokens.wstETH;
+      const collateralAmount = '0';
+      const debtToken = mainnetTokens.USDC;
+
+      const { destAmount, logics, error } = await adapter.openByCollateral({
+        account,
+        portfolio,
+        zapToken,
+        zapAmount,
+        collateralToken,
+        collateralAmount,
+        debtToken,
+      });
+
+      expect(error).to.be.undefined;
+      expect(destAmount).to.eq('0');
+      expect(logics).has.length(0);
+    });
+
+    it('zero collateralAmount', async function () {
+      const zapToken = mainnetTokens.ETH;
+      const zapAmount = '1';
       const collateralToken = mainnetTokens.wstETH;
       const collateralAmount = '0';
       const debtToken = mainnetTokens.USDC;
@@ -43,73 +65,15 @@ describe('Test Adapter for Morpho Blue', function () {
         debtToken,
       });
 
-      expect(destAmount).to.eq('0');
-      expect(error?.name).to.eq('collateralAmount');
-      expect(error?.code).to.eq('COLLATERAL_AMOUNT_EXCEEDED');
-    });
-
-    it('collateralAmount <= initCollateralAmount + zapSupplyAmount', async function () {
-      const zapToken = mainnetTokens.ETH;
-      const zapAmount = '1';
-      const collateralToken = mainnetTokens.wstETH;
-      const initCollateralBalance = portfolio.findSupply(collateralToken)!.balance;
-      const collateralAmount = (Number(initCollateralBalance) + 0.1).toString();
-      const debtToken = mainnetTokens.USDC;
-
-      const { destAmount, error } = await adapter.openByCollateral({
-        account,
-        portfolio,
-        zapToken,
-        zapAmount,
-        collateralToken,
-        collateralAmount,
-        debtToken,
-      });
-
-      expect(destAmount).to.eq('0');
-      expect(error?.name).to.eq('collateralAmount');
-      expect(error?.code).to.eq('COLLATERAL_AMOUNT_EXCEEDED');
-    });
-
-    it('success - zero zapAmount', async function () {
-      const zapToken = mainnetTokens.ETH;
-      const zapAmount = '0';
-      const collateralToken = mainnetTokens.wstETH;
-      const initCollateralBalance = portfolio.findSupply(collateralToken)!.balance;
-      const leverageCollateralAmount = 1;
-      const collateralAmount = (Number(initCollateralBalance) + leverageCollateralAmount).toString();
-      const debtToken = mainnetTokens.USDC;
-
-      const { destAmount, afterPortfolio, error, logics } = await adapter.openByCollateral({
-        account,
-        portfolio,
-        zapToken,
-        zapAmount,
-        collateralToken,
-        collateralAmount,
-        debtToken,
-      });
-
       expect(error).to.be.undefined;
-      expect(destAmount).to.eq(afterPortfolio.findBorrow(debtToken)!.balance);
-      expect(Number(afterPortfolio.findSupply(collateralToken)!.balance)).to.be.gte(Number(collateralAmount));
-
-      expect(logics).has.length(5);
-      expect(logics[0].rid).to.eq('utility:flash-loan-aggregator');
-      expect(logics[1].rid).to.contain('swap-token');
-      expect(logics[2].rid).to.eq('morphoblue:supply-collateral');
-      expect(logics[2].fields.balanceBps).to.eq(common.BPS_BASE);
-      expect(logics[3].rid).to.eq('morphoblue:borrow');
-      expect(logics[4].rid).to.eq('utility:flash-loan-aggregator');
+      expect(destAmount).to.eq('0');
     });
 
     it('success', async function () {
       const zapToken = mainnetTokens.ETH;
       const zapAmount = '1';
       const collateralToken = mainnetTokens.wstETH;
-      const initCollateralBalance = portfolio.findSupply(collateralToken)!.balance;
-      const leverageCollateralAmount = 2;
-      const collateralAmount = (Number(initCollateralBalance) + leverageCollateralAmount).toString();
+      const collateralAmount = '0.1';
       const debtToken = mainnetTokens.USDC;
 
       const { destAmount, afterPortfolio, error, logics } = await adapter.openByCollateral({
@@ -123,8 +87,102 @@ describe('Test Adapter for Morpho Blue', function () {
       });
 
       expect(error).to.be.undefined;
-      expect(destAmount).to.eq(afterPortfolio.findBorrow(debtToken)!.balance);
-      expect(Number(afterPortfolio.findSupply(collateralToken)!.balance)).to.be.gte(Number(collateralAmount));
+      expect(Number(destAmount)).to.be.greaterThan(0);
+
+      const expectedAfterPortfolio = portfolio.clone();
+      expectedAfterPortfolio.supply(collateralToken, logics[3].fields.input.amount);
+      expectedAfterPortfolio.borrow(debtToken, destAmount);
+      expect(JSON.stringify(expectedAfterPortfolio)).to.eq(JSON.stringify(afterPortfolio));
+
+      expect(logics).has.length(6);
+      expect(logics[0].rid).to.contain('swap-token');
+      expect(logics[1].rid).to.eq('utility:flash-loan-aggregator');
+      expect(logics[2].rid).to.contain('swap-token');
+      expect(logics[3].rid).to.eq('morphoblue:supply-collateral');
+      expect(logics[3].fields.balanceBps).to.eq(common.BPS_BASE);
+      expect(logics[4].rid).to.eq('morphoblue:borrow');
+      expect(logics[5].rid).to.eq('utility:flash-loan-aggregator');
+    });
+  });
+
+  context('Test openByDebt', function () {
+    const account = '0x9cbf099ff424979439dfba03f00b5961784c06ce';
+    const blockTag = 19167450;
+    protocol.setBlockTag(blockTag);
+
+    let portfolio: Portfolio;
+
+    before(async function () {
+      portfolio = await protocol.getPortfolio(account, marketId);
+    });
+
+    it('zero zapAmount', async function () {
+      const zapToken = mainnetTokens.ETH;
+      const zapAmount = '0';
+      const collateralToken = mainnetTokens.wstETH;
+      const debtToken = mainnetTokens.USDC;
+      const debtAmount = '0';
+
+      const { destAmount, logics, error } = await adapter.openByDebt({
+        account,
+        portfolio,
+        zapToken,
+        zapAmount,
+        collateralToken,
+        debtToken,
+        debtAmount,
+      });
+
+      expect(error).to.be.undefined;
+      expect(destAmount).to.eq('0');
+      expect(logics).has.length(0);
+    });
+
+    it('zero debtAmount', async function () {
+      const zapToken = mainnetTokens.ETH;
+      const zapAmount = '1';
+      const collateralToken = mainnetTokens.wstETH;
+      const debtToken = mainnetTokens.USDC;
+      const debtAmount = '0';
+
+      const { destAmount, error } = await adapter.openByDebt({
+        account,
+        portfolio,
+        zapToken,
+        zapAmount,
+        collateralToken,
+        debtToken,
+        debtAmount,
+      });
+
+      expect(error).to.be.undefined;
+      expect(destAmount).to.eq('0');
+    });
+
+    it('success', async function () {
+      const zapToken = mainnetTokens.ETH;
+      const zapAmount = '1';
+      const collateralToken = mainnetTokens.wstETH;
+      const debtToken = mainnetTokens.USDC;
+      const debtAmount = '100';
+
+      const { destAmount, afterPortfolio, error, logics } = await adapter.openByDebt({
+        account,
+        portfolio,
+        zapToken,
+        zapAmount,
+        collateralToken,
+        debtToken,
+        debtAmount,
+      });
+
+      expect(error).to.be.undefined;
+      expect(Number(destAmount)).to.be.greaterThan(0);
+
+      const expectedAfterPortfolio = portfolio.clone();
+      expectedAfterPortfolio.supply(collateralToken, destAmount);
+      expectedAfterPortfolio.borrow(debtToken, logics[4].fields.output.amount);
+      expect(JSON.stringify(expectedAfterPortfolio)).to.eq(JSON.stringify(afterPortfolio));
 
       expect(logics).has.length(6);
       expect(logics[0].rid).to.contain('swap-token');

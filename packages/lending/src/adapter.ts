@@ -200,7 +200,7 @@ export class Adapter extends common.Web3Toolkit {
    * @param {common.Token} input.zapToken - Zap token: zap the token to the collateral.
    * @param {string} input.zapAmount - The amount of the zap token.
    * @param {common.Token} input.collateralToken - Collateral token: the collateral to be supplied.
-   * @param {string} input.collateralAmount - The total supplied collateral amount.
+   * @param {string} input.collateralAmount - The supply amount of the collateral.
    * @param {common.Token} input.debtToken - Debt token: the debt to be borrowed.
    * @param {number} [input.slippage=defaultSlippage] - The slippage tolerance. Optional.
    * @returns {Promise<OperationOutput>} The result including the destination amount,
@@ -225,71 +225,66 @@ export class Adapter extends common.Web3Toolkit {
       afterPortfolio: portfolio.clone(),
       logics: [],
     };
-    try {
-      // 1. ---------- validate params ----------
+
+    if (Number(zapAmount) > 0) {
       const srcCollateral = portfolio.findSupply(collateralToken);
-      if (!srcCollateral) throw new OperationError('collateralToken', 'UNSUPPORTED_TOKEN');
-
       const destBorrow = portfolio.findBorrow(debtToken);
-      if (!destBorrow) throw new OperationError('debtToken', 'UNSUPPORTED_TOKEN');
 
-      const supplyAmountDelta = new common.TokenAmount(collateralToken.wrapped, collateralAmount).sub(
-        srcCollateral.balance
-      );
-
-      // 1-1. ---------- zap swap ----------
-      const supplyInput = new common.TokenAmount(collateralToken.wrapped, '0');
-      if (Number(zapAmount) > 0) {
-        if (zapToken.is(collateralToken.wrapped)) {
-          // 2-1. exclude native zapToken
-          supplyInput.set(zapAmount);
-        } else {
-          const swapper = this.findSwapper([zapToken, collateralToken]);
-          let swapQuotation: SwapperQuoteFields;
-          try {
-            swapQuotation = await swapper.quote({
-              input: new common.TokenAmount(zapToken, zapAmount),
-              tokenOut: collateralToken.wrapped,
-              slippage,
-            });
-          } catch {
-            throw new OperationError('zapAmount', 'NO_ROUTE_FOUND_OR_PRICE_IMPACT_TOO_HIGH');
+      if (srcCollateral && destBorrow) {
+        try {
+          // 1. ---------- zap swap ----------
+          const supplyInput = new common.TokenAmount(collateralToken.wrapped, '0');
+          if (zapToken.is(collateralToken.wrapped)) {
+            // 1-1-1. exclude native zapToken
+            supplyInput.set(zapAmount);
+          } else {
+            const swapper = this.findSwapper([zapToken, collateralToken]);
+            let swapQuotation: SwapperQuoteFields;
+            try {
+              swapQuotation = await swapper.quote({
+                input: new common.TokenAmount(zapToken, zapAmount),
+                tokenOut: collateralToken.wrapped,
+                slippage,
+              });
+            } catch {
+              throw new OperationError('zapAmount', 'NO_ROUTE_FOUND_OR_PRICE_IMPACT_TOO_HIGH');
+            }
+            const swapTokenLogic = swapper.newSwapTokenLogic(swapQuotation);
+            output.logics.push(swapTokenLogic);
+            // 1-2-1. the supply amount is the swap quotation output
+            supplyInput.set(swapQuotation.output);
           }
-          const swapTokenLogic = swapper.newSwapTokenLogic(swapQuotation);
-          output.logics.push(swapTokenLogic);
-          // 1-1-1. the supply amount is the swap quotation output
-          supplyInput.set(swapQuotation.output);
+
+          // 2. ---------- leverage ----------
+          if (collateralAmount && Number(collateralAmount) > 0) {
+            output.afterPortfolio.supply(supplyInput.token, supplyInput.amount);
+
+            const leverageOutput = await this.leverageByCollateral({
+              account,
+              portfolio: output.afterPortfolio,
+              srcToken: collateralToken.wrapped,
+              srcAmount: collateralAmount,
+              destToken: debtToken,
+            });
+
+            if (leverageOutput.error) throw leverageOutput.error;
+
+            // 2-1-1. find supply logic and add zap supply amount
+            const logicIndex = collateralToken.wrapped.is(debtToken.wrapped) ? 1 : 2;
+            const leverageSupplyAmount = leverageOutput.logics[logicIndex].fields.input;
+            leverageOutput.logics[logicIndex].fields.input.amount = supplyInput.add(leverageSupplyAmount).amount;
+            leverageOutput.logics[logicIndex].fields.balanceBps = common.BPS_BASE;
+            output.logics.push(...leverageOutput.logics);
+            output.afterPortfolio = leverageOutput.afterPortfolio;
+            output.destAmount = leverageOutput.destAmount;
+          }
+        } catch (err) {
+          output.error =
+            err instanceof OperationError ? err : new OperationError('collateralAmount', 'UNEXPECTED_ERROR');
         }
-        output.afterPortfolio.supply(supplyInput.token, supplyInput.amount);
+      } else {
+        output.error = new OperationError(srcCollateral ? 'debtAmount' : 'collateralAmount', 'UNSUPPORTED_TOKEN');
       }
-
-      // 1-2. collateralAmount must greater than init amount + zap-supply amount
-      if (Number(collateralAmount) <= Number(srcCollateral.balance) + Number(supplyInput.amount)) {
-        throw new OperationError('collateralAmount', 'COLLATERAL_AMOUNT_EXCEEDED');
-      }
-
-      // 2. leverage by collateral
-      const leverageAmount = supplyAmountDelta.sub(supplyInput).amount;
-      const leverageOutput = await this.leverageByCollateral({
-        account,
-        portfolio: output.afterPortfolio,
-        srcToken: collateralToken.wrapped,
-        srcAmount: leverageAmount,
-        destToken: debtToken,
-      });
-
-      if (leverageOutput.error) throw leverageOutput.error;
-
-      // 2-1. find supply logic and add zap supply amount
-      const logicIndex = collateralToken.wrapped.is(debtToken.wrapped) ? 1 : 2;
-      const leverageSupplyAmount = leverageOutput.logics[logicIndex].fields.input;
-      leverageOutput.logics[logicIndex].fields.input.amount = supplyInput.add(leverageSupplyAmount).amount;
-      leverageOutput.logics[logicIndex].fields.balanceBps = common.BPS_BASE;
-      output.logics.push(...leverageOutput.logics);
-      output.afterPortfolio = leverageOutput.afterPortfolio;
-      output.destAmount = output.afterPortfolio.findBorrow(debtToken)!.balance;
-    } catch (err) {
-      output.error = err instanceof OperationError ? err : new OperationError('openByCollateral', 'UNEXPECTED_ERROR');
     }
 
     return output;
@@ -305,7 +300,7 @@ export class Adapter extends common.Web3Toolkit {
    * @param {string} input.zapAmount - The amount of the zap token.
    * @param {common.Token} input.collateralToken - Collateral token: the collateral to be supplied.
    * @param {common.Token} input.debtToken - Debt token: the debt to be borrowed.
-   * @param {string} input.debtAmount - The total borrowed debt amount.
+   * @param {string} input.debtAmount - The borrowed debt amount.
    * @param {number} [input.slippage=defaultSlippage] - The slippage tolerance. Optional.
    * @returns {Promise<OperationOutput>} The result including the destination amount,
    * after portfolio, potential errors, and logic operations.
@@ -329,21 +324,17 @@ export class Adapter extends common.Web3Toolkit {
       afterPortfolio: portfolio.clone(),
       logics: [],
     };
-    try {
-      // 1. ---------- validate params ----------
+
+    if (Number(zapAmount) > 0) {
       const srcCollateral = portfolio.findSupply(collateralToken);
-      if (!srcCollateral) throw new OperationError('collateralToken', 'UNSUPPORTED_TOKEN');
-
       const destBorrow = portfolio.findBorrow(debtToken);
-      if (!destBorrow) throw new OperationError('debtToken', 'UNSUPPORTED_TOKEN');
 
-      // 1-1. debtAmount must greater than init borrow amount
-      if (Number(debtAmount) > Number(destBorrow.balance)) {
-        // 2. ---------- swap ----------
-        const supplyInput = new common.TokenAmount(collateralToken.wrapped, '0');
-        if (Number(zapAmount) > 0) {
+      if (srcCollateral && destBorrow) {
+        try {
+          // 1. ---------- swap ----------
+          const supplyInput = new common.TokenAmount(collateralToken.wrapped, '0');
           if (zapToken.is(collateralToken.wrapped)) {
-            // 2-1. exclude native zapToken
+            // 1-1-1. exclude native zapToken
             supplyInput.set(zapAmount);
           } else {
             const swapper = this.findSwapper([zapToken, collateralToken]);
@@ -359,38 +350,40 @@ export class Adapter extends common.Web3Toolkit {
             }
             const swapTokenLogic = swapper.newSwapTokenLogic(swapQuotation);
             output.logics.push(swapTokenLogic);
-            // 2-2. the supply amount is the swap quotation output
+            // 1-2-1. the supply amount is the swap quotation output
             supplyInput.set(swapQuotation.output);
           }
-          output.afterPortfolio.supply(supplyInput.token, supplyInput.amount);
+
+          if (debtAmount && Number(debtAmount) > 0) {
+            output.afterPortfolio.supply(supplyInput.token, supplyInput.amount);
+
+            const leverageOutput = await this.leverageByDebt({
+              account,
+              portfolio: output.afterPortfolio,
+              srcToken: debtToken.wrapped,
+              srcAmount: debtAmount,
+              destToken: collateralToken.wrapped,
+            });
+
+            if (leverageOutput.error) throw leverageOutput.error;
+
+            // 3-1. find supply logic and add zap supply amount
+            const logicIndex = collateralToken.wrapped.is(debtToken.wrapped) ? 1 : 2;
+            const leverageSupplyAmount = leverageOutput.logics[logicIndex].fields.input;
+            const totalSupplyAmount = leverageSupplyAmount.add(supplyInput).amount;
+            leverageOutput.logics[logicIndex].fields.input.amount = totalSupplyAmount;
+            leverageOutput.logics[logicIndex].fields.balanceBps = common.BPS_BASE;
+            output.logics.push(...leverageOutput.logics);
+            output.afterPortfolio = leverageOutput.afterPortfolio;
+            output.destAmount = totalSupplyAmount;
+          }
+        } catch (err) {
+          output.error = err instanceof OperationError ? err : new OperationError('debtAmount', 'UNEXPECTED_ERROR');
         }
-
-        // 3. leverage by debt
-        const initDebtAmount = new common.TokenAmount(destBorrow.token, destBorrow.balance);
-        const leverageAmount = new common.TokenAmount(destBorrow.token, debtAmount).sub(initDebtAmount).amount;
-        const leverageOutput = await this.leverageByDebt({
-          account,
-          portfolio: output.afterPortfolio,
-          srcToken: debtToken.wrapped,
-          srcAmount: leverageAmount,
-          destToken: collateralToken.wrapped,
-        });
-
-        if (leverageOutput.error) throw leverageOutput.error;
-
-        // 3-1. find supply logic and add zap supply amount
-        const logicIndex = collateralToken.wrapped.is(debtToken.wrapped) ? 1 : 2;
-        const leverageSupplyAmount = leverageOutput.logics[logicIndex].fields.input;
-        leverageOutput.logics[logicIndex].fields.input.amount = leverageSupplyAmount.add(supplyInput).amount;
-        leverageOutput.logics[logicIndex].fields.balanceBps = common.BPS_BASE;
-        output.logics.push(...leverageOutput.logics);
-        output.afterPortfolio = leverageOutput.afterPortfolio;
-        output.destAmount = output.afterPortfolio.findSupply(collateralToken)!.balance;
+      } else {
+        output.error = new OperationError(srcCollateral ? 'debtAmount' : 'collateralAmount', 'UNSUPPORTED_TOKEN');
       }
-    } catch (err) {
-      output.error = err instanceof OperationError ? err : new OperationError('openByDebt', 'UNEXPECTED_ERROR');
     }
-
     return output;
   }
 

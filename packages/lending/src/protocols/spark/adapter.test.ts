@@ -25,9 +25,31 @@ describe('Test Adapter for Spark', function () {
       portfolio = await protocol.getPortfolio(account);
     });
 
-    it('zero collateralAmount', async function () {
+    it('zero zapAmount', async function () {
       const zapToken = mainnetTokens.ETH;
       const zapAmount = '0';
+      const collateralToken = mainnetTokens.DAI;
+      const collateralAmount = '0';
+      const debtToken = mainnetTokens.ETH;
+
+      const { destAmount, logics, error } = await adapter.openByCollateral({
+        account,
+        portfolio,
+        zapToken,
+        zapAmount,
+        collateralToken,
+        collateralAmount,
+        debtToken,
+      });
+
+      expect(error).to.be.undefined;
+      expect(destAmount).to.eq('0');
+      expect(logics).has.length(0);
+    });
+
+    it('zero collateralAmount', async function () {
+      const zapToken = mainnetTokens.ETH;
+      const zapAmount = '1';
       const collateralToken = mainnetTokens.DAI;
       const collateralAmount = '0';
       const debtToken = mainnetTokens.ETH;
@@ -42,76 +64,15 @@ describe('Test Adapter for Spark', function () {
         debtToken,
       });
 
-      expect(destAmount).to.eq('0');
-      expect(error?.name).to.eq('collateralAmount');
-      expect(error?.code).to.eq('COLLATERAL_AMOUNT_EXCEEDED');
-    });
-
-    it('collateralAmount <= initCollateralAmount + zapSupplyAmount', async function () {
-      const zapToken = mainnetTokens.ETH;
-      const zapAmount = '1';
-      const collateralToken = mainnetTokens.DAI;
-      const initCollateralBalance = portfolio.findSupply(collateralToken)!.balance;
-      const collateralAmount = (Number(initCollateralBalance) + 0.1).toString();
-      const debtToken = mainnetTokens.ETH;
-
-      const { destAmount, error } = await adapter.openByCollateral({
-        account,
-        portfolio,
-        zapToken,
-        zapAmount,
-        collateralToken,
-        collateralAmount,
-        debtToken,
-      });
-
-      expect(destAmount).to.eq('0');
-      expect(error?.name).to.eq('collateralAmount');
-      expect(error?.code).to.eq('COLLATERAL_AMOUNT_EXCEEDED');
-    });
-
-    it('success - zero zapAmount', async function () {
-      const zapToken = mainnetTokens.ETH;
-      const zapAmount = '0';
-      const collateralToken = mainnetTokens.DAI;
-      const initCollateralBalance = portfolio.findSupply(collateralToken)!.balance;
-      const leverageCollateralAmount = 5000;
-      const collateralAmount = (Number(initCollateralBalance) + leverageCollateralAmount).toString();
-      const debtToken = mainnetTokens.ETH;
-
-      const { destAmount, afterPortfolio, error, logics } = await adapter.openByCollateral({
-        account,
-        portfolio,
-        zapToken,
-        zapAmount,
-        collateralToken,
-        collateralAmount,
-        debtToken,
-      });
-
       expect(error).to.be.undefined;
-      expect(destAmount).to.eq(afterPortfolio.findBorrow(debtToken)!.balance);
-      expect(Number(afterPortfolio.findSupply(collateralToken)!.balance)).to.be.gte(Number(collateralAmount));
-
-      expect(logics).has.length(6);
-      expect(logics[0].rid).to.eq('utility:flash-loan-aggregator');
-      expect(logics[1].rid).to.contain('swap-token');
-      expect(logics[2].rid).to.eq('spark:supply');
-      expect(logics[2].fields.balanceBps).to.eq(common.BPS_BASE);
-      expect(logics[3].rid).to.eq('utility:send-token');
-      expect(logics[3].fields.recipient).to.eq(account);
-      expect(logics[3].fields.balanceBps).to.eq(common.BPS_BASE);
-      expect(logics[4].rid).to.eq('spark:borrow');
-      expect(logics[5].rid).to.eq('utility:flash-loan-aggregator');
+      expect(destAmount).to.eq('0');
     });
 
     it('success', async function () {
       const zapToken = mainnetTokens.ETH;
       const zapAmount = '1';
       const collateralToken = mainnetTokens.DAI;
-      const initCollateralBalance = portfolio.findSupply(collateralToken)!.balance;
-      const leverageCollateralAmount = 5000;
-      const collateralAmount = (Number(initCollateralBalance) + leverageCollateralAmount).toString();
+      const collateralAmount = '100';
       const debtToken = mainnetTokens.ETH;
 
       const { destAmount, afterPortfolio, error, logics } = await adapter.openByCollateral({
@@ -125,8 +86,12 @@ describe('Test Adapter for Spark', function () {
       });
 
       expect(error).to.be.undefined;
-      expect(destAmount).to.eq(afterPortfolio.findBorrow(debtToken)!.balance);
-      expect(Number(afterPortfolio.findSupply(collateralToken)!.balance)).to.be.gte(Number(collateralAmount));
+      expect(Number(destAmount)).to.be.greaterThan(0);
+
+      const expectedAfterPortfolio = portfolio.clone();
+      expectedAfterPortfolio.supply(collateralToken, logics[3].fields.input.amount);
+      expectedAfterPortfolio.borrow(debtToken, destAmount);
+      expect(JSON.stringify(expectedAfterPortfolio)).to.eq(JSON.stringify(afterPortfolio));
 
       expect(logics).has.length(7);
       expect(logics[0].rid).to.contain('swap-token');
@@ -153,7 +118,7 @@ describe('Test Adapter for Spark', function () {
       portfolio = await protocol.getPortfolio(account);
     });
 
-    it('debtAmount <= initDebtAmount', async function () {
+    it('zero zapAmount', async function () {
       const zapToken = mainnetTokens.ETH;
       const zapAmount = '0';
       const collateralToken = mainnetTokens.DAI;
@@ -175,16 +140,14 @@ describe('Test Adapter for Spark', function () {
       expect(logics).has.length(0);
     });
 
-    it('success - zero zapAmount', async function () {
+    it('zero debtAmount', async function () {
       const zapToken = mainnetTokens.ETH;
-      const zapAmount = '0';
+      const zapAmount = '1';
       const collateralToken = mainnetTokens.DAI;
       const debtToken = mainnetTokens.ETH;
-      const initDebtBalance = portfolio.findBorrow(debtToken)!.balance;
-      const leverageDebtAmount = 2;
-      const debtAmount = (Number(initDebtBalance) + leverageDebtAmount).toString();
+      const debtAmount = '0';
 
-      const { destAmount, afterPortfolio, error, logics } = await adapter.openByDebt({
+      const { destAmount, error } = await adapter.openByDebt({
         account,
         portfolio,
         zapToken,
@@ -195,19 +158,7 @@ describe('Test Adapter for Spark', function () {
       });
 
       expect(error).to.be.undefined;
-      expect(destAmount).to.eq(afterPortfolio.findSupply(collateralToken)!.balance);
-      expect(Number(afterPortfolio.findBorrow(debtToken)!.balance)).to.be.gte(Number(debtAmount));
-
-      expect(logics).has.length(6);
-      expect(logics[0].rid).to.eq('utility:flash-loan-aggregator');
-      expect(logics[1].rid).to.contain('swap-token');
-      expect(logics[2].rid).to.eq('spark:supply');
-      expect(logics[2].fields.balanceBps).to.eq(common.BPS_BASE);
-      expect(logics[3].rid).to.eq('utility:send-token');
-      expect(logics[3].fields.recipient).to.eq(account);
-      expect(logics[3].fields.balanceBps).to.eq(common.BPS_BASE);
-      expect(logics[4].rid).to.eq('spark:borrow');
-      expect(logics[5].rid).to.eq('utility:flash-loan-aggregator');
+      expect(destAmount).to.eq('0');
     });
 
     it('success', async function () {
@@ -215,9 +166,7 @@ describe('Test Adapter for Spark', function () {
       const zapAmount = '1';
       const collateralToken = mainnetTokens.DAI;
       const debtToken = mainnetTokens.ETH;
-      const initDebtBalance = portfolio.findBorrow(debtToken)!.balance;
-      const leverageDebtAmount = 2;
-      const debtAmount = (Number(initDebtBalance) + leverageDebtAmount).toString();
+      const debtAmount = '0.1';
 
       const { destAmount, afterPortfolio, error, logics } = await adapter.openByDebt({
         account,
@@ -230,8 +179,12 @@ describe('Test Adapter for Spark', function () {
       });
 
       expect(error).to.be.undefined;
-      expect(destAmount).to.eq(afterPortfolio.findSupply(collateralToken)!.balance);
-      expect(Number(afterPortfolio.findBorrow(debtToken)!.balance)).to.be.gte(Number(debtAmount));
+      expect(Number(destAmount)).to.be.greaterThan(0);
+
+      const expectedAfterPortfolio = portfolio.clone();
+      expectedAfterPortfolio.supply(collateralToken, destAmount);
+      expectedAfterPortfolio.borrow(debtToken, logics[5].fields.output.amount);
+      expect(JSON.stringify(expectedAfterPortfolio)).to.eq(JSON.stringify(afterPortfolio));
 
       expect(logics).has.length(7);
       expect(logics[0].rid).to.contain('swap-token');

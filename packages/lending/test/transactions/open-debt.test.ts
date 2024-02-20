@@ -20,7 +20,7 @@ describe('Transaction: Open By Debt', function () {
   before(async function () {
     adapter = new Adapter(chainId, hre.ethers.provider);
     [, user] = await hre.ethers.getSigners();
-    await claimToken(chainId, user.address, mainnetTokens.USDT, '5000');
+    await claimToken(chainId, user.address, mainnetTokens.USDT, '2000');
     await claimToken(chainId, user.address, mainnetTokens.WETH, initSupplyAmount);
   });
 
@@ -33,10 +33,10 @@ describe('Transaction: Open By Debt', function () {
         marketId: 'mainnet',
         hasCollateral: true,
         zapToken: mainnetTokens.USDT,
-        zapAmount: '100',
+        zapAmount: '1000',
         collateralToken: mainnetTokens.WETH,
         debtToken: mainnetTokens.USDC,
-        leverageDebtAmount: '1000',
+        debtAmount: '100',
         expects: { logicLength: 7 },
       },
       {
@@ -44,10 +44,10 @@ describe('Transaction: Open By Debt', function () {
         marketId: 'mainnet',
         hasCollateral: false,
         zapToken: mainnetTokens.USDT,
-        zapAmount: '5000',
+        zapAmount: '1000',
         collateralToken: mainnetTokens.WETH,
         debtToken: mainnetTokens.USDC,
-        leverageDebtAmount: '1000',
+        debtAmount: '100',
         expects: { logicLength: 7 },
       },
       {
@@ -55,10 +55,10 @@ describe('Transaction: Open By Debt', function () {
         marketId: 'mainnet',
         hasCollateral: true,
         zapToken: mainnetTokens.USDT,
-        zapAmount: '100',
+        zapAmount: '1000',
         collateralToken: mainnetTokens.WETH,
         debtToken: mainnetTokens.USDC,
-        leverageDebtAmount: '1000',
+        debtAmount: '100',
         expects: { logicLength: 7 },
       },
       {
@@ -66,40 +66,29 @@ describe('Transaction: Open By Debt', function () {
         marketId: 'mainnet',
         hasCollateral: false,
         zapToken: mainnetTokens.USDT,
-        zapAmount: '5000',
+        zapAmount: '1000',
         collateralToken: mainnetTokens.WETH,
         debtToken: mainnetTokens.DAI,
-        leverageDebtAmount: '1000',
+        debtAmount: '100',
         expects: { logicLength: 7 },
       },
     ];
 
     testCases.forEach(
       (
-        {
-          protocolId,
-          marketId,
-          hasCollateral,
-          zapToken,
-          zapAmount,
-          collateralToken,
-          debtToken,
-          leverageDebtAmount,
-          expects,
-        },
+        { protocolId, marketId, hasCollateral, zapToken, zapAmount, collateralToken, debtToken, debtAmount, expects },
         i
       ) => {
         it(`case ${i + 1} - ${protocolId}:${marketId}`, async function () {
           // 0. prep user positions
           const account = user.address;
-          const initCollateralBalance = new common.TokenAmount(collateralToken, initSupplyAmount);
+          const initCollateralBalance = new common.TokenAmount(collateralToken, '0');
           if (hasCollateral) {
+            initCollateralBalance.set(initSupplyAmount);
             await utils.deposit(chainId, protocolId, marketId, user, initCollateralBalance);
           }
 
           // 1. user obtains a quotation for open by debt
-          const expectedBorrowBalance = new common.TokenAmount(debtToken, leverageDebtAmount);
-          const debtAmount = expectedBorrowBalance.amount;
           portfolio = await adapter.getPortfolio(user.address, protocolId, marketId);
           const openDebtInfo = await adapter.openByDebt({
             account,
@@ -137,8 +126,10 @@ describe('Transaction: Open By Debt', function () {
           await expect(user.sendTransaction(transactionRequest)).to.not.be.reverted;
 
           // 4. user's borrow balance should be around debtAmount.
+          const expectedBorrowBalance = new common.TokenAmount(debtToken, debtAmount);
           const borrowBalance = await utils.getBorrowBalance(chainId, protocolId, marketId, user, debtToken);
           const minExpectBorrowBalance = common.calcSlippage(expectedBorrowBalance.amountWei, 1);
+          // 4-1. init borrow balance is 0
           expect(borrowBalance!.amountWei).to.be.gte(minExpectBorrowBalance);
         });
       }

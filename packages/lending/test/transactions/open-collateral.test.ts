@@ -20,7 +20,7 @@ describe('Transaction: Open By Collateral', function () {
   before(async function () {
     adapter = new Adapter(chainId, hre.ethers.provider);
     [, user] = await hre.ethers.getSigners();
-    await claimToken(chainId, user.address, mainnetTokens.USDT, '10000');
+    await claimToken(chainId, user.address, mainnetTokens.USDT, '2000');
     await claimToken(chainId, user.address, mainnetTokens.WETH, initSupplyAmount);
     await claimToken(chainId, user.address, morphoblue.mainnetTokens.wstETH, initSupplyAmount);
   });
@@ -36,7 +36,7 @@ describe('Transaction: Open By Collateral', function () {
         zapToken: mainnetTokens.USDT,
         zapAmount: '1000',
         collateralToken: mainnetTokens.WETH,
-        leverageCollateralAmount: '1',
+        collateralAmount: '0.1',
         debtToken: mainnetTokens.USDC,
         expects: { logicLength: 7 },
       },
@@ -45,9 +45,9 @@ describe('Transaction: Open By Collateral', function () {
         marketId: 'mainnet',
         hasCollateral: false,
         zapToken: mainnetTokens.USDT,
-        zapAmount: '10000',
+        zapAmount: '1000',
         collateralToken: mainnetTokens.WETH,
-        leverageCollateralAmount: '1',
+        collateralAmount: '0.1',
         debtToken: mainnetTokens.USDC,
         expects: { logicLength: 7 },
       },
@@ -58,7 +58,7 @@ describe('Transaction: Open By Collateral', function () {
         zapToken: mainnetTokens.USDT,
         zapAmount: '1000',
         collateralToken: mainnetTokens.WETH,
-        leverageCollateralAmount: '1',
+        collateralAmount: '0.1',
         debtToken: mainnetTokens.USDC,
         expects: { logicLength: 7 },
       },
@@ -67,9 +67,9 @@ describe('Transaction: Open By Collateral', function () {
         marketId: 'mainnet',
         hasCollateral: false,
         zapToken: mainnetTokens.USDT,
-        zapAmount: '5000',
+        zapAmount: '1000',
         collateralToken: mainnetTokens.WETH,
-        leverageCollateralAmount: '1',
+        collateralAmount: '0.1',
         debtToken: mainnetTokens.DAI,
         expects: { logicLength: 7 },
       },
@@ -80,7 +80,7 @@ describe('Transaction: Open By Collateral', function () {
         zapToken: mainnetTokens.USDT,
         zapAmount: '1000',
         collateralToken: mainnetTokens.WETH,
-        leverageCollateralAmount: '1',
+        collateralAmount: '0.1',
         debtToken: mainnetTokens.USDC,
         expects: { logicLength: 6 },
       },
@@ -91,7 +91,7 @@ describe('Transaction: Open By Collateral', function () {
         zapToken: mainnetTokens.USDT,
         zapAmount: '1000',
         collateralToken: morphoblue.mainnetTokens.wstETH,
-        leverageCollateralAmount: '1',
+        collateralAmount: '0.1',
         debtToken: mainnetTokens.USDC,
         expects: { logicLength: 6 },
       },
@@ -106,7 +106,7 @@ describe('Transaction: Open By Collateral', function () {
           zapToken,
           zapAmount,
           collateralToken,
-          leverageCollateralAmount,
+          collateralAmount,
           debtToken,
           expects,
         },
@@ -115,13 +115,13 @@ describe('Transaction: Open By Collateral', function () {
         it(`case ${i + 1} - ${protocolId}:${marketId}`, async function () {
           // 0. prep user positions
           const account = user.address;
-          const initCollateralBalance = new common.TokenAmount(collateralToken, initSupplyAmount);
+          const initCollateralBalance = new common.TokenAmount(collateralToken, '0');
           if (hasCollateral) {
+            initCollateralBalance.set(initSupplyAmount);
             await utils.deposit(chainId, protocolId, marketId, user, initCollateralBalance);
           }
 
           // 1. user obtains a quotation for open by collateral
-          const collateralAmount = initCollateralBalance.clone().add(leverageCollateralAmount).amount;
           const portfolio = await adapter.getPortfolio(user.address, protocolId, marketId);
           const openCollateralInfo = await adapter.openByCollateral({
             account,
@@ -169,10 +169,11 @@ describe('Transaction: Open By Collateral', function () {
             collateralToken
           );
           // 4-1. due to the slippage caused by the swap, we need to calculate the minimum and maximum leverage amount.
-          const leverageCollateralTokenAmount = collateralBalance!.clone().set(leverageCollateralAmount);
+          const supplyAmount = openCollateralInfo.logics[0].fields.output;
+          const supplyCollateralTokenAmount = collateralBalance!.clone().set(collateralAmount).add(supplyAmount.amount);
           utils.expectEqWithinBps(
             collateralBalance!.clone().sub(initCollateralBalance.amount).amountWei,
-            leverageCollateralTokenAmount.amountWei,
+            supplyCollateralTokenAmount.amountWei,
             slippage
           );
         });
