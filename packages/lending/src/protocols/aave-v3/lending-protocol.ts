@@ -335,7 +335,7 @@ export class LendingProtocol extends Protocol {
     return this.getPortfolios(account).then((portfolios) => portfolios[0]);
   }
 
-  override canLeverage(_marketId: string, assetToken: common.Token) {
+  override canLeverageByCollateral(_marketId: string, assetToken: common.Token) {
     return assetToken.symbol !== 'GHO';
   }
 

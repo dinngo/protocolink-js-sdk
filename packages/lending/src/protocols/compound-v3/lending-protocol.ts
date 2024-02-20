@@ -40,7 +40,7 @@ export class LendingProtocol extends Protocol {
     return false;
   }
 
-  canLeverageShort = false;
+  canLeverageByDebt = false;
 
   toUnderlyingToken(marketId: string) {
     const { baseToken } = getMarketConfig(this.chainId, marketId);

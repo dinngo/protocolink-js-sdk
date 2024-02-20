@@ -12,7 +12,7 @@ import * as utils from 'test/utils';
 
 describe('Transaction: Collateral swap', function () {
   const chainId = 1;
-  const slippage = 100;
+  const slippage = 1000;
   const initSupplyAmount = '2';
 
   let user: SignerWithAddress;
@@ -90,6 +90,7 @@ describe('Transaction: Collateral swap', function () {
           srcToken,
           srcAmount,
           destToken,
+          slippage,
         });
         const logics = collateralSwapInfo.logics;
         expect(collateralSwapInfo.error).to.be.undefined;
@@ -132,9 +133,7 @@ describe('Transaction: Collateral swap', function () {
         // 5. user's dest token balance will increase.
         // 5-1. rate may change when the block of getting api data is different from the block of executing tx
         const supplyAmount = new common.TokenAmount(destToken, collateralSwapInfo.destAmount);
-        const [minSupplyAmount, maxSupplyAmount] = utils.bpsBound(supplyAmount.amount, slippage);
-        expect(destBalance!.lte(maxSupplyAmount)).to.be.true;
-        expect(destBalance!.gte(minSupplyAmount)).to.be.true;
+        utils.expectEqWithinBps(destBalance!.amountWei, supplyAmount.amountWei, slippage);
       });
     });
   });

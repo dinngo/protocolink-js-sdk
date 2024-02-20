@@ -1,5 +1,11 @@
 import BigNumberJS from 'bignumber.js';
-import { OperationError, OperationInput, OperationOutput } from './adapter.type';
+import {
+  CloseOperationInput,
+  OpenOperationInput,
+  OperationError,
+  OperationInput,
+  OperationOutput,
+} from './adapter.type';
 import { Portfolio } from './protocol.portfolio';
 import { Protocol, ProtocolClass } from './protocol';
 import { Swapper, SwapperClass } from './swapper';
@@ -183,6 +189,329 @@ export class Adapter extends common.Web3Toolkit {
 
   getProtocol(id: string): Protocol {
     return this.protocolMap[id];
+  }
+
+  /**
+   * Open by collateral enables user to open collateral positions with any token.
+   *
+   * @param {OpenOperationInput} input - The input parameters for the operation.
+   * @param {string} input.account - The account wallet address.
+   * @param {Portfolio} input.portfolio - The portfolio data.
+   * @param {common.Token} input.zapToken - Zap token: zap the token to the collateral.
+   * @param {string} input.zapAmount - The amount of the zap token.
+   * @param {common.Token} input.collateralToken - Collateral token: the collateral to be supplied.
+   * @param {string} input.collateralAmount - The leverage amount of the collateral.
+   * @param {common.Token} input.debtToken - Debt token: the debt to be borrowed.
+   * @param {number} [input.slippage=defaultSlippage] - The slippage tolerance. Optional.
+   * @returns {Promise<OperationOutput>} The result including the destination amount,
+   * after portfolio, potential errors, and logic operations.
+   *
+   * 1. validate user inputs
+   * 2. zap-supply zap token
+   * 3. leverage by collateral token
+   */
+  async openByCollateral({
+    account,
+    portfolio,
+    zapToken,
+    zapAmount,
+    collateralToken,
+    collateralAmount,
+    debtToken,
+    slippage = defaultSlippage,
+  }: OpenOperationInput): Promise<OperationOutput> {
+    const output: OperationOutput = {
+      destAmount: '0',
+      afterPortfolio: portfolio.clone(),
+      logics: [],
+    };
+
+    if (Number(zapAmount) > 0) {
+      const srcCollateral = portfolio.findSupply(collateralToken);
+      const destBorrow = portfolio.findBorrow(debtToken);
+
+      if (srcCollateral && destBorrow) {
+        try {
+          // 1. ---------- swap ----------
+          const supplyInput = new common.TokenAmount(collateralToken.wrapped, '0');
+          if (zapToken.is(collateralToken.wrapped)) {
+            // 1-1-1. exclude native zapToken
+            supplyInput.set(zapAmount);
+          } else {
+            const swapper = this.findSwapper([zapToken, collateralToken]);
+            let swapQuotation: SwapperQuoteFields;
+            try {
+              swapQuotation = await swapper.quote({
+                input: new common.TokenAmount(zapToken, zapAmount),
+                tokenOut: collateralToken.wrapped,
+                slippage,
+              });
+            } catch {
+              throw new OperationError('zapAmount', 'NO_ROUTE_FOUND_OR_PRICE_IMPACT_TOO_HIGH');
+            }
+            const swapTokenLogic = swapper.newSwapTokenLogic(swapQuotation);
+            output.logics.push(swapTokenLogic);
+            // 1-2-1. the supply amount is the swap quotation output
+            supplyInput.set(swapQuotation.output);
+          }
+
+          // 2. ---------- leverage ----------
+          if (collateralAmount && Number(collateralAmount) > 0) {
+            output.afterPortfolio.supply(supplyInput.token, supplyInput.amount);
+
+            const leverageOutput = await this.leverageByCollateral({
+              account,
+              portfolio: output.afterPortfolio,
+              srcToken: collateralToken.wrapped,
+              srcAmount: collateralAmount,
+              destToken: debtToken.wrapped,
+            });
+
+            if (leverageOutput.error) throw leverageOutput.error;
+
+            // 2-1-1. find supply logic and add zap supply amount
+            const logicIndex = collateralToken.wrapped.is(debtToken.wrapped) ? 1 : 2;
+            const leverageSupplyAmount = leverageOutput.logics[logicIndex].fields.input;
+            leverageOutput.logics[logicIndex].fields.input.amount = supplyInput.add(leverageSupplyAmount).amount;
+            leverageOutput.logics[logicIndex].fields.balanceBps = common.BPS_BASE;
+            output.logics.push(...leverageOutput.logics);
+            output.afterPortfolio = leverageOutput.afterPortfolio;
+            output.destAmount = leverageOutput.destAmount;
+          }
+        } catch (err) {
+          output.error =
+            err instanceof OperationError ? err : new OperationError('collateralAmount', 'UNEXPECTED_ERROR');
+        }
+      } else {
+        output.error = new OperationError(srcCollateral ? 'debtAmount' : 'collateralAmount', 'UNSUPPORTED_TOKEN');
+      }
+    }
+
+    return output;
+  }
+
+  /**
+   * Open by debt enables user to open debt positions with any token.
+   *
+   * @param {OpenOperationInput} input - The input parameters for the operation.
+   * @param {string} input.account - The account wallet address.
+   * @param {Portfolio} input.portfolio - The portfolio data.
+   * @param {common.Token} input.zapToken - Zap token: zap the token to the collateral.
+   * @param {string} input.zapAmount - The amount of the zap token.
+   * @param {common.Token} input.collateralToken - Collateral token: the collateral to be supplied.
+   * @param {common.Token} input.debtToken - Debt token: the debt to be borrowed.
+   * @param {string} input.debtAmount - The borrowed debt amount.
+   * @param {number} [input.slippage=defaultSlippage] - The slippage tolerance. Optional.
+   * @returns {Promise<OperationOutput>} The result including the destination amount,
+   * after portfolio, potential errors, and logic operations.
+   *
+   * 1. validate user inputs
+   * 2. zap-supply zap token
+   * 3. leverage by debt token
+   */
+  async openByDebt({
+    account,
+    portfolio,
+    zapToken,
+    zapAmount,
+    collateralToken,
+    debtToken,
+    debtAmount,
+    slippage = defaultSlippage,
+  }: OpenOperationInput): Promise<OperationOutput> {
+    const output: OperationOutput = {
+      destAmount: '0',
+      afterPortfolio: portfolio.clone(),
+      logics: [],
+    };
+
+    if (Number(zapAmount) > 0) {
+      const srcCollateral = portfolio.findSupply(collateralToken);
+      const destBorrow = portfolio.findBorrow(debtToken);
+
+      if (srcCollateral && destBorrow) {
+        try {
+          // 1. ---------- swap ----------
+          const supplyInput = new common.TokenAmount(collateralToken.wrapped, '0');
+          if (zapToken.is(collateralToken.wrapped)) {
+            // 1-1-1. exclude native zapToken
+            supplyInput.set(zapAmount);
+          } else {
+            const swapper = this.findSwapper([zapToken, collateralToken]);
+            let swapQuotation: SwapperQuoteFields;
+            try {
+              swapQuotation = await swapper.quote({
+                input: new common.TokenAmount(zapToken, zapAmount),
+                tokenOut: collateralToken.wrapped,
+                slippage,
+              });
+            } catch {
+              throw new OperationError('zapAmount', 'NO_ROUTE_FOUND_OR_PRICE_IMPACT_TOO_HIGH');
+            }
+            const swapTokenLogic = swapper.newSwapTokenLogic(swapQuotation);
+            output.logics.push(swapTokenLogic);
+            // 1-2-1. the supply amount is the swap quotation output
+            supplyInput.set(swapQuotation.output);
+          }
+
+          // 2. ---------- leverage ----------
+          if (debtAmount && Number(debtAmount) > 0) {
+            output.afterPortfolio.supply(supplyInput.token, supplyInput.amount);
+
+            const leverageOutput = await this.leverageByDebt({
+              account,
+              portfolio: output.afterPortfolio,
+              srcToken: debtToken.wrapped,
+              srcAmount: debtAmount,
+              destToken: collateralToken.wrapped,
+            });
+
+            if (leverageOutput.error) throw leverageOutput.error;
+
+            // 2-1-1. find supply logic and add zap supply amount
+            const logicIndex = collateralToken.wrapped.is(debtToken.wrapped) ? 1 : 2;
+            const leverageSupplyAmount = leverageOutput.logics[logicIndex].fields.input;
+            const totalSupplyAmount = leverageSupplyAmount.add(supplyInput).amount;
+            leverageOutput.logics[logicIndex].fields.input.amount = totalSupplyAmount;
+            leverageOutput.logics[logicIndex].fields.balanceBps = common.BPS_BASE;
+            output.logics.push(...leverageOutput.logics);
+            output.afterPortfolio = leverageOutput.afterPortfolio;
+            output.destAmount = totalSupplyAmount;
+          }
+        } catch (err) {
+          output.error = err instanceof OperationError ? err : new OperationError('debtAmount', 'UNEXPECTED_ERROR');
+        }
+      } else {
+        output.error = new OperationError(srcCollateral ? 'debtAmount' : 'collateralAmount', 'UNSUPPORTED_TOKEN');
+      }
+    }
+    return output;
+  }
+
+  /**
+   * Close enables user to close supplied and borrowed positions.
+   *
+   * @param {CloseOperationInput} input - The input parameters for the operation.
+   * @param {string} input.account - The account wallet address.
+   * @param {Portfolio} input.portfolio - The portfolio data.
+   * @param {common.Token} input.withdrawalToken - Withdrawal token: The token to be withdrawn.
+   * @param {number} [input.slippage=defaultSlippage] - The slippage tolerance. Optional.
+   * @returns {Promise<OperationOutput>} The result including the destination amount,
+   * after portfolio, potential errors, and logic operations.
+   *
+   * 1. flashloan withdrawal token
+   * 2. zap-repay withdrawl token
+   * 3. zap-withdraw withdrawl token
+   */
+  async close({
+    account,
+    portfolio,
+    withdrawalToken,
+    slippage = defaultSlippage,
+  }: CloseOperationInput): Promise<OperationOutput> {
+    const output: OperationOutput = {
+      destAmount: '0',
+      afterPortfolio: portfolio.clone(),
+      logics: [],
+    };
+
+    try {
+      // 1. check borrow positions
+      let flashLoanRepayLogic;
+      const flashLoanLoan = new common.TokenAmount(withdrawalToken.wrapped, '0');
+      const flashLoanRepay = flashLoanLoan.clone();
+      const { protocolId, marketId } = portfolio;
+      const protocol = this.getProtocol(protocolId);
+
+      if (portfolio.totalBorrowUSD.gt(BigNumberJS(0))) {
+        // 1.1 flashloan withdrawalToken to repay debt
+        const borrows = portfolio.borrows;
+        for (const borrow of borrows) {
+          if (borrow.balance === '0') continue;
+
+          const zapRepayOutput = await this.zapRepay({
+            account,
+            portfolio: output.afterPortfolio,
+            srcToken: borrow.token,
+            srcAmount: borrow.balance,
+            destToken: withdrawalToken.wrapped,
+            slippage,
+            isRepayAll: true,
+          });
+
+          if (zapRepayOutput.error) throw zapRepayOutput.error;
+
+          output.logics.push(...zapRepayOutput.logics);
+          flashLoanLoan.add(zapRepayOutput.destAmount);
+          output.afterPortfolio = zapRepayOutput.afterPortfolio;
+        }
+
+        const flashLoanAggregatorQuotation = await apisdk.protocols.utility.getFlashLoanAggregatorQuotation(
+          this.chainId,
+          { loans: [flashLoanLoan], protocolId: protocol.preferredFlashLoanProtocolId }
+        );
+        flashLoanRepay.set(flashLoanAggregatorQuotation.repays.get(withdrawalToken.wrapped));
+
+        const [loanLogic, repayLogic] = apisdk.protocols.utility.newFlashLoanAggregatorLogicPair(
+          flashLoanAggregatorQuotation.protocolId,
+          flashLoanAggregatorQuotation.loans.toArray()
+        );
+        output.logics.unshift(loanLogic);
+        flashLoanRepayLogic = repayLogic;
+      }
+
+      // 2. check supply positions
+      if (portfolio.totalSupplyUSD.gt(BigNumberJS(0))) {
+        const supplies = output.afterPortfolio.supplies;
+        const zapWithdraw = new common.TokenAmount(withdrawalToken.wrapped, '0');
+
+        for (const supply of supplies) {
+          if (supply.balance === '0') continue;
+
+          const zapWithdrawOutput = await this.zapWithdraw({
+            account,
+            portfolio: output.afterPortfolio,
+            srcToken: supply.token,
+            srcAmount: supply.balance,
+            destToken: withdrawalToken.wrapped,
+            slippage,
+          });
+
+          if (zapWithdrawOutput.error) throw zapWithdrawOutput.error;
+
+          // 2-1. if protocol is collateral tokenized
+          if (protocol.isAssetTokenized(marketId, supply.token)) {
+            // 2-1-1. add src protocol token to agent
+            const withdrawLogic = zapWithdrawOutput.logics[0];
+            const addFundsLogic = apisdk.protocols.permit2.newPullTokenLogic({
+              input: withdrawLogic.fields.input!,
+            });
+            output.logics.push(addFundsLogic);
+          }
+
+          zapWithdraw.add(zapWithdrawOutput.destAmount);
+          output.logics.push(...zapWithdrawOutput.logics);
+          output.afterPortfolio = zapWithdrawOutput.afterPortfolio;
+        }
+
+        const withdrawal = new common.TokenAmount(withdrawalToken, zapWithdraw.clone().sub(flashLoanRepay).amount);
+        output.destAmount = withdrawal.amount;
+
+        if (flashLoanRepayLogic) output.logics.push(flashLoanRepayLogic);
+
+        if (withdrawalToken.isNative && Number(withdrawal.amount) > 0) {
+          const wrapNativeLogic = await apisdk.protocols.utility.newWrappedNativeTokenLogic({
+            input: { token: zapWithdraw.token, amount: withdrawal.amount },
+            output: withdrawal,
+          });
+          output.logics.push(wrapNativeLogic);
+        }
+      }
+    } catch (err) {
+      output.error = err instanceof OperationError ? err : new OperationError('close', 'UNEXPECTED_ERROR');
+    }
+
+    return output;
   }
 
   /**
@@ -446,14 +775,14 @@ export class Adapter extends common.Web3Toolkit {
   }
 
   /**
-   * Leverage long enables user to achieve the desired collateral exposure in a single step using a flash loan.
+   * Leverage collateral enables user to achieve the desired collateral exposure in a single step using a flash loan.
    *
    * @param {OperationInput} input - The input parameters for the operation.
    * @param {string} input.account - The account wallet address.
    * @param {Portfolio} input.portfolio - The portfolio data.
-   * @param {common.Token} input.srcToken - Source token: the token to be longed.
+   * @param {common.Token} input.srcToken - Source token: the collateral token to be leveraged.
    * @param {string} input.srcAmount - The amount of source token.
-   * @param {common.Token} input.destToken - Destination token: the token to be leveraged against.
+   * @param {common.Token} input.destToken - Destination token: the debt token to be leveraged against.
    * @param {number} [input.slippage=defaultSlippage] - The slippage tolerance. Optional.
    * @returns {Promise<OperationOutput>} The result including the destination amount,
    * after portfolio, potential errors, and logic operations.
@@ -465,7 +794,7 @@ export class Adapter extends common.Web3Toolkit {
    * 5. borrow destToken
    * 6. flashloan repay destToken
    */
-  async leverageLong({
+  async leverageByCollateral({
     account,
     portfolio,
     srcToken,
@@ -589,14 +918,14 @@ export class Adapter extends common.Web3Toolkit {
   }
 
   /**
-   * Leverage short enables user to achieve the desired collateral exposure in a single step using a flash loan.
+   * Leverage debt enables user to achieve the desired debt exposure in a single step using a flash loan.
    *
    * @param {OperationInput} input - The input parameters for the operation.
    * @param {string} input.account - The account wallet address.
    * @param {Portfolio} input.portfolio - The portfolio data.
-   * @param {common.Token} input.srcToken - Source token: the token to be shorted.
+   * @param {common.Token} input.srcToken - Source token: the debt token to be leveraged.
    * @param {string} input.srcAmount - The amount of source token.
-   * @param {common.Token} input.destToken - Destination token: the token to be leveraged against.
+   * @param {common.Token} input.destToken - Destination token: the collateral token to be leveraged against.
    * @param {number} [input.slippage=defaultSlippage] - The slippage tolerance. Optional.
    * @returns {Promise<OperationOutput>} The result including the destination amount,
    * after portfolio, potential errors, and logic operations.
@@ -608,7 +937,7 @@ export class Adapter extends common.Web3Toolkit {
    * 5. borrow srcToken
    * 6. flashloan repay srcToken
    */
-  async leverageShort({
+  async leverageByDebt({
     account,
     portfolio,
     srcToken,

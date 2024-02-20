@@ -174,9 +174,9 @@ export class LendingProtocol extends Protocol {
     return false;
   }
 
-  canLeverageShort = false;
+  canLeverageByDebt = false;
 
-  override canLeverage(_marketId: string) {
+  override canLeverageByCollateral(_marketId: string) {
     return true;
   }
 
