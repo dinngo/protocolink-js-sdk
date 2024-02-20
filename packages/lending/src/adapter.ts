@@ -264,7 +264,7 @@ export class Adapter extends common.Web3Toolkit {
               portfolio: output.afterPortfolio,
               srcToken: collateralToken.wrapped,
               srcAmount: collateralAmount,
-              destToken: debtToken,
+              destToken: debtToken.wrapped,
             });
 
             if (leverageOutput.error) throw leverageOutput.error;
