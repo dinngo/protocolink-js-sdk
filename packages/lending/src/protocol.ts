@@ -40,7 +40,7 @@ export abstract class Protocol extends common.Web3Toolkit {
   }
 
   canOpenByDebt(_marketId: string, _assetToken: common.Token) {
-    return this.canLeverageByDebt;
+    return this.canLeverageByDebt(_marketId, _assetToken);
   }
 
   canClose(_marketId: string, _assetToken: common.Token) {
