@@ -1,5 +1,12 @@
 # @protocolink/lending
 
+## 1.0.13
+
+### Patch Changes
+
+- 09fcec0: add canOpenByCollateral, canOpenByDebt, and canClose
+- 7562b1d: add open position and close position
+
 ## 1.0.12
 
 ### Patch Changes
