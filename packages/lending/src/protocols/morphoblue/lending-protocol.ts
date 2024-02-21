@@ -174,14 +174,8 @@ export class LendingProtocol extends Protocol {
     return false;
   }
 
-  canLeverageByDebt = false;
-
-  override canLeverageByCollateral(_marketId: string) {
-    return true;
-  }
-
-  override canDeleverage() {
-    return true;
+  override canLeverageByDebt() {
+    return false;
   }
 
   override isAssetTokenized(_marketId: string, _assetToken: common.Token) {

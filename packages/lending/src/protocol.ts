@@ -35,6 +35,18 @@ export abstract class Protocol extends common.Web3Toolkit {
 
   abstract getPortfolios(account: string): Promise<Portfolio[]>;
 
+  canOpenByCollateral(_marketId: string, _assetToken: common.Token) {
+    return this.canLeverageByCollateral(_marketId, _assetToken);
+  }
+
+  canOpenByDebt(_marketId: string, _assetToken: common.Token) {
+    return this.canLeverageByDebt;
+  }
+
+  canClose(_marketId: string, _assetToken: common.Token) {
+    return this.canDeleverage(_marketId, _assetToken);
+  }
+
   canCollateralSwap(_marketId: string, _assetToken: common.Token) {
     return true;
   }
@@ -47,7 +59,9 @@ export abstract class Protocol extends common.Web3Toolkit {
     return true;
   }
 
-  canLeverageByDebt = true;
+  canLeverageByDebt(_marketId: string, _assetToken: common.Token) {
+    return true;
+  }
 
   canDeleverage(_marketId: string, _assetToken: common.Token) {
     return true;
