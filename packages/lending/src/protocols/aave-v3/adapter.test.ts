@@ -732,6 +732,38 @@ describe('Test Adapter for Aave V3', function () {
       expect(logics).to.be.empty;
     });
 
+    it('success - src token is not equal to dest token', async function () {
+      const srcToken = mainnetTokens.USDC;
+      const srcAmount = '10000';
+      const destToken = mainnetTokens.ETH;
+
+      const { destAmount, afterPortfolio, error, logics } = await adapter.deleverage({
+        account,
+        portfolio,
+        srcToken,
+        srcAmount,
+        destToken,
+      });
+
+      expect(error).to.be.undefined;
+      expect(Number(destAmount)).to.be.greaterThan(0);
+
+      const expectedAfterPortfolio = portfolio.clone();
+      expectedAfterPortfolio.repay(srcToken, srcAmount);
+      expectedAfterPortfolio.withdraw(destToken, destAmount);
+      expect(JSON.stringify(expectedAfterPortfolio)).to.eq(JSON.stringify(afterPortfolio));
+
+      expect(logics).has.length(6);
+      expect(logics[0].rid).to.eq('utility:flash-loan-aggregator');
+      expect(logics[1].rid).to.contain('swap-token');
+      expect(logics[2].rid).to.eq('aave-v3:repay');
+      expect(logics[2].fields.balanceBps).to.eq(common.BPS_BASE);
+      expect(logics[3].rid).to.eq('permit2:pull-token');
+      expect(logics[4].rid).to.eq('aave-v3:withdraw');
+      expect(logics[4].fields.balanceBps).to.eq(common.BPS_BASE);
+      expect(logics[5].rid).to.eq('utility:flash-loan-aggregator');
+    });
+
     it('success - src token is equal to dest token', async function () {
       const blockTag = 19232405;
       protocol.setBlockTag(blockTag);
@@ -767,38 +799,6 @@ describe('Test Adapter for Aave V3', function () {
       expect(logics[3].rid).to.eq('aave-v3:withdraw');
       expect(logics[3].fields.balanceBps).to.eq(common.BPS_BASE);
       expect(logics[4].rid).to.eq('utility:flash-loan-aggregator');
-    });
-
-    it('success - src token is not equal to dest token', async function () {
-      const srcToken = mainnetTokens.USDC;
-      const srcAmount = '10000';
-      const destToken = mainnetTokens.ETH;
-
-      const { destAmount, afterPortfolio, error, logics } = await adapter.deleverage({
-        account,
-        portfolio,
-        srcToken,
-        srcAmount,
-        destToken,
-      });
-
-      expect(error).to.be.undefined;
-      expect(Number(destAmount)).to.be.greaterThan(0);
-
-      const expectedAfterPortfolio = portfolio.clone();
-      expectedAfterPortfolio.repay(srcToken, srcAmount);
-      expectedAfterPortfolio.withdraw(destToken, destAmount);
-      expect(JSON.stringify(expectedAfterPortfolio)).to.eq(JSON.stringify(afterPortfolio));
-
-      expect(logics).has.length(6);
-      expect(logics[0].rid).to.eq('utility:flash-loan-aggregator');
-      expect(logics[1].rid).to.contain('swap-token');
-      expect(logics[2].rid).to.eq('aave-v3:repay');
-      expect(logics[2].fields.balanceBps).to.eq(common.BPS_BASE);
-      expect(logics[3].rid).to.eq('permit2:pull-token');
-      expect(logics[4].rid).to.eq('aave-v3:withdraw');
-      expect(logics[4].fields.balanceBps).to.eq(common.BPS_BASE);
-      expect(logics[5].rid).to.eq('utility:flash-loan-aggregator');
     });
   });
 

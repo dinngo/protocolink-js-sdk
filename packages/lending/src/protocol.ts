@@ -53,6 +53,16 @@ export abstract class Protocol extends common.Web3Toolkit {
     return true;
   }
 
+  canOpenByCollateral(_marketId: string, _assetToken: common.Token) {
+    return this.canLeverageByCollateral(_marketId, _assetToken);
+  }
+
+  canOpenByDebt = this.canLeverageByDebt;
+
+  canClose(_marketId: string, _assetToken: common.Token) {
+    return this.canDeleverage(_marketId, _assetToken);
+  }
+
   toUnderlyingToken(_marketId: string, _protocolToken: common.Token): common.Token | undefined {
     return undefined;
   }
