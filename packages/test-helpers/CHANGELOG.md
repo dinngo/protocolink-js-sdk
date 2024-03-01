@@ -1,5 +1,11 @@
 # @protocolink/test-helpers
 
+## 0.3.6
+
+### Patch Changes
+
+- 42f584c: rename polygon USDC to USDCe
+
 ## 0.3.5
 
 ### Patch Changes
