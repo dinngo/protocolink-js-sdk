@@ -1,5 +1,11 @@
 # @protocolink/lending
 
+## 1.0.14
+
+### Patch Changes
+
+- 1aa3220: rename polygon USDC to USDCe
+
 ## 1.0.13
 
 ### Patch Changes
