@@ -241,13 +241,13 @@ describe('Test Compound V3 LendingProtocol', function () {
       },
       {
         chainId: common.ChainId.polygon,
-        marketId: logics.compoundv3.MarketId.USDC,
+        marketId: logics.compoundv3.MarketId.USDCe,
         account: '0x9fC7D6E7a3d4aB7b8b28d813f68674C8A6e91e83',
         blockTag: 45221016,
         expected: {
           chainId: 137,
           protocolId: 'compound-v3',
-          marketId: 'USDC',
+          marketId: 'USDC.e',
           utilization: '0.62899605117035539651',
           healthRate: '1.6924051066004987073',
           netAPY: '-0.04077766466005592672',
@@ -255,13 +255,7 @@ describe('Test Compound V3 LendingProtocol', function () {
           totalBorrowUSD: '170.9935994506148',
           supplies: [
             {
-              token: {
-                chainId: 137,
-                address: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
-                decimals: 6,
-                symbol: 'USDC',
-                name: 'USD Coin (PoS)',
-              },
+              token: polygonTokens['USDC.e'],
               price: '0.99995719',
               balance: '0',
               apy: '0.025882667487072',
@@ -329,13 +323,7 @@ describe('Test Compound V3 LendingProtocol', function () {
           ],
           borrows: [
             {
-              token: {
-                chainId: 137,
-                address: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
-                decimals: 6,
-                symbol: 'USDC',
-                name: 'USD Coin (PoS)',
-              },
+              token: polygonTokens['USDC.e'],
               price: '0.99995719',
               balances: ['171.00092'],
               apys: ['0.042873641892576'],
@@ -802,13 +790,13 @@ describe('Test Compound V3 LendingProtocol', function () {
       },
       {
         chainId: common.ChainId.polygon,
-        marketId: logics.compoundv3.MarketId.USDC,
-        asset: polygonTokens.USDC,
+        marketId: logics.compoundv3.MarketId.USDCe,
+        asset: polygonTokens['USDC.e'],
         expected: false,
       },
       {
         chainId: common.ChainId.polygon,
-        marketId: logics.compoundv3.MarketId.USDC,
+        marketId: logics.compoundv3.MarketId.USDCe,
         asset: polygonTokens.WBTC,
         expected: true,
       },
@@ -860,8 +848,8 @@ describe('Test Compound V3 LendingProtocol', function () {
       },
       {
         chainId: common.ChainId.polygon,
-        marketId: logics.compoundv3.MarketId.USDC,
-        expected: [polygonTokens.USDC, polygonTokens.cUSDCv3],
+        marketId: logics.compoundv3.MarketId.USDCe,
+        expected: [polygonTokens['USDC.e'], polygonTokens.cUSDCv3],
       },
       {
         chainId: common.ChainId.arbitrum,
@@ -918,13 +906,13 @@ describe('Test Compound V3 LendingProtocol', function () {
       },
       {
         chainId: common.ChainId.polygon,
-        marketId: logics.compoundv3.MarketId.USDC,
-        asset: polygonTokens.USDC,
+        marketId: logics.compoundv3.MarketId.USDCe,
+        asset: polygonTokens['USDC.e'],
         expected: true,
       },
       {
         chainId: common.ChainId.polygon,
-        marketId: logics.compoundv3.MarketId.USDC,
+        marketId: logics.compoundv3.MarketId.USDCe,
         asset: polygonTokens.WBTC,
         expected: false,
       },

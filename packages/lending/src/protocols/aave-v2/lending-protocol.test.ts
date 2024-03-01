@@ -1,6 +1,7 @@
 import { LendingProtocol } from './lending-protocol';
 import * as common from '@protocolink/common';
 import { expect } from 'chai';
+import { polygonTokens } from 'src/tokens';
 
 describe('Test Aave V2 LendingProtocol', function () {
   context('Test getPortfolio', function () {
@@ -459,13 +460,7 @@ describe('Test Aave V2 LendingProtocol', function () {
               totalSupply: '9730349.206340911556404886',
             },
             {
-              token: {
-                chainId: 137,
-                address: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
-                decimals: 6,
-                symbol: 'USDC',
-                name: 'USD Coin (PoS)',
-              },
+              token: polygonTokens['USDC.e'],
               price: '0.99664591',
               balance: '0',
               apy: '0.10613890696322769932',
@@ -563,13 +558,7 @@ describe('Test Aave V2 LendingProtocol', function () {
               totalBorrow: '628705.023975555466478558',
             },
             {
-              token: {
-                chainId: 137,
-                address: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
-                decimals: 6,
-                symbol: 'USDC',
-                name: 'USD Coin (PoS)',
-              },
+              token: polygonTokens['USDC.e'],
               price: '0.99664591',
               balances: ['0', '0'],
               apys: ['0.30465373581862477007', '0.31644861668842150708'],

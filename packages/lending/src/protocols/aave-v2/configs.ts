@@ -127,7 +127,7 @@ export const configs: Config[] = [
         used: { deposit: true, withdraw: true, borrow: true, repay: true },
       },
       {
-        asset: polygonTokens.USDC,
+        asset: polygonTokens['USDC.e'],
         aToken: polygonTokens.amUSDC,
         used: { deposit: true, withdraw: true, borrow: true, repay: true, flashLoan: true },
       },

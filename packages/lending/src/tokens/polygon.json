@@ -6,11 +6,11 @@
     "symbol": "COMBO",
     "name": "Furucombo"
   },
-  "USDC": {
+  "USDC.e": {
     "chainId": 137,
     "address": "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
     "decimals": 6,
-    "symbol": "USDC",
+    "symbol": "USDC.e",
     "name": "USD Coin (PoS)"
   },
   "DAI": {

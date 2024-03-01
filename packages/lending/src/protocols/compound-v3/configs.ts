@@ -63,10 +63,10 @@ export const configs: Config[] = [
     chainId: common.ChainId.polygon,
     markets: [
       {
-        id: logics.compoundv3.MarketId.USDC,
+        id: logics.compoundv3.MarketId.USDCe,
         cometAddress: polygonTokens.cUSDCv3.address,
         cToken: polygonTokens.cUSDCv3,
-        baseToken: polygonTokens.USDC,
+        baseToken: polygonTokens['USDC.e'],
         baseTokenPriceFeedAddress: '0xfE4A8cc5b5B2366C1B58Bea3858e81843581b2F7',
       },
     ],
