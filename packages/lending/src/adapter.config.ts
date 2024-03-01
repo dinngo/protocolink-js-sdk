@@ -38,7 +38,7 @@ export const configs: Config[] = [
   },
   {
     chainId: common.ChainId.optimism,
-    primaryStablecoin: optimismTokens.USDC,
+    primaryStablecoin: optimismTokens['USDC.e'],
     secondaryStablecoin: optimismTokens.DAI,
     primaryNonstablecoin: optimismTokens.ETH,
   },
