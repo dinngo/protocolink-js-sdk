@@ -17,11 +17,11 @@ describe('Test Adapter for Aave V3', function () {
   context('Test openByCollateral', function () {
     const account = '0x6286b9f080D27f860F6b4bb0226F8EF06CC9F2Fc';
     const blockTag = 19131880;
-    protocol.setBlockTag(blockTag);
 
     let portfolio: Portfolio;
 
     before(async function () {
+      protocol.setBlockTag(blockTag);
       portfolio = await protocol.getPortfolio(account);
     });
 
@@ -110,11 +110,11 @@ describe('Test Adapter for Aave V3', function () {
   context('Test openByDebt', function () {
     const account = '0x6286b9f080D27f860F6b4bb0226F8EF06CC9F2Fc';
     const blockTag = 19131880;
-    protocol.setBlockTag(blockTag);
 
     let portfolio: Portfolio;
 
     before(async function () {
+      protocol.setBlockTag(blockTag);
       portfolio = await protocol.getPortfolio(account);
     });
 
@@ -202,11 +202,12 @@ describe('Test Adapter for Aave V3', function () {
 
   context('Test close', function () {
     const blockTag = 19131880;
-    protocol.setBlockTag(blockTag);
 
     let portfolio: Portfolio;
 
-    before(async function () {});
+    before(async function () {
+      protocol.setBlockTag(blockTag);
+    });
 
     it('no positions', async function () {
       const account = '0x4838B106FCe9647Bdf1E7877BF73cE8B0BAD5f97';
@@ -287,6 +288,7 @@ describe('Test Adapter for Aave V3', function () {
     let portfolio: Portfolio;
 
     before(async function () {
+      protocol.setBlockTag(blockTag);
       portfolio = await protocol.getPortfolio(account);
     });
 

@@ -26,7 +26,7 @@ export const configs: Config[] = [
   },
   {
     chainId: common.ChainId.polygon,
-    primaryStablecoin: polygonTokens.USDC,
+    primaryStablecoin: polygonTokens['USDC.e'],
     secondaryStablecoin: polygonTokens.DAI,
     primaryNonstablecoin: polygonTokens.WETH,
   },
