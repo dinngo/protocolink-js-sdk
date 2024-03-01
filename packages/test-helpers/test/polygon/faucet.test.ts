@@ -22,7 +22,7 @@ describe('polygon: Test faucet claim', function () {
     { tokenOrAddress: polygonTokens.MATIC, amount: '1' },
     { tokenOrAddress: polygonTokens.WMATIC, amount: '1' },
     { tokenOrAddress: polygonTokens.WETH, amount: '1' },
-    { tokenOrAddress: polygonTokens.USDC, amount: '1' },
+    { tokenOrAddress: polygonTokens['USDC.e'], amount: '1' },
     { tokenOrAddress: polygonTokens.WBTC, amount: '1' },
   ];
 
