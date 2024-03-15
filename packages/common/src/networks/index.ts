@@ -64,7 +64,6 @@ export function toChainId(networkId: string) {
 
 export enum ChainId {
   mainnet = 1,
-  goerli = 5,
   optimism = 10,
   gnosis = 100,
   polygon = 137,
@@ -77,7 +76,6 @@ export enum ChainId {
 
 export enum NetworkId {
   mainnet = 'mainnet',
-  goerli = 'goerli',
   optimism = 'optimism',
   gnosis = 'gnosis',
   polygon = 'polygon',
