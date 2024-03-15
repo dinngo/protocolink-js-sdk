@@ -23,29 +23,6 @@
     "multicall3Address": "0xcA11bde05977b3631167028862bE2a173976CA11"
   },
   {
-    "id": "goerli",
-    "chainId": 5,
-    "name": "Goerli",
-    "explorerUrl": "https://goerli.etherscan.io/",
-    "rpcUrl": "https://rpc.ankr.com/eth_goerli",
-    "nativeToken": {
-      "chainId": 5,
-      "address": "0x0000000000000000000000000000000000000000",
-      "decimals": 18,
-      "symbol": "ETH",
-      "name": "Ethereum"
-    },
-    "wrappedNativeToken": {
-      "chainId": 5,
-      "address": "0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6",
-      "decimals": 18,
-      "symbol": "WETH",
-      "name": "Wrapped Ether"
-    },
-    "multicall2Address": "0x5BA1e12693Dc8F9c48aAD8770482f4739bEeD696",
-    "multicall3Address": "0xcA11bde05977b3631167028862bE2a173976CA11"
-  },
-  {
     "id": "optimism",
     "chainId": 10,
     "name": "Optimism",

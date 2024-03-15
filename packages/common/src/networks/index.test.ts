@@ -14,7 +14,6 @@ import { expect } from 'chai';
 describe('Test isSupportedChainId', function () {
   const testCases = [
     { chainId: ChainId.mainnet, expected: true },
-    { chainId: ChainId.goerli, expected: true },
     { chainId: ChainId.optimism, expected: true },
     { chainId: ChainId.gnosis, expected: true },
     { chainId: ChainId.polygon, expected: true },
@@ -36,7 +35,6 @@ describe('Test isSupportedChainId', function () {
 describe('Test isSupportedNetworkId', function () {
   const testCases = [
     { networkId: NetworkId.mainnet, expected: true },
-    { networkId: NetworkId.goerli, expected: true },
     { networkId: NetworkId.optimism, expected: true },
     { networkId: NetworkId.gnosis, expected: true },
     { networkId: NetworkId.polygon, expected: true },
@@ -74,24 +72,6 @@ describe('Test newExplorerUrl', function () {
       type: ExplorerType.token,
       data: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
       expected: 'https://etherscan.io/token/0xdAC17F958D2ee523a2206206994597C13D831ec7',
-    },
-    {
-      chainId: ChainId.goerli,
-      type: ExplorerType.tx,
-      data: '0x15dc34f2d60c4975d99bad29d5824008f64b753397df95516a3c1c8c49d82921',
-      expected: 'https://goerli.etherscan.io/tx/0x15dc34f2d60c4975d99bad29d5824008f64b753397df95516a3c1c8c49d82921',
-    },
-    {
-      chainId: ChainId.goerli,
-      type: ExplorerType.address,
-      data: '0xd3c92c60de4f3131125621a39c90a0e73685f3f4',
-      expected: 'https://goerli.etherscan.io/address/0xd3c92c60de4f3131125621a39c90a0e73685f3f4',
-    },
-    {
-      chainId: ChainId.goerli,
-      type: ExplorerType.token,
-      data: '0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6',
-      expected: 'https://goerli.etherscan.io/token/0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6',
     },
     {
       chainId: ChainId.optimism,
