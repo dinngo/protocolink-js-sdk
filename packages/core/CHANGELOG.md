@@ -1,5 +1,13 @@
 # @protocolink/core
 
+## 0.4.7
+
+### Patch Changes
+
+- 593dd7d: remove Goerli
+- Updated dependencies [a391189]
+  - @protocolink/common@0.3.8
+
 ## 0.4.6
 
 ### Patch Changes
