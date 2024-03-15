@@ -1,5 +1,11 @@
 # @protocolink/common
 
+## 0.3.8
+
+### Patch Changes
+
+- a391189: remove Goerli
+
 ## 0.3.7
 
 ### Patch Changes
