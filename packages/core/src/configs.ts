@@ -6,9 +6,6 @@ export const contractAddressMap: Record<number, Record<ContractNames, string>> =
   [common.ChainId.mainnet]: {
     Router: '0xDec80E988F4baF43be69c13711453013c212feA8',
   },
-  [common.ChainId.goerli]: {
-    Router: '0xDec80E988F4baF43be69c13711453013c212feA8',
-  },
   [common.ChainId.optimism]: {
     Router: '0xDec80E988F4baF43be69c13711453013c212feA8',
   },
