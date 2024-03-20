@@ -6,6 +6,7 @@ on:
 
 env:
   MAINNET_RPC_URL: ${{ secrets.MAINNET_RPC_URL }}
+  ZEROEX_API_KEY: ${{ secrets.ZEROEX_API_KEY }}
 
 jobs:
   run-unit-test:
