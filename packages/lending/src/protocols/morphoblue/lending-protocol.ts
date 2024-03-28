@@ -135,12 +135,20 @@ export class LendingProtocol extends Protocol {
 
     const maxLtv = common.toBigUnit(lltv, 18);
 
+    const lstTokenAPYMap = await this.getLstTokenAPYMap(this.chainId);
+
+    const supplyApy = '0';
+    const supplyLstApy = lstTokenAPYMap[collateralToken.address.toLowerCase()] || '0';
+    const supplyGrossApy = supplyLstApy === '0' ? supplyApy : BigNumberJS(supplyApy).plus(supplyLstApy).toString();
+
     const supplies: SupplyObject[] = [
       {
         token: collateralToken,
         price: collateralTokenPrice,
         balance: supplyBalance,
-        apy: '0',
+        apy: supplyApy,
+        lstApy: supplyLstApy,
+        grossApy: supplyGrossApy,
         usageAsCollateralEnabled: true,
         ltv: maxLtv,
         liquidationThreshold: maxLtv,
@@ -148,12 +156,17 @@ export class LendingProtocol extends Protocol {
       },
     ];
 
+    const borrowLstApy = lstTokenAPYMap[loanToken.address.toLowerCase()] || '0';
+    const borrowGrossApy = borrowLstApy === '0' ? borrowApy : BigNumberJS(borrowApy).minus(borrowLstApy).toString();
+
     const borrows: BorrowObject[] = [
       {
         token: loanToken,
         price: loanTokenPrice,
         balances: [borrowBalance],
         apys: [borrowApy],
+        lstApy: borrowLstApy,
+        grossApys: [borrowGrossApy],
         totalBorrow,
       },
     ];

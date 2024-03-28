@@ -9,6 +9,7 @@ import {
   ProtocolDataProvider__factory,
 } from './contracts';
 import { BigNumber, providers } from 'ethers';
+import BigNumberJS from 'bignumber.js';
 import {
   BorrowObject,
   BorrowParams,
@@ -283,6 +284,7 @@ export class LendingProtocol extends Protocol {
     const reserveDataMap = await this.getReserveDataMap();
     const assetPriceMap = await this.getAssetPriceMap();
     const userBalancesMap = await this.getUserBalancesMap(account);
+    const lstTokenAPYMap = await this.getLstTokenAPYMap(this.chainId);
 
     const supplies: SupplyObject[] = [];
     for (const token of tokensForDepositMap[this.chainId]) {
@@ -297,11 +299,17 @@ export class LendingProtocol extends Protocol {
         usageAsCollateralEnabled = usageAsCollateralEnabled && userBalance.usageAsCollateralEnabled;
       }
 
+      const lstApy = lstTokenAPYMap[token.address.toLowerCase()] || '0';
+      const grossApy =
+        lstApy === '0' ? reserveData.supplyAPY : BigNumberJS(reserveData.supplyAPY).plus(lstApy).toString();
+
       supplies.push({
         token,
         price: assetPrice,
         balance: userBalance.supplyBalance,
         apy: reserveData.supplyAPY,
+        lstApy,
+        grossApy,
         usageAsCollateralEnabled,
         ltv: reserveData.ltv,
         liquidationThreshold: reserveData.liquidationThreshold,
@@ -317,11 +325,19 @@ export class LendingProtocol extends Protocol {
       const assetPrice = assetPriceMap[token.address];
       const { stableBorrowBalance, variableBorrowBalance } = userBalancesMap[token.address];
 
+      const lstApy = lstTokenAPYMap[token.address.toLowerCase()] || '0';
+      const stableBorrowGrossAPY =
+        lstApy === '0' ? stableBorrowAPY : BigNumberJS(stableBorrowAPY).minus(lstApy).toString();
+      const variableBorrowGrossAPY =
+        lstApy === '0' ? variableBorrowAPY : BigNumberJS(variableBorrowAPY).minus(lstApy).toString();
+
       borrows.push({
         token,
         price: assetPrice,
         balances: [variableBorrowBalance, stableBorrowBalance],
         apys: [variableBorrowAPY, stableBorrowAPY],
+        lstApy: lstApy,
+        grossApys: [variableBorrowGrossAPY, stableBorrowGrossAPY],
         totalBorrow,
       });
     }

@@ -275,6 +275,7 @@ export class LendingProtocol extends Protocol {
     const reserveDataMap = await this.getReserveDataMap();
     const assetPriceMap = await this.getAssetPriceMap();
     const userBalancesMap = await this.getUserBalancesMap(account);
+    const lstTokenAPYMap = await this.getLstTokenAPYMap(this.chainId);
 
     const supplies: SupplyObject[] = [];
     for (const token of tokensForDepositMap[this.chainId]) {
@@ -295,11 +296,17 @@ export class LendingProtocol extends Protocol {
         ? userBalances.usageAsCollateralEnabled
         : reserveData.usageAsCollateralEnabled;
 
+      const lstApy = lstTokenAPYMap[token.address.toLowerCase()] || '0';
+
+      const grossApy = lstApy === '0' ? apy : BigNumberJS(apy).plus(lstApy).toString();
+
       supplies.push({
         token,
         price,
         balance,
         apy,
+        lstApy,
+        grossApy,
         usageAsCollateralEnabled,
         ltv,
         liquidationThreshold,
@@ -316,11 +323,19 @@ export class LendingProtocol extends Protocol {
       const price = assetPriceMap[token.address];
       const { stableBorrowBalance, variableBorrowBalance } = userBalancesMap[token.address];
 
+      const lstApy = lstTokenAPYMap[token.address.toLowerCase()] || '0';
+      const stableBorrowGrossAPY =
+        lstApy === '0' ? stableBorrowAPY : BigNumberJS(stableBorrowAPY).minus(lstApy).toString();
+      const variableBorrowGrossAPY =
+        lstApy === '0' ? variableBorrowAPY : BigNumberJS(variableBorrowAPY).minus(lstApy).toString();
+
       borrows.push({
         token,
         price,
         balances: [variableBorrowBalance, stableBorrowBalance],
         apys: [variableBorrowAPY, stableBorrowAPY],
+        lstApy: lstApy,
+        grossApys: [variableBorrowGrossAPY, stableBorrowGrossAPY],
         borrowCap,
         totalBorrow,
       });

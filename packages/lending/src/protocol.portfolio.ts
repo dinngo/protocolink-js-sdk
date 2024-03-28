@@ -16,6 +16,8 @@ export class Supply implements AssetInfo {
   price: string;
   balance: string;
   apy: string;
+  lstApy: string;
+  grossApy: string;
   usageAsCollateralEnabled: boolean;
   ltv: string;
   liquidationThreshold: string;
@@ -28,6 +30,8 @@ export class Supply implements AssetInfo {
     price,
     balance,
     apy,
+    lstApy,
+    grossApy,
     usageAsCollateralEnabled,
     ltv,
     liquidationThreshold,
@@ -39,6 +43,8 @@ export class Supply implements AssetInfo {
     this.price = price;
     this.balance = balance;
     this.apy = apy;
+    this.lstApy = lstApy;
+    this.grossApy = grossApy;
     this.usageAsCollateralEnabled = usageAsCollateralEnabled;
     this.ltv = ltv;
     this.liquidationThreshold = liquidationThreshold;
@@ -65,6 +71,14 @@ export class Supply implements AssetInfo {
 
   get formattedAPY() {
     return formatPercentage(this.apy);
+  }
+
+  get formattedLstAPY() {
+    return formatPercentage(this.lstApy);
+  }
+
+  get formattedGrossAPY() {
+    return formatPercentage(this.grossApy);
   }
 
   add(amount: string) {
@@ -97,15 +111,29 @@ export class Borrow implements AssetInfo {
   price: string;
   balances: string[];
   apys: string[];
+  lstApy: string;
+  grossApys: string[];
   borrowMin: string;
   borrowCap: string;
   totalBorrow: string;
 
-  constructor({ token, price, balances, apys, borrowMin = '0', borrowCap = '0', totalBorrow }: BorrowObject) {
+  constructor({
+    token,
+    price,
+    balances,
+    apys,
+    lstApy,
+    grossApys,
+    borrowMin = '0',
+    borrowCap = '0',
+    totalBorrow,
+  }: BorrowObject) {
     this.token = token;
     this.price = price;
     this.balances = [...balances];
     this.apys = [...apys];
+    this.lstApy = lstApy;
+    this.grossApys = [...grossApys];
     this.borrowMin = borrowMin;
     this.borrowCap = borrowCap;
     this.totalBorrow = totalBorrow;
@@ -133,6 +161,18 @@ export class Borrow implements AssetInfo {
 
   get formattedAPY() {
     return formatPercentage(this.apy);
+  }
+
+  get formattedLstAPY() {
+    return formatPercentage(this.lstApy);
+  }
+
+  get grossApy() {
+    return this.grossApys[0];
+  }
+
+  get formattedGrossAPY() {
+    return formatPercentage(this.grossApy);
   }
 
   add(amount: string) {
@@ -359,11 +399,11 @@ export class Portfolio {
     }
     if (Number(amount) === 0) return;
 
-    const { price, apy, usageAsCollateralEnabled, ltv, liquidationThreshold } = supply;
+    const { price, grossApy, usageAsCollateralEnabled, ltv, liquidationThreshold } = supply;
 
     const supplyUSD = new BigNumberJS(amount).times(price);
     this.totalSupplyUSD = this.totalSupplyUSD.plus(supplyUSD);
-    this.positiveProportion = this.positiveProportion.plus(supplyUSD.times(apy));
+    this.positiveProportion = this.positiveProportion.plus(supplyUSD.times(grossApy));
     if (usageAsCollateralEnabled) {
       this.totalCollateralUSD = this.totalCollateralUSD.plus(supplyUSD);
       this.totalBorrowCapacityUSD = this.totalBorrowCapacityUSD.plus(supplyUSD.times(ltv));
@@ -379,11 +419,11 @@ export class Portfolio {
     amount = supply.getMaxWithdrawAmount(amount);
     supply.sub(amount);
 
-    const { price, apy, usageAsCollateralEnabled, ltv, liquidationThreshold } = supply;
+    const { price, grossApy, usageAsCollateralEnabled, ltv, liquidationThreshold } = supply;
 
     const withdrawUSD = new BigNumberJS(amount).times(price);
     this.totalSupplyUSD = this.totalSupplyUSD.minus(withdrawUSD);
-    this.positiveProportion = this.positiveProportion.minus(withdrawUSD.times(apy));
+    this.positiveProportion = this.positiveProportion.minus(withdrawUSD.times(grossApy));
     if (usageAsCollateralEnabled) {
       this.totalCollateralUSD = this.totalCollateralUSD.minus(withdrawUSD);
       this.totalBorrowCapacityUSD = this.totalBorrowCapacityUSD.minus(withdrawUSD.times(ltv));

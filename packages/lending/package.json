@@ -24,10 +24,10 @@
   },
   "dependencies": {
     "@aave/math-utils": "^1.21.0",
-    "@protocolink/api": "^1.0.12",
-    "@protocolink/common": "^0.3.6",
-    "@protocolink/core": "^0.4.6",
-    "@protocolink/logics": "^1.0.11",
+    "@protocolink/api": "^1.0.14",
+    "@protocolink/common": "^0.3.8",
+    "@protocolink/core": "^0.4.7",
+    "@protocolink/logics": "^1.0.13",
     "bignumber.js": "^9.1.1",
     "decimal.js-light": "^2.5.1"
   },

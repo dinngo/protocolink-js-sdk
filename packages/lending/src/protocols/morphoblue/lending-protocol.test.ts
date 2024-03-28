@@ -1,6 +1,7 @@
 import { LendingProtocol } from './lending-protocol';
 import * as common from '@protocolink/common';
 import { expect } from 'chai';
+import { removePortfolioDynamicFields } from 'src/protocol.utils';
 
 describe('Test Morpho Blue LendingProtocol', function () {
   context('Test getPortfolio', function () {
@@ -64,7 +65,13 @@ describe('Test Morpho Blue LendingProtocol', function () {
       it(`${common.toNetworkId(chainId)} ${marketId} market`, async function () {
         const protocol = new LendingProtocol(chainId);
         protocol.setBlockTag(blockTag);
-        const portfolio = await protocol.getPortfolio(account, marketId);
+
+        const _portfolio = await protocol.getPortfolio(account, marketId);
+        const portfolio = JSON.parse(JSON.stringify(_portfolio));
+
+        removePortfolioDynamicFields(expected);
+        removePortfolioDynamicFields(portfolio);
+
         expect(JSON.stringify(portfolio)).to.eq(JSON.stringify(expected));
       }).timeout(60000);
     });

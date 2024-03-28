@@ -9,6 +9,7 @@ import {
   supportedChainIds,
 } from './configs';
 import { BigNumber } from 'ethers';
+import BigNumberJS from 'bignumber.js';
 import { BorrowObject, Market, RepayParams, SupplyObject, SupplyParams, WithdrawParams } from 'src/protocol.type';
 import { CometInterface } from './contracts/Comet';
 import { Comet__factory } from './contracts';
@@ -298,6 +299,10 @@ export class LendingProtocol extends Protocol {
     const { supplyAPR, borrowAPR } = await this.getAPYs(marketId);
     const { baseTokenPrice, assetPriceMap } = await this.getPriceMap(marketId);
     const { supplyBalance, borrowBalance, collateralBalanceMap } = await this.getUserBalances(marketId, account);
+    const lstTokenAPYMap = await this.getLstTokenAPYMap(this.chainId);
+
+    const lstApy = lstTokenAPYMap[baseToken.address.toLowerCase()] || '0';
+    const supplyGrossApy = lstApy === '0' ? supplyAPR : BigNumberJS(supplyAPR).plus(lstApy).toString();
 
     const supplies: SupplyObject[] = [
       {
@@ -305,6 +310,8 @@ export class LendingProtocol extends Protocol {
         price: baseTokenPrice,
         balance: supplyBalance,
         apy: supplyAPR,
+        lstApy,
+        grossApy: supplyGrossApy,
         usageAsCollateralEnabled: false,
         ltv: '0',
         liquidationThreshold: '0',
@@ -313,11 +320,17 @@ export class LendingProtocol extends Protocol {
       },
     ];
     for (const { token, borrowCollateralFactor, liquidateCollateralFactor, supplyCap, totalSupply } of assets) {
+      const apy = '0';
+      const lstApy = lstTokenAPYMap[token.address.toLowerCase()] || '0';
+      const grossApy = lstApy === '0' ? apy : BigNumberJS(apy).plus(lstApy).toString();
+
       supplies.push({
         token: token.unwrapped,
         price: assetPriceMap[token.address],
         balance: collateralBalanceMap[token.address],
-        apy: '0',
+        apy,
+        lstApy,
+        grossApy,
         usageAsCollateralEnabled: true,
         ltv: borrowCollateralFactor,
         liquidationThreshold: liquidateCollateralFactor,
@@ -326,12 +339,15 @@ export class LendingProtocol extends Protocol {
       });
     }
 
+    const borrowGrossApy = lstApy === '0' ? borrowAPR : BigNumberJS(borrowAPR).minus(lstApy).toString();
     const borrows: BorrowObject[] = [
       {
         token: baseToken.unwrapped,
         price: baseTokenPrice,
         balances: [borrowBalance],
         apys: [borrowAPR],
+        lstApy,
+        grossApys: [borrowGrossApy],
         borrowMin: baseBorrowMin,
         totalBorrow,
       },
