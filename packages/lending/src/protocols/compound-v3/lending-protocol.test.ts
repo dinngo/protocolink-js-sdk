@@ -3,6 +3,7 @@ import { arbitrumTokens, mainnetTokens, polygonTokens } from './tokens';
 import * as common from '@protocolink/common';
 import { expect } from 'chai';
 import * as logics from '@protocolink/logics';
+import { removePortfolioDynamicFields } from 'src/protocol.utils';
 
 describe('Test Compound V3 LendingProtocol', function () {
   context('Test getPortfolio', function () {
@@ -750,7 +751,12 @@ describe('Test Compound V3 LendingProtocol', function () {
       it(`${common.toNetworkId(chainId)} ${marketId} market`, async function () {
         const protocol = new LendingProtocol(chainId);
         protocol.setBlockTag(blockTag);
-        const portfolio = await protocol.getPortfolio(account, marketId);
+        const _portfolio = await protocol.getPortfolio(account, marketId);
+        const portfolio = JSON.parse(JSON.stringify(_portfolio));
+
+        removePortfolioDynamicFields(expected);
+        removePortfolioDynamicFields(portfolio);
+
         expect(JSON.stringify(portfolio)).to.eq(JSON.stringify(expected));
       }).timeout(60000);
     });
@@ -945,6 +951,7 @@ describe('Test Compound V3 LendingProtocol', function () {
     testCases.forEach(({ chainId, marketId, asset, expected }) => {
       it(`${common.toNetworkId(chainId)} ${marketId} market - ${asset.symbol}`, async function () {
         const protocol = new LendingProtocol(chainId);
+
         expect(protocol.isAssetTokenized(marketId, asset)).to.eq(expected);
       });
     });

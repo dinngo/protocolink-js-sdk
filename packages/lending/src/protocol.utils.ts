@@ -104,3 +104,24 @@ export function toSignificantDigits(amount: string, decimals: number, mode?: Rou
     )
     .toFixed();
 }
+
+// TODO: change to dinngo aws bucket
+export const lstTokenAPYsURL = 'https://demo-user-thumbnails-bucket-bob.s3.amazonaws.com/lstTokenAPYs.json';
+
+export const removePortfolioDynamicFields = (portfolio: any) => {
+  delete portfolio.netAPY;
+
+  if (Array.isArray(portfolio.supplies)) {
+    portfolio.supplies.forEach((supply: any) => {
+      delete supply.lstApy;
+      delete supply.grossApy;
+    });
+  }
+
+  if (Array.isArray(portfolio.borrows)) {
+    portfolio.borrows.forEach((borrow: any) => {
+      delete borrow.lstApy;
+      delete borrow.grossApys;
+    });
+  }
+};

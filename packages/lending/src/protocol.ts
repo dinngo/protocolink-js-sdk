@@ -11,11 +11,14 @@ import {
 } from './protocol.type';
 import { Portfolio } from './protocol.portfolio';
 import * as api from '@protocolink/api';
+import axios from 'axios';
 import * as common from '@protocolink/common';
+import { lstTokenAPYsURL } from './protocol.utils';
 import { providers } from 'ethers';
 
 export abstract class Protocol extends common.Web3Toolkit {
   static readonly markets: Market[];
+  static lstAPYs: Record<string, Record<string, string>>;
 
   static isSupported(chainId: number) {
     return this.markets.some((market) => market.chainId === chainId);
@@ -34,6 +37,20 @@ export abstract class Protocol extends common.Web3Toolkit {
   abstract getPortfolio(account: string, marketId: string): Promise<Portfolio>;
 
   abstract getPortfolios(account: string): Promise<Portfolio[]>;
+
+  async getLstTokenAPYMap(chainId: number): Promise<Record<string, string>> {
+    if (Protocol.lstAPYs) return Protocol.lstAPYs[chainId.toString()] || {};
+
+    try {
+      const { data } = await axios.get(lstTokenAPYsURL);
+
+      Protocol.lstAPYs = data;
+    } catch {
+      Protocol.lstAPYs = {};
+    }
+
+    return Protocol.lstAPYs?.[chainId.toString()] || {};
+  }
 
   canCollateralSwap(_marketId: string, _assetToken: common.Token) {
     return true;

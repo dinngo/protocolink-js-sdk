@@ -500,7 +500,7 @@ export class Adapter extends common.Web3Toolkit {
         if (flashLoanRepayLogic) output.logics.push(flashLoanRepayLogic);
 
         if (withdrawalToken.isNative && Number(withdrawal.amount) > 0) {
-          const wrapNativeLogic = await apisdk.protocols.utility.newWrappedNativeTokenLogic({
+          const wrapNativeLogic = apisdk.protocols.utility.newWrappedNativeTokenLogic({
             input: { token: zapWithdraw.token, amount: withdrawal.amount },
             output: withdrawal,
           });

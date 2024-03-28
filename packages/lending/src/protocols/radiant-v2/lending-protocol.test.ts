@@ -2,6 +2,7 @@ import { LendingProtocol } from './lending-protocol';
 import { arbitrumTokens } from 'src/tokens';
 import * as common from '@protocolink/common';
 import { expect } from 'chai';
+import { removePortfolioDynamicFields } from 'src/protocol.utils';
 
 describe('Test Radiant V2 LendingProtocol', function () {
   context('Test getPortfolio', function () {
@@ -416,7 +417,13 @@ describe('Test Radiant V2 LendingProtocol', function () {
       it(`${common.toNetworkId(chainId)} market`, async function () {
         const protocol = new LendingProtocol(chainId);
         protocol.setBlockTag(blockTag);
-        const portfolio = await protocol.getPortfolio(account);
+
+        const _portfolio = await protocol.getPortfolio(account);
+        const portfolio = JSON.parse(JSON.stringify(_portfolio));
+
+        removePortfolioDynamicFields(expected);
+        removePortfolioDynamicFields(portfolio);
+
         expect(JSON.stringify(portfolio)).to.eq(JSON.stringify(expected));
       });
     });
