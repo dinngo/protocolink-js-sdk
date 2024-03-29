@@ -37,6 +37,7 @@ import { Portfolio } from 'src/protocol.portfolio';
 import { Protocol } from 'src/protocol';
 import { RAY_DECIMALS, SECONDS_PER_YEAR, calculateCompoundedRate, normalize } from '@aave/math-utils';
 import * as apisdk from '@protocolink/api';
+import { calcBorrowGrossApy, calcSupplyGrossApy, getLstApyFromMap } from 'src/protocol.utils';
 import * as common from '@protocolink/common';
 import * as logics from '@protocolink/logics';
 
@@ -296,8 +297,8 @@ export class LendingProtocol extends Protocol {
         ? userBalances.usageAsCollateralEnabled
         : reserveData.usageAsCollateralEnabled;
 
-      const lstApy = lstTokenAPYMap[token.address.toLowerCase()] || '0';
-      const grossApy = lstApy === '0' ? apy : BigNumberJS(apy).plus(lstApy).toString();
+      const lstApy = getLstApyFromMap(token.address, lstTokenAPYMap);
+      const grossApy = calcSupplyGrossApy(apy, lstApy);
 
       supplies.push({
         token,
@@ -322,11 +323,9 @@ export class LendingProtocol extends Protocol {
       const price = assetPriceMap[token.address];
       const { stableBorrowBalance, variableBorrowBalance } = userBalancesMap[token.address];
 
-      const lstApy = lstTokenAPYMap[token.address.toLowerCase()] || '0';
-      const stableBorrowGrossAPY =
-        lstApy === '0' ? stableBorrowAPY : BigNumberJS(stableBorrowAPY).minus(lstApy).toString();
-      const variableBorrowGrossAPY =
-        lstApy === '0' ? variableBorrowAPY : BigNumberJS(variableBorrowAPY).minus(lstApy).toString();
+      const lstApy = getLstApyFromMap(token.address, lstTokenAPYMap);
+      const stableBorrowGrossAPY = calcBorrowGrossApy(stableBorrowAPY, lstApy);
+      const variableBorrowGrossAPY = calcBorrowGrossApy(variableBorrowAPY, lstApy);
 
       borrows.push({
         token,

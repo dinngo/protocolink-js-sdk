@@ -17,6 +17,7 @@ import { Portfolio } from 'src/protocol.portfolio';
 import { Protocol } from 'src/protocol';
 import * as apisdk from '@protocolink/api';
 import { calcAPR } from './utils';
+import { calcBorrowGrossApy, calcSupplyGrossApy, getLstApyFromMap } from 'src/protocol.utils';
 import * as common from '@protocolink/common';
 
 export class LendingProtocol extends Protocol {
@@ -301,7 +302,7 @@ export class LendingProtocol extends Protocol {
     const { supplyBalance, borrowBalance, collateralBalanceMap } = await this.getUserBalances(marketId, account);
     const lstTokenAPYMap = await this.getLstTokenAPYMap(this.chainId);
 
-    const lstApy = lstTokenAPYMap[baseToken.address.toLowerCase()] || '0';
+    const lstApy = getLstApyFromMap(baseToken.address, lstTokenAPYMap);
     const supplyGrossApy = lstApy === '0' ? supplyAPR : BigNumberJS(supplyAPR).plus(lstApy).toString();
 
     const supplies: SupplyObject[] = [
@@ -321,8 +322,8 @@ export class LendingProtocol extends Protocol {
     ];
     for (const { token, borrowCollateralFactor, liquidateCollateralFactor, supplyCap, totalSupply } of assets) {
       const apy = '0';
-      const lstApy = lstTokenAPYMap[token.address.toLowerCase()] || '0';
-      const grossApy = lstApy === '0' ? apy : BigNumberJS(apy).plus(lstApy).toString();
+      const lstApy = getLstApyFromMap(token.address, lstTokenAPYMap);
+      const grossApy = calcSupplyGrossApy(apy, lstApy);
 
       supplies.push({
         token: token.unwrapped,
@@ -339,7 +340,7 @@ export class LendingProtocol extends Protocol {
       });
     }
 
-    const borrowGrossApy = lstApy === '0' ? borrowAPR : BigNumberJS(borrowAPR).minus(lstApy).toString();
+    const borrowGrossApy = calcBorrowGrossApy(borrowAPR, lstApy);
     const borrows: BorrowObject[] = [
       {
         token: baseToken.unwrapped,

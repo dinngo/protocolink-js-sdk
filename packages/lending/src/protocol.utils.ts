@@ -125,3 +125,27 @@ export const removePortfolioDynamicFields = (portfolio: any) => {
     });
   }
 };
+
+export const getLstApyFromMap = (address: string, lstTokenAPYMap: Record<string, string>) => {
+  return lstTokenAPYMap[address.toLowerCase()] || '0';
+};
+
+export const calcSupplyGrossApy = (apy: string, lstApy: string) => {
+  if (lstApy === '0') {
+    return apy;
+  } else if (apy === '0') {
+    return lstApy;
+  } else {
+    return BigNumberJS(apy).plus(lstApy).toString();
+  }
+};
+
+export const calcBorrowGrossApy = (apy: string, lstApy: string) => {
+  if (lstApy === '0') {
+    return apy;
+  } else if (apy === '0') {
+    return lstApy;
+  } else {
+    return BigNumberJS(apy).minus(lstApy).toString();
+  }
+};

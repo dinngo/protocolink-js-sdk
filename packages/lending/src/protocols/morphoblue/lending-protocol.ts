@@ -11,6 +11,7 @@ import { PriceFeedInterface } from './contracts/PriceFeed';
 import { Protocol } from 'src/protocol';
 import { SECONDS_PER_YEAR } from '@aave/math-utils';
 import * as apisdk from '@protocolink/api';
+import { calcBorrowGrossApy, calcSupplyGrossApy, getLstApyFromMap } from 'src/protocol.utils';
 import * as common from '@protocolink/common';
 
 export class LendingProtocol extends Protocol {
@@ -138,8 +139,8 @@ export class LendingProtocol extends Protocol {
     const lstTokenAPYMap = await this.getLstTokenAPYMap(this.chainId);
 
     const supplyApy = '0';
-    const supplyLstApy = lstTokenAPYMap[collateralToken.address.toLowerCase()] || '0';
-    const supplyGrossApy = supplyLstApy === '0' ? supplyApy : BigNumberJS(supplyApy).plus(supplyLstApy).toString();
+    const supplyLstApy = getLstApyFromMap(collateralToken.address, lstTokenAPYMap);
+    const supplyGrossApy = calcSupplyGrossApy(supplyApy, supplyLstApy);
 
     const supplies: SupplyObject[] = [
       {
@@ -156,8 +157,8 @@ export class LendingProtocol extends Protocol {
       },
     ];
 
-    const borrowLstApy = lstTokenAPYMap[loanToken.address.toLowerCase()] || '0';
-    const borrowGrossApy = borrowLstApy === '0' ? borrowApy : BigNumberJS(borrowApy).minus(borrowLstApy).toString();
+    const borrowLstApy = getLstApyFromMap(loanToken.address, lstTokenAPYMap);
+    const borrowGrossApy = calcBorrowGrossApy(borrowApy, borrowLstApy);
 
     const borrows: BorrowObject[] = [
       {
