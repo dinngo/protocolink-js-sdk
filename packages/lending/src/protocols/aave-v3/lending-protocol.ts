@@ -118,8 +118,7 @@ export class LendingProtocol extends Protocol {
       liquidationThreshold: string;
       usageAsCollateralEnabled: boolean;
       supplyAPY: string;
-      stableBorrowAPY: string;
-      variableBorrowAPY: string;
+      borrowAPY: string;
       liquidityIndex: BigNumberJS;
       debtCeiling: BigNumberJS;
       supplyCap: string;
@@ -162,15 +161,8 @@ export class LendingProtocol extends Protocol {
           returnData[j]
         );
         j++;
-        const {
-          liquidityRate,
-          variableBorrowRate,
-          stableBorrowRate,
-          liquidityIndex,
-          totalAToken,
-          totalVariableDebt,
-          totalStableDebt,
-        } = this.poolDataProviderIface.decodeFunctionResult('getReserveData', returnData[j]);
+        const { liquidityRate, variableBorrowRate, liquidityIndex, totalAToken, totalVariableDebt } =
+          this.poolDataProviderIface.decodeFunctionResult('getReserveData', returnData[j]);
         j++;
         const { supplyCap, borrowCap } = this.poolDataProviderIface.decodeFunctionResult(
           'getReserveCaps',
@@ -188,11 +180,7 @@ export class LendingProtocol extends Protocol {
             calculateCompoundedRate({ rate: liquidityRate.toString(), duration: SECONDS_PER_YEAR }),
             RAY_DECIMALS
           ),
-          stableBorrowAPY: normalize(
-            calculateCompoundedRate({ rate: stableBorrowRate.toString(), duration: SECONDS_PER_YEAR }),
-            RAY_DECIMALS
-          ),
-          variableBorrowAPY: normalize(
+          borrowAPY: normalize(
             calculateCompoundedRate({ rate: variableBorrowRate.toString(), duration: SECONDS_PER_YEAR }),
             RAY_DECIMALS
           ),
@@ -200,7 +188,7 @@ export class LendingProtocol extends Protocol {
           supplyCap: supplyCap.toString(),
           totalSupply: common.toBigUnit(totalAToken, asset.decimals),
           borrowCap: borrowCap.toString(),
-          totalBorrow: common.toBigUnit(totalVariableDebt.add(totalStableDebt), asset.decimals),
+          totalBorrow: common.toBigUnit(totalVariableDebt, asset.decimals),
           debtCeiling,
         };
       }
@@ -241,8 +229,7 @@ export class LendingProtocol extends Protocol {
       string,
       {
         supplyBalance: string;
-        stableBorrowBalance: string;
-        variableBorrowBalance: string;
+        borrowBalance: string;
         usageAsCollateralEnabled: boolean;
       }
     > = {};
@@ -255,14 +242,15 @@ export class LendingProtocol extends Protocol {
       const aTokenBalance = scaledBalance.mul(liquidityIndex).div(BigNumber.from(10).pow(RAY_DECIMALS));
       j++;
 
-      const { currentStableDebt, currentVariableDebt, usageAsCollateralEnabled } =
-        this.poolDataProviderIface.decodeFunctionResult('getUserReserveData', returnData[j]);
+      const { currentVariableDebt, usageAsCollateralEnabled } = this.poolDataProviderIface.decodeFunctionResult(
+        'getUserReserveData',
+        returnData[j]
+      );
       j++;
 
       userBalancesMap[asset.address] = {
         supplyBalance: common.toBigUnit(aTokenBalance, asset.decimals),
-        stableBorrowBalance: common.toBigUnit(currentStableDebt, asset.decimals),
-        variableBorrowBalance: common.toBigUnit(currentVariableDebt, asset.decimals),
+        borrowBalance: common.toBigUnit(currentVariableDebt, asset.decimals),
         usageAsCollateralEnabled,
       };
     }
@@ -319,21 +307,20 @@ export class LendingProtocol extends Protocol {
     for (const token of tokensForBorrowMap[this.chainId]) {
       if (hasNativeToken(this.chainId) && token.isWrapped) continue;
 
-      const { stableBorrowAPY, variableBorrowAPY, borrowCap, totalBorrow } = reserveDataMap[token.address];
+      const { borrowAPY: apy, borrowCap, totalBorrow } = reserveDataMap[token.address];
       const price = assetPriceMap[token.address];
-      const { stableBorrowBalance, variableBorrowBalance } = userBalancesMap[token.address];
+      const { borrowBalance: balance } = userBalancesMap[token.address];
 
       const lstApy = getLstApyFromMap(token.address, lstTokenAPYMap);
-      const stableBorrowGrossAPY = calcBorrowGrossApy(stableBorrowAPY, lstApy);
-      const variableBorrowGrossAPY = calcBorrowGrossApy(variableBorrowAPY, lstApy);
+      const grossApy = calcBorrowGrossApy(apy, lstApy);
 
       borrows.push({
         token,
         price,
-        balances: [variableBorrowBalance, stableBorrowBalance],
-        apys: [variableBorrowAPY, stableBorrowAPY],
-        lstApy: lstApy,
-        grossApys: [variableBorrowGrossAPY, stableBorrowGrossAPY],
+        balance,
+        apy,
+        lstApy,
+        grossApy,
         borrowCap,
         totalBorrow,
       });

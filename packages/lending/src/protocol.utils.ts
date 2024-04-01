@@ -105,8 +105,7 @@ export function toSignificantDigits(amount: string, decimals: number, mode?: Rou
     .toFixed();
 }
 
-// TODO: change to dinngo aws bucket
-export const lstTokenAPYsURL = 'https://demo-user-thumbnails-bucket-bob.s3.amazonaws.com/lstTokenAPYs.json';
+export const lstTokenAPYsURL = 'https://cdn.furucombo.app/lstTokenAPYs.json';
 
 export const removePortfolioDynamicFields = (portfolio: any) => {
   delete portfolio.netAPY;

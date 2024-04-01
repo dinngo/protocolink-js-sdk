@@ -303,7 +303,7 @@ export class LendingProtocol extends Protocol {
     const lstTokenAPYMap = await this.getLstTokenAPYMap(this.chainId);
 
     const lstApy = getLstApyFromMap(baseToken.address, lstTokenAPYMap);
-    const supplyGrossApy = lstApy === '0' ? supplyAPR : BigNumberJS(supplyAPR).plus(lstApy).toString();
+    const supplyGrossApy = calcSupplyGrossApy(supplyAPR, lstApy);
 
     const supplies: SupplyObject[] = [
       {
@@ -346,10 +346,10 @@ export class LendingProtocol extends Protocol {
       {
         token: baseToken.unwrapped,
         price: baseTokenPrice,
-        balances: [borrowBalance],
-        apys: [borrowAPR],
+        balance: borrowBalance,
+        apy: borrowAPR,
         lstApy,
-        grossApys: [borrowGrossApy],
+        grossApy: borrowGrossApy,
         borrowMin: baseBorrowMin,
         totalBorrow,
       },

@@ -270,20 +270,20 @@ export class LendingProtocol extends Protocol {
     for (const token of tokensForBorrowMap[this.chainId]) {
       if (token.isWrapped) continue;
 
-      const { variableBorrowAPY, totalBorrow } = reserveDataMap[token.address];
-      const assetPrice = assetPriceMap[token.address];
-      const { variableBorrowBalance } = userBalancesMap[token.address];
+      const { variableBorrowAPY: apy, totalBorrow } = reserveDataMap[token.address];
+      const price = assetPriceMap[token.address];
+      const { variableBorrowBalance: balance } = userBalancesMap[token.address];
 
       const lstApy = getLstApyFromMap(token.address, lstTokenAPYMap);
-      const variableBorrowGrossAPY = calcBorrowGrossApy(variableBorrowAPY, lstApy);
+      const grossApy = calcBorrowGrossApy(apy, lstApy);
 
       borrows.push({
         token,
-        price: assetPrice,
-        balances: [variableBorrowBalance],
-        apys: [variableBorrowAPY],
+        price,
+        balance,
+        apy,
         lstApy,
-        grossApys: [variableBorrowGrossAPY],
+        grossApy,
         totalBorrow,
       });
     }

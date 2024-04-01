@@ -109,10 +109,10 @@ export function isSupply(v: any): v is Supply {
 export class Borrow implements AssetInfo {
   token: common.Token;
   price: string;
-  balances: string[];
-  apys: string[];
+  balance: string;
+  apy: string;
   lstApy: string;
-  grossApys: string[];
+  grossApy: string;
   borrowMin: string;
   borrowCap: string;
   totalBorrow: string;
@@ -120,20 +120,20 @@ export class Borrow implements AssetInfo {
   constructor({
     token,
     price,
-    balances,
-    apys,
+    balance,
+    apy,
     lstApy,
-    grossApys,
+    grossApy,
     borrowMin = '0',
     borrowCap = '0',
     totalBorrow,
   }: BorrowObject) {
     this.token = token;
     this.price = price;
-    this.balances = [...balances];
-    this.apys = [...apys];
+    this.balance = balance;
+    this.apy = apy;
     this.lstApy = lstApy;
-    this.grossApys = [...grossApys];
+    this.grossApy = grossApy;
     this.borrowMin = borrowMin;
     this.borrowCap = borrowCap;
     this.totalBorrow = totalBorrow;
@@ -141,10 +141,6 @@ export class Borrow implements AssetInfo {
 
   get formattedPrice() {
     return abbreviateUSD(this.price);
-  }
-
-  get balance() {
-    return this.balances.reduce((sum, balance) => sum.plus(balance), new BigNumberJS(0)).toFixed();
   }
 
   get formattedBalance() {
@@ -155,10 +151,6 @@ export class Borrow implements AssetInfo {
     return Number(this.balance) === 0;
   }
 
-  get apy() {
-    return this.apys[0];
-  }
-
   get formattedAPY() {
     return formatPercentage(this.apy);
   }
@@ -167,32 +159,28 @@ export class Borrow implements AssetInfo {
     return formatPercentage(this.lstApy);
   }
 
-  get grossApy() {
-    return this.grossApys[0];
-  }
-
   get formattedGrossAPY() {
     return formatPercentage(this.grossApy);
   }
 
   add(amount: string) {
-    this.balances[0] = new BigNumberJS(this.balances[0]).plus(amount).toFixed();
+    this.balance = new BigNumberJS(this.balance).plus(amount).toFixed();
   }
 
   sub(amount: string) {
-    this.balances[0] = new BigNumberJS(this.balances[0]).minus(amount).toFixed();
+    this.balance = new BigNumberJS(this.balance).minus(amount).toFixed();
   }
 
   getMaxRepayAmount(repayAmount: string) {
-    return new BigNumberJS(repayAmount).gt(this.balances[0]) ? this.balances[0] : repayAmount;
+    return new BigNumberJS(repayAmount).gt(this.balance) ? this.balance : repayAmount;
   }
 
   validateRepay(currentRepayAmount: string) {
-    return new BigNumberJS(currentRepayAmount).lte(this.balances[0]);
+    return new BigNumberJS(currentRepayAmount).lte(this.balance);
   }
 
   validateBorrowMin(currentBorrowAmount: string) {
-    return this.borrowMin == '0' || new BigNumberJS(this.balances[0]).plus(currentBorrowAmount).gte(this.borrowMin);
+    return this.borrowMin == '0' || new BigNumberJS(this.balance).plus(currentBorrowAmount).gte(this.borrowMin);
   }
 
   validateBorrowCap(currentBorrowAmount: string) {
@@ -260,7 +248,7 @@ export class Portfolio {
   }
 
   get nonZeroBorrowsForRepay() {
-    return this.borrows.filter((borrow) => Number(borrow.balances[0]) > 0);
+    return this.borrows.filter((borrow) => Number(borrow.balance) > 0);
   }
 
   get availableBorrowCapacityUSD() {
@@ -434,30 +422,25 @@ export class Portfolio {
   borrow(borrow: Borrow): void;
   borrow(token: common.Token, amount: string): void;
   borrow(arg0: any, arg1?: any) {
+    let borrow: Borrow;
+    let amount: string;
     if (isBorrow(arg0)) {
-      const borrow = arg0;
-      for (let i = 0; i < borrow.balances.length; i++) {
-        const balance = borrow.balances[i];
-        if (Number(balance) === 0) continue;
-
-        const balanceUSD = new BigNumberJS(balance).times(borrow.price);
-        this.totalBorrowUSD = this.totalBorrowUSD.plus(balanceUSD);
-        this.negativeProportion = this.negativeProportion.plus(balanceUSD.times(borrow.apys[i]));
-      }
+      borrow = arg0;
+      amount = borrow.balance;
     } else {
-      const amount = arg1;
-      if (Number(amount) === 0) return;
-
-      const borrow = this.findBorrow(arg0);
-      if (!borrow) return;
+      const found = this.findBorrow(arg0);
+      if (!found) return;
+      borrow = found;
+      amount = arg1;
       borrow.add(amount);
-
-      const { price, apy } = borrow;
-
-      const borrowUSD = new BigNumberJS(amount).times(price);
-      this.totalBorrowUSD = this.totalBorrowUSD.plus(borrowUSD);
-      this.negativeProportion = this.negativeProportion.plus(borrowUSD.times(apy));
     }
+    if (Number(amount) === 0) return;
+
+    const { price, grossApy } = borrow;
+
+    const borrowUSD = new BigNumberJS(amount).times(price);
+    this.totalBorrowUSD = this.totalBorrowUSD.plus(borrowUSD);
+    this.negativeProportion = this.negativeProportion.plus(borrowUSD.times(grossApy));
   }
 
   repay(token: common.Token, amount: string) {
@@ -468,11 +451,11 @@ export class Portfolio {
     amount = borrow.getMaxRepayAmount(amount);
     borrow.sub(amount);
 
-    const { price, apy } = borrow;
+    const { price, grossApy } = borrow;
 
     const repayUSD = new BigNumberJS(amount).times(price);
     this.totalBorrowUSD = this.totalBorrowUSD.minus(repayUSD);
-    this.negativeProportion = this.negativeProportion.minus(repayUSD.times(apy));
+    this.negativeProportion = this.negativeProportion.minus(repayUSD.times(grossApy));
   }
 
   toJSON() {

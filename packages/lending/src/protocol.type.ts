@@ -53,10 +53,10 @@ export interface SupplyObject {
 export interface BorrowObject {
   token: common.Token;
   price: string;
-  balances: string[];
-  apys: string[];
+  balance: string;
+  apy: string;
   lstApy: string;
-  grossApys: string[];
+  grossApy: string;
   borrowMin?: string;
   borrowCap?: string;
   totalBorrow: string;

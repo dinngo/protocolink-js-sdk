@@ -165,10 +165,10 @@ export class LendingProtocol extends Protocol {
       {
         token: loanToken,
         price: loanTokenPrice,
-        balances: [borrowBalance],
-        apys: [borrowApy],
+        balance: borrowBalance,
+        apy: borrowApy,
         lstApy: borrowLstApy,
-        grossApys: [borrowGrossApy],
+        grossApy: borrowGrossApy,
         totalBorrow,
       },
     ];
