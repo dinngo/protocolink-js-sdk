@@ -321,6 +321,7 @@ export class LendingProtocol extends Protocol {
       },
     ];
     for (const { token, borrowCollateralFactor, liquidateCollateralFactor, supplyCap, totalSupply } of assets) {
+      // compound v3 collateral assets do not earn any interest
       const apy = '0';
       const lstApy = getLstApyFromMap(token.address, lstTokenAPYMap);
       const grossApy = calcSupplyGrossApy(apy, lstApy);

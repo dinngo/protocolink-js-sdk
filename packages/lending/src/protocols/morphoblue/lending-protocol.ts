@@ -138,6 +138,7 @@ export class LendingProtocol extends Protocol {
 
     const lstTokenAPYMap = await this.getLstTokenAPYMap(this.chainId);
 
+    // morphoblue collateral assets do not earn any interest
     const supplyApy = '0';
     const supplyLstApy = getLstApyFromMap(collateralToken.address, lstTokenAPYMap);
     const supplyGrossApy = calcSupplyGrossApy(supplyApy, supplyLstApy);

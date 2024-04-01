@@ -126,26 +126,14 @@ export const removePortfolioDynamicFields = (portfolio: any) => {
   }
 };
 
-export const getLstApyFromMap = (address: string, lstTokenAPYMap: Record<string, string>) => {
-  return lstTokenAPYMap[address.toLowerCase()] || '0';
+export const getLstApyFromMap = (tokenAddress: string, lstTokenAPYMap: Record<string, string>) => {
+  return lstTokenAPYMap[tokenAddress.toLowerCase()] || '0';
 };
 
 export const calcSupplyGrossApy = (apy: string, lstApy: string) => {
-  if (lstApy === '0') {
-    return apy;
-  } else if (apy === '0') {
-    return lstApy;
-  } else {
-    return BigNumberJS(apy).plus(lstApy).toString();
-  }
+  return lstApy === '0' ? apy : apy === '0' ? lstApy : BigNumberJS(apy).plus(lstApy).toString();
 };
 
 export const calcBorrowGrossApy = (apy: string, lstApy: string) => {
-  if (lstApy === '0') {
-    return apy;
-  } else if (apy === '0') {
-    return lstApy;
-  } else {
-    return BigNumberJS(apy).minus(lstApy).toString();
-  }
+  return lstApy === '0' ? apy : apy === '0' ? lstApy : BigNumberJS(apy).minus(lstApy).toString();
 };
