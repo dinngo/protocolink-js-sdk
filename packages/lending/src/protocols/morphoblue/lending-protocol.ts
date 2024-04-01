@@ -11,6 +11,7 @@ import { PriceFeedInterface } from './contracts/PriceFeed';
 import { Protocol } from 'src/protocol';
 import { SECONDS_PER_YEAR } from '@aave/math-utils';
 import * as apisdk from '@protocolink/api';
+import { calcBorrowGrossApy, calcSupplyGrossApy, getLstApyFromMap } from 'src/protocol.utils';
 import * as common from '@protocolink/common';
 
 export class LendingProtocol extends Protocol {
@@ -135,12 +136,21 @@ export class LendingProtocol extends Protocol {
 
     const maxLtv = common.toBigUnit(lltv, 18);
 
+    const lstTokenAPYMap = await this.getLstTokenAPYMap(this.chainId);
+
+    // morphoblue collateral assets do not earn any interest
+    const supplyApy = '0';
+    const supplyLstApy = getLstApyFromMap(collateralToken.address, lstTokenAPYMap);
+    const supplyGrossApy = calcSupplyGrossApy(supplyApy, supplyLstApy);
+
     const supplies: SupplyObject[] = [
       {
         token: collateralToken,
         price: collateralTokenPrice,
         balance: supplyBalance,
-        apy: '0',
+        apy: supplyApy,
+        lstApy: supplyLstApy,
+        grossApy: supplyGrossApy,
         usageAsCollateralEnabled: true,
         ltv: maxLtv,
         liquidationThreshold: maxLtv,
@@ -148,12 +158,17 @@ export class LendingProtocol extends Protocol {
       },
     ];
 
+    const borrowLstApy = getLstApyFromMap(loanToken.address, lstTokenAPYMap);
+    const borrowGrossApy = calcBorrowGrossApy(borrowApy, borrowLstApy);
+
     const borrows: BorrowObject[] = [
       {
         token: loanToken,
         price: loanTokenPrice,
-        balances: [borrowBalance],
-        apys: [borrowApy],
+        balance: borrowBalance,
+        apy: borrowApy,
+        lstApy: borrowLstApy,
+        grossApy: borrowGrossApy,
         totalBorrow,
       },
     ];

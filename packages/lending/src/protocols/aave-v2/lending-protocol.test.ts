@@ -1,7 +1,7 @@
 import { LendingProtocol } from './lending-protocol';
 import * as common from '@protocolink/common';
 import { expect } from 'chai';
-import { polygonTokens } from 'src/tokens';
+import { removePortfolioDynamicFields } from 'src/protocol.utils';
 
 describe('Test Aave V2 LendingProtocol', function () {
   context('Test getPortfolio', function () {
@@ -247,11 +247,12 @@ describe('Test Aave V2 LendingProtocol', function () {
                 name: 'Dai Stablecoin',
               },
               price: '1.00070489',
-              balances: ['0', '0'],
-              apys: ['0.10158065859420624468', '0.18145426830819562538'],
+              balance: '0',
+              apy: '0.06039649841678908996',
+              grossApy: '0.06039649841678908996',
               borrowMin: '0',
               borrowCap: '0',
-              totalBorrow: '63226384.829006156930098429',
+              totalBorrow: '62331886.427849404286730774',
             },
             {
               token: {
@@ -262,8 +263,9 @@ describe('Test Aave V2 LendingProtocol', function () {
                 name: 'Ethereum',
               },
               price: '2242.39893',
-              balances: ['20669.514211273436654689', '0'],
-              apys: ['0.02999728877370512305', '0.05188673488267816372'],
+              balance: '20669.514211273436654689',
+              apy: '0.00916817498078637062',
+              grossApy: '0.00916817498078637062',
               borrowMin: '0',
               borrowCap: '0',
               totalBorrow: '132524.853230185675699358',
@@ -277,8 +279,9 @@ describe('Test Aave V2 LendingProtocol', function () {
                 name: 'Frax',
               },
               price: '1.00993502',
-              balances: ['0', '0'],
-              apys: ['0.25936546148419450341', '0'],
+              balance: '0',
+              apy: '0.14450408118649581654',
+              grossApy: '0.14450408118649581654',
               borrowMin: '0',
               borrowCap: '0',
               totalBorrow: '1059980.451652825654179698',
@@ -292,8 +295,9 @@ describe('Test Aave V2 LendingProtocol', function () {
                 name: 'Gemini dollar',
               },
               price: '0.99999999',
-              balances: ['0', '0'],
-              apys: ['0.05117565287470436699', '0.08320838673417758781'],
+              balance: '0',
+              apy: '0.02829120928712811107',
+              grossApy: '0.02829120928712811107',
               borrowMin: '0',
               borrowCap: '0',
               totalBorrow: '556057.21',
@@ -307,8 +311,9 @@ describe('Test Aave V2 LendingProtocol', function () {
                 name: 'LUSD Stablecoin',
               },
               price: '0.99907345',
-              balances: ['0', '0'],
-              apys: ['0.05085053141729208478', '0.12731640593829602791'],
+              balance: '0',
+              apy: '0.02996184796985743881',
+              grossApy: '0.02996184796985743881',
               borrowMin: '0',
               borrowCap: '0',
               totalBorrow: '328303.337041952294996842',
@@ -322,11 +327,12 @@ describe('Test Aave V2 LendingProtocol', function () {
                 name: 'USD Coin',
               },
               price: '1.00052179',
-              balances: ['0', '0'],
-              apys: ['0.14696721595796531729', '0.21789170720630730761'],
+              balance: '0',
+              apy: '0.09796037628587413794',
+              grossApy: '0.09796037628587413794',
               borrowMin: '0',
               borrowCap: '0',
-              totalBorrow: '302795316.725974',
+              totalBorrow: '297080725.553758',
             },
             {
               token: {
@@ -337,11 +343,12 @@ describe('Test Aave V2 LendingProtocol', function () {
                 name: 'Tether USD',
               },
               price: '0.99311457',
-              balances: ['0', '0'],
-              apys: ['0.17653443273802138059', '0.26184280408543500539'],
+              balance: '0',
+              apy: '0.10457023515211070635',
+              grossApy: '0.10457023515211070635',
               borrowMin: '0',
               borrowCap: '0',
-              totalBorrow: '180813878.110834',
+              totalBorrow: '177273773.931094',
             },
             {
               token: {
@@ -352,11 +359,12 @@ describe('Test Aave V2 LendingProtocol', function () {
                 name: 'Wrapped BTC',
               },
               price: '42011.50322746',
-              balances: ['0', '0'],
-              apys: ['0.00914108731315682107', '0.05416491221659208727'],
+              balance: '0',
+              apy: '0.00094330871348293318',
+              grossApy: '0.00094330871348293318',
               borrowMin: '0',
               borrowCap: '0',
-              totalBorrow: '2618.97001629',
+              totalBorrow: '2618.36938773',
             },
             {
               token: {
@@ -367,8 +375,9 @@ describe('Test Aave V2 LendingProtocol', function () {
                 name: 'Synth sUSD',
               },
               price: '0.99932685',
-              balances: ['0', '0'],
-              apys: ['0.04382440867161357293', '0'],
+              balance: '0',
+              apy: '0.02081794981150289325',
+              grossApy: '0.02081794981150289325',
               borrowMin: '0',
               borrowCap: '0',
               totalBorrow: '1374613.496566094944262286',
@@ -382,8 +391,9 @@ describe('Test Aave V2 LendingProtocol', function () {
                 name: 'Pax Dollar',
               },
               price: '1.0104264',
-              balances: ['0', '0'],
-              apys: ['0.08682285915403841519', '0'],
+              balance: '0',
+              apy: '0.05535400343460365121',
+              grossApy: '0.05535400343460365121',
               borrowMin: '0',
               borrowCap: '0',
               totalBorrow: '256666.580963762144011205',
@@ -401,7 +411,6 @@ describe('Test Aave V2 LendingProtocol', function () {
           marketId: 'polygon',
           utilization: '0.3685856393576075793',
           healthRate: '2.92177166424606475501',
-          netAPY: '0.01630978256943804504',
           totalSupplyUSD: '6187.63383963095020048012547096',
           totalBorrowUSD: '181.29530249474694',
           supplies: [
@@ -460,7 +469,13 @@ describe('Test Aave V2 LendingProtocol', function () {
               totalSupply: '9730349.206340911556404886',
             },
             {
-              token: polygonTokens['USDC.e'],
+              token: {
+                chainId: 137,
+                address: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
+                decimals: 6,
+                symbol: 'USDC.e',
+                name: 'USD Coin (PoS)',
+              },
               price: '0.99664591',
               balance: '0',
               apy: '0.10613890696322769932',
@@ -536,8 +551,9 @@ describe('Test Aave V2 LendingProtocol', function () {
                 name: '(PoS) Dai Stablecoin',
               },
               price: '0.99679794',
-              balances: ['0', '0'],
-              apys: ['0.3663000288250825464', '0.37865223049074572113'],
+              balance: '0',
+              apy: '0.12710541004444977537',
+              grossApy: '0.12710541004444977537',
               borrowMin: '0',
               borrowCap: '0',
               totalBorrow: '7856725.927159881562061903',
@@ -551,17 +567,25 @@ describe('Test Aave V2 LendingProtocol', function () {
                 name: 'Matic Token',
               },
               price: '0.85300841',
-              balances: ['0', '0'],
-              apys: ['0.00810929691081872582', '0.06551791773174595276'],
+              balance: '0',
+              apy: '0.00015134820365801307',
+              grossApy: '0.00015134820365801307',
               borrowMin: '0',
               borrowCap: '0',
               totalBorrow: '628705.023975555466478558',
             },
             {
-              token: polygonTokens['USDC.e'],
+              token: {
+                chainId: 137,
+                address: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
+                decimals: 6,
+                symbol: 'USDC.e',
+                name: 'USD Coin (PoS)',
+              },
               price: '0.99664591',
-              balances: ['0', '0'],
-              apys: ['0.30465373581862477007', '0.31644861668842150708'],
+              balance: '0',
+              apy: '0.10613890696322769932',
+              grossApy: '0.10613890696322769932',
               borrowMin: '0',
               borrowCap: '0',
               totalBorrow: '18432000.009154',
@@ -575,8 +599,9 @@ describe('Test Aave V2 LendingProtocol', function () {
                 name: '(PoS) Tether USD',
               },
               price: '1.00213471',
-              balances: ['180.909114', '0'],
-              apys: ['0.08512478209917298281', '0.09056399268994015216'],
+              balance: '180.909114',
+              apy: '0.02085841506259266721',
+              grossApy: '0.02085841506259266721',
               borrowMin: '0',
               borrowCap: '0',
               totalBorrow: '3877549.092597',
@@ -590,8 +615,9 @@ describe('Test Aave V2 LendingProtocol', function () {
                 name: '(PoS) Wrapped BTC',
               },
               price: '42314.45587845',
-              balances: ['0', '0'],
-              apys: ['0.00165671673095521292', '0.03472776662670952444'],
+              balance: '0',
+              apy: '0.00000380199312269635',
+              grossApy: '0.00000380199312269635',
               borrowMin: '0',
               borrowCap: '0',
               totalBorrow: '16.04738225',
@@ -605,8 +631,9 @@ describe('Test Aave V2 LendingProtocol', function () {
                 name: 'Wrapped Ether',
               },
               price: '2247.22899356',
-              balances: ['0', '0'],
-              apys: ['0.0068455027805655621', '0.04818012563917243535'],
+              balance: '0',
+              apy: '0.00011636207541797941',
+              grossApy: '0.00011636207541797941',
               borrowMin: '0',
               borrowCap: '0',
               totalBorrow: '1679.126787526099215032',
@@ -620,7 +647,12 @@ describe('Test Aave V2 LendingProtocol', function () {
       it(`${common.toNetworkId(chainId)} market`, async function () {
         const protocol = new LendingProtocol(chainId);
         protocol.setBlockTag(blockTag);
-        const portfolio = await protocol.getPortfolio(account);
+        const _portfolio = await protocol.getPortfolio(account);
+        const portfolio = JSON.parse(JSON.stringify(_portfolio));
+
+        removePortfolioDynamicFields(expected);
+        removePortfolioDynamicFields(portfolio);
+
         expect(JSON.stringify(portfolio)).to.eq(JSON.stringify(expected));
       });
     });

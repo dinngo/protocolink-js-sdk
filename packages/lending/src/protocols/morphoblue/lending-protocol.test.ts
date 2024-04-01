@@ -1,6 +1,7 @@
 import { LendingProtocol } from './lending-protocol';
 import * as common from '@protocolink/common';
 import { expect } from 'chai';
+import { removePortfolioDynamicFields } from 'src/protocol.utils';
 
 describe('Test Morpho Blue LendingProtocol', function () {
   context('Test getPortfolio', function () {
@@ -16,7 +17,6 @@ describe('Test Morpho Blue LendingProtocol', function () {
           marketId: '0xb323495f7e4148be5643a4ea4a8221eef163e4bccfdedc2a6f4696baacbc86cc',
           utilization: '0.77042676604681803248',
           healthRate: '1.2979819031095695877',
-          netAPY: '-0.03351168623896312071',
           totalSupplyUSD: '15.09380306985',
           totalBorrowUSD: '10.00065610234878',
           supplies: [
@@ -49,8 +49,9 @@ describe('Test Morpho Blue LendingProtocol', function () {
                 name: 'USD Coin',
               },
               price: '1.00006181',
-              balances: ['10.000038'],
-              apys: ['0.0170668745527347'],
+              balance: '10.000038',
+              apy: '0.0170668745527347',
+              grossApy: '0.0170668745527347',
               borrowMin: '0',
               borrowCap: '0',
               totalBorrow: '2359558.186903',
@@ -64,7 +65,13 @@ describe('Test Morpho Blue LendingProtocol', function () {
       it(`${common.toNetworkId(chainId)} ${marketId} market`, async function () {
         const protocol = new LendingProtocol(chainId);
         protocol.setBlockTag(blockTag);
-        const portfolio = await protocol.getPortfolio(account, marketId);
+
+        const _portfolio = await protocol.getPortfolio(account, marketId);
+        const portfolio = JSON.parse(JSON.stringify(_portfolio));
+
+        removePortfolioDynamicFields(expected);
+        removePortfolioDynamicFields(portfolio);
+
         expect(JSON.stringify(portfolio)).to.eq(JSON.stringify(expected));
       }).timeout(60000);
     });

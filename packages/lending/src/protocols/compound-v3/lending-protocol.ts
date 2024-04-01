@@ -9,6 +9,7 @@ import {
   supportedChainIds,
 } from './configs';
 import { BigNumber } from 'ethers';
+import BigNumberJS from 'bignumber.js';
 import { BorrowObject, Market, RepayParams, SupplyObject, SupplyParams, WithdrawParams } from 'src/protocol.type';
 import { CometInterface } from './contracts/Comet';
 import { Comet__factory } from './contracts';
@@ -16,6 +17,7 @@ import { Portfolio } from 'src/protocol.portfolio';
 import { Protocol } from 'src/protocol';
 import * as apisdk from '@protocolink/api';
 import { calcAPR } from './utils';
+import { calcBorrowGrossApy, calcSupplyGrossApy, getLstApyFromMap } from 'src/protocol.utils';
 import * as common from '@protocolink/common';
 
 export class LendingProtocol extends Protocol {
@@ -298,6 +300,10 @@ export class LendingProtocol extends Protocol {
     const { supplyAPR, borrowAPR } = await this.getAPYs(marketId);
     const { baseTokenPrice, assetPriceMap } = await this.getPriceMap(marketId);
     const { supplyBalance, borrowBalance, collateralBalanceMap } = await this.getUserBalances(marketId, account);
+    const lstTokenAPYMap = await this.getLstTokenAPYMap(this.chainId);
+
+    const lstApy = getLstApyFromMap(baseToken.address, lstTokenAPYMap);
+    const supplyGrossApy = calcSupplyGrossApy(supplyAPR, lstApy);
 
     const supplies: SupplyObject[] = [
       {
@@ -305,6 +311,8 @@ export class LendingProtocol extends Protocol {
         price: baseTokenPrice,
         balance: supplyBalance,
         apy: supplyAPR,
+        lstApy,
+        grossApy: supplyGrossApy,
         usageAsCollateralEnabled: false,
         ltv: '0',
         liquidationThreshold: '0',
@@ -313,11 +321,18 @@ export class LendingProtocol extends Protocol {
       },
     ];
     for (const { token, borrowCollateralFactor, liquidateCollateralFactor, supplyCap, totalSupply } of assets) {
+      // compound v3 collateral assets do not earn any interest
+      const apy = '0';
+      const lstApy = getLstApyFromMap(token.address, lstTokenAPYMap);
+      const grossApy = calcSupplyGrossApy(apy, lstApy);
+
       supplies.push({
         token: token.unwrapped,
         price: assetPriceMap[token.address],
         balance: collateralBalanceMap[token.address],
-        apy: '0',
+        apy,
+        lstApy,
+        grossApy,
         usageAsCollateralEnabled: true,
         ltv: borrowCollateralFactor,
         liquidationThreshold: liquidateCollateralFactor,
@@ -326,12 +341,15 @@ export class LendingProtocol extends Protocol {
       });
     }
 
+    const borrowGrossApy = calcBorrowGrossApy(borrowAPR, lstApy);
     const borrows: BorrowObject[] = [
       {
         token: baseToken.unwrapped,
         price: baseTokenPrice,
-        balances: [borrowBalance],
-        apys: [borrowAPR],
+        balance: borrowBalance,
+        apy: borrowAPR,
+        lstApy,
+        grossApy: borrowGrossApy,
         borrowMin: baseBorrowMin,
         totalBorrow,
       },

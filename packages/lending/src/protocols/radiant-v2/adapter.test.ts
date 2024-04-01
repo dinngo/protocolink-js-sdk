@@ -443,7 +443,7 @@ describe('Test Adapter for Radiant V2', function () {
       const destToken = mainnetTokens.USDC;
 
       const srcBorrow = portfolio.findBorrow(srcToken)!;
-      const srcAmount = new common.TokenAmount(srcToken, srcBorrow.balances[0]).addWei(1).amount;
+      const srcAmount = new common.TokenAmount(srcToken, srcBorrow.balance).addWei(1).amount;
 
       const { destAmount, afterPortfolio, error, logics } = await adapter.debtSwap({
         account,
@@ -726,7 +726,7 @@ describe('Test Adapter for Radiant V2', function () {
       const destToken = mainnetTokens.ETH;
 
       const srcBorrow = portfolio.findBorrow(srcToken)!;
-      const srcAmount = new common.TokenAmount(srcToken, srcBorrow.balances[0]).addWei(1).amount;
+      const srcAmount = new common.TokenAmount(srcToken, srcBorrow.balance).addWei(1).amount;
 
       const { destAmount, afterPortfolio, error, logics } = await adapter.deleverage({
         account,
@@ -1146,7 +1146,7 @@ describe('Test Adapter for Radiant V2', function () {
       const destToken = mainnetTokens.USDC;
 
       const srcBorrow = portfolio.findBorrow(srcToken)!;
-      const srcAmount = new common.TokenAmount(srcToken, srcBorrow.balances[0]).addWei(1).amount;
+      const srcAmount = new common.TokenAmount(srcToken, srcBorrow.balance).addWei(1).amount;
 
       const { destAmount, afterPortfolio, error, logics } = await adapter.zapRepay({
         account,

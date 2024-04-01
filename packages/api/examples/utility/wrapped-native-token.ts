@@ -66,7 +66,7 @@ import * as api from '@protocolink/api';
   });
   console.log('wrapQuotation :>> ', JSON.stringify(wrapQuotation, null, 2));
 
-  const wrapLogic = await api.protocols.utility.newWrappedNativeTokenLogic(wrapQuotation);
+  const wrapLogic = api.protocols.utility.newWrappedNativeTokenLogic(wrapQuotation);
   console.log('wrapLogic :>> ', JSON.stringify(wrapLogic, null, 2));
 
   const unwrapTokenIn = tokenList[1][0]; // wrapped native token
@@ -83,6 +83,6 @@ import * as api from '@protocolink/api';
   });
   console.log('unwrapQuotation :>> ', JSON.stringify(unwrapQuotation, null, 2));
 
-  const unwrapLogic = await api.protocols.utility.newWrappedNativeTokenLogic(unwrapQuotation);
+  const unwrapLogic = api.protocols.utility.newWrappedNativeTokenLogic(unwrapQuotation);
   console.log('unwrapLogic :>> ', JSON.stringify(unwrapLogic, null, 2));
 })();

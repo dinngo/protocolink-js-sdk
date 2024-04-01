@@ -1,7 +1,7 @@
 import { LendingProtocol } from './lending-protocol';
 import * as common from '@protocolink/common';
 import { expect } from 'chai';
-import { gnosisTokens, mainnetTokens } from 'src/protocols/spark/tokens';
+import { removePortfolioDynamicFields } from 'src/protocol.utils';
 
 describe('Test Spark LendingProtocol', function () {
   context('Test getPortfolio', function () {
@@ -21,7 +21,13 @@ describe('Test Spark LendingProtocol', function () {
           totalBorrowUSD: '500164.027542356064665582',
           supplies: [
             {
-              token: mainnetTokens.DAI,
+              token: {
+                chainId: 1,
+                address: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+                decimals: 18,
+                symbol: 'DAI',
+                name: 'Dai Stablecoin',
+              },
               price: '1',
               balance: '0',
               apy: '0.05330994502077421664',
@@ -33,7 +39,13 @@ describe('Test Spark LendingProtocol', function () {
               totalSupply: '797258503.957984054071228849',
             },
             {
-              token: mainnetTokens.sDAI,
+              token: {
+                chainId: 1,
+                address: '0x83F20F44975D03b1b09e64809B757c47f942BEeA',
+                decimals: 18,
+                symbol: 'sDAI',
+                name: 'Savings Dai',
+              },
               price: '1.05149253',
               balance: '0',
               apy: '0',
@@ -45,7 +57,13 @@ describe('Test Spark LendingProtocol', function () {
               totalSupply: '114380869.644597763374155541',
             },
             {
-              token: mainnetTokens.USDC,
+              token: {
+                chainId: 1,
+                address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+                decimals: 6,
+                symbol: 'USDC',
+                name: 'USD Coin',
+              },
               price: '1.00008597',
               balance: '0',
               apy: '0.0429717483966223299',
@@ -57,7 +75,13 @@ describe('Test Spark LendingProtocol', function () {
               totalSupply: '491795.076835',
             },
             {
-              token: mainnetTokens.USDT,
+              token: {
+                chainId: 1,
+                address: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+                decimals: 6,
+                symbol: 'USDT',
+                name: 'Tether USD',
+              },
               price: '0.99974559',
               balance: '0',
               apy: '0.02628720369558140623',
@@ -69,7 +93,13 @@ describe('Test Spark LendingProtocol', function () {
               totalSupply: '99515.425099',
             },
             {
-              token: mainnetTokens.ETH,
+              token: {
+                chainId: 1,
+                address: '0x0000000000000000000000000000000000000000',
+                decimals: 18,
+                symbol: 'ETH',
+                name: 'Ethereum',
+              },
               price: '2511.57322604',
               balance: '500.039741252574001622',
               apy: '0.01413885912447143025',
@@ -81,7 +111,13 @@ describe('Test Spark LendingProtocol', function () {
               totalSupply: '250480.501781157058053475',
             },
             {
-              token: mainnetTokens.wstETH,
+              token: {
+                chainId: 1,
+                address: '0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0',
+                decimals: 18,
+                symbol: 'wstETH',
+                name: 'Wrapped liquid staked Ether 2.0',
+              },
               price: '2897.5275624',
               balance: '0',
               apy: '0.00000024900689299442',
@@ -93,7 +129,13 @@ describe('Test Spark LendingProtocol', function () {
               totalSupply: '472056.651339893008720507',
             },
             {
-              token: mainnetTokens.rETH,
+              token: {
+                chainId: 1,
+                address: '0xae78736Cd615f374D3085123A210448E74Fc6393',
+                decimals: 18,
+                symbol: 'rETH',
+                name: 'Rocket Pool ETH',
+              },
               price: '2751.22029666',
               balance: '0',
               apy: '0.00000003652120308756',
@@ -105,7 +147,13 @@ describe('Test Spark LendingProtocol', function () {
               totalSupply: '37448.304770136571365709',
             },
             {
-              token: mainnetTokens.WBTC,
+              token: {
+                chainId: 1,
+                address: '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599',
+                decimals: 8,
+                symbol: 'WBTC',
+                name: 'Wrapped BTC',
+              },
               price: '42674.08044271',
               balance: '0',
               apy: '0.00001033548496045867',
@@ -119,64 +167,113 @@ describe('Test Spark LendingProtocol', function () {
           ],
           borrows: [
             {
-              token: mainnetTokens.DAI,
+              token: {
+                chainId: 1,
+                address: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+                decimals: 18,
+                symbol: 'DAI',
+                name: 'Dai Stablecoin',
+              },
               price: '1',
-              balances: ['500164.027542356064665582', '0'],
-              apys: ['0.05526314689378971429', '0'],
+              balance: '500164.027542356064665582',
+              apy: '0.05526314689378971429',
+              grossApy: '0.05526314689378971429',
               borrowMin: '0',
               borrowCap: '0',
               totalBorrow: '770088175.922699742211700122',
             },
             {
-              token: mainnetTokens.USDC,
+              token: {
+                chainId: 1,
+                address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+                decimals: 6,
+                symbol: 'USDC',
+                name: 'USD Coin',
+              },
               price: '1.00008597',
-              balances: ['0', '0'],
-              apys: ['0.04770004536919663287', '0.04580838881739773619'],
+              balance: '0',
+              apy: '0.04770004536919663287',
+              grossApy: '0.04770004536919663287',
               borrowMin: '0',
               borrowCap: '0',
               totalBorrow: '467635.885281',
             },
             {
-              token: mainnetTokens.USDT,
+              token: {
+                chainId: 1,
+                address: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+                decimals: 6,
+                symbol: 'USDT',
+                name: 'Tether USD',
+              },
               price: '0.99974559',
-              balances: ['0', '0'],
-              apys: ['0.03653695022630783836', '0.04580838881739773619'],
+              balance: '0',
+              apy: '0.03653695022630783836',
+              grossApy: '0.03653695022630783836',
               borrowMin: '0',
               borrowCap: '0',
               totalBorrow: '75779.360338',
             },
             {
-              token: mainnetTokens.ETH,
+              token: {
+                chainId: 1,
+                address: '0x0000000000000000000000000000000000000000',
+                decimals: 18,
+                symbol: 'ETH',
+                name: 'Ethereum',
+              },
               price: '2511.57322604',
-              balances: ['0', '0'],
-              apys: ['0.02318783322499370895', '0.03251750528835507089'],
+              balance: '0',
+              apy: '0.02318783322499370895',
+              grossApy: '0.02318783322499370895',
               borrowMin: '0',
               borrowCap: '1400000',
               totalBorrow: '161512.555422898470739346',
             },
             {
-              token: mainnetTokens.wstETH,
+              token: {
+                chainId: 1,
+                address: '0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0',
+                decimals: 18,
+                symbol: 'wstETH',
+                name: 'Wrapped liquid staked Ether 2.0',
+              },
               price: '2897.5275624',
-              balances: ['0', '0'],
-              apys: ['0.00251482042382401295', '0.04602785987513300031'],
+              balance: '0',
+              apy: '0.00251482042382401295',
+              grossApy: '-0.02988517957617598705',
               borrowMin: '0',
               borrowCap: '3000',
               totalBorrow: '55.058630749824329394',
             },
             {
-              token: mainnetTokens.rETH,
+              token: {
+                chainId: 1,
+                address: '0xae78736Cd615f374D3085123A210448E74Fc6393',
+                decimals: 18,
+                symbol: 'rETH',
+                name: 'Rocket Pool ETH',
+              },
               price: '2751.22029666',
-              balances: ['0', '0'],
-              apys: ['0.00008175674393140419', '0.07250818117089440143'],
+              balance: '0',
+              apy: '0.00008175674393140419',
+              grossApy: '-0.02741824325606859581',
               borrowMin: '0',
               borrowCap: '2400',
               totalBorrow: '19.681367302343928653',
             },
             {
-              token: mainnetTokens.WBTC,
+              token: {
+                chainId: 1,
+                address: '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599',
+                decimals: 8,
+                symbol: 'WBTC',
+                name: 'Wrapped BTC',
+              },
               price: '42674.08044271',
-              balances: ['0', '0'],
-              apys: ['0.00065644930648120513', '0.0202013400202857357'],
+              balance: '0',
+              apy: '0.00065644930648120513',
+              grossApy: '0.00065644930648120513',
               borrowMin: '0',
               borrowCap: '2000',
               totalBorrow: '59.0611296',
@@ -194,12 +291,17 @@ describe('Test Spark LendingProtocol', function () {
           marketId: 'gnosis',
           utilization: '0.01125079489525423734',
           healthRate: '95.23136901831888660931',
-          netAPY: '0.03686176535185509126',
           totalSupplyUSD: '0.51030070011483266181462544',
           totalBorrowUSD: '0.00401890175443305345112904',
           supplies: [
             {
-              token: gnosisTokens.xDAI,
+              token: {
+                chainId: 100,
+                address: '0x0000000000000000000000000000000000000000',
+                decimals: 18,
+                symbol: 'xDAI',
+                name: 'xDai',
+              },
               price: '0.99977168',
               balance: '0.510416876042322972',
               apy: '0.03665069818130247227',
@@ -211,7 +313,13 @@ describe('Test Spark LendingProtocol', function () {
               totalSupply: '5140472.299732771854592572',
             },
             {
-              token: gnosisTokens.WETH,
+              token: {
+                chainId: 100,
+                address: '0x6A023CCd1ff6F2045C3309768eAd9E68F978f6e1',
+                decimals: 18,
+                symbol: 'WETH',
+                name: 'Wrapped Ether on xDai',
+              },
               price: '2326.58361829',
               balance: '0',
               apy: '0.00367024533465304926',
@@ -223,7 +331,13 @@ describe('Test Spark LendingProtocol', function () {
               totalSupply: '1592.027746221112440732',
             },
             {
-              token: gnosisTokens.wstETH,
+              token: {
+                chainId: 100,
+                address: '0x6C76971f98945AE98dD7d4DFcA8711ebea946eA6',
+                decimals: 18,
+                symbol: 'wstETH',
+                name: 'Wrapped liquid staked Ether 2.0 from Mainnet',
+              },
               price: '2686.20280424',
               balance: '0.000000000134931602',
               apy: '0.00000083279833730894',
@@ -235,7 +349,13 @@ describe('Test Spark LendingProtocol', function () {
               totalSupply: '7113.682317046677112557',
             },
             {
-              token: gnosisTokens.GNO,
+              token: {
+                chainId: 100,
+                address: '0x9C58BAcC331c9aa871AFD802DB6379a98e80CEdb',
+                decimals: 18,
+                symbol: 'GNO',
+                name: 'Gnosis Token on xDai',
+              },
               price: '203.567668',
               balance: '0',
               apy: '0',
@@ -249,28 +369,49 @@ describe('Test Spark LendingProtocol', function () {
           ],
           borrows: [
             {
-              token: gnosisTokens.xDAI,
+              token: {
+                chainId: 100,
+                address: '0x0000000000000000000000000000000000000000',
+                decimals: 18,
+                symbol: 'xDAI',
+                name: 'xDai',
+              },
               price: '0.99977168',
-              balances: ['0', '0'],
-              apys: ['0.04999999999999999996', '0'],
+              balance: '0',
+              apy: '0.04999999999999999996',
+              grossApy: '0.04999999999999999996',
               borrowMin: '0',
               borrowCap: '8000000',
               totalBorrow: '3792453.862025050101532283',
             },
             {
-              token: gnosisTokens.WETH,
+              token: {
+                chainId: 100,
+                address: '0x6A023CCd1ff6F2045C3309768eAd9E68F978f6e1',
+                decimals: 18,
+                symbol: 'WETH',
+                name: 'Wrapped Ether on xDai',
+              },
               price: '2326.58361829',
-              balances: ['0', '0'],
-              apys: ['0.01210311453632419971', '0.03251750528835507089'],
+              balance: '0',
+              apy: '0.01210311453632419971',
+              grossApy: '0.01210311453632419971',
               borrowMin: '0',
               borrowCap: '3000',
               totalBorrow: '538.718917561706980532',
             },
             {
-              token: gnosisTokens.wstETH,
+              token: {
+                chainId: 100,
+                address: '0x6C76971f98945AE98dD7d4DFcA8711ebea946eA6',
+                decimals: 18,
+                symbol: 'wstETH',
+                name: 'Wrapped liquid staked Ether 2.0 from Mainnet',
+              },
               price: '2686.20280424',
-              balances: ['0.000001496127451021', '0'],
-              apys: ['0.01005817189181808508', '0.03045453393881288111'],
+              balance: '0.000001496127451021',
+              apy: '0.01005817189181808508',
+              grossApy: '-0.02234182810818191492',
               borrowMin: '0',
               borrowCap: '100',
               totalBorrow: '0.845663757840502146',
@@ -284,7 +425,13 @@ describe('Test Spark LendingProtocol', function () {
       it(`${common.toNetworkId(chainId)} market`, async function () {
         const protocol = new LendingProtocol(chainId);
         protocol.setBlockTag(blockTag);
-        const portfolio = await protocol.getPortfolio(account);
+
+        const _portfolio = await protocol.getPortfolio(account);
+        const portfolio = JSON.parse(JSON.stringify(_portfolio));
+
+        removePortfolioDynamicFields(expected);
+        removePortfolioDynamicFields(portfolio);
+
         expect(JSON.stringify(portfolio)).to.eq(JSON.stringify(expected));
       }).timeout(30000);
     });

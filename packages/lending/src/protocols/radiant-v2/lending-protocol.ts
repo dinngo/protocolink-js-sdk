@@ -6,6 +6,7 @@ import {
   ProtocolDataProvider,
   ProtocolDataProvider__factory,
 } from './contracts';
+import BigNumberJS from 'bignumber.js';
 import {
   BorrowObject,
   BorrowParams,
@@ -33,6 +34,7 @@ import { Protocol } from 'src/protocol';
 import { ProtocolDataProviderInterface } from './contracts/ProtocolDataProvider';
 import { RAY_DECIMALS, SECONDS_PER_YEAR, calculateCompoundedRate, normalize } from '@aave/math-utils';
 import * as apisdk from '@protocolink/api';
+import { calcBorrowGrossApy, calcSupplyGrossApy, getLstApyFromMap } from 'src/protocol.utils';
 import * as common from '@protocolink/common';
 import * as logics from '@protocolink/logics';
 import { providers } from 'ethers';
@@ -232,6 +234,7 @@ export class LendingProtocol extends Protocol {
     const reserveDataMap = await this.getReserveDataMap();
     const assetPriceMap = await this.getAssetPriceMap();
     const userBalancesMap = await this.getUserBalancesMap(account);
+    const lstTokenAPYMap = await this.getLstTokenAPYMap(this.chainId);
 
     const supplies: SupplyObject[] = [];
     for (const token of tokensForDepositMap[this.chainId]) {
@@ -246,11 +249,16 @@ export class LendingProtocol extends Protocol {
         usageAsCollateralEnabled = userBalance.usageAsCollateralEnabled;
       }
 
+      const lstApy = getLstApyFromMap(token.address, lstTokenAPYMap);
+      const grossApy = calcSupplyGrossApy(reserveData.supplyAPY, lstApy);
+
       supplies.push({
         token,
         price: assetPrice,
         balance: userBalance.supplyBalance,
         apy: reserveData.supplyAPY,
+        lstApy,
+        grossApy,
         usageAsCollateralEnabled,
         ltv: reserveData.ltv,
         liquidationThreshold: reserveData.liquidationThreshold,
@@ -262,15 +270,20 @@ export class LendingProtocol extends Protocol {
     for (const token of tokensForBorrowMap[this.chainId]) {
       if (token.isWrapped) continue;
 
-      const { variableBorrowAPY, totalBorrow } = reserveDataMap[token.address];
-      const assetPrice = assetPriceMap[token.address];
-      const { variableBorrowBalance } = userBalancesMap[token.address];
+      const { variableBorrowAPY: apy, totalBorrow } = reserveDataMap[token.address];
+      const price = assetPriceMap[token.address];
+      const { variableBorrowBalance: balance } = userBalancesMap[token.address];
+
+      const lstApy = getLstApyFromMap(token.address, lstTokenAPYMap);
+      const grossApy = calcBorrowGrossApy(apy, lstApy);
 
       borrows.push({
         token,
-        price: assetPrice,
-        balances: [variableBorrowBalance],
-        apys: [variableBorrowAPY],
+        price,
+        balance,
+        apy,
+        lstApy,
+        grossApy,
         totalBorrow,
       });
     }

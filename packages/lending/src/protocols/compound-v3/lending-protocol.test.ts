@@ -3,6 +3,7 @@ import { arbitrumTokens, mainnetTokens, polygonTokens } from './tokens';
 import * as common from '@protocolink/common';
 import { expect } from 'chai';
 import * as logics from '@protocolink/logics';
+import { removePortfolioDynamicFields } from 'src/protocol.utils';
 
 describe('Test Compound V3 LendingProtocol', function () {
   context('Test getPortfolio', function () {
@@ -33,6 +34,8 @@ describe('Test Compound V3 LendingProtocol', function () {
               price: '1',
               balance: '802.844449',
               apy: '0.052483458259584',
+              lstApy: '0',
+              grossApy: '0.052483458259584',
               usageAsCollateralEnabled: false,
               ltv: '0',
               liquidationThreshold: '0',
@@ -51,6 +54,8 @@ describe('Test Compound V3 LendingProtocol', function () {
               price: '75.002',
               balance: '0',
               apy: '0',
+              lstApy: '0',
+              grossApy: '0',
               usageAsCollateralEnabled: true,
               ltv: '0.65',
               liquidationThreshold: '0.7',
@@ -69,6 +74,8 @@ describe('Test Compound V3 LendingProtocol', function () {
               price: '30298.95',
               balance: '0',
               apy: '0',
+              lstApy: '0',
+              grossApy: '0',
               usageAsCollateralEnabled: true,
               ltv: '0.7',
               liquidationThreshold: '0.77',
@@ -87,6 +94,8 @@ describe('Test Compound V3 LendingProtocol', function () {
               price: '1933.940035',
               balance: '0',
               apy: '0',
+              lstApy: '0',
+              grossApy: '0',
               usageAsCollateralEnabled: true,
               ltv: '0.825',
               liquidationThreshold: '0.895',
@@ -105,6 +114,8 @@ describe('Test Compound V3 LendingProtocol', function () {
               price: '5.8920278',
               balance: '0',
               apy: '0',
+              lstApy: '0',
+              grossApy: '0',
               usageAsCollateralEnabled: true,
               ltv: '0.75',
               liquidationThreshold: '0.81',
@@ -123,6 +134,8 @@ describe('Test Compound V3 LendingProtocol', function () {
               price: '6.96700785',
               balance: '0',
               apy: '0',
+              lstApy: '0',
+              grossApy: '0',
               usageAsCollateralEnabled: true,
               ltv: '0.79',
               liquidationThreshold: '0.85',
@@ -141,8 +154,10 @@ describe('Test Compound V3 LendingProtocol', function () {
                 name: 'USD Coin',
               },
               price: '1',
-              balances: ['0'],
-              apys: ['0.039969999949824'],
+              balance: '0',
+              apy: '0.039969999949824',
+              lstApy: '0',
+              grossApy: '0.039969999949824',
               borrowMin: '100',
               borrowCap: '0',
               totalBorrow: '367638468.435308',
@@ -161,7 +176,6 @@ describe('Test Compound V3 LendingProtocol', function () {
           marketId: 'ETH',
           utilization: '0',
           healthRate: 'Infinity',
-          netAPY: '0.012615558222672',
           totalSupplyUSD: '8966.95502603240985750683884',
           totalBorrowUSD: '0',
           supplies: [
@@ -230,8 +244,9 @@ describe('Test Compound V3 LendingProtocol', function () {
                 name: 'Ethereum',
               },
               price: '1933.940035',
-              balances: ['0'],
-              apys: ['0.032931764469936'],
+              balance: '0',
+              apy: '0.032931764469936',
+              grossApy: '0.032931764469936',
               borrowMin: '0.1',
               borrowCap: '0',
               totalBorrow: '23001.448694259417393217',
@@ -250,12 +265,17 @@ describe('Test Compound V3 LendingProtocol', function () {
           marketId: 'USDC.e',
           utilization: '0.62899605117035539651',
           healthRate: '1.6924051066004987073',
-          netAPY: '-0.04077766466005592672',
           totalSupplyUSD: '350.776292007540263981961',
           totalBorrowUSD: '170.9935994506148',
           supplies: [
             {
-              token: polygonTokens['USDC.e'],
+              token: {
+                chainId: 137,
+                address: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
+                decimals: 6,
+                symbol: 'USDC.e',
+                name: 'USD Coin (PoS)',
+              },
               price: '0.99995719',
               balance: '0',
               apy: '0.025882667487072',
@@ -323,10 +343,17 @@ describe('Test Compound V3 LendingProtocol', function () {
           ],
           borrows: [
             {
-              token: polygonTokens['USDC.e'],
+              token: {
+                chainId: 137,
+                address: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
+                decimals: 6,
+                symbol: 'USDC.e',
+                name: 'USD Coin (PoS)',
+              },
               price: '0.99995719',
-              balances: ['171.00092'],
-              apys: ['0.042873641892576'],
+              balance: '171.00092',
+              apy: '0.042873641892576',
+              grossApy: '0.042873641892576',
               borrowMin: '100',
               borrowCap: '0',
               totalBorrow: '17844140.383447',
@@ -345,7 +372,6 @@ describe('Test Compound V3 LendingProtocol', function () {
           marketId: 'USDbC',
           utilization: '0',
           healthRate: 'Infinity',
-          netAPY: '0.071690185894752',
           totalSupplyUSD: '38466.37114238206232',
           totalBorrowUSD: '0',
           supplies: [
@@ -414,8 +440,9 @@ describe('Test Compound V3 LendingProtocol', function () {
                 name: 'USD Base Coin',
               },
               price: '1.00008538',
-              balances: ['0'],
-              apys: ['0.094801459105728'],
+              balance: '0',
+              apy: '0.094801459105728',
+              grossApy: '0.094801459105728',
               borrowMin: '0.000001',
               borrowCap: '0',
               totalBorrow: '9192623.950025',
@@ -485,8 +512,9 @@ describe('Test Compound V3 LendingProtocol', function () {
                 name: 'Ethereum',
               },
               price: '2525.91577221',
-              balances: ['0'],
-              apys: ['0.019873491895584'],
+              balance: '0',
+              apy: '0.019873491895584',
+              grossApy: '0.019873491895584',
               borrowMin: '0.000001',
               borrowCap: '0',
               totalBorrow: '2390.198321091299000883',
@@ -610,8 +638,9 @@ describe('Test Compound V3 LendingProtocol', function () {
                 name: 'USD Coin (Arb1)',
               },
               price: '0.99996426',
-              balances: ['0'],
-              apys: ['0.042868037377728'],
+              balance: '0',
+              apy: '0.042868037377728',
+              grossApy: '0.042868037377728',
               borrowMin: '100',
               borrowCap: '0',
               totalBorrow: '2368291.100022',
@@ -735,8 +764,9 @@ describe('Test Compound V3 LendingProtocol', function () {
                 name: 'USD Coin',
               },
               price: '0.99996426',
-              balances: ['550003.795033'],
-              apys: ['0.026565827723856'],
+              balance: '550003.795033',
+              apy: '0.026565827723856',
+              grossApy: '0.026565827723856',
               borrowMin: '0.000001',
               borrowCap: '0',
               totalBorrow: '1178280.039698',
@@ -750,7 +780,12 @@ describe('Test Compound V3 LendingProtocol', function () {
       it(`${common.toNetworkId(chainId)} ${marketId} market`, async function () {
         const protocol = new LendingProtocol(chainId);
         protocol.setBlockTag(blockTag);
-        const portfolio = await protocol.getPortfolio(account, marketId);
+        const _portfolio = await protocol.getPortfolio(account, marketId);
+        const portfolio = JSON.parse(JSON.stringify(_portfolio));
+
+        removePortfolioDynamicFields(expected);
+        removePortfolioDynamicFields(portfolio);
+
         expect(JSON.stringify(portfolio)).to.eq(JSON.stringify(expected));
       }).timeout(60000);
     });
@@ -945,6 +980,7 @@ describe('Test Compound V3 LendingProtocol', function () {
     testCases.forEach(({ chainId, marketId, asset, expected }) => {
       it(`${common.toNetworkId(chainId)} ${marketId} market - ${asset.symbol}`, async function () {
         const protocol = new LendingProtocol(chainId);
+
         expect(protocol.isAssetTokenized(marketId, asset)).to.eq(expected);
       });
     });

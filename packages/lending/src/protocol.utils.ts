@@ -104,3 +104,35 @@ export function toSignificantDigits(amount: string, decimals: number, mode?: Rou
     )
     .toFixed();
 }
+
+export const lstTokenAPYsURL = 'https://cdn.furucombo.app/lstTokenAPYs.json';
+
+export const removePortfolioDynamicFields = (portfolio: any) => {
+  delete portfolio.netAPY;
+
+  if (Array.isArray(portfolio.supplies)) {
+    portfolio.supplies.forEach((supply: any) => {
+      delete supply.lstApy;
+      delete supply.grossApy;
+    });
+  }
+
+  if (Array.isArray(portfolio.borrows)) {
+    portfolio.borrows.forEach((borrow: any) => {
+      delete borrow.lstApy;
+      delete borrow.grossApys;
+    });
+  }
+};
+
+export const getLstApyFromMap = (tokenAddress: string, lstTokenAPYMap: Record<string, string>) => {
+  return lstTokenAPYMap[tokenAddress.toLowerCase()] || '0';
+};
+
+export const calcSupplyGrossApy = (apy: string, lstApy: string) => {
+  return lstApy === '0' ? apy : apy === '0' ? lstApy : BigNumberJS(apy).plus(lstApy).toString();
+};
+
+export const calcBorrowGrossApy = (apy: string, lstApy: string) => {
+  return lstApy === '0' ? apy : apy === '0' ? lstApy : BigNumberJS(apy).minus(lstApy).toString();
+};

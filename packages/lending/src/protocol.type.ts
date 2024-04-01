@@ -29,6 +29,10 @@ export interface AssetInfo {
   formattedBalance: string;
   apy: string;
   formattedAPY: string;
+  lstApy: string;
+  formattedLstAPY: string;
+  grossApy: string;
+  formattedGrossAPY: string;
 }
 
 export interface SupplyObject {
@@ -36,6 +40,8 @@ export interface SupplyObject {
   price: string;
   balance: string;
   apy: string;
+  lstApy: string;
+  grossApy: string;
   usageAsCollateralEnabled: boolean;
   ltv: string;
   liquidationThreshold: string;
@@ -47,8 +53,10 @@ export interface SupplyObject {
 export interface BorrowObject {
   token: common.Token;
   price: string;
-  balances: string[];
-  apys: string[];
+  balance: string;
+  apy: string;
+  lstApy: string;
+  grossApy: string;
   borrowMin?: string;
   borrowCap?: string;
   totalBorrow: string;
