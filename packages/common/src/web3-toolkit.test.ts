@@ -39,8 +39,8 @@ describe('Web3Toolkit', function () {
           chainId: ChainId.zksync,
           address: '0x3355df6D4c9C3035724Fd0e3914dE96A5a83aaf4',
           decimals: 6,
-          symbol: 'USDC',
-          name: 'USD Coin',
+          symbol: 'USDC.e',
+          name: 'Bridged USDC (zkSync)',
         },
       },
     ];
@@ -75,8 +75,8 @@ describe('Web3Toolkit', function () {
             chainId: ChainId.zksync,
             address: '0x3355df6D4c9C3035724Fd0e3914dE96A5a83aaf4',
             decimals: 6,
-            symbol: 'USDC',
-            name: 'USD Coin',
+            symbol: 'USDC.e',
+            name: 'Bridged USDC (zkSync)',
           },
           {
             chainId: ChainId.zksync,
