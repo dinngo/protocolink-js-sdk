@@ -352,4 +352,20 @@ describe('Token instance', function () {
       });
     });
   });
+
+  describe('Test logoUri', function () {
+    const testCases = [
+      { token: mainnetTokens.ETH.toObject(), expected: true },
+      { token: { ...mainnetTokens.ETH.toObject(), logoUri: undefined }, expected: true },
+      { token: { ...mainnetTokens.ETH.toObject(), logoUri: 'http://example.com/logoUri.png' }, expected: true },
+      { token: { ...mainnetTokens.ETH.toObject(), logoUri: 123 }, expected: false },
+      { token: { ...mainnetTokens.ETH.toObject(), logoUri: [123, 456] }, expected: false },
+    ];
+
+    testCases.forEach(({ token, expected }, i) => {
+      it(`case ${i + 1}`, function () {
+        expect(isTokenObject(token)).to.eq(expected);
+      });
+    });
+  });
 });
