@@ -8,6 +8,7 @@ export interface TokenObject {
   decimals: number;
   symbol: string;
   name: string;
+  logoUri?: string;
 }
 
 export class Token {
@@ -16,8 +17,9 @@ export class Token {
   readonly decimals: number;
   readonly symbol: string;
   readonly name: string;
+  readonly logoUri?: string;
 
-  constructor(chainId: number, address: string, decimals: number, symbol: string, name: string);
+  constructor(chainId: number, address: string, decimals: number, symbol: string, name: string, logoUri?: string);
   constructor(tokenObject: TokenObject);
   constructor(arg0: any, ...otherArgs: any[]) {
     if (isTokenObject(arg0)) {
@@ -26,12 +28,14 @@ export class Token {
       this.decimals = arg0.decimals;
       this.symbol = arg0.symbol;
       this.name = arg0.name;
+      this.logoUri = arg0.logoUri;
     } else {
       this.chainId = arg0;
       this.address = utils.getAddress(otherArgs[0]);
       this.decimals = otherArgs[1];
       this.symbol = otherArgs[2];
       this.name = otherArgs[3];
+      this.logoUri = otherArgs[4];
     }
   }
 
@@ -114,6 +118,7 @@ export class Token {
       decimals: this.decimals,
       symbol: this.symbol,
       name: this.name,
+      ...(this.logoUri ? { logoUri: this.logoUri } : {}),
     };
   }
 }
@@ -130,7 +135,8 @@ export function isTokenObject(v: any): v is TokenObject {
     typeof v.address === 'string' &&
     typeof v.decimals === 'number' &&
     typeof v.symbol === 'string' &&
-    typeof v.name === 'string'
+    typeof v.name === 'string' &&
+    (!v.logoUri || typeof v.logoUri === 'string')
   );
 }
 
