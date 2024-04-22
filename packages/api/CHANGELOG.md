@@ -1,5 +1,11 @@
 # @furucombo/composable-router-api
 
+## 1.0.15
+
+### Patch Changes
+
+- eee1bfc: add Stargate, skip Stargate test
+
 ## 1.0.14
 
 ### Patch Changes
