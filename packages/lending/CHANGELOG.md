@@ -1,5 +1,13 @@
 # @protocolink/lending
 
+## 1.0.16
+
+### Patch Changes
+
+- f63b7d5: add morphoblue markets
+- Updated dependencies [eee1bfc]
+  - @protocolink/api@1.0.15
+
 ## 1.0.15
 
 ### Patch Changes
