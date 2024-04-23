@@ -1083,14 +1083,14 @@
     node-addon-api "^3.2.1"
     node-gyp-build "^4.3.0"
 
-"@protocolink/logics@^1.0.13", "@protocolink/logics@^1.0.14":
-  version "1.0.14"
-  resolved "https://registry.yarnpkg.com/@protocolink/logics/-/logics-1.0.14.tgz#f14e042c4208540e73fef37693ff587cf47b33af"
-  integrity sha512-R3Pe7Ix2B6okKrQqM9tNozLL3vyfz9SWV1qDXlbWHwDB7SWnHDyONeMLDZSmzzeIcUImychNhr/uoabxJ2/tuw==
+"@protocolink/logics@^1.0.13", "@protocolink/logics@^1.0.15":
+  version "1.0.15"
+  resolved "https://registry.yarnpkg.com/@protocolink/logics/-/logics-1.0.15.tgz#b663bd7bcc778ed7932b0a0e34d0037fb9b8e10c"
+  integrity sha512-4J8rfA8IK2fBmxccL+dwgVJ7+rEn0B7xEUqWf94Zgvfyl2gtuR+/VOJKDrv3PLOv+ecbFVPXu2fn/s0nf6CWzg==
   dependencies:
     "@paraswap/sdk" "^6.2.2"
-    "@protocolink/common" "^0.3.8"
-    "@protocolink/core" "^0.4.7"
+    "@protocolink/common" "^0.3.9"
+    "@protocolink/core" "^0.4.8"
     "@types/lodash" "^4.14.195"
     "@uniswap/sdk-core" "^3.2.6"
     "@uniswap/token-lists" "^1.0.0-beta.31"
