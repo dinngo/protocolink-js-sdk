@@ -1,5 +1,14 @@
 # @furucombo/composable-router-api
 
+## 1.0.16
+
+### Patch Changes
+
+- dcf105d: Updated dependencies
+  - @protocolink/common@0.3.9
+  - @protocolink/core@0.4.8
+  - @protocolink/logics@1.0.15
+
 ## 1.0.15
 
 ### Patch Changes
