@@ -1,5 +1,12 @@
 # @protocolink/test-helpers
 
+## 0.3.7
+
+### Patch Changes
+
+- ddc258a: Updated dependencies
+  - @protocolink/common@0.3.9
+
 ## 0.3.6
 
 ### Patch Changes
