@@ -1,5 +1,12 @@
 # @protocolink/core
 
+## 0.4.8
+
+### Patch Changes
+
+- eb273d8: Updated dependencies
+  - @protocolink/common@0.3.9
+
 ## 0.4.7
 
 ### Patch Changes
