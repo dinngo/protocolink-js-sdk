@@ -120,7 +120,7 @@ export const removePortfolioDynamicFields = (portfolio: any) => {
   if (Array.isArray(portfolio.borrows)) {
     portfolio.borrows.forEach((borrow: any) => {
       delete borrow.lstApy;
-      delete borrow.grossApys;
+      delete borrow.grossApy;
     });
   }
 };
