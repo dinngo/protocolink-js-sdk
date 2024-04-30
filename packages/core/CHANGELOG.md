@@ -1,5 +1,11 @@
 # @protocolink/core
 
+## 0.4.9
+
+### Patch Changes
+
+- 485baed: extend permit2 signature deadline to 1 day
+
 ## 0.4.8
 
 ### Patch Changes
