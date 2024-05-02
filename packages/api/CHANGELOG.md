@@ -1,5 +1,13 @@
 # @furucombo/composable-router-api
 
+## 1.0.19
+
+### Patch Changes
+
+- c4cd7eb: add Stargate test and example
+- 7816d8a: Updated dependencies
+  - @protocolink/logics@1.1.2
+
 ## 1.0.18
 
 ### Patch Changes
