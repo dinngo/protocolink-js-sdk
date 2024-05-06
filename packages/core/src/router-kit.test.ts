@@ -58,39 +58,39 @@ describe('RouterKit', function () {
     const testCases = [
       {
         chainId: common.ChainId.mainnet,
-        expected: '0x6304EB1B1eC2135a64a90bA901B12Cf769657579',
+        expected: '0xFB20753f85f89be6F42D228667D70e62D1Ba5f75',
       },
       {
         chainId: common.ChainId.optimism,
-        expected: '0x168608B226ef4E59Db5E61359509656a51BAe090',
+        expected: '0xFB20753f85f89be6F42D228667D70e62D1Ba5f75',
       },
       {
         chainId: common.ChainId.gnosis,
-        expected: '0x4207b828b673EDC01d7f0020E8e8A99D8b454136',
+        expected: '0xFB20753f85f89be6F42D228667D70e62D1Ba5f75',
       },
       {
         chainId: common.ChainId.polygon,
-        expected: '0x3EBe4dfaF95cd320BF34633B3BDf773FbE732E63',
+        expected: '0xFB20753f85f89be6F42D228667D70e62D1Ba5f75',
       },
       {
         chainId: common.ChainId.zksync,
-        expected: '0x33dcA7EF16B6a0893542A1033cB70a24b2208b8F',
+        expected: '0xFB20753f85f89be6F42D228667D70e62D1Ba5f75',
       },
       {
         chainId: common.ChainId.metis,
-        expected: '0x75Ce960F2FD5f06C83EE034992362e593dcf7722',
+        expected: '0xFB20753f85f89be6F42D228667D70e62D1Ba5f75',
       },
       {
         chainId: common.ChainId.base,
-        expected: '0x50Df7c73bA1B4bb74934E50298de73F265260Ea4',
+        expected: '0xFB20753f85f89be6F42D228667D70e62D1Ba5f75',
       },
       {
         chainId: common.ChainId.arbitrum,
-        expected: '0x3EBe4dfaF95cd320BF34633B3BDf773FbE732E63',
+        expected: '0xFB20753f85f89be6F42D228667D70e62D1Ba5f75',
       },
       {
         chainId: common.ChainId.avalanche,
-        expected: '0x168608B226ef4E59Db5E61359509656a51BAe090',
+        expected: '0xFB20753f85f89be6F42D228667D70e62D1Ba5f75',
       },
     ];
 
@@ -107,39 +107,39 @@ describe('RouterKit', function () {
     const testCases = [
       {
         chainId: common.ChainId.mainnet,
-        expected: '0x6304eb1b1ec2135a64a90ba901b12cf769657579000000000000000000002710',
+        expected: '0xfb20753f85f89be6f42d228667d70e62d1ba5f75000000000000000000002710',
       },
       {
         chainId: common.ChainId.optimism,
-        expected: '0x168608b226ef4e59db5e61359509656a51bae090000000000000000000002710',
+        expected: '0xfb20753f85f89be6f42d228667d70e62d1ba5f75000000000000000000002710',
       },
       {
         chainId: common.ChainId.gnosis,
-        expected: '0x4207b828b673edc01d7f0020e8e8a99d8b454136000000000000000000002710',
+        expected: '0xfb20753f85f89be6f42d228667d70e62d1ba5f75000000000000000000002710',
       },
       {
         chainId: common.ChainId.polygon,
-        expected: '0x3ebe4dfaf95cd320bf34633b3bdf773fbe732e63000000000000000000002710',
+        expected: '0xfb20753f85f89be6f42d228667d70e62d1ba5f75000000000000000000002710',
       },
       {
         chainId: common.ChainId.zksync,
-        expected: '0x33dca7ef16b6a0893542a1033cb70a24b2208b8f000000000000000000002710',
+        expected: '0xfb20753f85f89be6f42d228667d70e62d1ba5f75000000000000000000002710',
       },
       {
         chainId: common.ChainId.metis,
-        expected: '0x75ce960f2fd5f06c83ee034992362e593dcf7722000000000000000000002710',
+        expected: '0xfb20753f85f89be6f42d228667d70e62d1ba5f75000000000000000000002710',
       },
       {
         chainId: common.ChainId.base,
-        expected: '0x50df7c73ba1b4bb74934e50298de73f265260ea4000000000000000000002710',
+        expected: '0xfb20753f85f89be6f42d228667d70e62d1ba5f75000000000000000000002710',
       },
       {
         chainId: common.ChainId.arbitrum,
-        expected: '0x3ebe4dfaf95cd320bf34633b3bdf773fbe732e63000000000000000000002710',
+        expected: '0xfb20753f85f89be6f42d228667d70e62d1ba5f75000000000000000000002710',
       },
       {
         chainId: common.ChainId.avalanche,
-        expected: '0x168608b226ef4e59db5e61359509656a51bae090000000000000000000002710',
+        expected: '0xfb20753f85f89be6f42d228667d70e62d1ba5f75000000000000000000002710',
       },
     ];
 
