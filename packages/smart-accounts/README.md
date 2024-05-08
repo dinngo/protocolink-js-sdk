@@ -1,4 +1,4 @@
-# @protocolink/smart-account
+# @protocolink/smart-accounts
 
 The smart account sdk for Protocolink.
 
@@ -7,11 +7,11 @@ The smart account sdk for Protocolink.
 Install the package via `npm`:
 
 ```sh
-npm install @protocolink/smart-account
+npm install @protocolink/smart-accounts
 ```
 
 or `yarn`:
 
 ```sh
-yarn add @protocolink/smart-account
+yarn add @protocolink/smart-accounts
 ```
