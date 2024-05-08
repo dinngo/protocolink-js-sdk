@@ -1,6 +1,6 @@
 # @protocolink/smart-accounts
 
-The smart account sdk for Protocolink.
+The smart accounts sdk for Protocolink.
 
 ## Install
 

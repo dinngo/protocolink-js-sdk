@@ -2,4 +2,4 @@
 '@protocolink/smart-accounts': patch
 ---
 
-The first version release for Protocolink Smart Account
+The first version release for Protocolink Smart Accounts

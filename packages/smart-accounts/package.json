@@ -1,7 +1,7 @@
 {
   "name": "@protocolink/smart-accounts",
   "version": "0.1.0",
-  "description": "Protocolink Smart Account SDK",
+  "description": "Protocolink Smart Accounts SDK",
   "keywords": [
     "furucombo",
     "protocolink"

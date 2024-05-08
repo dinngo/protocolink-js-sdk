@@ -26,7 +26,7 @@ export const configs: Config[] = [
   },
 ];
 
-export const [supportedChainIds, configMap, executorMap, executorIdMap] = configs.reduce(
+export const [supportedChainIds, configMap, smartAccountMap, smartAccountIdMap] = configs.reduce(
   (accumulator, config) => {
     accumulator[0].push(config.chainId);
     accumulator[1][config.chainId] = config;
@@ -51,10 +51,10 @@ export function getConfig(chainId: number) {
   return configMap[chainId];
 }
 
-export function getExecutorId(chainId: number) {
-  return executorIdMap[chainId];
+export function getSmartAccountIds(chainId: number) {
+  return smartAccountIdMap[chainId];
 }
 
 export function getSmartAccount(chainId: number, id: string) {
-  return executorMap[chainId][id];
+  return smartAccountMap[chainId][id];
 }
