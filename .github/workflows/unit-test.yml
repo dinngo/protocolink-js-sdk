@@ -29,6 +29,7 @@ jobs:
           yarn workspace @protocolink/common build
           yarn workspace @protocolink/core build
           yarn workspace @protocolink/test-helpers build
+          yarn workspace @protocolink/smart-account build
           yarn workspace @protocolink/api build
 
       - name: Run unit test

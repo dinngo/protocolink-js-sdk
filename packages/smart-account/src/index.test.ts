@@ -1,11 +1,11 @@
-import { SmartAccountId, getExecutor } from '../src/configs';
+import { SmartAccountId, getSmartAccount } from '../src/configs';
 import * as common from '@protocolink/common';
-import { encodeSmartAccount, getSmartIds, verifySmartId } from '../src';
+import { encodeSmartAccount, getSmartAccountIds, isSupportedSmartAccountId } from '../src';
 import { expect } from 'chai';
 import { utils } from 'ethers';
 
 describe('SmartAccount', function () {
-  context('Test getSmartIds()', function () {
+  context('Test getSmartAccountIds()', function () {
     const testCases = [
       {
         chainId: common.ChainId.optimism,
@@ -14,7 +14,7 @@ describe('SmartAccount', function () {
 
     testCases.forEach(({ chainId }, i) => {
       it(`case ${i + 1}`, async function () {
-        const smartIds = getSmartIds(chainId);
+        const smartIds = getSmartAccountIds(chainId);
         expect(smartIds).to.have.lengthOf.above(0);
       });
     });
@@ -29,7 +29,7 @@ describe('SmartAccount', function () {
 
     testCases.forEach(({ chainId, id, expects }, i) => {
       it(`case ${i + 1}`, async function () {
-        expect(verifySmartId(chainId, id)).to.be.eq(expects);
+        expect(isSupportedSmartAccountId(chainId, id)).to.be.eq(expects);
       });
     });
   });
@@ -48,7 +48,7 @@ describe('SmartAccount', function () {
     testCases.forEach(({ chainId, id, tos, datas, values }, i) => {
       it(`case ${i + 1}`, async function () {
         const { to, data } = encodeSmartAccount(chainId, id, tos, datas, values);
-        expect(to).to.eq(getExecutor(chainId, id).address);
+        expect(to).to.eq(getSmartAccount(chainId, id).executor);
         expect(utils.isBytesLike(data)).to.be.true;
       });
     });
