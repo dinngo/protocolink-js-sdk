@@ -1,6 +1,6 @@
-import { SmartAccountId, getSmartAccount } from '../src/configs';
+import { SmartAccountId, getSmartAccount, getSmartAccountIds } from './configs';
 import * as common from '@protocolink/common';
-import { encodeSmartAccount, getSmartAccountIds, isSupportedSmartAccountId } from '../src';
+import { encodeSmartAccount, isSupportedSmartAccountId } from './account';
 import { expect } from 'chai';
 import { utils } from 'ethers';
 
