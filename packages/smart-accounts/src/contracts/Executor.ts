@@ -20,40 +20,13 @@ import type { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from './com
 export interface ExecutorInterface extends utils.Interface {
   functions: {
     'executeFromAgent(address[],bytes[],uint256[])': FunctionFragment;
-    'initialized(address)': FunctionFragment;
-    'isInitialized(address)': FunctionFragment;
-    'isModuleType(uint256)': FunctionFragment;
-    'onInstall(bytes)': FunctionFragment;
-    'onUninstall(bytes)': FunctionFragment;
-    'router()': FunctionFragment;
   };
 
-  getFunction(
-    nameOrSignatureOrTopic:
-      | 'executeFromAgent'
-      | 'initialized'
-      | 'isInitialized'
-      | 'isModuleType'
-      | 'onInstall'
-      | 'onUninstall'
-      | 'router'
-  ): FunctionFragment;
+  getFunction(nameOrSignatureOrTopic: 'executeFromAgent'): FunctionFragment;
 
   encodeFunctionData(functionFragment: 'executeFromAgent', values: [string[], BytesLike[], BigNumberish[]]): string;
-  encodeFunctionData(functionFragment: 'initialized', values: [string]): string;
-  encodeFunctionData(functionFragment: 'isInitialized', values: [string]): string;
-  encodeFunctionData(functionFragment: 'isModuleType', values: [BigNumberish]): string;
-  encodeFunctionData(functionFragment: 'onInstall', values: [BytesLike]): string;
-  encodeFunctionData(functionFragment: 'onUninstall', values: [BytesLike]): string;
-  encodeFunctionData(functionFragment: 'router', values?: undefined): string;
 
   decodeFunctionResult(functionFragment: 'executeFromAgent', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'initialized', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'isInitialized', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'isModuleType', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'onInstall', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'onUninstall', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'router', data: BytesLike): Result;
 
   events: {};
 }
@@ -87,18 +60,6 @@ export interface Executor extends BaseContract {
       values_: BigNumberish[],
       overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
-
-    initialized(account: string, overrides?: CallOverrides): Promise<[boolean] & { installed: boolean }>;
-
-    isInitialized(smartAccount: string, overrides?: CallOverrides): Promise<[boolean]>;
-
-    isModuleType(typeID: BigNumberish, overrides?: CallOverrides): Promise<[boolean]>;
-
-    onInstall(arg0: BytesLike, overrides?: Overrides & { from?: string }): Promise<ContractTransaction>;
-
-    onUninstall(arg0: BytesLike, overrides?: Overrides & { from?: string }): Promise<ContractTransaction>;
-
-    router(overrides?: CallOverrides): Promise<[string]>;
   };
 
   executeFromAgent(
@@ -108,18 +69,6 @@ export interface Executor extends BaseContract {
     overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
-  initialized(account: string, overrides?: CallOverrides): Promise<boolean>;
-
-  isInitialized(smartAccount: string, overrides?: CallOverrides): Promise<boolean>;
-
-  isModuleType(typeID: BigNumberish, overrides?: CallOverrides): Promise<boolean>;
-
-  onInstall(arg0: BytesLike, overrides?: Overrides & { from?: string }): Promise<ContractTransaction>;
-
-  onUninstall(arg0: BytesLike, overrides?: Overrides & { from?: string }): Promise<ContractTransaction>;
-
-  router(overrides?: CallOverrides): Promise<string>;
-
   callStatic: {
     executeFromAgent(
       tos_: string[],
@@ -127,18 +76,6 @@ export interface Executor extends BaseContract {
       values_: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<void>;
-
-    initialized(account: string, overrides?: CallOverrides): Promise<boolean>;
-
-    isInitialized(smartAccount: string, overrides?: CallOverrides): Promise<boolean>;
-
-    isModuleType(typeID: BigNumberish, overrides?: CallOverrides): Promise<boolean>;
-
-    onInstall(arg0: BytesLike, overrides?: CallOverrides): Promise<void>;
-
-    onUninstall(arg0: BytesLike, overrides?: CallOverrides): Promise<void>;
-
-    router(overrides?: CallOverrides): Promise<string>;
   };
 
   filters: {};
@@ -150,18 +87,6 @@ export interface Executor extends BaseContract {
       values_: BigNumberish[],
       overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
-
-    initialized(account: string, overrides?: CallOverrides): Promise<BigNumber>;
-
-    isInitialized(smartAccount: string, overrides?: CallOverrides): Promise<BigNumber>;
-
-    isModuleType(typeID: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
-
-    onInstall(arg0: BytesLike, overrides?: Overrides & { from?: string }): Promise<BigNumber>;
-
-    onUninstall(arg0: BytesLike, overrides?: Overrides & { from?: string }): Promise<BigNumber>;
-
-    router(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -171,17 +96,5 @@ export interface Executor extends BaseContract {
       values_: BigNumberish[],
       overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
-
-    initialized(account: string, overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    isInitialized(smartAccount: string, overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    isModuleType(typeID: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    onInstall(arg0: BytesLike, overrides?: Overrides & { from?: string }): Promise<PopulatedTransaction>;
-
-    onUninstall(arg0: BytesLike, overrides?: Overrides & { from?: string }): Promise<PopulatedTransaction>;
-
-    router(overrides?: CallOverrides): Promise<PopulatedTransaction>;
   };
 }
