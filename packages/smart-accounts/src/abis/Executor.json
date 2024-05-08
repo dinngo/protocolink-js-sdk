@@ -1,0 +1,36 @@
+[
+  {
+    "type": "constructor",
+    "inputs": [
+      {
+        "name": "router_",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "executeFromAgent",
+    "inputs": [
+      {
+        "name": "tos_",
+        "type": "address[]",
+        "internalType": "address[]"
+      },
+      {
+        "name": "datas_",
+        "type": "bytes[]",
+        "internalType": "bytes[]"
+      },
+      {
+        "name": "values_",
+        "type": "uint256[]",
+        "internalType": "uint256[]"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  }
+]
