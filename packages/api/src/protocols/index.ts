@@ -7,6 +7,7 @@ export * as openoceanv2 from './openocean-v2';
 export * as paraswapv5 from './paraswap-v5';
 export * as permit2 from './permit2';
 export * as radiantv2 from './radiant-v2';
+export * as sonne from './sonne';
 export * as spark from './spark';
 export * as stargate from './stargate';
 export * as syncswap from './syncswap';
