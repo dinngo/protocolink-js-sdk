@@ -9,6 +9,9 @@ export const contractAddressMap: Record<number, Record<ContractNames, string>> =
   [common.ChainId.optimism]: {
     Router: '0xDec80E988F4baF43be69c13711453013c212feA8',
   },
+  [common.ChainId.bnb]: {
+    Router: '0xDec80E988F4baF43be69c13711453013c212feA8',
+  },
   [common.ChainId.gnosis]: {
     Router: '0xDec80E988F4baF43be69c13711453013c212feA8',
   },
