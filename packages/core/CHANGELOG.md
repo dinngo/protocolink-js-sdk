@@ -1,5 +1,11 @@
 # @protocolink/core
 
+## 0.4.11
+
+### Patch Changes
+
+- e0e30ab: add Router address to BNB Chain
+
 ## 0.4.10
 
 ### Patch Changes
