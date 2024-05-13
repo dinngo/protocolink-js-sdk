@@ -1,5 +1,11 @@
 # @protocolink/common
 
+## 0.3.10
+
+### Patch Changes
+
+- a4a21be: add Bnb Chain information
+
 ## 0.3.9
 
 ### Patch Changes
