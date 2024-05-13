@@ -15,6 +15,7 @@ describe('Test isSupportedChainId', function () {
   const testCases = [
     { chainId: ChainId.mainnet, expected: true },
     { chainId: ChainId.optimism, expected: true },
+    { chainId: ChainId.bnb, expected: true },
     { chainId: ChainId.gnosis, expected: true },
     { chainId: ChainId.polygon, expected: true },
     { chainId: ChainId.zksync, expected: true },
@@ -36,6 +37,7 @@ describe('Test isSupportedNetworkId', function () {
   const testCases = [
     { networkId: NetworkId.mainnet, expected: true },
     { networkId: NetworkId.optimism, expected: true },
+    { networkId: NetworkId.bnb, expected: true },
     { networkId: NetworkId.gnosis, expected: true },
     { networkId: NetworkId.polygon, expected: true },
     { networkId: NetworkId.zksync, expected: true },
@@ -90,6 +92,24 @@ describe('Test newExplorerUrl', function () {
       type: ExplorerType.token,
       data: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
       expected: 'https://optimistic.etherscan.io/token/0xdAC17F958D2ee523a2206206994597C13D831ec7',
+    },
+    {
+      chainId: ChainId.bnb,
+      type: ExplorerType.tx,
+      data: '0xc1a754e55b9c72a98c0c8136e4499e9fdb2148894c8bddc837c6c5c3bb3833a7',
+      expected: 'https://bscscan.com/tx/0xc1a754e55b9c72a98c0c8136e4499e9fdb2148894c8bddc837c6c5c3bb3833a7',
+    },
+    {
+      chainId: ChainId.bnb,
+      type: ExplorerType.address,
+      data: '0x5cf810ab8c718ac065b45f892a5badab2b2946b9',
+      expected: 'https://bscscan.com/address/0x5cf810ab8c718ac065b45f892a5badab2b2946b9',
+    },
+    {
+      chainId: ChainId.bnb,
+      type: ExplorerType.token,
+      data: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c',
+      expected: 'https://bscscan.com/token/0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c',
     },
     {
       chainId: ChainId.gnosis,
