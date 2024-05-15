@@ -1,4 +1,4 @@
-import { arbitrumTokens, mainnetTokens } from './tokens';
+import { arbitrumTokens, bnbTokens, mainnetTokens } from './tokens';
 import * as common from '@protocolink/common';
 
 export const ID = 'radiant-v2';
@@ -63,8 +63,57 @@ export const configs: Config[] = [
         used: { deposit: true, withdraw: true, borrow: true, repay: true, flashLoan: true },
       },
       {
+        asset: mainnetTokens.sDAI,
+        rToken: mainnetTokens.rsDAI,
+        used: { deposit: true, withdraw: true, borrow: true, repay: true, flashLoan: true },
+      },
+      {
         asset: mainnetTokens.rETH,
         rToken: mainnetTokens.rrETH,
+        used: { deposit: true, withdraw: true, borrow: true, repay: true, flashLoan: true },
+      },
+    ],
+  },
+  {
+    chainId: common.ChainId.bnb,
+    contractMap: {
+      ProtocolDataProvider: '0x2f9D57E97C3DFED8676e605BC504a48E0c5917E9',
+      PriceOracle: '0x0BB5c1Bc173b207cBf47CDf013617087776F3782',
+    },
+    reserves: [
+      {
+        asset: bnbTokens.BTCB,
+        rToken: bnbTokens.rBTCB,
+        used: { deposit: true, withdraw: true, borrow: true, repay: true, flashLoan: true },
+      },
+      {
+        asset: bnbTokens.USDT,
+        rToken: bnbTokens.rUSDT,
+        used: { deposit: true, withdraw: true, borrow: true, repay: true, flashLoan: true },
+      },
+      {
+        asset: bnbTokens.USDC,
+        rToken: bnbTokens.rUSDC,
+        used: { deposit: true, withdraw: true, borrow: true, repay: true, flashLoan: true },
+      },
+      {
+        asset: bnbTokens.ETH,
+        rToken: bnbTokens.rWETH,
+        used: { deposit: true, withdraw: true, borrow: true, repay: true, flashLoan: true },
+      },
+      {
+        asset: bnbTokens.WBNB,
+        rToken: bnbTokens.rWBNB,
+        used: { deposit: true, withdraw: true, borrow: true, repay: true, flashLoan: true },
+      },
+      {
+        asset: bnbTokens.BNB,
+        rToken: bnbTokens.rWBNB,
+        used: { deposit: true, withdraw: true, borrow: true, repay: true },
+      },
+      {
+        asset: bnbTokens.wBETH,
+        rToken: bnbTokens.rwBETH,
         used: { deposit: true, withdraw: true, borrow: true, repay: true, flashLoan: true },
       },
     ],
