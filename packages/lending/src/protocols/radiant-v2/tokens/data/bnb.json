@@ -1,0 +1,93 @@
+{
+  "BTCB": {
+    "chainId": 56,
+    "address": "0x7130d2A12B9BCbFAe4f2634d864A1Ee1Ce3Ead9c",
+    "decimals": 18,
+    "symbol": "BTCB",
+    "name": "BTCB Token"
+  },
+  "rBTCB": {
+    "chainId": 56,
+    "address": "0x34d4F4459c1b529BEbE1c426F1e584151BE2C1e5",
+    "decimals": 18,
+    "symbol": "rBTCB",
+    "name": "Radiant interest bearing BTCB"
+  },
+  "USDT": {
+    "chainId": 56,
+    "address": "0x55d398326f99059fF775485246999027B3197955",
+    "decimals": 18,
+    "symbol": "USDT",
+    "name": "Tether USD"
+  },
+  "rUSDT": {
+    "chainId": 56,
+    "address": "0x4Ff2DD7c6435789E0BB56B0553142Ad00878a004",
+    "decimals": 18,
+    "symbol": "rUSDT",
+    "name": "Radiant interest bearing USDT"
+  },
+  "USDC": {
+    "chainId": 56,
+    "address": "0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d",
+    "decimals": 18,
+    "symbol": "USDC",
+    "name": "USD Coin"
+  },
+  "rUSDC": {
+    "chainId": 56,
+    "address": "0x3bDCEf9e656fD9D03eA98605946b4fbF362C342b",
+    "decimals": 18,
+    "symbol": "rUSDC",
+    "name": "Radiant interest bearing USDC"
+  },
+  "ETH": {
+    "chainId": 56,
+    "address": "0x2170Ed0880ac9A755fd29B2688956BD959F933F8",
+    "decimals": 18,
+    "symbol": "ETH",
+    "name": "Ethereum Token"
+  },
+  "rWETH": {
+    "chainId": 56,
+    "address": "0x455a281D508B4e34d55b31AC2e4579BD9b77cA8E",
+    "decimals": 18,
+    "symbol": "rWETH",
+    "name": "Radiant interest bearing WETH"
+  },
+  "BNB": {
+    "chainId": 56,
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18,
+    "symbol": "BNB",
+    "name": "BNB"
+  },
+  "WBNB": {
+    "chainId": 56,
+    "address": "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c",
+    "decimals": 18,
+    "symbol": "WBNB",
+    "name": "Wrapped BNB"
+  },
+  "rWBNB": {
+    "chainId": 56,
+    "address": "0x58b0BB56CFDfc5192989461dD43568bcfB2797Db",
+    "decimals": 18,
+    "symbol": "rWBNB",
+    "name": "Radiant interest bearing WBNB"
+  },
+  "wBETH": {
+    "chainId": 56,
+    "address": "0xa2E3356610840701BDf5611a53974510Ae27E2e1",
+    "decimals": 18,
+    "symbol": "wBETH",
+    "name": "Wrapped Binance Beacon ETH"
+  },
+  "rwBETH": {
+    "chainId": 56,
+    "address": "0x6350e53461c7C95964D699cfa4e84cec993eebb1",
+    "decimals": 18,
+    "symbol": "rwBETH",
+    "name": "Radiant interest bearing wBETH"
+  }
+}

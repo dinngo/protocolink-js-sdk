@@ -2,6 +2,7 @@ import {
   arbitrumTokens,
   avalancheTokens,
   baseTokens,
+  bnbTokens,
   gnosisTokens,
   mainnetTokens,
   metisTokens,
@@ -65,6 +66,12 @@ export const configs: Config[] = [
     primaryStablecoin: gnosisTokens.WXDAI,
     secondaryStablecoin: gnosisTokens.USDC,
     primaryNonstablecoin: gnosisTokens.WETH,
+  },
+  {
+    chainId: common.ChainId.bnb,
+    primaryStablecoin: bnbTokens.USDT,
+    secondaryStablecoin: bnbTokens.USDC,
+    primaryNonstablecoin: bnbTokens.BNB,
   },
 ];
 

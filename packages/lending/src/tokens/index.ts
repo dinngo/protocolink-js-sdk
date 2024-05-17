@@ -1,6 +1,7 @@
 import arbitrumTokensJSON from './arbitrum.json';
 import avalancheTokensJSON from './avalanche.json';
 import baseTokensJSON from './base.json';
+import bnbTokensJSON from './bnb.json';
 import * as common from '@protocolink/common';
 import gnosisTokensJSON from './gnosis.json';
 import mainnetTokensJSON from './mainnet.json';
@@ -39,3 +40,7 @@ export const baseTokens = common.toTokenMap<baseTokenSymbols>(baseTokensJSON);
 type GnosisTokenSymbols = keyof typeof gnosisTokensJSON;
 
 export const gnosisTokens = common.toTokenMap<GnosisTokenSymbols>(gnosisTokensJSON);
+
+type BnbTokenSymbols = keyof typeof bnbTokensJSON;
+
+export const bnbTokens = common.toTokenMap<BnbTokenSymbols>(bnbTokensJSON);
