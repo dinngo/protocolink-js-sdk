@@ -238,7 +238,7 @@ describe('Test Adapter for Radiant V2', function () {
       expect(afterPortfolio.totalBorrowUSD).to.be.eq(0);
       expect(afterPortfolio.totalSupplyUSD).to.be.eq(0);
 
-      expect(logics).has.length(25);
+      expect(logics).has.length(28);
       expect(logics[0].rid).to.eq('utility:flash-loan-aggregator');
       expect(logics[1].rid).to.contain('swap-token');
       expect(logics[2].rid).to.eq('radiant-v2:repay');
@@ -271,8 +271,12 @@ describe('Test Adapter for Radiant V2', function () {
       expect(logics[21].rid).to.eq('radiant-v2:withdraw');
       expect(logics[21].fields.balanceBps).to.eq(common.BPS_BASE);
       expect(logics[22].rid).to.contain('swap-token');
-      expect(logics[23].rid).to.eq('utility:flash-loan-aggregator');
-      expect(logics[24].rid).to.eq('utility:wrapped-native-token');
+      expect(logics[23].rid).to.eq('permit2:pull-token');
+      expect(logics[24].rid).to.eq('radiant-v2:withdraw');
+      expect(logics[24].fields.balanceBps).to.eq(common.BPS_BASE);
+      expect(logics[25].rid).to.contain('swap-token');
+      expect(logics[26].rid).to.eq('utility:flash-loan-aggregator');
+      expect(logics[27].rid).to.eq('utility:wrapped-native-token');
     });
 
     it('success - collateral positions only', async function () {
@@ -291,7 +295,7 @@ describe('Test Adapter for Radiant V2', function () {
       expect(Number(destAmount)).to.be.greaterThan(0);
       expect(afterPortfolio.totalSupplyUSD).to.be.eq(0);
 
-      expect(logics).has.length(17);
+      expect(logics).has.length(20);
       expect(logics[0].rid).to.eq('permit2:pull-token');
       expect(logics[1].rid).to.eq('radiant-v2:withdraw');
       expect(logics[1].fields.balanceBps).to.eq(common.BPS_BASE);
@@ -315,6 +319,10 @@ describe('Test Adapter for Radiant V2', function () {
       expect(logics[15].rid).to.eq('radiant-v2:withdraw');
       expect(logics[15].fields.balanceBps).to.eq(common.BPS_BASE);
       expect(logics[16].rid).to.contain('swap-token');
+      expect(logics[17].rid).to.eq('permit2:pull-token');
+      expect(logics[18].rid).to.eq('radiant-v2:withdraw');
+      expect(logics[18].fields.balanceBps).to.eq(common.BPS_BASE);
+      expect(logics[19].rid).to.contain('swap-token');
     });
   });
 

@@ -299,9 +299,9 @@ describe('Test Adapter for Aave V2', function () {
         destToken,
       });
 
+      expect(error).to.be.undefined;
       expect(destAmount).to.eq('0');
       expect(JSON.stringify(portfolio)).to.eq(JSON.stringify(afterPortfolio));
-      expect(error).to.be.undefined;
       expect(logics).to.be.empty;
     });
 
@@ -344,14 +344,13 @@ describe('Test Adapter for Aave V2', function () {
         destToken,
       });
 
+      expect(error).to.be.undefined;
       expect(Number(destAmount)).to.be.greaterThan(0);
 
       const expectedAfterPortfolio = portfolio.clone();
       expectedAfterPortfolio.withdraw(srcToken, srcAmount);
       expectedAfterPortfolio.supply(destToken, destAmount);
       expect(JSON.stringify(expectedAfterPortfolio)).to.eq(JSON.stringify(afterPortfolio));
-
-      expect(error).to.be.undefined;
 
       expect(logics).has.length(7);
       expect(logics[0].rid).to.eq('utility:flash-loan-aggregator');
@@ -390,9 +389,9 @@ describe('Test Adapter for Aave V2', function () {
         destToken,
       });
 
+      expect(error).to.be.undefined;
       expect(destAmount).to.eq('0');
       expect(JSON.stringify(portfolio)).to.eq(JSON.stringify(afterPortfolio));
-      expect(error).to.be.undefined;
       expect(logics).to.be.empty;
     });
 
@@ -435,14 +434,13 @@ describe('Test Adapter for Aave V2', function () {
         destToken,
       });
 
+      expect(error).to.be.undefined;
       expect(Number(destAmount)).to.be.greaterThan(0);
 
       const expectedAfterPortfolio = portfolio.clone();
       expectedAfterPortfolio.repay(srcToken, srcAmount);
       expectedAfterPortfolio.borrow(destToken, destAmount);
       expect(JSON.stringify(expectedAfterPortfolio)).to.eq(JSON.stringify(afterPortfolio));
-
-      expect(error).to.be.undefined;
 
       expect(logics).has.length(5);
       expect(logics[0].rid).to.eq('utility:flash-loan-aggregator');
@@ -476,9 +474,9 @@ describe('Test Adapter for Aave V2', function () {
         destToken,
       });
 
+      expect(error).to.be.undefined;
       expect(destAmount).to.eq('0');
       expect(JSON.stringify(portfolio)).to.eq(JSON.stringify(afterPortfolio));
-      expect(error).to.be.undefined;
       expect(logics).to.be.empty;
     });
 
@@ -495,14 +493,13 @@ describe('Test Adapter for Aave V2', function () {
         destToken,
       });
 
+      expect(error).to.be.undefined;
       expect(Number(destAmount)).to.be.greaterThan(0);
 
       const expectedAfterPortfolio = portfolio.clone();
       expectedAfterPortfolio.supply(srcToken, srcAmount);
       expectedAfterPortfolio.borrow(destToken, destAmount);
       expect(JSON.stringify(expectedAfterPortfolio)).to.eq(JSON.stringify(afterPortfolio));
-
-      expect(error).to.be.undefined;
 
       expect(logics).has.length(5);
       expect(logics[0].rid).to.eq('utility:flash-loan-aggregator');
@@ -528,14 +525,13 @@ describe('Test Adapter for Aave V2', function () {
         destToken,
       });
 
+      expect(error).to.be.undefined;
       expect(Number(destAmount)).to.be.greaterThan(0);
 
       const expectedAfterPortfolio = portfolio.clone();
       expectedAfterPortfolio.supply(srcToken, logics[2].fields.input.amount);
       expectedAfterPortfolio.borrow(destToken, destAmount);
       expect(JSON.stringify(expectedAfterPortfolio)).to.eq(JSON.stringify(afterPortfolio));
-
-      expect(error).to.be.undefined;
 
       expect(logics).has.length(6);
       expect(logics[0].rid).to.eq('utility:flash-loan-aggregator');
@@ -572,9 +568,9 @@ describe('Test Adapter for Aave V2', function () {
         destToken,
       });
 
+      expect(error).to.be.undefined;
       expect(destAmount).to.eq('0');
       expect(JSON.stringify(portfolio)).to.eq(JSON.stringify(afterPortfolio));
-      expect(error).to.be.undefined;
       expect(logics).to.be.empty;
     });
 
@@ -591,14 +587,13 @@ describe('Test Adapter for Aave V2', function () {
         destToken,
       });
 
+      expect(error).to.be.undefined;
       expect(Number(destAmount)).to.be.greaterThan(0);
 
       const expectedAfterPortfolio = portfolio.clone();
       expectedAfterPortfolio.supply(destToken, destAmount);
       expectedAfterPortfolio.borrow(srcToken, srcAmount);
       expect(JSON.stringify(expectedAfterPortfolio)).to.eq(JSON.stringify(afterPortfolio));
-
-      expect(error).to.be.undefined;
 
       expect(logics).has.length(5);
       expect(logics[0].rid).to.eq('utility:flash-loan-aggregator');
@@ -624,14 +619,13 @@ describe('Test Adapter for Aave V2', function () {
         destToken,
       });
 
+      expect(error).to.be.undefined;
       expect(Number(destAmount)).to.be.greaterThan(0);
 
       const expectedAfterPortfolio = portfolio.clone();
       expectedAfterPortfolio.supply(destToken, destAmount);
       expectedAfterPortfolio.borrow(srcToken, logics[4].fields.output.amount);
       expect(JSON.stringify(expectedAfterPortfolio)).to.eq(JSON.stringify(afterPortfolio));
-
-      expect(error).to.be.undefined;
 
       expect(logics).has.length(6);
       expect(logics[0].rid).to.eq('utility:flash-loan-aggregator');
@@ -668,9 +662,9 @@ describe('Test Adapter for Aave V2', function () {
         destToken,
       });
 
+      expect(error).to.be.undefined;
       expect(destAmount).to.eq('0');
       expect(JSON.stringify(portfolio)).to.eq(JSON.stringify(afterPortfolio));
-      expect(error).to.be.undefined;
       expect(logics).to.be.empty;
     });
 
@@ -740,14 +734,13 @@ describe('Test Adapter for Aave V2', function () {
         destToken,
       });
 
+      expect(error).to.be.undefined;
       expect(Number(destAmount)).to.be.greaterThan(0);
 
       const expectedAfterPortfolio = portfolio.clone();
       expectedAfterPortfolio.repay(srcToken, srcAmount);
       expectedAfterPortfolio.withdraw(destToken, destAmount);
       expect(JSON.stringify(expectedAfterPortfolio)).to.eq(JSON.stringify(afterPortfolio));
-
-      expect(error).to.be.undefined;
 
       expect(logics).has.length(5);
       expect(logics[0].rid).to.eq('utility:flash-loan-aggregator');
@@ -772,14 +765,13 @@ describe('Test Adapter for Aave V2', function () {
         destToken,
       });
 
+      expect(error).to.be.undefined;
       expect(Number(destAmount)).to.be.greaterThan(0);
 
       const expectedAfterPortfolio = portfolio.clone();
       expectedAfterPortfolio.repay(srcToken, srcAmount);
       expectedAfterPortfolio.withdraw(destToken, destAmount);
       expect(JSON.stringify(expectedAfterPortfolio)).to.eq(JSON.stringify(afterPortfolio));
-
-      expect(error).to.be.undefined;
 
       expect(logics).has.length(6);
       expect(logics[0].rid).to.eq('utility:flash-loan-aggregator');
@@ -815,9 +807,9 @@ describe('Test Adapter for Aave V2', function () {
         destToken,
       });
 
+      expect(error).to.be.undefined;
       expect(destAmount).to.eq('0');
       expect(JSON.stringify(portfolio)).to.eq(JSON.stringify(afterPortfolio));
-      expect(error).to.be.undefined;
       expect(logics).to.be.empty;
     });
 
@@ -834,13 +826,12 @@ describe('Test Adapter for Aave V2', function () {
         destToken,
       });
 
+      expect(error).to.be.undefined;
       expect(destAmount).to.eq(srcAmount);
 
       const expectedAfterPortfolio = portfolio.clone();
       expectedAfterPortfolio.supply(srcToken, srcAmount);
       expect(JSON.stringify(expectedAfterPortfolio)).to.eq(JSON.stringify(afterPortfolio));
-
-      expect(error).to.be.undefined;
 
       expect(logics).has.length(1);
       expect(logics[0].rid).to.eq('aave-v2:deposit');
@@ -860,13 +851,12 @@ describe('Test Adapter for Aave V2', function () {
         destToken,
       });
 
+      expect(error).to.be.undefined;
       expect(Number(destAmount)).to.be.greaterThan(0);
 
       const expectedAfterPortfolio = portfolio.clone();
       expectedAfterPortfolio.supply(destToken, destAmount);
       expect(JSON.stringify(expectedAfterPortfolio)).to.eq(JSON.stringify(afterPortfolio));
-
-      expect(error).to.be.undefined;
 
       expect(logics).has.length(2);
       expect(logics[0].rid).to.contain('swap-token');
@@ -897,9 +887,9 @@ describe('Test Adapter for Aave V2', function () {
         destToken,
       });
 
+      expect(error).to.be.undefined;
       expect(destAmount).to.eq('0');
       expect(JSON.stringify(portfolio)).to.eq(JSON.stringify(afterPortfolio));
-      expect(error).to.be.undefined;
       expect(logics).to.be.empty;
     });
 
@@ -942,13 +932,12 @@ describe('Test Adapter for Aave V2', function () {
         destToken,
       });
 
+      expect(error).to.be.undefined;
       expect(destAmount).to.eq(srcAmount);
 
       const expectedAfterPortfolio = portfolio.clone();
       expectedAfterPortfolio.withdraw(srcToken, srcAmount);
       expect(JSON.stringify(expectedAfterPortfolio)).to.eq(JSON.stringify(afterPortfolio));
-
-      expect(error).to.be.undefined;
 
       expect(logics).has.length(1);
       expect(logics[0].rid).to.eq('aave-v2:withdraw');
@@ -968,13 +957,12 @@ describe('Test Adapter for Aave V2', function () {
         destToken,
       });
 
+      expect(error).to.be.undefined;
       expect(Number(destAmount)).to.be.greaterThan(0);
 
       const expectedAfterPortfolio = portfolio.clone();
       expectedAfterPortfolio.withdraw(srcToken, srcAmount);
       expect(JSON.stringify(expectedAfterPortfolio)).to.eq(JSON.stringify(afterPortfolio));
-
-      expect(error).to.be.undefined;
 
       expect(logics).has.length(2);
       expect(logics[0].rid).to.eq('aave-v2:withdraw');
@@ -1006,9 +994,9 @@ describe('Test Adapter for Aave V2', function () {
         destToken,
       });
 
+      expect(error).to.be.undefined;
       expect(destAmount).to.eq('0');
       expect(JSON.stringify(portfolio)).to.eq(JSON.stringify(afterPortfolio));
-      expect(error).to.be.undefined;
       expect(logics).to.be.empty;
     });
 
@@ -1025,13 +1013,12 @@ describe('Test Adapter for Aave V2', function () {
         destToken,
       });
 
+      expect(error).to.be.undefined;
       expect(destAmount).to.eq(srcAmount);
 
       const expectedAfterPortfolio = portfolio.clone();
       expectedAfterPortfolio.borrow(srcToken, srcAmount);
       expect(JSON.stringify(expectedAfterPortfolio)).to.eq(JSON.stringify(afterPortfolio));
-
-      expect(error).to.be.undefined;
 
       expect(logics).has.length(1);
       expect(logics[0].rid).to.eq('aave-v2:borrow');
@@ -1050,13 +1037,12 @@ describe('Test Adapter for Aave V2', function () {
         destToken,
       });
 
+      expect(error).to.be.undefined;
       expect(Number(destAmount)).to.be.greaterThan(0);
 
       const expectedAfterPortfolio = portfolio.clone();
       expectedAfterPortfolio.borrow(srcToken, srcAmount);
       expect(JSON.stringify(expectedAfterPortfolio)).to.eq(JSON.stringify(afterPortfolio));
-
-      expect(error).to.be.undefined;
 
       expect(logics).has.length(2);
       expect(logics[0].rid).to.eq('aave-v2:borrow');
@@ -1086,9 +1072,9 @@ describe('Test Adapter for Aave V2', function () {
         destToken,
       });
 
+      expect(error).to.be.undefined;
       expect(destAmount).to.eq('0');
       expect(JSON.stringify(portfolio)).to.eq(JSON.stringify(afterPortfolio));
-      expect(error).to.be.undefined;
       expect(logics).to.be.empty;
     });
 
@@ -1131,13 +1117,12 @@ describe('Test Adapter for Aave V2', function () {
         destToken,
       });
 
+      expect(error).to.be.undefined;
       expect(destAmount).to.eq(srcAmount);
 
       const expectedAfterPortfolio = portfolio.clone();
       expectedAfterPortfolio.repay(srcToken, srcAmount);
       expect(JSON.stringify(expectedAfterPortfolio)).to.eq(JSON.stringify(afterPortfolio));
-
-      expect(error).to.be.undefined;
 
       expect(logics).has.length(1);
       expect(logics[0].rid).to.eq('aave-v2:repay');
@@ -1156,13 +1141,12 @@ describe('Test Adapter for Aave V2', function () {
         destToken,
       });
 
+      expect(error).to.be.undefined;
       expect(Number(destAmount)).to.be.greaterThan(0);
 
       const expectedAfterPortfolio = portfolio.clone();
       expectedAfterPortfolio.repay(srcToken, srcAmount);
       expect(JSON.stringify(expectedAfterPortfolio)).to.eq(JSON.stringify(afterPortfolio));
-
-      expect(error).to.be.undefined;
 
       expect(logics).has.length(2);
       expect(logics[0].rid).to.contain('swap-token');
