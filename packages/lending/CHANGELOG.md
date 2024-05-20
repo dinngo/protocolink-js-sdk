@@ -1,5 +1,16 @@
 # @protocolink/lending
 
+## 1.1.0
+
+### Minor Changes
+
+- bump version 1.1.0
+
+### Patch Changes
+
+- d552ac5: fix test grossApy
+- 8b8622c: add BNB Chain info to Radiant V2
+
 ## 1.0.16
 
 ### Patch Changes
