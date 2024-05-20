@@ -1,5 +1,12 @@
 # @furucombo/composable-router-api
 
+## 1.0.22
+
+### Patch Changes
+
+- a6cef79: Updated dependencies
+  - @protocolink/logics@1.1.8
+
 ## 1.0.21
 
 ### Patch Changes
