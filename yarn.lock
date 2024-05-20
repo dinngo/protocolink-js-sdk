@@ -1061,17 +1061,17 @@
   resolved "https://registry.yarnpkg.com/@openzeppelin/contracts/-/contracts-3.4.2-solc-0.7.tgz#38f4dbab672631034076ccdf2f3201fab1726635"
   integrity sha512-W6QmqgkADuFcTLzHL8vVoNBtkwjvQRpYIAom7KiUNoLKghyx3FgH0GBjt8NRvigV1ZmMOBllvE1By1C+bi8WpA==
 
-"@paraswap/core@1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@paraswap/core/-/core-1.1.0.tgz#5ec7415be69dc657a9d82b0fde4e20f632cca1b6"
-  integrity sha512-ecnX8ezlhYWFwolZxYEz+K+RfLr8xaxQqiJKlxJ8Yf00tXTGxDGn6/Acy00t4+9Kv0apewd7++J33eJt9yNfwg==
+"@paraswap/core@2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@paraswap/core/-/core-2.0.0.tgz#be62161abec67db3cef22498a1631b12aa2d81e1"
+  integrity sha512-zhXSjX2dbYaRxYZt9LhzOCW/qeP0CLyvaFU7e8MkWahu/IAhyvKc/45/STDgNgTjPw1MHjNHbmi5a5pVqXyXBg==
 
-"@paraswap/sdk@^6.2.2":
-  version "6.3.0"
-  resolved "https://registry.yarnpkg.com/@paraswap/sdk/-/sdk-6.3.0.tgz#1784b9016e8eeeb44127a4b49e995bedeaeb29f4"
-  integrity sha512-hA4hrSADeBFAFSZpdOCcyKL9t+KwKl0sifawIR6bbNjnndJrwLOXrWyyGJwEtifixlJUnPm3Aakz5l0eRX7j+Q==
+"@paraswap/sdk@^6.6.0":
+  version "6.6.0"
+  resolved "https://registry.yarnpkg.com/@paraswap/sdk/-/sdk-6.6.0.tgz#96089b35d695d730b3bfb48695177d832907ad7a"
+  integrity sha512-iLsZCbTgnoyYoa3IDCsEEiELKcROuecriruVBM/Uk3XmnJMPPR0VkxU1LIRorce6Wn5KrToWNQYXziPUJN2kjg==
   dependencies:
-    "@paraswap/core" "1.1.0"
+    "@paraswap/core" "2.0.0"
     bignumber.js "^9.0.2"
     ts-essentials "^9.1.2"
 
@@ -1083,12 +1083,12 @@
     node-addon-api "^3.2.1"
     node-gyp-build "^4.3.0"
 
-"@protocolink/logics@^1.1.7":
-  version "1.1.7"
-  resolved "https://registry.yarnpkg.com/@protocolink/logics/-/logics-1.1.7.tgz#e982ea40eeef2d44c6aa70c31efff27582776d58"
-  integrity sha512-VwTpyAA1SDeiMn/Ou0ElhITFWrmHeiK9waDaqo4IsnhqrEdvzkFVead5ExTdjxiBUGZI2vDwFanolvG+I5Slgg==
+"@protocolink/logics@^1.1.7", "@protocolink/logics@^1.1.8":
+  version "1.1.8"
+  resolved "https://registry.yarnpkg.com/@protocolink/logics/-/logics-1.1.8.tgz#559fb2eec1de64cdf8bfd7e5eda38336052841d8"
+  integrity sha512-VwjUCNYU2mlydLXfI4N1ZHQy2fFxYPK/+qM+plTrR1HfENYazGq4XLLzFe+kUSKjKnBXdsatMzJiCXgZHpRjIA==
   dependencies:
-    "@paraswap/sdk" "^6.2.2"
+    "@paraswap/sdk" "^6.6.0"
     "@protocolink/common" "^0.3.10"
     "@protocolink/core" "^0.4.11"
     "@protocolink/smart-accounts" "^0.1.2"
