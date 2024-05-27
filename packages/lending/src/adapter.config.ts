@@ -29,7 +29,7 @@ export const configs: Config[] = [
     chainId: common.ChainId.polygon,
     primaryStablecoin: polygonTokens['USDC.e'],
     secondaryStablecoin: polygonTokens.DAI,
-    primaryNonstablecoin: polygonTokens.WETH,
+    primaryNonstablecoin: polygonTokens.MATIC,
   },
   {
     chainId: common.ChainId.arbitrum,
@@ -47,25 +47,25 @@ export const configs: Config[] = [
     chainId: common.ChainId.avalanche,
     primaryStablecoin: avalancheTokens.USDC,
     secondaryStablecoin: avalancheTokens['DAI.e'],
-    primaryNonstablecoin: avalancheTokens['WETH.e'],
+    primaryNonstablecoin: avalancheTokens.AVAX,
   },
   {
     chainId: common.ChainId.metis,
     primaryStablecoin: metisTokens['m.USDC'],
     secondaryStablecoin: metisTokens['m.DAI'],
-    primaryNonstablecoin: metisTokens.WETH,
+    primaryNonstablecoin: metisTokens.METIS,
   },
   {
     chainId: common.ChainId.base,
     primaryStablecoin: baseTokens.USDC,
     secondaryStablecoin: baseTokens.USDbC,
-    primaryNonstablecoin: baseTokens.WETH,
+    primaryNonstablecoin: baseTokens.ETH,
   },
   {
     chainId: common.ChainId.gnosis,
     primaryStablecoin: gnosisTokens.WXDAI,
     secondaryStablecoin: gnosisTokens.USDC,
-    primaryNonstablecoin: gnosisTokens.WETH,
+    primaryNonstablecoin: gnosisTokens.XDAI,
   },
   {
     chainId: common.ChainId.bnb,
