@@ -1,5 +1,11 @@
 # @protocolink/core
 
+## 0.4.12
+
+### Patch Changes
+
+- ddd7ca3: remove unused LogicDefinitionDecorator
+
 ## 0.4.11
 
 ### Patch Changes
