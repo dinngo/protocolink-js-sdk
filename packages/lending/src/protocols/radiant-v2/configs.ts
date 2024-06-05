@@ -72,6 +72,11 @@ export const configs: Config[] = [
         rToken: mainnetTokens.rrETH,
         used: { deposit: true, withdraw: true, borrow: true, repay: true, flashLoan: true },
       },
+      {
+        asset: mainnetTokens.weETH,
+        rToken: mainnetTokens.rweETH,
+        used: { deposit: true, withdraw: true, borrow: true, repay: true, flashLoan: true },
+      },
     ],
   },
   {
@@ -168,6 +173,11 @@ export const configs: Config[] = [
       {
         asset: arbitrumTokens.ARB,
         rToken: arbitrumTokens.rARB,
+        used: { deposit: true, withdraw: true, borrow: true, repay: true, flashLoan: true },
+      },
+      {
+        asset: arbitrumTokens.weETH,
+        rToken: arbitrumTokens.rweETH,
         used: { deposit: true, withdraw: true, borrow: true, repay: true, flashLoan: true },
       },
     ],

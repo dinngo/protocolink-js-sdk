@@ -103,5 +103,19 @@
     "decimals": 18,
     "symbol": "rrETH",
     "name": "Radiant interest bearing rETH"
+  },
+  "weETH": {
+    "chainId": 1,
+    "address": "0xCd5fE23C85820F7B72D0926FC9b05b43E359b7ee",
+    "decimals": 18,
+    "symbol": "weETH",
+    "name": "Wrapped eETH"
+  },
+  "rweETH": {
+    "chainId": 1,
+    "address": "0x1d25Bd8AbfEb1D6517Cc21BeCA20b5cd2df8247c",
+    "decimals": 18,
+    "symbol": "rweETH",
+    "name": "Radiant interest bearing weETH"
   }
 }
