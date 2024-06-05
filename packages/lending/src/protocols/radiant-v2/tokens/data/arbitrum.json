@@ -117,5 +117,19 @@
     "decimals": 18,
     "symbol": "rARB",
     "name": "Radiant interest bearing ARB"
+  },
+  "weETH": {
+    "chainId": 42161,
+    "address": "0x35751007a407ca6FEFfE80b3cB397736D2cf4dbe",
+    "decimals": 18,
+    "symbol": "weETH",
+    "name": "Wrapped eETH"
+  },
+  "rweETH": {
+    "chainId": 42161,
+    "address": "0xb11A56DA177c5532D5E29cC8363d145bD0822c81",
+    "decimals": 18,
+    "symbol": "rweETH",
+    "name": "Radiant interest bearing weETH"
   }
 }
