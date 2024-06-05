@@ -27,7 +27,7 @@
     "@protocolink/api": "^1.0.25",
     "@protocolink/common": "^0.3.10",
     "@protocolink/core": "^0.4.12",
-    "@protocolink/logics": "^1.1.7",
+    "@protocolink/logics": "^1.1.11",
     "bignumber.js": "^9.1.1",
     "decimal.js-light": "^2.5.1"
   },
