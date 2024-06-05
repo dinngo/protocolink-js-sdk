@@ -1,5 +1,15 @@
 # @protocolink/lending
 
+## 1.2.0
+
+### Minor Changes
+
+- e8fd934: add weeth to radiant
+
+### Patch Changes
+
+- 9d8882c: fix config primaryNonstablecoin
+
 ## 1.1.0
 
 ### Minor Changes
