@@ -166,8 +166,7 @@ export class Adapter extends common.Web3Toolkit {
   async getPortfolios(account: string, options?: { blockTag?: string | number }): Promise<Portfolio[]> {
     const portfolios = await Promise.all(
       Object.values(this.protocolMap).map((protocol) => {
-        if (options?.blockTag) protocol.setBlockTag(options.blockTag);
-
+        protocol.setBlockTag(options?.blockTag);
         return protocol.getPortfolios(account);
       })
     );
@@ -191,7 +190,7 @@ export class Adapter extends common.Web3Toolkit {
     options?: { blockTag?: string | number }
   ): Promise<Portfolio> {
     const protocol = this.protocolMap[protocolId];
-    if (options?.blockTag) protocol.setBlockTag(options.blockTag);
+    protocol.setBlockTag(options?.blockTag);
     return await protocol.getPortfolio(account, marketId);
   }
 

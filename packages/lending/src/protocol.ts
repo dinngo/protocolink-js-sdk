@@ -26,7 +26,7 @@ export abstract class Protocol extends common.Web3Toolkit {
 
   blockTag?: providers.BlockTag;
 
-  setBlockTag(blockTag: providers.BlockTag) {
+  setBlockTag(blockTag: providers.BlockTag | undefined) {
     this.blockTag = blockTag;
   }
 
