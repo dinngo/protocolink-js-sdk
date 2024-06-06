@@ -1,5 +1,11 @@
 # @protocolink/lending
 
+## 1.3.0
+
+### Minor Changes
+
+- 39f690d: support blocktag for getPortfolios
+
 ## 1.2.0
 
 ### Minor Changes
