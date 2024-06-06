@@ -159,11 +159,16 @@ export class Adapter extends common.Web3Toolkit {
    * Retrieves an array of portfolios for a given account from all registered protocols.
    *
    * @param {string} account - The account identifier for which portfolios are to be retrieved.
+   * @param {Object} [options] - Optional parameters.
+   * @param {string|number} [options.blockTag] - An optional block tag
    * @returns {Promise<Portfolio[]>} A promise that resolves to an array of Portfolio objects from all protocols.
    */
-  async getPortfolios(account: string): Promise<Portfolio[]> {
+  async getPortfolios(account: string, options?: { blockTag?: string | number }): Promise<Portfolio[]> {
     const portfolios = await Promise.all(
-      Object.values(this.protocolMap).map((protocol) => protocol.getPortfolios(account))
+      Object.values(this.protocolMap).map((protocol) => {
+        protocol.setBlockTag(options?.blockTag);
+        return protocol.getPortfolios(account);
+      })
     );
     return flatten(portfolios);
   }
@@ -174,10 +179,19 @@ export class Adapter extends common.Web3Toolkit {
    * @param {string} account - The account identifier for which the portfolio is to be retrieved.
    * @param {string} protocolId - The identifier of the protocol.
    * @param {string} marketId - The identifier of the market within the protocol.
+   * @param {Object} [options] - Optional parameters.
+   * @param {string|number} [options.blockTag] - An optional block tag
    * @returns {Promise<Portfolio>} A promise that resolves to the Portfolio object of the specified protocol and market.
    */
-  async getPortfolio(account: string, protocolId: string, marketId: string): Promise<Portfolio> {
-    return await this.protocolMap[protocolId].getPortfolio(account, marketId);
+  async getPortfolio(
+    account: string,
+    protocolId: string,
+    marketId: string,
+    options?: { blockTag?: string | number }
+  ): Promise<Portfolio> {
+    const protocol = this.protocolMap[protocolId];
+    protocol.setBlockTag(options?.blockTag);
+    return await protocol.getPortfolio(account, marketId);
   }
 
   /**

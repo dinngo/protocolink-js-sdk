@@ -6,7 +6,6 @@ import {
   ProtocolDataProvider,
   ProtocolDataProvider__factory,
 } from './contracts';
-import BigNumberJS from 'bignumber.js';
 import {
   BorrowObject,
   BorrowParams,
