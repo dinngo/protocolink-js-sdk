@@ -1,5 +1,11 @@
 # @furucombo/composable-router-api
 
+## 1.0.26
+
+### Patch Changes
+
+- d437b9e: update protocolink/logics package version
+
 ## 1.0.25
 
 ### Patch Changes
