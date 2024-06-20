@@ -2,7 +2,7 @@ import { TokenAmount, isTokenAmount, isTokenAmounts } from './token-amount';
 import { classifying } from './transform';
 import { expect } from 'chai';
 import { isToken } from './token';
-import { mainnetTokens } from 'test/fixtures/tokens';
+import { mainnetTokens } from './utils';
 
 describe('Test classifying', function () {
   it('TokenToTokenExactInFields', function () {

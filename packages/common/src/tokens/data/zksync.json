@@ -1,0 +1,98 @@
+{
+  "USDC": {
+    "chainId": 324,
+    "address": "0x1d17CBcF0D6D143135aE902365D2E5e2A16538D4",
+    "decimals": 6,
+    "symbol": "USDC",
+    "name": "USD Coin",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/USDC.svg"
+  },
+  "USDC.e": {
+    "chainId": 324,
+    "address": "0x3355df6D4c9C3035724Fd0e3914dE96A5a83aaf4",
+    "decimals": 6,
+    "symbol": "USDC.e",
+    "name": "Bridged USDC",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/USDC.svg"
+  },
+  "USDT": {
+    "chainId": 324,
+    "address": "0x493257fD37EDB34451f62EDf8D2a0C418852bA4C",
+    "decimals": 6,
+    "symbol": "USDT",
+    "name": "Tether USD",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/USDT.svg"
+  },
+  "ETH": {
+    "chainId": 324,
+    "address": "0x000000000000000000000000000000000000800A",
+    "decimals": 18,
+    "symbol": "ETH",
+    "name": "Ether",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/ETH.png"
+  },
+  "WETH": {
+    "chainId": 324,
+    "address": "0x5AEa5775959fBC2557Cc8789bC1bf90A239D9a91",
+    "decimals": 18,
+    "symbol": "WETH",
+    "name": "Wrapped Ether",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/WETH.svg"
+  },
+  "WBTC": {
+    "chainId": 324,
+    "address": "0xBBeB516fb02a01611cBBE0453Fe3c580D7281011",
+    "decimals": 8,
+    "symbol": "WBTC",
+    "name": "Wrapped BTC",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/WBTC.svg"
+  },
+  "wstETH": {
+    "chainId": 324,
+    "address": "0x703b52f2b28febcb60e1372858af5b18849fe867",
+    "decimals": 18,
+    "symbol": "wstETH",
+    "name": "Wrapped liquid staked Ether 2.0",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/wstETH.png"
+  },
+  "DAI": {
+    "chainId": 324,
+    "address": "0x4B9eb6c0b6ea15176BBF62841C6B2A8a398cb656",
+    "decimals": 18,
+    "symbol": "DAI",
+    "name": "Dai Stablecoin",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/DAI.png"
+  },
+  "LINK": {
+    "chainId": 324,
+    "address": "0x082faDe8b84B18C441d506e1D3a43a387Cc59D20",
+    "decimals": 18,
+    "symbol": "LINK",
+    "name": "ChainLink Token",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/LINK.svg"
+  },
+  "weETH": {
+    "chainId": 324,
+    "address": "0xe862bF1176a99E5aC9b693C1F966f266143BD8f5",
+    "decimals": 18,
+    "symbol": "weETH",
+    "name": "Wrapped eETH",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/weETH.webp"
+  },
+  "UNI": {
+    "chainId": 324,
+    "address": "0x1C6f53185061D7cC387E481c350aD00C2C876f3E",
+    "decimals": 18,
+    "symbol": "UNI",
+    "name": "Uniswap Token",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/UNI.png"
+  },
+  "LUSD": {
+    "chainId": 324,
+    "address": "0x503234F203fC7Eb888EEC8513210612a43Cf6115",
+    "decimals": 18,
+    "symbol": "LUSD",
+    "name": "LUSD Stablecoin",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/LUSD.png"
+  }
+}

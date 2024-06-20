@@ -1,0 +1,170 @@
+{
+  "USDC": {
+    "chainId": 10,
+    "address": "0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85",
+    "decimals": 6,
+    "symbol": "USDC",
+    "name": "USD Coin",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/USDC.svg"
+  },
+  "USDC.e": {
+    "chainId": 10,
+    "address": "0x7F5c764cBc14f9669B88837ca1490cCa17c31607",
+    "decimals": 6,
+    "symbol": "USDC.e",
+    "name": "USD Coin (Bridged from Ethereum)",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/USDC.svg"
+  },
+  "USDT": {
+    "chainId": 10,
+    "address": "0x94b008aA00579c1307B0EF2c499aD98a8ce58e58",
+    "decimals": 6,
+    "symbol": "USDT",
+    "name": "Tether USD",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/USDT.svg"
+  },
+  "ETH": {
+    "chainId": 10,
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18,
+    "symbol": "ETH",
+    "name": "Ethereum",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/ETH.png"
+  },
+  "WETH": {
+    "chainId": 10,
+    "address": "0x4200000000000000000000000000000000000006",
+    "decimals": 18,
+    "symbol": "WETH",
+    "name": "Wrapped Ether",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/WETH.svg"
+  },
+  "WBTC": {
+    "chainId": 10,
+    "address": "0x68f180fcCe6836688e9084f035309E29Bf0A2095",
+    "decimals": 8,
+    "symbol": "WBTC",
+    "name": "Wrapped BTC",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/WBTC.svg"
+  },
+  "wstETH": {
+    "chainId": 10,
+    "address": "0x1F32b1c2345538c0c6f582fCB022739c4A194Ebb",
+    "decimals": 18,
+    "symbol": "wstETH",
+    "name": "Wrapped liquid staked Ether 2.0",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/wstETH.png"
+  },
+  "DAI": {
+    "chainId": 10,
+    "address": "0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1",
+    "decimals": 18,
+    "symbol": "DAI",
+    "name": "Dai Stablecoin",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/DAI.png"
+  },
+  "LINK": {
+    "chainId": 10,
+    "address": "0x350a791Bfc2C21F9Ed5d10980Dad2e2638ffa7f6",
+    "decimals": 18,
+    "symbol": "LINK",
+    "name": "ChainLink Token",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/LINK.svg"
+  },
+  "rETH": {
+    "chainId": 10,
+    "address": "0x9Bcef72be871e61ED4fBbc7630889beE758eb81D",
+    "decimals": 18,
+    "symbol": "rETH",
+    "name": "Rocket Pool ETH",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/rETH.svg"
+  },
+  "AAVE": {
+    "chainId": 10,
+    "address": "0x76FB31fb4af56892A25e32cFC43De717950c9278",
+    "decimals": 18,
+    "symbol": "AAVE",
+    "name": "Aave Token",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/AAVE.svg"
+  },
+  "LDO": {
+    "chainId": 10,
+    "address": "0xFdb794692724153d1488CcdBE0C56c252596735F",
+    "decimals": 18,
+    "symbol": "LDO",
+    "name": "Lido DAO Token",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/LDO.png"
+  },
+  "UNI": {
+    "chainId": 10,
+    "address": "0x6fd9d7AD17242c41f7131d257212c54A0e816691",
+    "decimals": 18,
+    "symbol": "UNI",
+    "name": "Uniswap Token",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/UNI.png"
+  },
+  "BAL": {
+    "chainId": 10,
+    "address": "0xFE8B128bA8C78aabC59d4c64cEE7fF28e9379921",
+    "decimals": 18,
+    "symbol": "BAL",
+    "name": "Balancer",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/BAL.png"
+  },
+  "LUSD": {
+    "chainId": 10,
+    "address": "0xc40F949F8a4e094D1b49a23ea9241D289B7b2819",
+    "decimals": 18,
+    "symbol": "LUSD",
+    "name": "LUSD Stablecoin",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/LUSD.png"
+  },
+  "SNX": {
+    "chainId": 10,
+    "address": "0x8700dAec35aF8Ff88c16BdF0418774CB3D7599B4",
+    "decimals": 18,
+    "symbol": "SNX",
+    "name": "Synthetix Network Token",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/SNX.png"
+  },
+  "CRV": {
+    "chainId": 10,
+    "address": "0x0994206dfE8De6Ec6920FF4D779B0d950605Fb53",
+    "decimals": 18,
+    "symbol": "CRV",
+    "name": "Curve DAO Token",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/CRV.png"
+  },
+  "FRAX": {
+    "chainId": 10,
+    "address": "0x2E3D870790dC77A83DD1d18184Acc7439A53f475",
+    "decimals": 18,
+    "symbol": "FRAX",
+    "name": "Frax",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/FRAX.png"
+  },
+  "crvUSD": {
+    "chainId": 10,
+    "address": "0xC52D7F23a2e460248Db6eE192Cb23dD12bDDCbf6",
+    "decimals": 18,
+    "symbol": "crvUSD",
+    "name": "Curve.Fi USD Stablecoin",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/crvUSD.svg"
+  },
+  "OP": {
+    "chainId": 10,
+    "address": "0x4200000000000000000000000000000000000042",
+    "decimals": 18,
+    "symbol": "OP",
+    "name": "Optimism",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/OP.svg"
+  },
+  "sUSD": {
+    "chainId": 10,
+    "address": "0x8c6f28f2F1A3C87F0f938b96d27520d9751ec8d9",
+    "decimals": 18,
+    "symbol": "sUSD",
+    "name": "Synth sUSD",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/sUSD.svg"
+  }
+}

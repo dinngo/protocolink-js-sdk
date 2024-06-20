@@ -1,0 +1,106 @@
+{
+  "USDC": {
+    "chainId": 100,
+    "address": "0xDDAfbb505ad214D7b80b1f830fcCc89B60fb7A83",
+    "decimals": 6,
+    "symbol": "USDC",
+    "name": "USD//C on xDai",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/USDC.svg"
+  },
+  "USDC.e": {
+    "chainId": 100,
+    "address": "0x2a22f9c3b484c3629090FeED35F17Ff8F88f76F0",
+    "decimals": 6,
+    "symbol": "USDC.e",
+    "name": "Bridged USDC (Gnosis)",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/USDC.svg"
+  },
+  "WETH": {
+    "chainId": 100,
+    "address": "0x6A023CCd1ff6F2045C3309768eAd9E68F978f6e1",
+    "decimals": 18,
+    "symbol": "WETH",
+    "name": "Wrapped Ether on xDai",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/WETH.svg"
+  },
+  "wstETH": {
+    "chainId": 100,
+    "address": "0x6C76971f98945AE98dD7d4DFcA8711ebea946eA6",
+    "decimals": 18,
+    "symbol": "wstETH",
+    "name": "Wrapped liquid staked Ether 2.0 from Mainnet",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/wstETH.png"
+  },
+  "xDAI": {
+    "chainId": 100,
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18,
+    "symbol": "xDAI",
+    "name": "xDai",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/xDAI.svg"
+  },
+  "WXDAI": {
+    "chainId": 100,
+    "address": "0xe91D153E0b41518A2Ce8Dd3D7944Fa863463a97d",
+    "decimals": 18,
+    "symbol": "WXDAI",
+    "name": "Wrapped XDAI",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/WXDAI.png"
+  },
+  "LINK": {
+    "chainId": 100,
+    "address": "0xE2e73A1c69ecF83F464EFCE6A5be353a37cA09b2",
+    "decimals": 18,
+    "symbol": "LINK",
+    "name": "ChainLink Token on xDai",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/LINK.svg"
+  },
+  "sDAI": {
+    "chainId": 100,
+    "address": "0xaf204776c7245bF4147c2612BF6e5972Ee483701",
+    "decimals": 18,
+    "symbol": "sDAI",
+    "name": "Savings xDAI ",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/sDAI.svg"
+  },
+  "UNI": {
+    "chainId": 100,
+    "address": "0x4537e328Bf7e4eFA29D05CAeA260D7fE26af9D74",
+    "decimals": 18,
+    "symbol": "UNI",
+    "name": "Uniswap on xDai",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/UNI.png"
+  },
+  "BAL": {
+    "chainId": 100,
+    "address": "0x7eF541E2a22058048904fE5744f9c7E4C57AF717",
+    "decimals": 18,
+    "symbol": "BAL",
+    "name": "Balancer on xDai",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/BAL.png"
+  },
+  "crvUSD": {
+    "chainId": 100,
+    "address": "0xaBEf652195F98A91E490f047A5006B71c85f058d",
+    "decimals": 18,
+    "symbol": "crvUSD",
+    "name": "Curve.Fi USD Stablecoin from Mainnet",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/crvUSD.svg"
+  },
+  "GNO": {
+    "chainId": 100,
+    "address": "0x9C58BAcC331c9aa871AFD802DB6379a98e80CEdb",
+    "decimals": 18,
+    "symbol": "GNO",
+    "name": "Gnosis Token on xDai",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/GNO.png"
+  },
+  "EURe": {
+    "chainId": 100,
+    "address": "0xcB444e90D8198415266c6a2724b7900fb12FC56E",
+    "decimals": 18,
+    "symbol": "EURe",
+    "name": "Monerium EUR emoney",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/EURe.svg"
+  }
+}
