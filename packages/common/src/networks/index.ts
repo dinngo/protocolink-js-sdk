@@ -1,3 +1,4 @@
+import { TokenObject } from 'src/tokens';
 import data from './data.json';
 
 export interface Network {
@@ -6,20 +7,8 @@ export interface Network {
   name: string;
   explorerUrl: string;
   rpcUrl: string;
-  nativeToken: {
-    chainId: number;
-    address: string;
-    decimals: number;
-    symbol: string;
-    name: string;
-  };
-  wrappedNativeToken: {
-    chainId: number;
-    address: string;
-    decimals: number;
-    symbol: string;
-    name: string;
-  };
+  nativeToken: TokenObject;
+  wrappedNativeToken: TokenObject;
   multicall2Address: string;
   multicall3Address: string;
 }

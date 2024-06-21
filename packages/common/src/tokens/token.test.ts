@@ -1,7 +1,7 @@
 import { ELASTIC_ADDRESS } from './constants';
 import { Token, isTokenObject } from './token';
 import { expect } from 'chai';
-import { mainnetTokens } from 'test/fixtures/tokens';
+import { mainnetTokens } from './utils';
 
 describe('Test isTokenObject', function () {
   const testCases = [
@@ -311,6 +311,7 @@ describe('Token instance', function () {
           decimals: 18,
           symbol: 'ETH',
           name: 'Ethereum',
+          logoUri: 'https://cdn.furucombo.app/assets/img/token/ETH.png',
         },
       },
       {
@@ -321,6 +322,7 @@ describe('Token instance', function () {
           decimals: 6,
           symbol: 'USDC',
           name: 'USD Coin',
+          logoUri: 'https://cdn.furucombo.app/assets/img/token/USDC.svg',
         },
       },
     ];
@@ -337,12 +339,12 @@ describe('Token instance', function () {
       {
         token: mainnetTokens.ETH,
         expected:
-          '{"chainId":1,"address":"0x0000000000000000000000000000000000000000","decimals":18,"symbol":"ETH","name":"Ethereum"}',
+          '{"chainId":1,"address":"0x0000000000000000000000000000000000000000","decimals":18,"symbol":"ETH","name":"Ethereum","logoUri":"https://cdn.furucombo.app/assets/img/token/ETH.png"}',
       },
       {
         token: mainnetTokens.USDC,
         expected:
-          '{"chainId":1,"address":"0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48","decimals":6,"symbol":"USDC","name":"USD Coin"}',
+          '{"chainId":1,"address":"0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48","decimals":6,"symbol":"USDC","name":"USD Coin","logoUri":"https://cdn.furucombo.app/assets/img/token/USDC.svg"}',
       },
     ];
 

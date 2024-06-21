@@ -1,9 +1,8 @@
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
-import { TokenAmount, TokenAmounts, Web3Toolkit, newErc20ApproveTransactionRequest } from 'src';
+import { TokenAmount, TokenAmounts, Web3Toolkit, mainnetTokens, newErc20ApproveTransactionRequest } from 'src';
 import { expect } from 'chai';
 import { getChainId, snapshotAndRevertEach } from '@protocolink/test-helpers';
 import hre from 'hardhat';
-import { mainnetTokens } from './fixtures/tokens';
 
 describe('Web3Toolkit', function () {
   const spender = '0x000000000022D473030F116dDEE9F6B43aC78BA3';

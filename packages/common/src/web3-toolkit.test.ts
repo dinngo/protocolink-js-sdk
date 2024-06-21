@@ -1,8 +1,8 @@
 import { ChainId, toNetworkId } from './networks';
-import { ELASTIC_ADDRESS } from './tokens';
+import { ELASTIC_ADDRESS, mainnetTokens, zksyncTokens } from './tokens';
 import { Web3Toolkit } from './web3-toolkit';
 import { expect } from 'chai';
-import { mainnetTokens } from 'test/fixtures/tokens';
+import omit from 'lodash/omit';
 
 describe('Web3Toolkit', function () {
   context('Test getToken', function () {
@@ -34,14 +34,8 @@ describe('Web3Toolkit', function () {
       },
       {
         chainId: ChainId.zksync,
-        tokenAddress: '0x3355df6D4c9C3035724Fd0e3914dE96A5a83aaf4',
-        expected: {
-          chainId: ChainId.zksync,
-          address: '0x3355df6D4c9C3035724Fd0e3914dE96A5a83aaf4',
-          decimals: 6,
-          symbol: 'USDC.e',
-          name: 'Bridged USDC (zkSync)',
-        },
+        tokenAddress: zksyncTokens.USDT.address,
+        expected: zksyncTokens.USDT,
       },
     ];
 
@@ -49,7 +43,8 @@ describe('Web3Toolkit', function () {
       it(`${toNetworkId(chainId)}: ${expected.symbol}`, async function () {
         const web3Toolkit = new Web3Toolkit(chainId);
         const token = await web3Toolkit.getToken(tokenAddress);
-        expect(JSON.stringify(token)).to.eq(JSON.stringify(expected));
+
+        expect(JSON.stringify(omit(token, 'logoUri'))).to.eq(JSON.stringify(omit(expected, 'logoUri')));
       });
     });
   });
@@ -69,23 +64,8 @@ describe('Web3Toolkit', function () {
       },
       {
         chainId: ChainId.zksync,
-        tokenAddresses: ['0x3355df6D4c9C3035724Fd0e3914dE96A5a83aaf4', '0xc2B13Bb90E33F1E191b8aA8F44Ce11534D5698E3'],
-        expected: [
-          {
-            chainId: ChainId.zksync,
-            address: '0x3355df6D4c9C3035724Fd0e3914dE96A5a83aaf4',
-            decimals: 6,
-            symbol: 'USDC.e',
-            name: 'Bridged USDC (zkSync)',
-          },
-          {
-            chainId: ChainId.zksync,
-            address: '0xc2B13Bb90E33F1E191b8aA8F44Ce11534D5698E3',
-            decimals: 18,
-            symbol: 'COMBO',
-            name: 'Furucombo',
-          },
-        ],
+        tokenAddresses: [zksyncTokens.WBTC.address, zksyncTokens.USDT.address],
+        expected: [zksyncTokens.WBTC, zksyncTokens.USDT],
       },
     ];
 
@@ -93,7 +73,10 @@ describe('Web3Toolkit', function () {
       it(`case ${i + 1}`, async function () {
         const web3Toolkit = new Web3Toolkit(chainId);
         const tokens = await web3Toolkit.getTokens(tokenAddresses);
-        expect(JSON.stringify(tokens)).to.eq(JSON.stringify(expected));
+
+        for (let i = 0; i < tokens.length; i++) {
+          expect(JSON.stringify(omit(tokens[i], 'logoUri'))).to.eq(JSON.stringify(omit(expected[i], 'logoUri')));
+        }
       });
     });
   });

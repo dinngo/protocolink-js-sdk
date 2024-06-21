@@ -1,0 +1,90 @@
+{
+  "USDC": {
+    "chainId": 8453,
+    "address": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+    "decimals": 6,
+    "symbol": "USDC",
+    "name": "USD Coin",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/USDC.svg"
+  },
+  "USDbC": {
+    "chainId": 8453,
+    "address": "0xd9aAEc86B65D86f6A7B5B1b0c42FFA531710b6CA",
+    "decimals": 6,
+    "symbol": "USDbC",
+    "name": "USD Base Coin",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/USDC.svg"
+  },
+  "ETH": {
+    "chainId": 8453,
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18,
+    "symbol": "ETH",
+    "name": "Ethereum",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/ETH.png"
+  },
+  "WETH": {
+    "chainId": 8453,
+    "address": "0x4200000000000000000000000000000000000006",
+    "decimals": 18,
+    "symbol": "WETH",
+    "name": "Wrapped Ether",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/WETH.svg"
+  },
+  "wstETH": {
+    "chainId": 8453,
+    "address": "0xc1CBa3fCea344f92D9239c08C0568f6F2F0ee452",
+    "decimals": 18,
+    "symbol": "wstETH",
+    "name": "Wrapped liquid staked Ether 2.0",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/wstETH.png"
+  },
+  "DAI": {
+    "chainId": 8453,
+    "address": "0x50c5725949A6F0c72E6C4a641F24049A917DB0Cb",
+    "decimals": 18,
+    "symbol": "DAI",
+    "name": "Dai Stablecoin",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/DAI.png"
+  },
+  "weETH.base": {
+    "chainId": 8453,
+    "address": "0x04C0599Ae5A44757c0af6F9eC3b93da8976c150A",
+    "decimals": 18,
+    "symbol": "weETH.base",
+    "name": "Wrapped eETH",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/weETH.webp"
+  },
+  "rETH": {
+    "chainId": 8453,
+    "address": "0xB6fe221Fe9EeF5aBa221c348bA20A1Bf5e73624c",
+    "decimals": 18,
+    "symbol": "rETH",
+    "name": "Rocket Pool ETH",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/rETH.svg"
+  },
+  "cbETH": {
+    "chainId": 8453,
+    "address": "0x2Ae3F1Ec7F1F5012CFEab0185bfc7aa3cf0DEc22",
+    "decimals": 18,
+    "symbol": "cbETH",
+    "name": "Coinbase Wrapped Staked ETH",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/cbETH.svg"
+  },
+  "BAL": {
+    "chainId": 8453,
+    "address": "0x4158734D47Fc9692176B5085E0F52ee0Da5d47F1",
+    "decimals": 18,
+    "symbol": "BAL",
+    "name": "Balancer",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/BAL.png"
+  },
+  "crvUSD": {
+    "chainId": 8453,
+    "address": "0x417Ac0e078398C154EdFadD9Ef675d30Be60Af93",
+    "decimals": 18,
+    "symbol": "crvUSD",
+    "name": "Curve.Fi USD Stablecoin",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/crvUSD.svg"
+  }
+}

@@ -1,0 +1,130 @@
+{
+  "USDC": {
+    "chainId": 56,
+    "address": "0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d",
+    "decimals": 18,
+    "symbol": "USDC",
+    "name": "Binance-Peg USD Coin",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/USDC.svg"
+  },
+  "USDT": {
+    "chainId": 56,
+    "address": "0x55d398326f99059fF775485246999027B3197955",
+    "decimals": 18,
+    "symbol": "USDT",
+    "name": "Tether USD",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/USDT.svg"
+  },
+  "ETH": {
+    "chainId": 56,
+    "address": "0x2170Ed0880ac9A755fd29B2688956BD959F933F8",
+    "decimals": 18,
+    "symbol": "ETH",
+    "name": "Binance-Peg Ethereum Token",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/ETH.png"
+  },
+  "wBETH": {
+    "chainId": 56,
+    "address": "0xa2E3356610840701BDf5611a53974510Ae27E2e1",
+    "decimals": 18,
+    "symbol": "wBETH",
+    "name": "Wrapped Binance Beacon ETH",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/wBETH.png"
+  },
+  "BTCB": {
+    "chainId": 56,
+    "address": "0x7130d2A12B9BCbFAe4f2634d864A1Ee1Ce3Ead9c",
+    "decimals": 18,
+    "symbol": "BTCB",
+    "name": "BTCB Token",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/WBTC.svg"
+  },
+  "DAI": {
+    "chainId": 56,
+    "address": "0x1AF3F329e8BE154074D8769D1FFa4eE058B1DBc3",
+    "decimals": 18,
+    "symbol": "DAI",
+    "name": "Binance-Peg Dai Token",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/DAI.png"
+  },
+  "LINK": {
+    "chainId": 56,
+    "address": "0xF8A0BF9cF54Bb92F17374d9e9A321E6a111a51bD",
+    "decimals": 18,
+    "symbol": "LINK",
+    "name": "Binance-Peg ChainLink Token",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/LINK.svg"
+  },
+  "AAVE": {
+    "chainId": 56,
+    "address": "0xfb6115445Bff7b52FeB98650C87f44907E58f802",
+    "decimals": 18,
+    "symbol": "AAVE",
+    "name": "Binance-Peg Aave Token",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/AAVE.svg"
+  },
+  "UNI": {
+    "chainId": 56,
+    "address": "0xBf5140A22578168FD562DCcF235E5D43A02ce9B1",
+    "decimals": 18,
+    "symbol": "UNI",
+    "name": "Binance-Peg Uniswap",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/UNI.png"
+  },
+  "1INCH": {
+    "chainId": 56,
+    "address": "0x111111111117dC0aa78b770fA6A738034120C302",
+    "decimals": 18,
+    "symbol": "1INCH",
+    "name": "1INCH Token",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/1INCH.svg"
+  },
+  "FRAX": {
+    "chainId": 56,
+    "address": "0x90C97F71E18723b0Cf0dfa30ee176Ab653E89F40",
+    "decimals": 18,
+    "symbol": "FRAX",
+    "name": "Frax",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/FRAX.png"
+  },
+  "crvUSD": {
+    "chainId": 56,
+    "address": "0xe2fb3F127f5450DeE44afe054385d74C392BdeF4",
+    "decimals": 18,
+    "symbol": "crvUSD",
+    "name": "Curve.Fi USD Stablecoin",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/crvUSD.svg"
+  },
+  "FDUSD": {
+    "chainId": 56,
+    "address": "0xc5f0f7b66764F6ec8C8Dff7BA683102295E16409",
+    "decimals": 18,
+    "symbol": "FDUSD",
+    "name": "First Digital USD",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/FDUSD.png"
+  },
+  "Cake": {
+    "chainId": 56,
+    "address": "0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82",
+    "decimals": 18,
+    "symbol": "Cake",
+    "name": "PancakeSwap Token",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/CAKE.png"
+  },
+  "BNB": {
+    "chainId": 56,
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18,
+    "symbol": "BNB",
+    "name": "BNB",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/BNB.svg"
+  },
+  "WBNB": {
+    "chainId": 56,
+    "address": "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c",
+    "decimals": 18,
+    "symbol": "WBNB",
+    "name": "Wrapped BNB",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/WBNB.png"
+  }
+}

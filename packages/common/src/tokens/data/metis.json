@@ -1,0 +1,66 @@
+{
+  "m.USDC": {
+    "chainId": 1088,
+    "address": "0xEA32A96608495e54156Ae48931A7c20f0dcc1a21",
+    "decimals": 6,
+    "symbol": "m.USDC",
+    "name": "USDC Token",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/USDC.svg"
+  },
+  "m.USDT": {
+    "chainId": 1088,
+    "address": "0xbB06DCA3AE6887fAbF931640f67cab3e3a16F4dC",
+    "decimals": 6,
+    "symbol": "m.USDT",
+    "name": "USDT Token",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/USDT.svg"
+  },
+  "WETH": {
+    "chainId": 1088,
+    "address": "0x420000000000000000000000000000000000000A",
+    "decimals": 18,
+    "symbol": "WETH",
+    "name": "Ether",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/WETH.svg"
+  },
+  "WBTC": {
+    "chainId": 1088,
+    "address": "0xa5B55ab1dAF0F8e1EFc0eB1931a957fd89B918f4",
+    "decimals": 8,
+    "symbol": "WBTC",
+    "name": "Wrapped BTC",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/WBTC.svg"
+  },
+  "METIS": {
+    "chainId": 1088,
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18,
+    "symbol": "METIS",
+    "name": "Metis",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/METIS.svg"
+  },
+  "METIS(ERC20)": {
+    "chainId": 1088,
+    "address": "0xDeadDeAddeAddEAddeadDEaDDEAdDeaDDeAD0000",
+    "decimals": 18,
+    "symbol": "METIS(ERC20)",
+    "name": "Metis ERC20",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/METIS.svg"
+  },
+  "WMETIS": {
+    "chainId": 1088,
+    "address": "0x75cb093E4D61d2A2e65D8e0BBb01DE8d89b53481",
+    "decimals": 18,
+    "symbol": "WMETIS",
+    "name": "Wrapped METIS",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/METIS.svg"
+  },
+  "m.DAI": {
+    "chainId": 1088,
+    "address": "0x4c078361FC9BbB78DF910800A991C7c3DD2F6ce0",
+    "decimals": 18,
+    "symbol": "m.DAI",
+    "name": "DAI Token",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/DAI.png"
+  }
+}
