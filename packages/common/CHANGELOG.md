@@ -1,5 +1,11 @@
 # @protocolink/common
 
+## 0.3.11
+
+### Patch Changes
+
+- e55c247: add unify token func and default tokens
+
 ## 0.3.10
 
 ### Patch Changes
