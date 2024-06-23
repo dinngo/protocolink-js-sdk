@@ -1,5 +1,12 @@
 # @protocolink/core
 
+## 0.4.13
+
+### Patch Changes
+
+- 6c07fd6: Update dependencies
+  - @protocolink/common@0.3.11
+
 ## 0.4.12
 
 ### Patch Changes
