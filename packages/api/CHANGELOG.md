@@ -1,5 +1,15 @@
 # @protocolink/api
 
+## 1.1.1
+
+### Patch Changes
+
+- 747f67c: Update dependencies
+  - @protocolink/common@0.3.11
+  - @protocolink/core@0.4.13
+  - @protocolink/logics@1.3.0
+- 3e6be26: fix changelog title
+
 ## 1.1.0
 
 ### Minor Changes
