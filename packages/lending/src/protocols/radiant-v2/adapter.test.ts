@@ -1,27 +1,31 @@
 import { Adapter } from 'src/adapter';
+import { ID } from './configs';
 import { LendingProtocol } from './lending-protocol';
 import { Portfolio } from 'src/protocol.portfolio';
 import * as common from '@protocolink/common';
 import { expect } from 'chai';
 import { mainnetTokens } from './tokens';
 
-describe('Test Adapter for Radiant V2', function () {
+describe('Test Adapter for Radiant V2', async function () {
   const chainId = common.ChainId.mainnet;
   const blockTag = 18797586;
+  let adapter: Adapter;
+  let protocol: LendingProtocol;
 
-  const adapter = new Adapter(chainId);
-
-  const protocol = new LendingProtocol(chainId);
-  protocol.setBlockTag(blockTag);
+  before(async function () {
+    adapter = await Adapter.createAdapter(chainId);
+    protocol = adapter.protocolMap[ID] as LendingProtocol;
+    protocol.setBlockTag(blockTag);
+  });
 
   context('Test openByCollateral', function () {
     const account = '0xBBaCb7F97BA96aa90E5603CFb47EaE09517C8731';
     const blockTag = 19167450;
-    protocol.setBlockTag(blockTag);
 
     let portfolio: Portfolio;
 
     before(async function () {
+      protocol.setBlockTag(blockTag);
       portfolio = await protocol.getPortfolio(account);
     });
 
@@ -110,11 +114,11 @@ describe('Test Adapter for Radiant V2', function () {
   context('Test openByDebt', function () {
     const account = '0xBBaCb7F97BA96aa90E5603CFb47EaE09517C8731';
     const blockTag = 19167450;
-    protocol.setBlockTag(blockTag);
 
     let portfolio: Portfolio;
 
     before(async function () {
+      protocol.setBlockTag(blockTag);
       portfolio = await protocol.getPortfolio(account);
     });
 
@@ -202,11 +206,12 @@ describe('Test Adapter for Radiant V2', function () {
 
   context('Test close', function () {
     const blockTag = 19167450;
-    protocol.setBlockTag(blockTag);
 
     let portfolio: Portfolio;
 
-    before(async function () {});
+    before(async function () {
+      protocol.setBlockTag(blockTag);
+    });
 
     it('no positions', async function () {
       const account = '0x4838B106FCe9647Bdf1E7877BF73cE8B0BAD5f97';

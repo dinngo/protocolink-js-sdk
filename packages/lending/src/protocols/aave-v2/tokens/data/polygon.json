@@ -1,24 +1,10 @@
 {
-  "DAI": {
-    "chainId": 137,
-    "address": "0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063",
-    "decimals": 18,
-    "symbol": "DAI",
-    "name": "(PoS) Dai Stablecoin"
-  },
   "amDAI": {
     "chainId": 137,
     "address": "0x27F8D03b3a2196956ED754baDc28D73be8830A6e",
     "decimals": 18,
     "symbol": "amDAI",
     "name": "Aave Matic Market DAI"
-  },
-  "USDC.e": {
-    "chainId": 137,
-    "address": "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
-    "decimals": 6,
-    "symbol": "USDC.e",
-    "name": "USD Coin (PoS)"
   },
   "amUSDC": {
     "chainId": 137,
@@ -27,26 +13,12 @@
     "symbol": "amUSDC",
     "name": "Aave Matic Market USDC"
   },
-  "USDT": {
-    "chainId": 137,
-    "address": "0xc2132D05D31c914a87C6611C10748AEb04B58e8F",
-    "decimals": 6,
-    "symbol": "USDT",
-    "name": "(PoS) Tether USD"
-  },
   "amUSDT": {
     "chainId": 137,
     "address": "0x60D55F02A771d515e077c9C2403a1ef324885CeC",
     "decimals": 6,
     "symbol": "amUSDT",
     "name": "Aave Matic Market USDT"
-  },
-  "WBTC": {
-    "chainId": 137,
-    "address": "0x1BFD67037B42Cf73acF2047067bd4F2C47D9BfD6",
-    "decimals": 8,
-    "symbol": "WBTC",
-    "name": "(PoS) Wrapped BTC"
   },
   "amWBTC": {
     "chainId": 137,
@@ -55,13 +27,6 @@
     "symbol": "amWBTC",
     "name": "Aave Matic Market WBTC"
   },
-  "WETH": {
-    "chainId": 137,
-    "address": "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619",
-    "decimals": 18,
-    "symbol": "WETH",
-    "name": "Wrapped Ether"
-  },
   "amWETH": {
     "chainId": 137,
     "address": "0x28424507fefb6f7f8E9D3860F56504E4e5f5f390",
@@ -69,33 +34,12 @@
     "symbol": "amWETH",
     "name": "Aave Matic Market WETH"
   },
-  "MATIC": {
-    "chainId": 137,
-    "address": "0x0000000000000000000000000000000000001010",
-    "decimals": 18,
-    "symbol": "MATIC",
-    "name": "Matic Token"
-  },
-  "WMATIC": {
-    "chainId": 137,
-    "address": "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270",
-    "decimals": 18,
-    "symbol": "WMATIC",
-    "name": "Wrapped Matic"
-  },
   "amWMATIC": {
     "chainId": 137,
     "address": "0x8dF3aad3a84da6b69A4DA8aeC3eA40d9091B2Ac4",
     "decimals": 18,
     "symbol": "amWMATIC",
     "name": "Aave Matic Market WMATIC"
-  },
-  "AAVE": {
-    "chainId": 137,
-    "address": "0xD6DF932A45C0f255f85145f286eA0b292B21C90B",
-    "decimals": 18,
-    "symbol": "AAVE",
-    "name": "Aave (PoS)"
   },
   "amAAVE": {
     "chainId": 137,

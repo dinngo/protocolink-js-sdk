@@ -1,28 +1,32 @@
 import { Adapter } from 'src/adapter';
+import { ID } from './configs';
 import { LendingProtocol } from './lending-protocol';
 import { Portfolio } from 'src/protocol.portfolio';
 import * as common from '@protocolink/common';
 import { expect } from 'chai';
 import { mainnetTokens } from './tokens';
 
-describe('Test Adapter for Morpho Blue', function () {
+describe('Test Adapter for Morpho Blue', async function () {
   const chainId = common.ChainId.mainnet;
   const blockTag = 18982784;
-
-  const adapter = new Adapter(chainId);
-
   const marketId = '0xb323495f7e4148be5643a4ea4a8221eef163e4bccfdedc2a6f4696baacbc86cc';
-  const protocol = new LendingProtocol(chainId);
-  protocol.setBlockTag(blockTag);
+  let adapter: Adapter;
+  let protocol: LendingProtocol;
+
+  before(async function () {
+    adapter = await Adapter.createAdapter(chainId);
+    protocol = adapter.protocolMap[ID] as LendingProtocol;
+    protocol.setBlockTag(blockTag);
+  });
 
   context('Test openByCollateral', function () {
     const account = '0x9cbf099ff424979439dfba03f00b5961784c06ce';
     const blockTag = 19167450;
-    protocol.setBlockTag(blockTag);
 
     let portfolio: Portfolio;
 
     before(async function () {
+      protocol.setBlockTag(blockTag);
       portfolio = await protocol.getPortfolio(account, marketId);
     });
 
@@ -108,11 +112,11 @@ describe('Test Adapter for Morpho Blue', function () {
   context('Test openByDebt', function () {
     const account = '0x9cbf099ff424979439dfba03f00b5961784c06ce';
     const blockTag = 19167450;
-    protocol.setBlockTag(blockTag);
 
     let portfolio: Portfolio;
 
     before(async function () {
+      protocol.setBlockTag(blockTag);
       portfolio = await protocol.getPortfolio(account, marketId);
     });
 
@@ -197,11 +201,12 @@ describe('Test Adapter for Morpho Blue', function () {
 
   context('Test close', function () {
     const blockTag = 19167450;
-    protocol.setBlockTag(blockTag);
 
     let portfolio: Portfolio;
 
-    before(async function () {});
+    before(async function () {
+      protocol.setBlockTag(blockTag);
+    });
 
     it('no positions', async function () {
       const account = '0x4838B106FCe9647Bdf1E7877BF73cE8B0BAD5f97';
@@ -372,7 +377,6 @@ describe('Test Adapter for Morpho Blue', function () {
 
   context('Test deleverage', function () {
     const blockTag = 19232405;
-    protocol.setBlockTag(blockTag);
 
     const account = '0x4AAB5CbFe493fc2AC18C46A68eF42c58ba06C9BD';
     const marketId = '0xc54d7acf14de29e0e5527cabd7a576506870346a78a11a6762e2cca66322ec41';
@@ -380,6 +384,7 @@ describe('Test Adapter for Morpho Blue', function () {
     let portfolio: Portfolio;
 
     before(async function () {
+      protocol.setBlockTag(blockTag);
       portfolio = await protocol.getPortfolio(account, marketId);
     });
 
@@ -611,7 +616,6 @@ describe('Test Adapter for Morpho Blue', function () {
 
   context('Test zapWithdraw', function () {
     const blockTag = 19232405;
-    protocol.setBlockTag(blockTag);
 
     const account = '0x4AAB5CbFe493fc2AC18C46A68eF42c58ba06C9BD';
     const marketId = '0xc54d7acf14de29e0e5527cabd7a576506870346a78a11a6762e2cca66322ec41';
@@ -619,6 +623,7 @@ describe('Test Adapter for Morpho Blue', function () {
     let portfolio: Portfolio;
 
     before(async function () {
+      protocol.setBlockTag(blockTag);
       portfolio = await protocol.getPortfolio(account, marketId);
     });
 
@@ -801,7 +806,6 @@ describe('Test Adapter for Morpho Blue', function () {
 
   context('Test zapRepay', function () {
     const blockTag = 19232405;
-    protocol.setBlockTag(blockTag);
 
     const account = '0x4AAB5CbFe493fc2AC18C46A68eF42c58ba06C9BD';
     const marketId = '0xc54d7acf14de29e0e5527cabd7a576506870346a78a11a6762e2cca66322ec41';
@@ -809,6 +813,7 @@ describe('Test Adapter for Morpho Blue', function () {
     let portfolio: Portfolio;
 
     before(async function () {
+      protocol.setBlockTag(blockTag);
       portfolio = await protocol.getPortfolio(account, marketId);
     });
 

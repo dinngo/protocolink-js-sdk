@@ -1,7 +1,8 @@
 import { LendingProtocol } from './lending-protocol';
+import { Portfolio } from 'src/protocol.portfolio';
 import * as common from '@protocolink/common';
 import { expect } from 'chai';
-import { removePortfolioDynamicFields } from 'src/protocol.utils';
+import { filterPortfolio } from 'src/protocol.utils';
 
 describe('Test Aave V2 LendingProtocol', function () {
   context('Test getPortfolio', function () {
@@ -206,7 +207,7 @@ describe('Test Aave V2 LendingProtocol', function () {
                 address: '0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84',
                 decimals: 18,
                 symbol: 'stETH',
-                name: 'Liquid staked Ether 2.0',
+                name: 'Lido Staked Ether',
               },
               price: '2242.39893',
               balance: '25782.508922011398440232',
@@ -645,15 +646,16 @@ describe('Test Aave V2 LendingProtocol', function () {
 
     testCases.forEach(({ chainId, account, blockTag, expected }) => {
       it(`${common.toNetworkId(chainId)} market`, async function () {
-        const protocol = new LendingProtocol(chainId);
+        const protocol = await LendingProtocol.createProtocol(chainId);
+
         protocol.setBlockTag(blockTag);
         const _portfolio = await protocol.getPortfolio(account);
-        const portfolio = JSON.parse(JSON.stringify(_portfolio));
+        const portfolio: Portfolio = JSON.parse(JSON.stringify(_portfolio));
 
-        removePortfolioDynamicFields(expected);
-        removePortfolioDynamicFields(portfolio);
+        const filteredPortfolio = filterPortfolio(portfolio);
+        const filteredExpected = filterPortfolio(expected);
 
-        expect(JSON.stringify(portfolio)).to.eq(JSON.stringify(expected));
+        expect(filteredPortfolio).to.deep.equal(filteredExpected);
       });
     });
   });

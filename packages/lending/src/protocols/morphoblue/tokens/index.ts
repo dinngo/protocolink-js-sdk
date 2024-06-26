@@ -3,4 +3,4 @@ import mainnetTokensJSON from './data/mainnet.json';
 
 type MainnetTokenSymbols = keyof typeof mainnetTokensJSON;
 
-export const mainnetTokens = common.toTokenMap<MainnetTokenSymbols>(mainnetTokensJSON);
+export const mainnetTokens = { ...common.toTokenMap<MainnetTokenSymbols>(mainnetTokensJSON), ...common.mainnetTokens };

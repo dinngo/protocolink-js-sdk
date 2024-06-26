@@ -1,23 +1,26 @@
 import { Adapter } from 'src/adapter';
 import BigNumberJS from 'bignumber.js';
+import { ID } from './configs';
 import { LendingProtocol } from './lending-protocol';
 import { Portfolio } from 'src/protocol.portfolio';
 import * as common from '@protocolink/common';
 import { expect } from 'chai';
 import { mainnetTokens } from './tokens';
 
-describe('Test Adapter for Spark', function () {
+describe('Test Adapter for Spark', async function () {
   const chainId = common.ChainId.mainnet;
-  const blockTag = 19059700;
-  const adapter = new Adapter(chainId);
+  const blockTag = 20175734;
+  let adapter: Adapter;
+  let protocol: LendingProtocol;
 
-  const protocol = new LendingProtocol(chainId);
-  protocol.setBlockTag(blockTag);
+  before(async function () {
+    adapter = await Adapter.createAdapter(chainId);
+    protocol = adapter.protocolMap[ID] as LendingProtocol;
+    protocol.setBlockTag(blockTag);
+  });
 
   context('Test openByCollateral', function () {
     const account = '0x8bf7058bfe4cf0d1fdfd41f43816c5555c17431d';
-    const blockTag = 19167450;
-    protocol.setBlockTag(blockTag);
 
     let portfolio: Portfolio;
 
@@ -109,8 +112,6 @@ describe('Test Adapter for Spark', function () {
 
   context('Test openByDebt', function () {
     const account = '0x8bf7058bfe4cf0d1fdfd41f43816c5555c17431d';
-    const blockTag = 19167450;
-    protocol.setBlockTag(blockTag);
 
     let portfolio: Portfolio;
 
@@ -201,9 +202,6 @@ describe('Test Adapter for Spark', function () {
   });
 
   context('Test close', function () {
-    const blockTag = 19167450;
-    protocol.setBlockTag(blockTag);
-
     let portfolio: Portfolio;
 
     before(async function () {});

@@ -16,7 +16,7 @@ describe('Transaction: Leverage By Debt', function () {
   let adapter: Adapter;
 
   before(async function () {
-    adapter = new Adapter(chainId, hre.ethers.provider);
+    adapter = await Adapter.createAdapter(chainId, hre.ethers.provider);
     [, user] = await hre.ethers.getSigners();
     await claimToken(chainId, user.address, mainnetTokens.WETH, initSupplyAmount);
   });

@@ -5,54 +5,5 @@
     "decimals": 6,
     "symbol": "cUSDCv3",
     "name": "Compound USDC"
-  },
-  "USDC.e": {
-    "chainId": 137,
-    "address": "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
-    "decimals": 6,
-    "symbol": "USDC.e",
-    "name": "USD Coin (PoS)"
-  },
-  "WETH": {
-    "chainId": 137,
-    "address": "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619",
-    "decimals": 18,
-    "symbol": "WETH",
-    "name": "Wrapped Ether"
-  },
-  "WBTC": {
-    "chainId": 137,
-    "address": "0x1BFD67037B42Cf73acF2047067bd4F2C47D9BfD6",
-    "decimals": 8,
-    "symbol": "WBTC",
-    "name": "(PoS) Wrapped BTC"
-  },
-  "MATIC": {
-    "chainId": 137,
-    "address": "0x0000000000000000000000000000000000001010",
-    "decimals": 18,
-    "symbol": "MATIC",
-    "name": "Matic Token"
-  },
-  "WMATIC": {
-    "chainId": 137,
-    "address": "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270",
-    "decimals": 18,
-    "symbol": "WMATIC",
-    "name": "Wrapped Matic"
-  },
-  "MaticX": {
-    "chainId": 137,
-    "address": "0xfa68FB4628DFF1028CFEc22b4162FCcd0d45efb6",
-    "decimals": 18,
-    "symbol": "MaticX",
-    "name": "Liquid Staking Matic (PoS)"
-  },
-  "stMATIC": {
-    "chainId": 137,
-    "address": "0x3A58a54C066FdC0f2D55FC9C89F0415C92eBf3C4",
-    "decimals": 18,
-    "symbol": "stMATIC",
-    "name": "Staked MATIC (PoS)"
   }
 }

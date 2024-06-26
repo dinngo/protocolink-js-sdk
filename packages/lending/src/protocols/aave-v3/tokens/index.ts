@@ -8,20 +8,36 @@ import metisTokensJSON from './data/metis.json';
 import optimismTokensJSON from './data/optimism.json';
 import polygonTokensJSON from './data/polygon.json';
 
+type MainnetTokenSymbols = keyof typeof mainnetTokensJSON;
+type OptimismTokenSymbols = keyof typeof optimismTokensJSON;
+type GnosisTokenSymbols = keyof typeof gnosisTokensJSON;
+type PolygonTokenSymbols = keyof typeof polygonTokensJSON;
+type MetisTokenSymbols = keyof typeof metisTokensJSON;
+type BaseTokenSymbols = keyof typeof baseTokensJSON;
 type ArbitrumTokenSymbols = keyof typeof arbitrumTokensJSON;
 type AvalancheTokenSymbols = keyof typeof avalancheTokensJSON;
-type BaseTokenSymbols = keyof typeof baseTokensJSON;
-type GnosisTokenSymbols = keyof typeof gnosisTokensJSON;
-type MainnetTokenSymbols = keyof typeof mainnetTokensJSON;
-type MetisTokenSymbols = keyof typeof metisTokensJSON;
-type OptimismTokenSymbols = keyof typeof optimismTokensJSON;
-type PolygonTokenSymbols = keyof typeof polygonTokensJSON;
 
-export const arbitrumTokens = common.toTokenMap<ArbitrumTokenSymbols>(arbitrumTokensJSON);
-export const avalancheTokens = common.toTokenMap<AvalancheTokenSymbols>(avalancheTokensJSON);
-export const baseTokens = common.toTokenMap<BaseTokenSymbols>(baseTokensJSON);
-export const gnosisTokens = common.toTokenMap<GnosisTokenSymbols>(gnosisTokensJSON);
-export const mainnetTokens = common.toTokenMap<MainnetTokenSymbols>(mainnetTokensJSON);
-export const metisTokens = common.toTokenMap<MetisTokenSymbols>(metisTokensJSON);
-export const optimismTokens = common.toTokenMap<OptimismTokenSymbols>(optimismTokensJSON);
-export const polygonTokens = common.toTokenMap<PolygonTokenSymbols>(polygonTokensJSON);
+export const mainnetTokens = { ...common.toTokenMap<MainnetTokenSymbols>(mainnetTokensJSON), ...common.mainnetTokens };
+
+export const optimismTokens = {
+  ...common.toTokenMap<OptimismTokenSymbols>(optimismTokensJSON),
+  ...common.optimismTokens,
+};
+
+export const gnosisTokens = { ...common.toTokenMap<GnosisTokenSymbols>(gnosisTokensJSON), ...common.gnosisTokens };
+
+export const polygonTokens = { ...common.toTokenMap<PolygonTokenSymbols>(polygonTokensJSON), ...common.polygonTokens };
+
+export const metisTokens = { ...common.toTokenMap<MetisTokenSymbols>(metisTokensJSON), ...common.metisTokens };
+
+export const baseTokens = { ...common.toTokenMap<BaseTokenSymbols>(baseTokensJSON), ...common.baseTokens };
+
+export const arbitrumTokens = {
+  ...common.toTokenMap<ArbitrumTokenSymbols>(arbitrumTokensJSON),
+  ...common.arbitrumTokens,
+};
+
+export const avalancheTokens = {
+  ...common.toTokenMap<AvalancheTokenSymbols>(avalancheTokensJSON),
+  ...common.avalancheTokens,
+};

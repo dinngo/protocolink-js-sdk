@@ -1,7 +1,7 @@
 import { LendingProtocol } from './lending-protocol';
 import * as common from '@protocolink/common';
 import { expect } from 'chai';
-import { removePortfolioDynamicFields } from 'src/protocol.utils';
+import { filterPortfolio } from 'src/protocol.utils';
 
 describe('Test Morpho Blue LendingProtocol', function () {
   context('Test getPortfolio', function () {
@@ -63,17 +63,29 @@ describe('Test Morpho Blue LendingProtocol', function () {
 
     testCases.forEach(({ chainId, marketId, account, expected, blockTag }) => {
       it(`${common.toNetworkId(chainId)} ${marketId} market`, async function () {
-        const protocol = new LendingProtocol(chainId);
+        const protocol = await LendingProtocol.createProtocol(chainId);
         protocol.setBlockTag(blockTag);
 
         const _portfolio = await protocol.getPortfolio(account, marketId);
         const portfolio = JSON.parse(JSON.stringify(_portfolio));
 
-        removePortfolioDynamicFields(expected);
-        removePortfolioDynamicFields(portfolio);
+        const filteredPortfolio = filterPortfolio(portfolio);
+        const filteredExpected = filterPortfolio(expected);
 
-        expect(JSON.stringify(portfolio)).to.eq(JSON.stringify(expected));
+        expect(filteredPortfolio).to.deep.equal(filteredExpected);
       }).timeout(60000);
     });
+  });
+
+  context('Test getPortfolios', function () {
+    const account = '0xa3C1C91403F0026b9dd086882aDbC8Cdbc3b3cfB';
+    const chainId = common.ChainId.mainnet;
+
+    it(`${common.toNetworkId(chainId)}`, async function () {
+      const protocol = await LendingProtocol.createProtocol(chainId);
+      const portfolios = await protocol.getPortfolios(account);
+
+      expect(portfolios).length.greaterThan(0);
+    }).timeout(60000);
   });
 });

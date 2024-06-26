@@ -22,15 +22,10 @@ import {
   DISPLAY_NAME,
   ID,
   Reserve,
-  configMap,
   getContractAddress,
-  hasNativeToken,
-  isAToken,
+  isTokenForBorrow,
+  isTokenForDeposit,
   supportedChainIds,
-  toAToken,
-  toToken,
-  tokensForBorrowMap,
-  tokensForDepositMap,
 } from './configs';
 import { PoolDataProviderInterface } from './contracts/PoolDataProvider';
 import { Portfolio } from 'src/protocol.portfolio';
@@ -50,9 +45,42 @@ export class LendingProtocol extends Protocol {
   readonly id = ID;
   readonly market: Market;
 
+  private reserves: logics.spark.ReserveTokens[] = [];
+  private reserveMap: Record<string, Reserve> = {};
+  private hasNativeToken = false;
+
   constructor(chainId: number, provider?: providers.Provider) {
     super(chainId, provider);
     this.market = LendingProtocol.markets.find((market) => market.chainId === this.chainId)!;
+  }
+
+  public static async createProtocol(chainId: number, provider?: providers.Provider): Promise<LendingProtocol> {
+    const instance = new LendingProtocol(chainId, provider);
+    await instance.initializeReservesConfig();
+    return instance;
+  }
+
+  async initializeReservesConfig() {
+    const service = new logics.spark.Service(this.chainId, this.provider);
+    const reserves = await service.getReserveTokens();
+    const reserveMap: Record<string, Reserve> = {};
+    let hasNativeToken = false;
+
+    for (const { asset, aToken, stableDebtToken, variableDebtToken } of reserves) {
+      if (asset.isNative) hasNativeToken = true;
+
+      if (asset.isWrapped) {
+        reserveMap[asset.unwrapped.address] = { aToken, asset };
+        reserves.push({ asset: asset.unwrapped, aToken, stableDebtToken, variableDebtToken });
+      }
+
+      reserveMap[asset.address] = { aToken, asset };
+      reserveMap[aToken.address] = { aToken, asset };
+    }
+
+    this.reserves = reserves;
+    this.reserveMap = reserveMap;
+    this.hasNativeToken = hasNativeToken;
   }
 
   private _poolDataProvider?: PoolDataProvider;
@@ -103,12 +131,42 @@ export class LendingProtocol extends Protocol {
     return this._aTokenIface;
   }
 
-  get reserves(): Reserve[] {
-    return configMap[this.chainId].reserves;
+  private _tokensForDeposit?: common.Token[];
+
+  async getTokensForDeposit() {
+    if (!this._tokensForDeposit) {
+      const tokenList = await apisdk.protocols.spark.getSupplyTokenList(this.chainId);
+
+      const tokens = tokenList
+        .filter((tokens) => isTokenForDeposit(this.chainId, tokens[0]))
+        .map((tokens) => tokens[0]);
+
+      this._tokensForDeposit = tokens;
+    }
+
+    return this._tokensForDeposit;
+  }
+
+  private _tokensForBorrow?: common.Token[];
+
+  async getTokensForBorrow() {
+    if (!this._tokensForBorrow) {
+      const tokenList = await apisdk.protocols.spark.getBorrowTokenList(this.chainId);
+
+      const tokens = tokenList.filter((token) => isTokenForBorrow(this.chainId, token));
+
+      this._tokensForBorrow = tokens;
+    }
+
+    return this._tokensForBorrow;
+  }
+
+  getProtocolName() {
+    return DISPLAY_NAME;
   }
 
   getMarketName() {
-    return DISPLAY_NAME;
+    return this.market.id;
   }
 
   private _reserveDataMap?: Record<
@@ -265,10 +323,12 @@ export class LendingProtocol extends Protocol {
     const assetPriceMap = await this.getAssetPriceMap();
     const userBalancesMap = await this.getUserBalancesMap(account);
     const lstTokenAPYMap = await this.getLstTokenAPYMap(this.chainId);
+    const tokensForDeposit = await this.getTokensForDeposit();
+    const tokensForBorrow = await this.getTokensForBorrow();
 
     const supplies: SupplyObject[] = [];
-    for (const token of tokensForDepositMap[this.chainId]) {
-      if (hasNativeToken(this.chainId) && token.isWrapped) continue;
+    for (const token of tokensForDeposit) {
+      if (this.hasNativeToken && token.isWrapped) continue;
 
       const reserveData = reserveDataMap[token.address];
       const { supplyAPY: apy, ltv, liquidationThreshold, supplyCap, totalSupply, debtCeiling } = reserveData;
@@ -304,8 +364,8 @@ export class LendingProtocol extends Protocol {
     }
 
     const borrows: BorrowObject[] = [];
-    for (const token of tokensForBorrowMap[this.chainId]) {
-      if (hasNativeToken(this.chainId) && token.isWrapped) continue;
+    for (const token of tokensForBorrow) {
+      if (this.hasNativeToken && token.isWrapped) continue;
 
       const { borrowAPY: apy, borrowCap, totalBorrow } = reserveDataMap[token.address];
       const price = assetPriceMap[token.address];
@@ -336,15 +396,15 @@ export class LendingProtocol extends Protocol {
   }
 
   toUnderlyingToken(_marketId: string, protocolToken: common.Token) {
-    return toToken(this.chainId, protocolToken);
+    return this.reserveMap[protocolToken.address].asset;
   }
 
   toProtocolToken(_marketId: string, underlyingToken: common.Token) {
-    return toAToken(this.chainId, underlyingToken);
+    return this.reserveMap[underlyingToken.address].aToken;
   }
 
   isProtocolToken(_marketId: string, token: common.Token) {
-    return isAToken(this.chainId, token);
+    return this.reserveMap[token.address].aToken.is(token);
   }
 
   newSupplyLogic({ marketId, input }: SupplyParams) {

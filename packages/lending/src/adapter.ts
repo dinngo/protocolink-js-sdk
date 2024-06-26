@@ -44,16 +44,26 @@ export class Adapter extends common.Web3Toolkit {
 
   constructor(chainId: number, provider?: providers.Provider) {
     super(chainId, provider);
+  }
 
+  public static async createAdapter(chainId: number, provider?: providers.Provider): Promise<Adapter> {
+    const adapter = new Adapter(chainId, provider);
+
+    await adapter.initializeConfig();
+
+    return adapter;
+  }
+
+  async initializeConfig() {
     for (const Protocol of Adapter.Protocols) {
       if (Protocol.isSupported(this.chainId)) {
-        const protocol = new Protocol(chainId, provider);
+        const protocol = await Protocol.createProtocol(this.chainId, this.provider);
         this.protocolMap[protocol.id] = protocol;
       }
     }
     for (const Swapper of Adapter.Swappers) {
       if (Swapper.isSupported(this.chainId)) {
-        this.swappers.push(new Swapper(chainId, provider));
+        this.swappers.push(new Swapper(this.chainId, this.provider));
       }
     }
   }
@@ -165,9 +175,9 @@ export class Adapter extends common.Web3Toolkit {
    */
   async getPortfolios(account: string, options?: { blockTag?: string | number }): Promise<Portfolio[]> {
     const portfolios = await Promise.all(
-      Object.values(this.protocolMap).map((protocol) => {
+      Object.values(this.protocolMap).map(async (protocol) => {
         protocol.setBlockTag(options?.blockTag);
-        return protocol.getPortfolios(account);
+        return await protocol.getPortfolios(account);
       })
     );
     return flatten(portfolios);

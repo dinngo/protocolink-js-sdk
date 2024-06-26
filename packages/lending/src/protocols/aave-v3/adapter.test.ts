@@ -1,5 +1,6 @@
 import { Adapter } from 'src/adapter';
 import BigNumberJS from 'bignumber.js';
+import { ID } from './configs';
 import { LendingProtocol } from './lending-protocol';
 import { Portfolio } from 'src/protocol.portfolio';
 import * as common from '@protocolink/common';
@@ -8,20 +9,22 @@ import { mainnetTokens } from './tokens';
 
 describe('Test Adapter for Aave V3', function () {
   const chainId = common.ChainId.mainnet;
-  const blockTag = 18826234;
-  const adapter = new Adapter(chainId);
+  const blockTag = 20175734;
+  let adapter: Adapter;
+  let protocol: LendingProtocol;
 
-  const protocol = new LendingProtocol(chainId);
-  protocol.setBlockTag(blockTag);
+  before(async function () {
+    adapter = await Adapter.createAdapter(chainId);
+    protocol = adapter.protocolMap[ID] as LendingProtocol;
+    protocol.setBlockTag(blockTag);
+  });
 
   context('Test openByCollateral', function () {
     const account = '0x6286b9f080D27f860F6b4bb0226F8EF06CC9F2Fc';
-    const blockTag = 19131880;
 
     let portfolio: Portfolio;
 
     before(async function () {
-      protocol.setBlockTag(blockTag);
       portfolio = await protocol.getPortfolio(account);
     });
 
@@ -109,12 +112,10 @@ describe('Test Adapter for Aave V3', function () {
 
   context('Test openByDebt', function () {
     const account = '0x6286b9f080D27f860F6b4bb0226F8EF06CC9F2Fc';
-    const blockTag = 19131880;
 
     let portfolio: Portfolio;
 
     before(async function () {
-      protocol.setBlockTag(blockTag);
       portfolio = await protocol.getPortfolio(account);
     });
 
@@ -201,13 +202,9 @@ describe('Test Adapter for Aave V3', function () {
   });
 
   context('Test close', function () {
-    const blockTag = 19131880;
-
     let portfolio: Portfolio;
 
-    before(async function () {
-      protocol.setBlockTag(blockTag);
-    });
+    before(async function () {});
 
     it('no positions', async function () {
       const account = '0x4838B106FCe9647Bdf1E7877BF73cE8B0BAD5f97';
@@ -288,7 +285,6 @@ describe('Test Adapter for Aave V3', function () {
     let portfolio: Portfolio;
 
     before(async function () {
-      protocol.setBlockTag(blockTag);
       portfolio = await protocol.getPortfolio(account);
     });
 
@@ -761,8 +757,6 @@ describe('Test Adapter for Aave V3', function () {
     });
 
     it('success - src token is equal to dest token', async function () {
-      const blockTag = 19232405;
-      protocol.setBlockTag(blockTag);
       const account = '0x4AAB5CbFe493fc2AC18C46A68eF42c58ba06C9BD';
       portfolio = await protocol.getPortfolio(account);
 

@@ -5,5 +5,5 @@ import mainnetTokensJSON from './data/mainnet.json';
 type MainnetTokenSymbols = keyof typeof mainnetTokensJSON;
 type GnosisTokenSymbols = keyof typeof gnosisTokensJSON;
 
-export const mainnetTokens = common.toTokenMap<MainnetTokenSymbols>(mainnetTokensJSON);
-export const gnosisTokens = common.toTokenMap<GnosisTokenSymbols>(gnosisTokensJSON);
+export const mainnetTokens = { ...common.toTokenMap<MainnetTokenSymbols>(mainnetTokensJSON), ...common.mainnetTokens };
+export const gnosisTokens = { ...common.toTokenMap<GnosisTokenSymbols>(gnosisTokensJSON), ...common.gnosisTokens };

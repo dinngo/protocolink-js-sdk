@@ -6,16 +6,19 @@ import polygonTokensJSON from './data/polygon.json';
 
 type MainnetTokenSymbols = keyof typeof mainnetTokensJSON;
 
-export const mainnetTokens = common.toTokenMap<MainnetTokenSymbols>(mainnetTokensJSON);
+export const mainnetTokens = { ...common.toTokenMap<MainnetTokenSymbols>(mainnetTokensJSON), ...common.mainnetTokens };
 
 type PolygonTokenSymbols = keyof typeof polygonTokensJSON;
 
-export const polygonTokens = common.toTokenMap<PolygonTokenSymbols>(polygonTokensJSON);
+export const polygonTokens = { ...common.toTokenMap<PolygonTokenSymbols>(polygonTokensJSON), ...common.polygonTokens };
 
 type BaseTokenSymbols = keyof typeof baseTokensJSON;
 
-export const baseTokens = common.toTokenMap<BaseTokenSymbols>(baseTokensJSON);
+export const baseTokens = { ...common.toTokenMap<BaseTokenSymbols>(baseTokensJSON), ...common.baseTokens };
 
 type ArbitrumTokenSymbols = keyof typeof arbitrumTokensJSON;
 
-export const arbitrumTokens = common.toTokenMap<ArbitrumTokenSymbols>(arbitrumTokensJSON);
+export const arbitrumTokens = {
+  ...common.toTokenMap<ArbitrumTokenSymbols>(arbitrumTokensJSON),
+  ...common.arbitrumTokens,
+};

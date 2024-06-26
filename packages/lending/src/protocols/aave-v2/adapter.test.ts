@@ -1,4 +1,5 @@
 import { Adapter } from 'src/adapter';
+import { ID } from './configs';
 import { LendingProtocol } from './lending-protocol';
 import { Portfolio } from 'src/protocol.portfolio';
 import * as common from '@protocolink/common';
@@ -8,20 +9,23 @@ import { mainnetTokens } from './tokens';
 describe('Test Adapter for Aave V2', function () {
   const chainId = common.ChainId.mainnet;
   const blockTag = 18797586;
+  let adapter: Adapter;
+  let protocol: LendingProtocol;
 
-  const adapter = new Adapter(chainId);
-
-  const protocol = new LendingProtocol(chainId);
-  protocol.setBlockTag(blockTag);
+  before(async function () {
+    adapter = await Adapter.createAdapter(chainId);
+    protocol = adapter.protocolMap[ID] as LendingProtocol;
+    protocol.setBlockTag(blockTag);
+  });
 
   context('Test openByCollateral', function () {
     const account = '0xc94680947CF2114ec8eE43725898EAA7269a98c5';
     const blockTag = 19167450;
-    protocol.setBlockTag(blockTag);
 
     let portfolio: Portfolio;
 
     before(async function () {
+      protocol.setBlockTag(blockTag);
       portfolio = await protocol.getPortfolio(account);
     });
 
@@ -110,11 +114,11 @@ describe('Test Adapter for Aave V2', function () {
   context('Test openByDebt', function () {
     const account = '0xc94680947CF2114ec8eE43725898EAA7269a98c5';
     const blockTag = 19167450;
-    protocol.setBlockTag(blockTag);
 
     let portfolio: Portfolio;
 
     before(async function () {
+      protocol.setBlockTag(blockTag);
       portfolio = await protocol.getPortfolio(account);
     });
 
@@ -202,11 +206,12 @@ describe('Test Adapter for Aave V2', function () {
 
   context('Test close', function () {
     const blockTag = 19167450;
-    protocol.setBlockTag(blockTag);
 
     let portfolio: Portfolio;
 
-    before(async function () {});
+    before(async function () {
+      protocol.setBlockTag(blockTag);
+    });
 
     it('no positions', async function () {
       const account = '0x4838B106FCe9647Bdf1E7877BF73cE8B0BAD5f97';
@@ -266,6 +271,7 @@ describe('Test Adapter for Aave V2', function () {
       expect(Number(destAmount)).to.be.greaterThan(0);
       expect(afterPortfolio.totalSupplyUSD).to.be.eq(0);
 
+      console.log(logics);
       expect(logics).has.length(5);
       expect(logics[0].rid).to.eq('permit2:pull-token');
       expect(logics[1].rid).to.eq('aave-v2:withdraw');

@@ -1,24 +1,10 @@
 {
-  "USDT": {
-    "chainId": 1,
-    "address": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
-    "decimals": 6,
-    "symbol": "USDT",
-    "name": "Tether USD"
-  },
   "aUSDT": {
     "chainId": 1,
     "address": "0x3Ed3B47Dd13EC9a98b44e6204A523E766B225811",
     "decimals": 6,
     "symbol": "aUSDT",
     "name": "Aave interest bearing USDT"
-  },
-  "WBTC": {
-    "chainId": 1,
-    "address": "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
-    "decimals": 8,
-    "symbol": "WBTC",
-    "name": "Wrapped BTC"
   },
   "aWBTC": {
     "chainId": 1,
@@ -27,20 +13,6 @@
     "symbol": "aWBTC",
     "name": "Aave interest bearing WBTC"
   },
-  "ETH": {
-    "chainId": 1,
-    "address": "0x0000000000000000000000000000000000000000",
-    "decimals": 18,
-    "symbol": "ETH",
-    "name": "Ethereum"
-  },
-  "WETH": {
-    "chainId": 1,
-    "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
-    "decimals": 18,
-    "symbol": "WETH",
-    "name": "Wrapped Ether"
-  },
   "aWETH": {
     "chainId": 1,
     "address": "0x030bA81f1c18d280636F32af80b9AAd02Cf0854e",
@@ -48,26 +20,12 @@
     "symbol": "aWETH",
     "name": "Aave interest bearing WETH"
   },
-  "AAVE": {
-    "chainId": 1,
-    "address": "0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9",
-    "decimals": 18,
-    "symbol": "AAVE",
-    "name": "Aave Token"
-  },
   "aAAVE": {
     "chainId": 1,
     "address": "0xFFC97d72E13E01096502Cb8Eb52dEe56f74DAD7B",
     "decimals": 18,
     "symbol": "aAAVE",
     "name": "Aave interest bearing AAVE"
-  },
-  "DAI": {
-    "chainId": 1,
-    "address": "0x6B175474E89094C44Da98b954EedeAC495271d0F",
-    "decimals": 18,
-    "symbol": "DAI",
-    "name": "Dai Stablecoin"
   },
   "aDAI": {
     "chainId": 1,
@@ -89,13 +47,6 @@
     "decimals": 18,
     "symbol": "aSUSD",
     "name": "Aave interest bearing SUSD"
-  },
-  "USDC": {
-    "chainId": 1,
-    "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-    "decimals": 6,
-    "symbol": "USDC",
-    "name": "USD Coin"
   },
   "aUSDC": {
     "chainId": 1,
@@ -145,13 +96,6 @@
     "decimals": 18,
     "symbol": "aFRAX",
     "name": "Aave interest bearing FRAX"
-  },
-  "stETH": {
-    "chainId": 1,
-    "address": "0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84",
-    "decimals": 18,
-    "symbol": "stETH",
-    "name": "Liquid staked Ether 2.0"
   },
   "aSTETH": {
     "chainId": 1,

@@ -5,5 +5,5 @@ import polygonTokensJSON from './data/polygon.json';
 type MainnetTokenSymbols = keyof typeof mainnetTokensJSON;
 type PolygonTokenSymbols = keyof typeof polygonTokensJSON;
 
-export const mainnetTokens = common.toTokenMap<MainnetTokenSymbols>(mainnetTokensJSON);
-export const polygonTokens = common.toTokenMap<PolygonTokenSymbols>(polygonTokensJSON);
+export const mainnetTokens = { ...common.toTokenMap<MainnetTokenSymbols>(mainnetTokensJSON), ...common.mainnetTokens };
+export const polygonTokens = { ...common.toTokenMap<PolygonTokenSymbols>(polygonTokensJSON), ...common.polygonTokens };

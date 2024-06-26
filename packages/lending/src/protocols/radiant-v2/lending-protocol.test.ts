@@ -1,8 +1,9 @@
 import { LendingProtocol } from './lending-protocol';
+import { Portfolio } from 'src/protocol.portfolio';
 import { arbitrumTokens, bnbTokens, mainnetTokens } from './tokens';
 import * as common from '@protocolink/common';
 import { expect } from 'chai';
-import { removePortfolioDynamicFields } from 'src/protocol.utils';
+import { filterPortfolio } from 'src/protocol.utils';
 
 describe('Test Radiant V2 LendingProtocol', function () {
   context('Test getPortfolio', function () {
@@ -562,16 +563,16 @@ describe('Test Radiant V2 LendingProtocol', function () {
 
     testCases.forEach(({ chainId, account, blockTag, expected }) => {
       it(`${common.toNetworkId(chainId)} market`, async function () {
-        const protocol = new LendingProtocol(chainId);
+        const protocol = await LendingProtocol.createProtocol(chainId);
+
         protocol.setBlockTag(blockTag);
-
         const _portfolio = await protocol.getPortfolio(account);
-        const portfolio = JSON.parse(JSON.stringify(_portfolio));
+        const portfolio: Portfolio = JSON.parse(JSON.stringify(_portfolio));
 
-        removePortfolioDynamicFields(expected);
-        removePortfolioDynamicFields(portfolio);
+        const filteredPortfolio = filterPortfolio(portfolio);
+        const filteredExpected = filterPortfolio(expected);
 
-        expect(JSON.stringify(portfolio)).to.eq(JSON.stringify(expected));
+        expect(filteredPortfolio).to.deep.equal(filteredExpected);
       });
     });
   });

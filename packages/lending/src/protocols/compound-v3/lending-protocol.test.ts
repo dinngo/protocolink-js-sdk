@@ -3,7 +3,7 @@ import { arbitrumTokens, mainnetTokens, polygonTokens } from './tokens';
 import * as common from '@protocolink/common';
 import { expect } from 'chai';
 import * as logics from '@protocolink/logics';
-import { removePortfolioDynamicFields } from 'src/protocol.utils';
+import { filterPortfolio } from 'src/protocol.utils';
 
 describe('Test Compound V3 LendingProtocol', function () {
   context('Test getPortfolio', function () {
@@ -526,6 +526,12 @@ describe('Test Compound V3 LendingProtocol', function () {
         chainId: common.ChainId.arbitrum,
         marketId: logics.compoundv3.MarketId.USDCe,
         account: '0xA62315902fAADC69F898cc8B85F86FfD1F6aAeD8',
+        expected: {},
+      },
+      {
+        chainId: common.ChainId.arbitrum,
+        marketId: logics.compoundv3.MarketId.USDCe,
+        account: '0xA62315902fAADC69F898cc8B85F86FfD1F6aAeD8',
         blockTag: 130619502,
         expected: {
           chainId: 42161,
@@ -778,15 +784,15 @@ describe('Test Compound V3 LendingProtocol', function () {
 
     testCases.forEach(({ chainId, marketId, account, blockTag, expected }) => {
       it(`${common.toNetworkId(chainId)} ${marketId} market`, async function () {
-        const protocol = new LendingProtocol(chainId);
+        const protocol = await LendingProtocol.createProtocol(chainId);
         protocol.setBlockTag(blockTag);
         const _portfolio = await protocol.getPortfolio(account, marketId);
         const portfolio = JSON.parse(JSON.stringify(_portfolio));
 
-        removePortfolioDynamicFields(expected);
-        removePortfolioDynamicFields(portfolio);
+        const filteredPortfolio = filterPortfolio(portfolio);
+        const filteredExpected = filterPortfolio(expected);
 
-        expect(JSON.stringify(portfolio)).to.eq(JSON.stringify(expected));
+        expect(filteredPortfolio).to.deep.equal(filteredExpected);
       }).timeout(60000);
     });
   });
@@ -863,7 +869,7 @@ describe('Test Compound V3 LendingProtocol', function () {
 
     testCases.forEach(({ chainId, marketId, asset, expected }) => {
       it(`${common.toNetworkId(chainId)} ${marketId} market - ${asset.symbol}`, async function () {
-        const protocol = new LendingProtocol(chainId);
+        const protocol = await LendingProtocol.createProtocol(chainId);
         expect(protocol.canCollateralSwap(marketId, asset)).to.eq(expected);
       });
     });
@@ -900,7 +906,7 @@ describe('Test Compound V3 LendingProtocol', function () {
 
     testCases.forEach(({ chainId, marketId, expected }) => {
       it(`${common.toNetworkId(chainId)} ${marketId} market`, async function () {
-        const protocol = new LendingProtocol(chainId);
+        const protocol = await LendingProtocol.createProtocol(chainId);
         expect(protocol.toUnderlyingToken(marketId).is(expected[0])).to.be.true;
         expect(protocol.toProtocolToken(marketId).is(expected[1])).to.be.true;
       });
@@ -979,7 +985,7 @@ describe('Test Compound V3 LendingProtocol', function () {
 
     testCases.forEach(({ chainId, marketId, asset, expected }) => {
       it(`${common.toNetworkId(chainId)} ${marketId} market - ${asset.symbol}`, async function () {
-        const protocol = new LendingProtocol(chainId);
+        const protocol = await LendingProtocol.createProtocol(chainId);
 
         expect(protocol.isAssetTokenized(marketId, asset)).to.eq(expected);
       });
