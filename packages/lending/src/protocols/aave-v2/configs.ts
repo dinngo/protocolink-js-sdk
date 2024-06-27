@@ -35,6 +35,15 @@ export const configs: Config[] = [
       ETHPriceFeed: '0xF9680D99D6C9589e2a93a78A04A279e509205945',
     },
   },
+  // https://github.com/bgd-labs/aave-address-book/blob/main/src/AaveV2Avalanche.sol
+  {
+    chainId: common.ChainId.avalanche,
+    contractMap: {
+      ProtocolDataProvider: '0x65285E9dfab318f57051ab2b139ccCf232945451',
+      PriceOracle: '0xdC336Cd4769f4cC7E9d726DA53e6d3fC710cEB89',
+      ETHPriceFeed: '0x976B3D034E162d8bD72D6b9C989d545b839003b0',
+    },
+  },
 ];
 
 export const supportedChainIds = logics.aavev2.supportedChainIds;
@@ -44,20 +53,22 @@ export function getContractAddress(chainId: number, name: ContractName) {
   return contractMap[name];
 }
 
-const depositDisableMap: Record<number, string[]> = {
+const supplyDisabledMap: Record<number, string[]> = {
   [common.ChainId.mainnet]: [],
   [common.ChainId.polygon]: [],
+  [common.ChainId.avalanche]: [],
 };
 
-const borrowDisableMap: Record<number, string[]> = {
-  [common.ChainId.mainnet]: [common.mainnetTokens.AAVE.address, common.mainnetTokens.stETH.address],
-  [common.ChainId.polygon]: [common.polygonTokens.AAVE.address],
+const borrowDisabledMap: Record<number, string[]> = {
+  [common.ChainId.mainnet]: [common.mainnetTokens.stETH.address],
+  [common.ChainId.polygon]: [],
+  [common.ChainId.avalanche]: [],
 };
 
-export const isTokenForDeposit = (chainId: number, token: common.Token) => {
-  return !depositDisableMap[chainId].includes(token.address);
+export const isSupplyEnabled = (chainId: number, token: common.Token) => {
+  return !supplyDisabledMap[chainId].includes(token.address);
 };
 
-export const isTokenForBorrow = (chainId: number, token: common.Token) => {
-  return !borrowDisableMap[chainId].includes(token.address);
+export const isBorrowEnabled = (chainId: number, token: common.Token) => {
+  return !borrowDisabledMap[chainId].includes(token.address);
 };

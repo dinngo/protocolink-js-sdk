@@ -27,6 +27,15 @@ export const configs: Config[] = [
       AaveOracle: '0x54586bE62E3c3580375aE3723C145253060Ca0C2',
     },
   },
+  // https://github.com/bgd-labs/aave-address-book/blob/main/src/AaveV3Optimism.sol
+  {
+    chainId: common.ChainId.optimism,
+    contractMap: {
+      Pool: '0x794a61358D6845594F94dc1DB02A252b5b4814aD',
+      PoolDataProvider: '0xd9Ca4878dd38B021583c1B669905592EAe76E044',
+      AaveOracle: '0xD81eb3728a631871a7eBBaD631b5f424909f0c77',
+    },
+  },
   // https://github.com/bgd-labs/aave-address-book/blob/main/src/AaveV3Gnosis.sol
   {
     chainId: common.ChainId.gnosis,
@@ -43,6 +52,15 @@ export const configs: Config[] = [
       Pool: '0x794a61358D6845594F94dc1DB02A252b5b4814aD',
       PoolDataProvider: '0x9441B65EE553F70df9C77d45d3283B6BC24F222d',
       AaveOracle: '0xb023e699F5a33916Ea823A16485e259257cA8Bd1',
+    },
+  },
+  // https://github.com/bgd-labs/aave-address-book/blob/main/src/AaveV3Metis.sol
+  {
+    chainId: common.ChainId.metis,
+    contractMap: {
+      Pool: '0x90df02551bB792286e8D4f13E0e357b4Bf1D6a57',
+      PoolDataProvider: '0x99411FC17Ad1B56f49719E3850B2CDcc0f9bBFd8',
+      AaveOracle: '0x38D36e85E47eA6ff0d18B0adF12E5fC8984A6f8e',
     },
   },
   // https://github.com/bgd-labs/aave-address-book/blob/main/src/AaveV3Base.sol
@@ -63,15 +81,6 @@ export const configs: Config[] = [
       AaveOracle: '0xb56c2F0B653B2e0b10C9b928C8580Ac5Df02C7C7',
     },
   },
-  // https://github.com/bgd-labs/aave-address-book/blob/main/src/AaveV3Optimism.sol
-  {
-    chainId: common.ChainId.optimism,
-    contractMap: {
-      Pool: '0x794a61358D6845594F94dc1DB02A252b5b4814aD',
-      PoolDataProvider: '0xd9Ca4878dd38B021583c1B669905592EAe76E044',
-      AaveOracle: '0xD81eb3728a631871a7eBBaD631b5f424909f0c77',
-    },
-  },
   // https://github.com/bgd-labs/aave-address-book/blob/main/src/AaveV3Avalanche.sol
   {
     chainId: common.ChainId.avalanche,
@@ -79,15 +88,6 @@ export const configs: Config[] = [
       Pool: '0x794a61358D6845594F94dc1DB02A252b5b4814aD',
       PoolDataProvider: '0x50ddd0Cd4266299527d25De9CBb55fE0EB8dAc30',
       AaveOracle: '0xEBd36016B3eD09D4693Ed4251c67Bd858c3c7C9C',
-    },
-  },
-  // https://github.com/bgd-labs/aave-address-book/blob/main/src/AaveV3Metis.sol
-  {
-    chainId: common.ChainId.metis,
-    contractMap: {
-      Pool: '0x90df02551bB792286e8D4f13E0e357b4Bf1D6a57',
-      PoolDataProvider: '0x99411FC17Ad1B56f49719E3850B2CDcc0f9bBFd8',
-      AaveOracle: '0x38D36e85E47eA6ff0d18B0adF12E5fC8984A6f8e',
     },
   },
 ];
@@ -99,32 +99,32 @@ export function getContractAddress(chainId: number, name: ContractName) {
   return contractMap[name];
 }
 
-const depositDisableMap: Record<number, string[]> = {
+const supplyDisabledMap: Record<number, string[]> = {
   [common.ChainId.mainnet]: [mainnetTokens.GHO.address],
+  [common.ChainId.optimism]: [],
   [common.ChainId.gnosis]: [],
   [common.ChainId.polygon]: [],
+  [common.ChainId.metis]: [],
   [common.ChainId.base]: [],
   [common.ChainId.arbitrum]: [],
-  [common.ChainId.optimism]: [],
   [common.ChainId.avalanche]: [],
-  [common.ChainId.metis]: [],
 };
 
-const borrowDisableMap: Record<number, string[]> = {
-  [common.ChainId.mainnet]: [mainnetTokens.AAVE.address, mainnetTokens.STG.address, mainnetTokens.FXS.address],
+const borrowDisabledMap: Record<number, string[]> = {
+  [common.ChainId.mainnet]: [mainnetTokens.AAVE.address],
+  [common.ChainId.optimism]: [optimismTokens.AAVE.address],
   [common.ChainId.gnosis]: [gnosisTokens.sDAI.address],
   [common.ChainId.polygon]: [polygonTokens.AAVE.address],
+  [common.ChainId.metis]: [],
   [common.ChainId.base]: [],
   [common.ChainId.arbitrum]: [arbitrumTokens.AAVE.address],
-  [common.ChainId.optimism]: [optimismTokens.AAVE.address],
   [common.ChainId.avalanche]: [avalancheTokens.sAVAX.address, avalancheTokens['AAVE.e'].address],
-  [common.ChainId.metis]: [],
 };
 
-export const isTokenForDeposit = (chainId: number, token: common.Token) => {
-  return !depositDisableMap[chainId].includes(token.address);
+export const isSupplyEnabled = (chainId: number, token: common.Token) => {
+  return !supplyDisabledMap[chainId].includes(token.address);
 };
 
-export const isTokenForBorrow = (chainId: number, token: common.Token) => {
-  return !borrowDisableMap[chainId].includes(token.address);
+export const isBorrowEnabled = (chainId: number, token: common.Token) => {
+  return !borrowDisabledMap[chainId].includes(token.address);
 };

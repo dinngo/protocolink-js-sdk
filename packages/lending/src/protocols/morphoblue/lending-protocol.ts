@@ -16,6 +16,7 @@ import * as common from '@protocolink/common';
 
 export class LendingProtocol extends Protocol {
   readonly id = ID;
+  readonly name = DISPLAY_NAME;
 
   static readonly markets = supportedChainIds.reduce((accumulator, chainId) => {
     for (const marketId of Object.keys(marketMap[chainId])) {
@@ -71,10 +72,6 @@ export class LendingProtocol extends Protocol {
       this._irmIface = Irm__factory.createInterface();
     }
     return this._irmIface;
-  }
-
-  getProtocolName() {
-    return DISPLAY_NAME;
   }
 
   getMarketName(id: string) {

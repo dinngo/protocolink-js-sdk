@@ -23,8 +23,8 @@ import {
   ID,
   Reserve,
   getContractAddress,
-  isTokenForBorrow,
-  isTokenForDeposit,
+  isBorrowEnabled,
+  isSupplyEnabled,
   supportedChainIds,
 } from './configs';
 import { ETHPriceFeedInterface } from './contracts/ETHPriceFeed';
@@ -41,10 +41,12 @@ import * as logics from '@protocolink/logics';
 export class LendingProtocol extends Protocol {
   static readonly markets = supportedChainIds.map((chainId) => ({
     id: common.toNetworkId(chainId),
+    name: common.getNetwork(chainId).name,
     chainId,
   }));
 
   readonly id = ID;
+  readonly name = DISPLAY_NAME;
   readonly market: Market;
 
   private reserves: logics.aavev2.ReserveTokens[] = [];
@@ -158,9 +160,7 @@ export class LendingProtocol extends Protocol {
     if (!this._tokensForDeposit) {
       const tokenList = await apisdk.protocols.aavev2.getDepositTokenList(this.chainId);
 
-      const tokens = tokenList
-        .filter((tokens) => isTokenForDeposit(this.chainId, tokens[0]))
-        .map((tokens) => tokens[0]);
+      const tokens = tokenList.filter((tokens) => isSupplyEnabled(this.chainId, tokens[0])).map((tokens) => tokens[0]);
 
       this._tokensForDeposit = tokens;
     }
@@ -174,16 +174,12 @@ export class LendingProtocol extends Protocol {
     if (!this._tokensForBorrow) {
       const tokenList = await apisdk.protocols.aavev2.getBorrowTokenList(this.chainId);
 
-      const tokens = tokenList.filter((token) => isTokenForBorrow(this.chainId, token));
+      const tokens = tokenList.filter((token) => isBorrowEnabled(this.chainId, token));
 
       this._tokensForBorrow = tokens;
     }
 
     return this._tokensForBorrow;
-  }
-
-  getProtocolName() {
-    return DISPLAY_NAME;
   }
 
   getMarketName() {

@@ -45,20 +45,20 @@ export function getContractAddress(chainId: number, name: ContractName) {
   return contractMap[name];
 }
 
-const depositDisableMap: Record<number, string[]> = {
+const supplyDisabledMap: Record<number, string[]> = {
   [common.ChainId.mainnet]: [],
   [common.ChainId.gnosis]: [],
 };
 
-const borrowDisableMap: Record<number, string[]> = {
+const borrowDisabledMap: Record<number, string[]> = {
   [common.ChainId.mainnet]: [mainnetTokens.sDAI.address],
-  [common.ChainId.gnosis]: [gnosisTokens.GNO.address],
+  [common.ChainId.gnosis]: [gnosisTokens.GNO.address, gnosisTokens.sDAI.address],
 };
 
-export const isTokenForDeposit = (chainId: number, token: common.Token) => {
-  return !depositDisableMap[chainId].includes(token.address);
+export const isSupplyEnabled = (chainId: number, token: common.Token) => {
+  return !supplyDisabledMap[chainId].includes(token.address);
 };
 
-export const isTokenForBorrow = (chainId: number, token: common.Token) => {
-  return !borrowDisableMap[chainId].includes(token.address);
+export const isBorrowEnabled = (chainId: number, token: common.Token) => {
+  return !borrowDisabledMap[chainId].includes(token.address);
 };

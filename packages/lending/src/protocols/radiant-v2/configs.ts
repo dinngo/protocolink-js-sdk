@@ -1,3 +1,4 @@
+import { arbitrumTokens } from './tokens';
 import * as common from '@protocolink/common';
 import * as logics from '@protocolink/logics';
 
@@ -47,22 +48,22 @@ export function getContractAddress(chainId: number, name: ContractName) {
   return contractMap[name];
 }
 
-const depositDisableMap: Record<number, string[]> = {
+const supplyDisabledMap: Record<number, string[]> = {
   [common.ChainId.mainnet]: [],
   [common.ChainId.bnb]: [],
   [common.ChainId.arbitrum]: [],
 };
 
-const borrowDisableMap: Record<number, string[]> = {
+const borrowDisabledMap: Record<number, string[]> = {
   [common.ChainId.mainnet]: [],
   [common.ChainId.bnb]: [],
-  [common.ChainId.arbitrum]: [],
+  [common.ChainId.arbitrum]: [arbitrumTokens.gmETH.address, arbitrumTokens.gmBTC.address],
 };
 
-export const isTokenForDeposit = (chainId: number, token: common.Token) => {
-  return !depositDisableMap[chainId].includes(token.address);
+export const isSupplyEnabled = (chainId: number, token: common.Token) => {
+  return !supplyDisabledMap[chainId].includes(token.address);
 };
 
-export const isTokenForBorrow = (chainId: number, token: common.Token) => {
-  return !borrowDisableMap[chainId].includes(token.address);
+export const isBorrowEnabled = (chainId: number, token: common.Token) => {
+  return !borrowDisabledMap[chainId].includes(token.address);
 };

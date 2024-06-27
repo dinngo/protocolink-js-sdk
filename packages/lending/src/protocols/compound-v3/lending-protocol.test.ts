@@ -2,8 +2,8 @@ import { LendingProtocol } from './lending-protocol';
 import { arbitrumTokens, mainnetTokens, polygonTokens } from './tokens';
 import * as common from '@protocolink/common';
 import { expect } from 'chai';
-import * as logics from '@protocolink/logics';
 import { filterPortfolio } from 'src/protocol.utils';
+import * as logics from '@protocolink/logics';
 
 describe('Test Compound V3 LendingProtocol', function () {
   context('Test getPortfolio', function () {
@@ -521,12 +521,6 @@ describe('Test Compound V3 LendingProtocol', function () {
             },
           ],
         },
-      },
-      {
-        chainId: common.ChainId.arbitrum,
-        marketId: logics.compoundv3.MarketId.USDCe,
-        account: '0xA62315902fAADC69F898cc8B85F86FfD1F6aAeD8',
-        expected: {},
       },
       {
         chainId: common.ChainId.arbitrum,

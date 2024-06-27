@@ -32,7 +32,7 @@ export abstract class Protocol extends common.Web3Toolkit {
 
   abstract id: string;
 
-  abstract getProtocolName(id: string): string;
+  abstract name: string;
 
   abstract getMarketName(id: string): string;
 

@@ -23,8 +23,8 @@ import {
   ID,
   Reserve,
   getContractAddress,
-  isTokenForBorrow,
-  isTokenForDeposit,
+  isBorrowEnabled,
+  isSupplyEnabled,
   supportedChainIds,
 } from './configs';
 import { PoolDataProviderInterface } from './contracts/PoolDataProvider';
@@ -43,6 +43,7 @@ export class LendingProtocol extends Protocol {
   }));
 
   readonly id = ID;
+  readonly name = DISPLAY_NAME;
   readonly market: Market;
 
   private reserves: logics.spark.ReserveTokens[] = [];
@@ -137,9 +138,7 @@ export class LendingProtocol extends Protocol {
     if (!this._tokensForDeposit) {
       const tokenList = await apisdk.protocols.spark.getSupplyTokenList(this.chainId);
 
-      const tokens = tokenList
-        .filter((tokens) => isTokenForDeposit(this.chainId, tokens[0]))
-        .map((tokens) => tokens[0]);
+      const tokens = tokenList.filter((tokens) => isSupplyEnabled(this.chainId, tokens[0])).map((tokens) => tokens[0]);
 
       this._tokensForDeposit = tokens;
     }
@@ -153,16 +152,12 @@ export class LendingProtocol extends Protocol {
     if (!this._tokensForBorrow) {
       const tokenList = await apisdk.protocols.spark.getBorrowTokenList(this.chainId);
 
-      const tokens = tokenList.filter((token) => isTokenForBorrow(this.chainId, token));
+      const tokens = tokenList.filter((token) => isBorrowEnabled(this.chainId, token));
 
       this._tokensForBorrow = tokens;
     }
 
     return this._tokensForBorrow;
-  }
-
-  getProtocolName() {
-    return DISPLAY_NAME;
   }
 
   getMarketName() {
