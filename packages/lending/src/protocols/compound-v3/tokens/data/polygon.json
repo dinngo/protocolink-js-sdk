@@ -1,9 +1,0 @@
-{
-  "cUSDCv3": {
-    "chainId": 137,
-    "address": "0xF25212E676D1F7F89Cd72fFEe66158f541246445",
-    "decimals": 6,
-    "symbol": "cUSDCv3",
-    "name": "Compound USDC"
-  }
-}

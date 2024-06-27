@@ -1,24 +1,6 @@
-import arbitrumTokensJSON from './data/arbitrum.json';
-import baseTokensJSON from './data/base.json';
-import * as common from '@protocolink/common';
-import mainnetTokensJSON from './data/mainnet.json';
-import polygonTokensJSON from './data/polygon.json';
+import * as logics from '@protocolink/logics';
 
-type MainnetTokenSymbols = keyof typeof mainnetTokensJSON;
-
-export const mainnetTokens = { ...common.toTokenMap<MainnetTokenSymbols>(mainnetTokensJSON), ...common.mainnetTokens };
-
-type PolygonTokenSymbols = keyof typeof polygonTokensJSON;
-
-export const polygonTokens = { ...common.toTokenMap<PolygonTokenSymbols>(polygonTokensJSON), ...common.polygonTokens };
-
-type BaseTokenSymbols = keyof typeof baseTokensJSON;
-
-export const baseTokens = { ...common.toTokenMap<BaseTokenSymbols>(baseTokensJSON), ...common.baseTokens };
-
-type ArbitrumTokenSymbols = keyof typeof arbitrumTokensJSON;
-
-export const arbitrumTokens = {
-  ...common.toTokenMap<ArbitrumTokenSymbols>(arbitrumTokensJSON),
-  ...common.arbitrumTokens,
-};
+export const mainnetTokens = logics.compoundv3.mainnetTokens;
+export const polygonTokens = logics.compoundv3.polygonTokens;
+export const baseTokens = logics.compoundv3.baseTokens;
+export const arbitrumTokens = logics.compoundv3.arbitrumTokens;

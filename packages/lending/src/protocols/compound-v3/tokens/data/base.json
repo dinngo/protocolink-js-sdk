@@ -1,9 +1,0 @@
-{
-  "cWETHv3": {
-    "chainId": 8453,
-    "address": "0x46e6b214b524310239732D51387075E0e70970bf",
-    "decimals": 18,
-    "symbol": "cWETHv3",
-    "name": "Compound WETH"
-  }
-}
