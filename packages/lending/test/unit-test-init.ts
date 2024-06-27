@@ -6,7 +6,8 @@ import { paraswapv5 } from 'src/swappers';
 if (process.env.MAINNET_RPC_URL) {
   common.setNetwork(common.ChainId.mainnet, { rpcUrl: process.env.MAINNET_RPC_URL });
 }
-common.setNetwork(common.ChainId.arbitrum, { rpcUrl: 'https://arbitrum-one-rpc.allthatnode.com' });
+
+// common.setNetwork(common.ChainId.arbitrum, { rpcUrl: 'https://arbitrum-one-rpc.allthatnode.com' });
 
 Adapter.registerProtocol(aavev2.LendingProtocol);
 Adapter.registerProtocol(aavev3.LendingProtocol);

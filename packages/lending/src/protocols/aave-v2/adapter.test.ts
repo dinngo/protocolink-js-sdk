@@ -271,15 +271,14 @@ describe('Test Adapter for Aave V2', function () {
       expect(Number(destAmount)).to.be.greaterThan(0);
       expect(afterPortfolio.totalSupplyUSD).to.be.eq(0);
 
-      console.log(logics);
       expect(logics).has.length(5);
       expect(logics[0].rid).to.eq('permit2:pull-token');
       expect(logics[1].rid).to.eq('aave-v2:withdraw');
       expect(logics[1].fields.balanceBps).to.eq(common.BPS_BASE);
-      expect(logics[2].rid).to.contain('swap-token');
-      expect(logics[3].rid).to.eq('permit2:pull-token');
-      expect(logics[4].rid).to.eq('aave-v2:withdraw');
-      expect(logics[4].fields.balanceBps).to.eq(common.BPS_BASE);
+      expect(logics[2].rid).to.eq('permit2:pull-token');
+      expect(logics[3].rid).to.eq('aave-v2:withdraw');
+      expect(logics[3].fields.balanceBps).to.eq(common.BPS_BASE);
+      expect(logics[4].rid).to.contain('swap-token');
     });
   });
 

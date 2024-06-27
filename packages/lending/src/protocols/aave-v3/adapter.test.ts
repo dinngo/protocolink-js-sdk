@@ -9,7 +9,7 @@ import { mainnetTokens } from './tokens';
 
 describe('Test Adapter for Aave V3', function () {
   const chainId = common.ChainId.mainnet;
-  const blockTag = 20175734;
+  const blockTag = 20187274;
   let adapter: Adapter;
   let protocol: LendingProtocol;
 
@@ -247,10 +247,10 @@ describe('Test Adapter for Aave V3', function () {
       expect(logics[5].rid).to.eq('permit2:pull-token');
       expect(logics[6].rid).to.eq('aave-v3:withdraw');
       expect(logics[6].fields.balanceBps).to.eq(common.BPS_BASE);
-      expect(logics[7].rid).to.contain('swap-token');
-      expect(logics[8].rid).to.eq('permit2:pull-token');
-      expect(logics[9].rid).to.eq('aave-v3:withdraw');
-      expect(logics[9].fields.balanceBps).to.eq(common.BPS_BASE);
+      expect(logics[7].rid).to.eq('permit2:pull-token');
+      expect(logics[8].rid).to.eq('aave-v3:withdraw');
+      expect(logics[8].fields.balanceBps).to.eq(common.BPS_BASE);
+      expect(logics[9].rid).to.contain('swap-token');
       expect(logics[10].rid).to.eq('utility:flash-loan-aggregator');
       expect(logics[11].rid).to.eq('utility:wrapped-native-token');
     });

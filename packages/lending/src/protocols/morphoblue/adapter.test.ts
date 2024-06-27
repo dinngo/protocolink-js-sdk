@@ -272,11 +272,13 @@ describe('Test Adapter for Morpho Blue', async function () {
   // Morpho blue - only one collateral token and one debt token
   // leverage only have one scenario - leverage by collateral token
   context('Test leverageByCollateral', function () {
-    const account = '0xa3C1C91403F0026b9dd086882aDbC8Cdbc3b3cfB';
+    const account = '0x9edcb464C0AfdD01a5Ffbd09309b437C7dadeAB3';
+    const blockTag = 20180000;
 
     let portfolio: Portfolio;
 
     before(async function () {
+      protocol.setBlockTag(blockTag);
       portfolio = await protocol.getPortfolio(account, marketId);
     });
 
@@ -345,7 +347,7 @@ describe('Test Adapter for Morpho Blue', async function () {
 
     it('success - src token is not equal to dest token', async function () {
       const srcToken = mainnetTokens.wstETH;
-      const srcAmount = '0.001';
+      const srcAmount = '0.1';
       const destToken = mainnetTokens.USDC;
 
       const { destAmount, afterPortfolio, error, logics } = await adapter.leverageByCollateral({
