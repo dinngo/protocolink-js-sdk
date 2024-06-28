@@ -1,5 +1,11 @@
 # @protocolink/lending
 
+## 2.0.0
+
+### Major Changes
+
+- 79b6b4d: adapter, protocol use async to init config
+
 ## 1.3.0
 
 ### Minor Changes
