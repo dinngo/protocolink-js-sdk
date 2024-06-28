@@ -61,8 +61,8 @@ describe('Test Morpho Blue LendingProtocol', function () {
       },
     ];
 
-    testCases.forEach(({ chainId, marketId, account, expected, blockTag }) => {
-      it(`${common.toNetworkId(chainId)} ${marketId} market`, async function () {
+    testCases.forEach(({ chainId, marketId, account, blockTag, expected }) => {
+      it(`${common.toNetworkId(chainId)} ${marketId} market with blockTag ${blockTag}`, async function () {
         const protocol = await LendingProtocol.createProtocol(chainId);
         protocol.setBlockTag(blockTag);
 

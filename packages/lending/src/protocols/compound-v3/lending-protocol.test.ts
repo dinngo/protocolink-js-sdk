@@ -805,7 +805,7 @@ describe('Test Compound V3 LendingProtocol', function () {
     ];
 
     testCases.forEach(({ chainId, marketId, account, blockTag, expected }) => {
-      it(`${common.toNetworkId(chainId)} ${marketId} market`, async function () {
+      it(`${common.toNetworkId(chainId)} ${marketId} market with blockTag ${blockTag}`, async function () {
         const protocol = await LendingProtocol.createProtocol(chainId);
         protocol.setBlockTag(blockTag);
         const _portfolio = await protocol.getPortfolio(account, marketId);
