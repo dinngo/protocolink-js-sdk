@@ -18,14 +18,11 @@ import {
 import {
   DISPLAY_NAME,
   ID,
-  configMap,
+  Reserve,
   getContractAddress,
-  isRToken,
+  isBorrowEnabled,
+  isSupplyEnabled,
   supportedChainIds,
-  toRToken,
-  toToken,
-  tokensForBorrowMap,
-  tokensForDepositMap,
 } from './configs';
 import { Portfolio } from 'src/protocol.portfolio';
 import { PriceOracleInterface } from './contracts/PriceOracle';
@@ -45,12 +42,41 @@ export class LendingProtocol extends Protocol {
   }));
 
   readonly id = ID;
+  readonly name = DISPLAY_NAME;
   readonly market: Market;
   readonly preferredFlashLoanProtocolId = logics.radiantv2.FlashLoanLogic.protocolId;
+
+  private reserves: logics.radiantv2.ReserveTokens[] = [];
+  private reserveMap: Record<string, Reserve> = {};
 
   constructor(chainId: number, provider?: providers.Provider) {
     super(chainId, provider);
     this.market = LendingProtocol.markets.find((market) => market.chainId === this.chainId)!;
+  }
+
+  public static async createProtocol(chainId: number, provider?: providers.Provider): Promise<LendingProtocol> {
+    const instance = new LendingProtocol(chainId, provider);
+    await instance.initializeReservesConfig();
+    return instance;
+  }
+
+  async initializeReservesConfig() {
+    const service = new logics.radiantv2.Service(this.chainId, this.provider);
+    const reserves = await service.getReserveTokens();
+    const reserveMap: Record<string, Reserve> = {};
+
+    for (const { asset, rToken, stableDebtToken, variableDebtToken } of reserves) {
+      if (asset.isWrapped) {
+        reserveMap[asset.unwrapped.address] = { rToken, asset };
+        reserves.push({ asset: asset.unwrapped, rToken, stableDebtToken, variableDebtToken });
+      }
+
+      reserveMap[asset.address] = { rToken, asset };
+      reserveMap[rToken.address] = { rToken, asset };
+    }
+
+    this.reserves = reserves;
+    this.reserveMap = reserveMap;
   }
 
   private _protocolDataProvider?: ProtocolDataProvider;
@@ -101,12 +127,36 @@ export class LendingProtocol extends Protocol {
     return this._aTokenIface;
   }
 
-  get reserves() {
-    return configMap[this.chainId].reserves;
+  private _tokensForDeposit?: common.Token[];
+
+  async getTokensForDeposit() {
+    if (!this._tokensForDeposit) {
+      const tokenList = await apisdk.protocols.radiantv2.getDepositTokenList(this.chainId);
+
+      const tokens = tokenList.filter((tokens) => isSupplyEnabled(this.chainId, tokens[0])).map((tokens) => tokens[0]);
+
+      this._tokensForDeposit = tokens;
+    }
+
+    return this._tokensForDeposit;
+  }
+
+  private _tokensForBorrow?: common.Token[];
+
+  async getTokensForBorrow() {
+    if (!this._tokensForBorrow) {
+      const tokenList = await apisdk.protocols.radiantv2.getBorrowTokenList(this.chainId);
+
+      const tokens = tokenList.filter((token) => isBorrowEnabled(this.chainId, token));
+
+      this._tokensForBorrow = tokens;
+    }
+
+    return this._tokensForBorrow;
   }
 
   getMarketName() {
-    return DISPLAY_NAME;
+    return this.market.id;
   }
 
   private _reserveDataMap?: Record<
@@ -234,9 +284,11 @@ export class LendingProtocol extends Protocol {
     const assetPriceMap = await this.getAssetPriceMap();
     const userBalancesMap = await this.getUserBalancesMap(account);
     const lstTokenAPYMap = await this.getLstTokenAPYMap(this.chainId);
+    const tokensForDeposit = await this.getTokensForDeposit();
+    const tokensForBorrow = await this.getTokensForBorrow();
 
     const supplies: SupplyObject[] = [];
-    for (const token of tokensForDepositMap[this.chainId]) {
+    for (const token of tokensForDeposit) {
       if (token.isWrapped) continue;
 
       const reserveData = reserveDataMap[token.address];
@@ -266,7 +318,7 @@ export class LendingProtocol extends Protocol {
     }
 
     const borrows: BorrowObject[] = [];
-    for (const token of tokensForBorrowMap[this.chainId]) {
+    for (const token of tokensForBorrow) {
       if (token.isWrapped) continue;
 
       const { variableBorrowAPY: apy, totalBorrow } = reserveDataMap[token.address];
@@ -297,15 +349,15 @@ export class LendingProtocol extends Protocol {
   }
 
   toUnderlyingToken(_marketId: string, protocolToken: common.Token) {
-    return toToken(this.chainId, protocolToken);
+    return this.reserveMap[protocolToken.address].asset;
   }
 
   toProtocolToken(_marketId: string, underlyingToken: common.Token) {
-    return toRToken(this.chainId, underlyingToken);
+    return this.reserveMap[underlyingToken.address].rToken;
   }
 
   isProtocolToken(_marketId: string, token: common.Token) {
-    return isRToken(this.chainId, token);
+    return this.reserveMap[token.address].rToken.is(token);
   }
 
   newSupplyLogic({ marketId, input }: SupplyParams) {

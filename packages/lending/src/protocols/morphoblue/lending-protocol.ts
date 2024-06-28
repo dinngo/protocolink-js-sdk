@@ -1,4 +1,4 @@
-import { BigNumber } from 'ethers';
+import { BigNumber, providers } from 'ethers';
 import BigNumberJS from 'bignumber.js';
 import { BorrowObject, Market, RepayParams, SupplyObject } from 'src/protocol.type';
 import { DISPLAY_NAME, ID, configMap, getContractAddress, getMarket, marketMap, supportedChainIds } from './configs';
@@ -16,6 +16,7 @@ import * as common from '@protocolink/common';
 
 export class LendingProtocol extends Protocol {
   readonly id = ID;
+  readonly name = DISPLAY_NAME;
 
   static readonly markets = supportedChainIds.reduce((accumulator, chainId) => {
     for (const marketId of Object.keys(marketMap[chainId])) {
@@ -23,6 +24,10 @@ export class LendingProtocol extends Protocol {
     }
     return accumulator;
   }, [] as Market[]);
+
+  public static async createProtocol(chainId: number, provider?: providers.Provider): Promise<LendingProtocol> {
+    return new LendingProtocol(chainId, provider);
+  }
 
   private _morpho?: Morpho;
 
@@ -71,7 +76,7 @@ export class LendingProtocol extends Protocol {
 
   getMarketName(id: string) {
     const { loanToken, collateralToken } = getMarket(this.chainId, id);
-    return `${DISPLAY_NAME} ${loanToken.symbol}(${collateralToken.symbol} collateral)`;
+    return `${collateralToken.symbol}/${loanToken.symbol}`;
   }
 
   async getPortfolio(account: string, marketId: string) {
@@ -181,6 +186,7 @@ export class LendingProtocol extends Protocol {
   async getPortfolios(account: string) {
     return Promise.all(configMap[this.chainId].markets.map(({ id }) => this.getPortfolio(account, id)));
   }
+
   override canCollateralSwap() {
     return false;
   }

@@ -17,8 +17,8 @@ export async function deposit(
   await expect(
     logics.morphoblue.Morpho__factory.connect(morphoAddress, user).supplyCollateral(
       {
-        loanToken: market.loanTokenAddress,
-        collateralToken: market.collateralTokenAddress,
+        loanToken: market.loanToken.address,
+        collateralToken: market.collateralToken.address,
         oracle: market.oracle,
         irm: market.irm,
         lltv: market.lltv,
@@ -42,8 +42,8 @@ export async function borrow(
   await expect(
     logics.morphoblue.Morpho__factory.connect(morphoAddress, user).borrow(
       {
-        loanToken: market.loanTokenAddress,
-        collateralToken: market.collateralTokenAddress,
+        loanToken: market.loanToken.address,
+        collateralToken: market.collateralToken.address,
         oracle: market.oracle,
         irm: market.irm,
         lltv: market.lltv,

@@ -2,7 +2,6 @@ import { LendingSwapper } from './lending-swapper';
 import { SwapperQuoteParams } from 'src/swapper.type';
 import * as common from '@protocolink/common';
 import { expect } from 'chai';
-import { metisTokens } from 'src/tokens';
 
 describe('Test OpenOcean V2 LendingSwapper', function () {
   context('Test quote', function () {
@@ -10,16 +9,16 @@ describe('Test OpenOcean V2 LendingSwapper', function () {
       {
         chainId: common.ChainId.metis,
         params: {
-          input: new common.TokenAmount(metisTokens['m.DAI'], '1'),
-          tokenOut: metisTokens['m.USDC'],
+          input: new common.TokenAmount(common.metisTokens['m.DAI'], '1'),
+          tokenOut: common.metisTokens['m.USDC'],
           slippage: 100,
         },
       },
       {
         chainId: common.ChainId.metis,
         params: {
-          tokenIn: metisTokens['m.DAI'],
-          output: new common.TokenAmount(metisTokens['m.USDC'], '1'),
+          tokenIn: common.metisTokens['m.DAI'],
+          output: new common.TokenAmount(common.metisTokens['m.USDC'], '1'),
           slippage: 100,
         },
       },

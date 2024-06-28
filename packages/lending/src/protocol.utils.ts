@@ -107,22 +107,25 @@ export function toSignificantDigits(amount: string, decimals: number, mode?: Rou
 
 export const lstTokenAPYsURL = 'https://cdn.furucombo.app/lstTokenAPYs.json';
 
-export const removePortfolioDynamicFields = (portfolio: any) => {
-  delete portfolio.netAPY;
+export const filterPortfolio = (portfolio: any) => {
+  const { netAPY: _netAPY, supplies, borrows, ...rest } = portfolio || {};
 
-  if (Array.isArray(portfolio.supplies)) {
-    portfolio.supplies.forEach((supply: any) => {
-      delete supply.lstApy;
-      delete supply.grossApy;
-    });
-  }
+  const processList = (list: any[]) => {
+    return list
+      .filter(({ balance }) => balance !== '0')
+      .map((item) => {
+        const { lstApy: _lstApy, grossApy: _grossApy, token, ...rest } = item;
+        const { logoUri: _logoUri, ...tokenRest } = token;
+        return { ...rest, token: tokenRest };
+      })
+      .sort((a, b) => a.token.address.localeCompare(b.token.address));
+  };
 
-  if (Array.isArray(portfolio.borrows)) {
-    portfolio.borrows.forEach((borrow: any) => {
-      delete borrow.lstApy;
-      delete borrow.grossApy;
-    });
-  }
+  return {
+    ...rest,
+    supplies: Array.isArray(supplies) ? processList(supplies) : supplies,
+    borrows: Array.isArray(borrows) ? processList(borrows) : borrows,
+  };
 };
 
 export const getLstApyFromMap = (tokenAddress: string, lstTokenAPYMap: Record<string, string>) => {

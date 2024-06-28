@@ -8,8 +8,7 @@ import {
   marketMap,
   supportedChainIds,
 } from './configs';
-import { BigNumber } from 'ethers';
-import BigNumberJS from 'bignumber.js';
+import { BigNumber, providers } from 'ethers';
 import { BorrowObject, Market, RepayParams, SupplyObject, SupplyParams, WithdrawParams } from 'src/protocol.type';
 import { CometInterface } from './contracts/Comet';
 import { Comet__factory } from './contracts';
@@ -22,6 +21,7 @@ import * as common from '@protocolink/common';
 
 export class LendingProtocol extends Protocol {
   readonly id = ID;
+  readonly name = DISPLAY_NAME;
 
   static readonly markets = supportedChainIds.reduce((accumulator, chainId) => {
     for (const marketId of Object.keys(marketMap[chainId])) {
@@ -30,8 +30,12 @@ export class LendingProtocol extends Protocol {
     return accumulator;
   }, [] as Market[]);
 
+  public static async createProtocol(chainId: number, provider?: providers.Provider): Promise<LendingProtocol> {
+    return new LendingProtocol(chainId, provider);
+  }
+
   getMarketName(id: string) {
-    return `${DISPLAY_NAME} ${id}`;
+    return id;
   }
 
   override canCollateralSwap(marketId: string, assetToken: common.Token) {
@@ -50,13 +54,13 @@ export class LendingProtocol extends Protocol {
   }
 
   toProtocolToken(marketId: string) {
-    const { cToken } = getMarketConfig(this.chainId, marketId);
-    return cToken;
+    const { comet } = getMarketConfig(this.chainId, marketId);
+    return comet;
   }
 
   isProtocolToken(marketId: string, token: common.Token) {
-    const { cToken } = getMarketConfig(this.chainId, marketId);
-    return token.is(cToken);
+    const { comet } = getMarketConfig(this.chainId, marketId);
+    return token.is(comet);
   }
 
   override isAssetTokenized(marketId: string, assetToken: common.Token) {
@@ -80,7 +84,7 @@ export class LendingProtocol extends Protocol {
   async getMarket(id: string) {
     if (!this._marketMap[this.chainId][id]) {
       const market = getMarketConfig(this.chainId, id);
-      const { cometAddress } = market;
+      const { comet } = market;
 
       let baseTokenPriceFeed: string;
       let numAssets: number;
@@ -91,27 +95,27 @@ export class LendingProtocol extends Protocol {
       {
         const calls: common.Multicall3.CallStruct[] = [
           {
-            target: cometAddress,
+            target: comet.address,
             callData: this.cometIface.encodeFunctionData('baseTokenPriceFeed'),
           },
           {
-            target: cometAddress,
+            target: comet.address,
             callData: this.cometIface.encodeFunctionData('numAssets'),
           },
           {
-            target: cometAddress,
+            target: comet.address,
             callData: this.cometIface.encodeFunctionData('baseBorrowMin'),
           },
           {
-            target: cometAddress,
+            target: comet.address,
             callData: this.cometIface.encodeFunctionData('getUtilization'),
           },
           {
-            target: cometAddress,
+            target: comet.address,
             callData: this.cometIface.encodeFunctionData('totalSupply'),
           },
           {
-            target: cometAddress,
+            target: comet.address,
             callData: this.cometIface.encodeFunctionData('totalBorrow'),
           },
         ];
@@ -129,7 +133,7 @@ export class LendingProtocol extends Protocol {
       {
         const calls: common.Multicall3.CallStruct[] = [];
         for (let i = 0; i < numAssets; i++) {
-          calls.push({ target: cometAddress, callData: this.cometIface.encodeFunctionData('getAssetInfo', [i]) });
+          calls.push({ target: comet.address, callData: this.cometIface.encodeFunctionData('getAssetInfo', [i]) });
         }
         const { returnData } = await this.multicall3.callStatic.aggregate(calls, { blockTag: this.blockTag });
 
@@ -151,7 +155,7 @@ export class LendingProtocol extends Protocol {
       const assets: AssetConfig[] = [];
       {
         const calls: common.Multicall3.CallStruct[] = assetInfos.map(({ token }) => ({
-          target: cometAddress,
+          target: comet.address,
           callData: this.cometIface.encodeFunctionData('totalsCollateral', [token.address]),
         }));
         const { returnData } = await this.multicall3.callStatic.aggregate(calls, { blockTag: this.blockTag });
@@ -183,15 +187,15 @@ export class LendingProtocol extends Protocol {
   }
 
   async getAPYs(marketId: string) {
-    const { cometAddress } = getMarketConfig(this.chainId, marketId);
+    const { comet } = getMarketConfig(this.chainId, marketId);
 
-    const utilization = await Comet__factory.connect(cometAddress, this.provider).getUtilization({
+    const utilization = await Comet__factory.connect(comet.address, this.provider).getUtilization({
       blockTag: this.blockTag,
     });
 
     const calls: common.Multicall3.CallStruct[] = [
-      { target: cometAddress, callData: this.cometIface.encodeFunctionData('getSupplyRate', [utilization]) },
-      { target: cometAddress, callData: this.cometIface.encodeFunctionData('getBorrowRate', [utilization]) },
+      { target: comet.address, callData: this.cometIface.encodeFunctionData('getSupplyRate', [utilization]) },
+      { target: comet.address, callData: this.cometIface.encodeFunctionData('getBorrowRate', [utilization]) },
     ];
     const { returnData } = await this.multicall3.callStatic.aggregate(calls, { blockTag: this.blockTag });
 
@@ -205,24 +209,22 @@ export class LendingProtocol extends Protocol {
   }
 
   async getPriceMap(marketId: string) {
-    const { cometAddress, baseTokenPriceFeedAddress, baseTokenQuotePriceFeedAddress, assets } = await this.getMarket(
-      marketId
-    );
+    const { comet, baseTokenPriceFeedAddress, baseTokenQuotePriceFeedAddress, assets } = await this.getMarket(marketId);
 
     const calls: common.Multicall3.CallStruct[] = [];
     if (baseTokenQuotePriceFeedAddress) {
       calls.push({
-        target: cometAddress,
+        target: comet.address,
         callData: this.cometIface.encodeFunctionData('getPrice', [baseTokenQuotePriceFeedAddress]),
       });
     }
     calls.push({
-      target: cometAddress,
+      target: comet.address,
       callData: this.cometIface.encodeFunctionData('getPrice', [baseTokenPriceFeedAddress]),
     });
     for (const { priceFeedAddress } of assets) {
       calls.push({
-        target: cometAddress,
+        target: comet.address,
         callData: this.cometIface.encodeFunctionData('getPrice', [priceFeedAddress]),
       });
     }
@@ -258,21 +260,21 @@ export class LendingProtocol extends Protocol {
   }
 
   async getUserBalances(marketId: string, account: string) {
-    const { cometAddress, baseToken, assets } = await this.getMarket(marketId);
+    const { comet, baseToken, assets } = await this.getMarket(marketId);
 
     const calls: common.Multicall3.CallStruct[] = [
       {
-        target: cometAddress,
+        target: comet.address,
         callData: this.cometIface.encodeFunctionData('balanceOf', [account]),
       },
       {
-        target: cometAddress,
+        target: comet.address,
         callData: this.cometIface.encodeFunctionData('borrowBalanceOf', [account]),
       },
     ];
     for (const { token } of assets) {
       calls.push({
-        target: cometAddress,
+        target: comet.address,
         callData: this.cometIface.encodeFunctionData('collateralBalanceOf', [account, token.wrapped.address]),
       });
     }
@@ -296,7 +298,6 @@ export class LendingProtocol extends Protocol {
 
   async getPortfolio(account: string, marketId: string) {
     const { baseToken, assets, baseBorrowMin, totalSupply, totalBorrow } = await this.getMarket(marketId);
-
     const { supplyAPR, borrowAPR } = await this.getAPYs(marketId);
     const { baseTokenPrice, assetPriceMap } = await this.getPriceMap(marketId);
     const { supplyBalance, borrowBalance, collateralBalanceMap } = await this.getUserBalances(marketId, account);
@@ -365,13 +366,13 @@ export class LendingProtocol extends Protocol {
   }
 
   newSupplyLogic({ marketId, input }: SupplyParams) {
-    const { baseToken, cToken } = getMarketConfig(this.chainId, marketId);
+    const { baseToken, comet } = getMarketConfig(this.chainId, marketId);
 
     if (input.token.wrapped.is(baseToken)) {
       return apisdk.protocols.compoundv3.newSupplyBaseLogic({
         marketId,
         input,
-        output: new common.TokenAmount(cToken, input.amount),
+        output: new common.TokenAmount(comet, input.amount),
       });
     } else {
       return apisdk.protocols.compoundv3.newSupplyCollateralLogic({ marketId, input });
@@ -379,11 +380,11 @@ export class LendingProtocol extends Protocol {
   }
 
   newWithdrawLogic({ marketId, output }: WithdrawParams) {
-    const { baseToken, cToken } = getMarketConfig(this.chainId, marketId);
+    const { baseToken, comet } = getMarketConfig(this.chainId, marketId);
     if (output.token.wrapped.is(baseToken)) {
       return apisdk.protocols.compoundv3.newWithdrawBaseLogic({
         marketId,
-        input: new common.TokenAmount(cToken, output.amount),
+        input: new common.TokenAmount(comet, output.amount),
         output,
       });
     } else {

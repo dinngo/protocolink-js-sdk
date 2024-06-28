@@ -18,7 +18,7 @@ describe('Transaction: Leverage By Collateral', function () {
   let adapter: Adapter;
 
   before(async function () {
-    adapter = new Adapter(chainId, hre.ethers.provider);
+    adapter = await Adapter.createAdapter(chainId, hre.ethers.provider);
     [, user] = await hre.ethers.getSigners();
     await claimToken(chainId, user.address, mainnetTokens.WETH, initSupplyAmount);
     await claimToken(chainId, user.address, logics.morphoblue.mainnetTokens.wstETH, initSupplyAmount);

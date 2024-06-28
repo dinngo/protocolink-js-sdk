@@ -1,5 +1,6 @@
 import { Adapter } from 'src/adapter';
 import BigNumberJS from 'bignumber.js';
+import { ID } from './configs';
 import { LendingProtocol } from './lending-protocol';
 import { Portfolio } from 'src/protocol.portfolio';
 import * as common from '@protocolink/common';
@@ -10,20 +11,24 @@ import { mainnetTokens } from './tokens';
 describe('Test Adapter for Compound V3', function () {
   const chainId = common.ChainId.mainnet;
   const blockTag = 18826234;
-  const adapter = new Adapter(chainId);
-
+  let adapter: Adapter;
+  let protocol: LendingProtocol;
   const marketId = compoundv3.MarketId.ETH;
-  const protocol = new LendingProtocol(chainId);
-  protocol.setBlockTag(blockTag);
+
+  before(async function () {
+    adapter = await Adapter.createAdapter(chainId);
+    protocol = adapter.protocolMap[ID] as LendingProtocol;
+    protocol.setBlockTag(blockTag);
+  });
 
   context('Test openByCollateral', function () {
     const account = '0x8B58c7c52B4D0784a248fe3AB11ce76546dA4Cb9';
     const blockTag = 19167450;
-    protocol.setBlockTag(blockTag);
 
     let portfolio: Portfolio;
 
     before(async function () {
+      protocol.setBlockTag(blockTag);
       portfolio = await protocol.getPortfolio(account, marketId);
     });
 
@@ -109,11 +114,11 @@ describe('Test Adapter for Compound V3', function () {
   context('Test openByDebt', function () {
     const account = '0x8B58c7c52B4D0784a248fe3AB11ce76546dA4Cb9';
     const blockTag = 19167450;
-    protocol.setBlockTag(blockTag);
 
     let portfolio: Portfolio;
 
     before(async function () {
+      protocol.setBlockTag(blockTag);
       portfolio = await protocol.getPortfolio(account, marketId);
     });
 
@@ -198,11 +203,12 @@ describe('Test Adapter for Compound V3', function () {
 
   context('Test close', function () {
     const blockTag = 19167450;
-    protocol.setBlockTag(blockTag);
 
     let portfolio: Portfolio;
 
-    before(async function () {});
+    before(async function () {
+      protocol.setBlockTag(blockTag);
+    });
 
     it('no positions', async function () {
       const account = '0x4838B106FCe9647Bdf1E7877BF73cE8B0BAD5f97';
@@ -1102,10 +1108,10 @@ describe('Test Adapter errors for Compound V3', function () {
   it('borrow min error', async function () {
     const chainId = common.ChainId.mainnet;
     const blockTag = 18891173;
-    const adapter = new Adapter(chainId);
+    const adapter = await Adapter.createAdapter(chainId);
 
     const marketId = compoundv3.MarketId.USDC;
-    const protocol = new LendingProtocol(chainId);
+    const protocol = adapter.protocolMap[ID] as LendingProtocol;
     protocol.setBlockTag(blockTag);
 
     const account = '0x4eD1eE77c5Ce5Fd6FC98A61812593A80Dbb964e5';

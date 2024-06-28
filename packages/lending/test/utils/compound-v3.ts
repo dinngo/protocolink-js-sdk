@@ -12,9 +12,9 @@ export async function supply(
   tokenAmount: common.TokenAmount
 ) {
   const market = logics.compoundv3.getMarket(chainId, marketId);
-  await approve(user, market.cometAddress, tokenAmount);
+  await approve(user, market.comet.address, tokenAmount);
   await expect(
-    logics.compoundv3.Comet__factory.connect(market.cometAddress, user).supply(
+    logics.compoundv3.Comet__factory.connect(market.comet.address, user).supply(
       tokenAmount.token.address,
       tokenAmount.amountWei
     )
@@ -29,7 +29,7 @@ export async function borrow(
 ) {
   const market = logics.compoundv3.getMarket(chainId, marketId);
   await expect(
-    logics.compoundv3.Comet__factory.connect(market.cometAddress, user).withdraw(
+    logics.compoundv3.Comet__factory.connect(market.comet.address, user).withdraw(
       tokenAmount.token.address,
       tokenAmount.amountWei
     )
@@ -46,7 +46,7 @@ export async function getBorrowBalance(chainId: number, marketId: string, borrow
   const service = new logics.compoundv3.Service(chainId, hre.ethers.provider);
   const baseToken = await service.getBaseToken(market.id);
   const borrowBalance = await logics.compoundv3.Comet__factory.connect(
-    market.cometAddress,
+    market.comet.address,
     hre.ethers.provider
   ).borrowBalanceOf(borrowerAddress);
   return new common.TokenAmount(baseToken).setWei(borrowBalance);

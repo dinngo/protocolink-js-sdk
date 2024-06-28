@@ -32,6 +32,8 @@ export abstract class Protocol extends common.Web3Toolkit {
 
   abstract id: string;
 
+  abstract name: string;
+
   abstract getMarketName(id: string): string;
 
   abstract getPortfolio(account: string, marketId: string): Promise<Portfolio>;
@@ -109,6 +111,7 @@ export abstract class Protocol extends common.Web3Toolkit {
 
 export interface ProtocolClass {
   new (chainId: number, library?: providers.Provider): Protocol;
+  createProtocol(chainId: number, provider?: providers.Provider): Promise<Protocol>;
   readonly markets: Market[];
   isSupported: (chainId: number) => boolean;
 }
