@@ -60,6 +60,7 @@ export enum ChainId {
   zksync = 324,
   metis = 1088,
   base = 8453,
+  iota_evm = 8822,
   arbitrum = 42161,
   avalanche = 43114,
 }
@@ -73,6 +74,7 @@ export enum NetworkId {
   zksync = 'zksync',
   metis = 'metis',
   base = 'base',
+  iota_evm = 'iota_evm',
   arbitrum = 'arbitrum',
   avalanche = 'avalanche',
 }

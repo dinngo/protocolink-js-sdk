@@ -8,6 +8,7 @@ import { axios } from 'src/utils/http';
 import baseTokensJSON from './data/base.json';
 import bnbTokensJSON from './data/bnb.json';
 import gnosisTokensJSON from './data/gnosis.json';
+import iotaEVMTokensJSON from './data/iota_evm.json';
 import mainnetTokensJSON from './data/mainnet.json';
 import metisTokensJSON from './data/metis.json';
 import optimismTokensJSON from './data/optimism.json';
@@ -23,6 +24,7 @@ type PolygonTokenSymbols = keyof typeof polygonTokensJSON;
 type ZksyncTokenSymbols = keyof typeof zksyncTokensJSON;
 type MetisTokenSymbols = keyof typeof metisTokensJSON;
 type BaseTokenSymbols = keyof typeof baseTokensJSON;
+type IotaEVMTokenSymbols = keyof typeof iotaEVMTokensJSON;
 type ArbitrumTokenSymbols = keyof typeof arbitrumTokensJSON;
 type AvalancheTokenSymbols = keyof typeof avalancheTokensJSON;
 
@@ -34,6 +36,7 @@ export const polygonTokens = toTokenMap<PolygonTokenSymbols>(polygonTokensJSON);
 export const zksyncTokens = toTokenMap<ZksyncTokenSymbols>(zksyncTokensJSON);
 export const metisTokens = toTokenMap<MetisTokenSymbols>(metisTokensJSON);
 export const baseTokens = toTokenMap<BaseTokenSymbols>(baseTokensJSON);
+export const iotaEVMTokens = toTokenMap<IotaEVMTokenSymbols>(iotaEVMTokensJSON);
 export const arbitrumTokens = toTokenMap<ArbitrumTokenSymbols>(arbitrumTokensJSON);
 export const avalancheTokens = toTokenMap<AvalancheTokenSymbols>(avalancheTokensJSON);
 
@@ -73,6 +76,7 @@ const customTokenMap: Record<number, Record<string, Token>> = {
   [ChainId.zksync]: convertTokensToTokensByAddress(zksyncTokens),
   [ChainId.metis]: convertTokensToTokensByAddress(metisTokens),
   [ChainId.base]: convertTokensToTokensByAddress(baseTokens),
+  [ChainId.iota_evm]: convertTokensToTokensByAddress(iotaEVMTokens),
   [ChainId.arbitrum]: convertTokensToTokensByAddress(arbitrumTokens),
   [ChainId.avalanche]: convertTokensToTokensByAddress(avalancheTokens),
 };
