@@ -1,5 +1,11 @@
 # @protocolink/common
 
+## 0.4.0
+
+### Minor Changes
+
+- 264e995: add IOTA EVM Chain information
+
 ## 0.3.11
 
 ### Patch Changes
