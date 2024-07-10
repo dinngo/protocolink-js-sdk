@@ -98,7 +98,7 @@ export async function getUnifiedTokens(chainId: number) {
   let tokenMap: Record<string, Token> = {};
 
   try {
-    const tokens = chainId === ChainId.metis ? await getMetisTokens() : await get1InchTokens(chainId);
+    const tokens = await getTokens(chainId);
     tokenMap = Object.fromEntries(tokens.map((token) => [token.address, token]));
   } catch (error) {
     console.error('Failed to fetch external tokens:', error);
@@ -181,14 +181,28 @@ export async function unifyTokens<T extends TokenFormat>(chainId: number, tokens
   return replaceTokens(tokens, await getUnifiedTokens(chainId)) as T;
 }
 
+async function getTokens(chainId: number) {
+  switch (chainId) {
+    case ChainId.metis: {
+      return await getMetisTokens();
+    }
+    case ChainId.iota: {
+      return await getIotaTokens();
+    }
+    default: {
+      return await get1InchTokens(chainId);
+    }
+  }
+}
+
 async function get1InchTokens(chainId: number) {
   const { data } = await axios.get<
-    Record<string, { symbol: string; name: string; decimals: number; address: string; logoURI: string }>
+    Record<string, { symbol: string; name: string; address: string; decimals: number; logoURI: string }>
   >(`https://tokens.1inch.io/v1.2/${chainId}`);
 
   const nativeToken = getNativeToken(chainId);
   const elasticAddress = ELASTIC_ADDRESS.toLowerCase();
-  const tokens = Object.values(data).map(({ address, decimals, symbol, name, logoURI }) =>
+  const tokens = Object.values(data).map(({ symbol, name, address, decimals, logoURI }) =>
     address === elasticAddress ? nativeToken : new Token(chainId, address, decimals, symbol, name, logoURI)
   );
 
@@ -198,11 +212,26 @@ async function get1InchTokens(chainId: number) {
 async function getMetisTokens() {
   const chainId = ChainId.metis;
   const { data } = await axios.get<{
-    tokens: { symbol: string; name: string; decimals: number; address: string; logoURI: string }[];
+    tokens: { address: string; name: string; symbol: string; decimals: number; logoURI: string }[];
   }>(`https://tokens.coingecko.com/metis-andromeda/all.json`);
 
   const tokens = [getNativeToken(chainId)];
-  for (const { address, decimals, symbol, name, logoURI } of data.tokens) {
+  for (const { address, name, symbol, decimals, logoURI } of data.tokens) {
+    tokens.push(new Token(chainId, address, decimals, symbol, name, logoURI));
+  }
+
+  return tokens;
+}
+
+async function getIotaTokens() {
+  const chainId = ChainId.iota;
+  const { data } = await axios.get<{
+    tokens: { name: string; symbol: string; decimals: number; logoURI: string; address: string; chainId: number }[];
+  }>(`https://raw.githubusercontent.com/MagicSea-Finance/tokenlist/main/token.default.json`);
+
+  const tokens = [getNativeToken(chainId)];
+  for (const { name, symbol, decimals, logoURI, address, chainId } of data.tokens) {
+    if (chainId !== ChainId.iota) continue;
     tokens.push(new Token(chainId, address, decimals, symbol, name, logoURI));
   }
 

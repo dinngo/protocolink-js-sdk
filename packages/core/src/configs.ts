@@ -27,6 +27,9 @@ export const contractAddressMap: Record<number, Record<ContractNames, string>> =
   [common.ChainId.base]: {
     Router: '0xDec80E988F4baF43be69c13711453013c212feA8',
   },
+  [common.ChainId.iota]: {
+    Router: '0xDec80E988F4baF43be69c13711453013c212feA8',
+  },
   [common.ChainId.arbitrum]: {
     Router: '0xDec80E988F4baF43be69c13711453013c212feA8',
   },
