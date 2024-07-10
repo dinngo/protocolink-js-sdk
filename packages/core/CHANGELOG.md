@@ -1,5 +1,16 @@
 # @protocolink/core
 
+## 0.5.0
+
+### Minor Changes
+
+- 184f497: add Router address to IOTA EVM Chain
+
+### Patch Changes
+
+- Updated dependencies [8da199e]
+  - @protocolink/common@0.4.1
+
 ## 0.4.13
 
 ### Patch Changes
