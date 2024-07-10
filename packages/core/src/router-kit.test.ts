@@ -40,6 +40,10 @@ describe('RouterKit', function () {
         expected: '0x4D4c961De7140E642b7217f221b73e859E3A6482',
       },
       {
+        chainId: common.ChainId.iota,
+        expected: '0x4D4c961De7140E642b7217f221b73e859E3A6482',
+      },
+      {
         chainId: common.ChainId.arbitrum,
         expected: '0x4D4c961De7140E642b7217f221b73e859E3A6482',
       },
@@ -90,6 +94,10 @@ describe('RouterKit', function () {
       },
       {
         chainId: common.ChainId.base,
+        expected: '0xFB20753f85f89be6F42D228667D70e62D1Ba5f75',
+      },
+      {
+        chainId: common.ChainId.iota,
         expected: '0xFB20753f85f89be6F42D228667D70e62D1Ba5f75',
       },
       {
@@ -146,6 +154,10 @@ describe('RouterKit', function () {
         expected: '0xfb20753f85f89be6f42d228667d70e62d1ba5f75000000000000000000002710',
       },
       {
+        chainId: common.ChainId.iota,
+        expected: '0xfb20753f85f89be6f42d228667d70e62d1ba5f75000000000000000000002710',
+      },
+      {
         chainId: common.ChainId.arbitrum,
         expected: '0xfb20753f85f89be6f42d228667d70e62d1ba5f75000000000000000000002710',
       },
@@ -197,6 +209,10 @@ describe('RouterKit', function () {
       {
         chainId: common.ChainId.base,
         expected: '0x000000000022D473030F116dDEE9F6B43aC78BA3',
+      },
+      {
+        chainId: common.ChainId.iota,
+        expected: '0x8d8B490fCe6Ca1A31752E7cFAFa954Bf30eB7EE2',
       },
       {
         chainId: common.ChainId.arbitrum,
@@ -296,6 +312,16 @@ describe('RouterKit', function () {
       },
       {
         chainId: common.ChainId.base,
+        account: '0xa3C1C91403F0026b9dd086882aDbC8Cdbc3b3cfB',
+        expected: '0x22CF139619f4B8Afc863beCa670615C6310aC7c6',
+      },
+      {
+        chainId: common.ChainId.iota,
+        account: '0x5cb738DAe833Ec21fe65ae1719fAd8ab8cE7f23D',
+        expected: '0x8f6325f5E452B8Aa8137722A9f584C41c32d53A1',
+      },
+      {
+        chainId: common.ChainId.iota,
         account: '0xa3C1C91403F0026b9dd086882aDbC8Cdbc3b3cfB',
         expected: '0x22CF139619f4B8Afc863beCa670615C6310aC7c6',
       },
