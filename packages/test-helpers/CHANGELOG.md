@@ -1,5 +1,17 @@
 # @protocolink/test-helpers
 
+## 0.4.0
+
+### Minor Changes
+
+- 2093a3d: Update dependencies
+  - @protocolink/common@0.4.0
+
+### Patch Changes
+
+- Updated dependencies [8da199e]
+  - @protocolink/common@0.4.1
+
 ## 0.3.8
 
 ### Patch Changes
