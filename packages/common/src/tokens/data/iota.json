@@ -5,7 +5,7 @@
     "decimals": 18,
     "symbol": "IOTA",
     "name": "IOTA",
-    "logoUri": "https://cdn.furucombo.app/assets/img/token/IOTA.png"
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/IOTA.svg"
   },
   "wIOTA": {
     "chainId": 8822,
