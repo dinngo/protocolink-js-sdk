@@ -39,14 +39,6 @@
     "name": "Metis",
     "logoUri": "https://cdn.furucombo.app/assets/img/token/METIS.svg"
   },
-  "METIS(ERC20)": {
-    "chainId": 1088,
-    "address": "0xDeadDeAddeAddEAddeadDEaDDEAdDeaDDeAD0000",
-    "decimals": 18,
-    "symbol": "METIS(ERC20)",
-    "name": "Metis ERC20",
-    "logoUri": "https://cdn.furucombo.app/assets/img/token/METIS.svg"
-  },
   "WMETIS": {
     "chainId": 1088,
     "address": "0x75cb093E4D61d2A2e65D8e0BBb01DE8d89b53481",
