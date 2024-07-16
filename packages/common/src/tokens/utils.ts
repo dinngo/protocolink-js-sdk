@@ -217,6 +217,7 @@ async function getMetisTokens() {
 
   const tokens = [getNativeToken(chainId)];
   for (const { address, name, symbol, decimals, logoURI } of data.tokens) {
+    if (address === '0xdeaddeaddeaddeaddeaddeaddeaddeaddead0000') continue;
     tokens.push(new Token(chainId, address, decimals, symbol, name, logoURI));
   }
 
