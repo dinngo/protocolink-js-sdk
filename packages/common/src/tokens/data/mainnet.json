@@ -342,5 +342,29 @@
     "symbol": "GHO",
     "name": "Gho Token",
     "logoUri": "https://cdn.furucombo.app/assets/img/token/GHO.svg"
+  },
+  "COMP": {
+    "chainId": 1,
+    "address": "0xc00e94Cb662C3520282E6f5717214004A7f26888",
+    "decimals": 18,
+    "symbol": "COMP",
+    "name": "Compound",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/COMP.svg"
+  },
+  "FEI": {
+    "chainId": 1,
+    "address": "0x956F47F50A910163D8BF957Cf5846D573E7f87CA",
+    "decimals": 18,
+    "symbol": "FEI",
+    "name": "Fei USD",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/FEI.png"
+  },
+  "STG": {
+    "chainId": 1,
+    "address": "0xAf5191B0De278C7286d6C7CC6ab6BB8A73bA2Cd6",
+    "decimals": 18,
+    "symbol": "STG",
+    "name": "Stargate Finance",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/STG.png"
   }
 }
