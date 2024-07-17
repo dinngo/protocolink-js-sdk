@@ -1,5 +1,12 @@
 # @protocolink/common
 
+## 0.4.2
+
+### Patch Changes
+
+- e999a64: add COMP, FEI & STG to mainnet common tokens
+- 37ce8fb: unify multi-chain native token address
+
 ## 0.4.1
 
 ### Patch Changes
