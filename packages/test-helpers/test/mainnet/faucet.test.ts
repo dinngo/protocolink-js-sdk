@@ -23,7 +23,7 @@ describe('mainnet: Test faucet claim', function () {
     { tokenOrAddress: mainnetTokens.WETH, amount: '1' },
     { tokenOrAddress: '0xBe9895146f7AF43049ca1c1AE358B0541Ea49704', amount: '1' }, // cbETH
     { tokenOrAddress: '0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0', amount: '1' }, // wstETH
-    { tokenOrAddress: mainnetTokens.COMBO, amount: '1', faucet: '0x0D0707963952f2fBA59dD06f2b425ace40b492Fe' },
+    { tokenOrAddress: mainnetTokens.COMP, amount: '1', faucet: '0x3d9819210A31b4961b30EF54bE2aeD79B9c9Cd3B' },
   ];
 
   testCases.forEach(({ tokenOrAddress, amount, faucet }) => {
