@@ -1,5 +1,12 @@
 # @protocolink/test-helpers
 
+## 0.4.1
+
+### Patch Changes
+
+- bcb0e9a: fix polygon native token address
+- 796e722: get token information from common package
+
 ## 0.4.0
 
 ### Minor Changes
