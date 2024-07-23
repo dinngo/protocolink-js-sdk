@@ -1,5 +1,11 @@
 # @protocolink/api
 
+## 1.2.0
+
+### Minor Changes
+
+- 9bc8282: feat: add Magic Sea, skip Magic Sea test
+
 ## 1.1.1
 
 ### Patch Changes
