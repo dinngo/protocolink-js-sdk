@@ -9,7 +9,6 @@ export interface Network {
   rpcUrl: string;
   nativeToken: TokenObject;
   wrappedNativeToken: TokenObject;
-  multicall2Address: string;
   multicall3Address: string;
 }
 
