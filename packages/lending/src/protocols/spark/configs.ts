@@ -1,14 +1,11 @@
 import * as common from '@protocolink/common';
-import { gnosisTokens, mainnetTokens } from './tokens';
 import * as logics from '@protocolink/logics';
 
 export const ID = 'spark';
 export const DISPLAY_NAME = 'Spark';
 
-export interface Reserve {
-  asset: common.Token;
-  aToken: common.Token;
-}
+export type ReserveTokens = logics.spark.ReserveTokens;
+export type ReserveMap = Record<string, ReserveTokens>;
 
 type ContractName = 'Pool' | 'PoolDataProvider' | 'AaveOracle';
 
@@ -44,21 +41,3 @@ export function getContractAddress(chainId: number, name: ContractName) {
   const { contractMap } = configs.find((configs) => configs.chainId === chainId)!;
   return contractMap[name];
 }
-
-const supplyDisabledMap: Record<number, string[]> = {
-  [common.ChainId.mainnet]: [],
-  [common.ChainId.gnosis]: [],
-};
-
-const borrowDisabledMap: Record<number, string[]> = {
-  [common.ChainId.mainnet]: [mainnetTokens.sDAI.address],
-  [common.ChainId.gnosis]: [gnosisTokens.GNO.address, gnosisTokens.sDAI.address],
-};
-
-export const isSupplyEnabled = (chainId: number, token: common.Token) => {
-  return !supplyDisabledMap[chainId].includes(token.address);
-};
-
-export const isBorrowEnabled = (chainId: number, token: common.Token) => {
-  return !borrowDisabledMap[chainId].includes(token.address);
-};

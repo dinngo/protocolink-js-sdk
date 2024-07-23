@@ -1,14 +1,11 @@
-import { arbitrumTokens, avalancheTokens, gnosisTokens, mainnetTokens, optimismTokens, polygonTokens } from './tokens';
 import * as common from '@protocolink/common';
 import * as logics from '@protocolink/logics';
 
 export const ID = 'aave-v3';
 export const DISPLAY_NAME = 'Aave V3';
 
-export interface Reserve {
-  asset: common.Token;
-  aToken: common.Token;
-}
+export type ReserveTokens = logics.aavev3.ReserveTokens;
+export type ReserveMap = Record<string, ReserveTokens>;
 
 type ContractName = 'Pool' | 'PoolDataProvider' | 'AaveOracle';
 
@@ -98,33 +95,3 @@ export function getContractAddress(chainId: number, name: ContractName) {
   const { contractMap } = configs.find((configs) => configs.chainId === chainId)!;
   return contractMap[name];
 }
-
-const supplyDisabledMap: Record<number, string[]> = {
-  [common.ChainId.mainnet]: [mainnetTokens.GHO.address],
-  [common.ChainId.optimism]: [],
-  [common.ChainId.gnosis]: [],
-  [common.ChainId.polygon]: [],
-  [common.ChainId.metis]: [],
-  [common.ChainId.base]: [],
-  [common.ChainId.arbitrum]: [],
-  [common.ChainId.avalanche]: [],
-};
-
-const borrowDisabledMap: Record<number, string[]> = {
-  [common.ChainId.mainnet]: [mainnetTokens.AAVE.address],
-  [common.ChainId.optimism]: [optimismTokens.AAVE.address],
-  [common.ChainId.gnosis]: [gnosisTokens.sDAI.address],
-  [common.ChainId.polygon]: [polygonTokens.AAVE.address],
-  [common.ChainId.metis]: [],
-  [common.ChainId.base]: [],
-  [common.ChainId.arbitrum]: [arbitrumTokens.AAVE.address],
-  [common.ChainId.avalanche]: [avalancheTokens.sAVAX.address, avalancheTokens['AAVE.e'].address],
-};
-
-export const isSupplyEnabled = (chainId: number, token: common.Token) => {
-  return !supplyDisabledMap[chainId].includes(token.address);
-};
-
-export const isBorrowEnabled = (chainId: number, token: common.Token) => {
-  return !borrowDisabledMap[chainId].includes(token.address);
-};

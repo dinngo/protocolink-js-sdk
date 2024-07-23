@@ -18,21 +18,13 @@ import {
   SupplyParams,
   WithdrawParams,
 } from 'src/protocol.type';
-import {
-  DISPLAY_NAME,
-  ID,
-  Reserve,
-  getContractAddress,
-  isBorrowEnabled,
-  isSupplyEnabled,
-  supportedChainIds,
-} from './configs';
+import { DISPLAY_NAME, ID, ReserveMap, ReserveTokens, getContractAddress, supportedChainIds } from './configs';
 import { PoolDataProviderInterface } from './contracts/PoolDataProvider';
 import { Portfolio } from 'src/protocol.portfolio';
 import { Protocol } from 'src/protocol';
 import { RAY_DECIMALS, SECONDS_PER_YEAR, calculateCompoundedRate, normalize } from '@aave/math-utils';
 import * as apisdk from '@protocolink/api';
-import { calcBorrowGrossApy, calcSupplyGrossApy, getLstApyFromMap } from 'src/protocol.utils';
+import { calcBorrowGrossApy, calcSupplyGrossApy, fetchReservesData, getLstApyFromMap } from 'src/protocol.utils';
 import * as common from '@protocolink/common';
 import * as logics from '@protocolink/logics';
 
@@ -46,8 +38,8 @@ export class LendingProtocol extends Protocol {
   readonly name = DISPLAY_NAME;
   readonly market: Market;
 
-  private reserves: logics.aavev3.ReserveTokens[] = [];
-  private reserveMap: Record<string, Reserve> = {};
+  private reserveTokens: ReserveTokens[] = [];
+  private reserveMap: ReserveMap = {};
   private hasNativeToken = false;
 
   constructor(chainId: number, provider?: providers.Provider) {
@@ -57,29 +49,39 @@ export class LendingProtocol extends Protocol {
 
   public static async createProtocol(chainId: number, provider?: providers.Provider): Promise<LendingProtocol> {
     const instance = new LendingProtocol(chainId, provider);
+
     await instance.initializeReservesConfig();
+
     return instance;
   }
 
   async initializeReservesConfig() {
-    const service = new logics.aavev3.Service(this.chainId, this.provider);
-    const reserves = await service.getReserveTokens();
-    const reserveMap: Record<string, Reserve> = {};
+    let reserveTokens: ReserveTokens[] = [];
+
+    try {
+      reserveTokens = await fetchReservesData(this.id, this.chainId);
+    } catch (error) {
+      const service = new logics.aavev3.Service(this.chainId, this.provider);
+      ({ reserveTokens } = await service.getReserveTokens());
+    }
+
+    const reserveMap: ReserveMap = {};
     let hasNativeToken = false;
 
-    for (const { asset, aToken, stableDebtToken, variableDebtToken } of reserves) {
+    for (const reserveToken of reserveTokens) {
+      const { asset, aToken } = reserveToken;
       if (asset.isNative) hasNativeToken = true;
 
       if (asset.isWrapped) {
-        reserveMap[asset.unwrapped.address] = { aToken, asset };
-        reserves.push({ asset: asset.unwrapped, aToken, stableDebtToken, variableDebtToken });
+        reserveMap[asset.unwrapped.address] = reserveToken;
+        reserveTokens.push(reserveToken);
       }
 
-      reserveMap[asset.address] = { aToken, asset };
-      reserveMap[aToken.address] = { aToken, asset };
+      reserveMap[asset.address] = reserveToken;
+      reserveMap[aToken.address] = reserveToken;
     }
 
-    this.reserves = reserves;
+    this.reserveTokens = reserveTokens;
     this.reserveMap = reserveMap;
     this.hasNativeToken = hasNativeToken;
   }
@@ -132,32 +134,26 @@ export class LendingProtocol extends Protocol {
     return this._aTokenIface;
   }
 
-  private _tokensForDeposit?: common.Token[];
+  private _supplyTokenList?: common.Token[];
 
-  async getTokensForDeposit() {
-    if (!this._tokensForDeposit) {
+  async getSupplyTokenList() {
+    if (!this._supplyTokenList) {
       const tokenList = await apisdk.protocols.aavev3.getSupplyTokenList(this.chainId);
 
-      const tokens = tokenList.filter((tokens) => isSupplyEnabled(this.chainId, tokens[0])).map((tokens) => tokens[0]);
-
-      this._tokensForDeposit = tokens;
+      this._supplyTokenList = tokenList.map((tokens) => tokens[0]);
     }
 
-    return this._tokensForDeposit;
+    return this._supplyTokenList;
   }
 
-  private _tokensForBorrow?: common.Token[];
+  private _borrowTokenList?: common.Token[];
 
-  async getTokensForBorrow() {
-    if (!this._tokensForBorrow) {
-      const tokenList = await apisdk.protocols.aavev3.getBorrowTokenList(this.chainId);
-
-      const tokens = tokenList.filter((token) => isBorrowEnabled(this.chainId, token));
-
-      this._tokensForBorrow = tokens;
+  async getBorrowTokenList() {
+    if (!this._borrowTokenList) {
+      this._borrowTokenList = await apisdk.protocols.aavev3.getBorrowTokenList(this.chainId);
     }
 
-    return this._tokensForBorrow;
+    return this._borrowTokenList;
   }
 
   getMarketName() {
@@ -184,7 +180,7 @@ export class LendingProtocol extends Protocol {
   async getReserveDataMap() {
     if (!this._reserveDataMap) {
       const calls: common.Multicall3.CallStruct[] = [];
-      for (const { asset } of this.reserves) {
+      for (const { asset } of this.reserveTokens) {
         calls.push({
           target: this.poolDataProvider.address,
           callData: this.poolDataProviderIface.encodeFunctionData('getReserveConfigurationData', [
@@ -208,7 +204,7 @@ export class LendingProtocol extends Protocol {
 
       this._reserveDataMap = {};
       let j = 0;
-      for (const { asset } of this.reserves) {
+      for (const { asset } of this.reserveTokens) {
         const { ltv, liquidationThreshold, usageAsCollateralEnabled } = this.poolDataProviderIface.decodeFunctionResult(
           'getReserveConfigurationData',
           returnData[j]
@@ -251,12 +247,12 @@ export class LendingProtocol extends Protocol {
   }
 
   async getAssetPriceMap() {
-    const assetAddresses = this.reserves.map(({ asset }) => asset.wrapped.address);
+    const assetAddresses = this.reserveTokens.map(({ asset }) => asset.wrapped.address);
     const assetPrices = await this.priceOracle.getAssetsPrices(assetAddresses, { blockTag: this.blockTag });
 
     const assetPriceMap: Record<string, string> = {};
     for (let i = 0; i < assetAddresses.length; i++) {
-      assetPriceMap[this.reserves[i].asset.address] = common.toBigUnit(assetPrices[i], 8);
+      assetPriceMap[this.reserveTokens[i].asset.address] = common.toBigUnit(assetPrices[i], 8);
     }
 
     return assetPriceMap;
@@ -264,7 +260,7 @@ export class LendingProtocol extends Protocol {
 
   async getUserBalancesMap(account: string) {
     const calls: common.Multicall3.CallStruct[] = [];
-    for (const { asset, aToken } of this.reserves) {
+    for (const { asset, aToken } of this.reserveTokens) {
       calls.push({
         target: aToken.address,
         callData: this.aTokenIface.encodeFunctionData('scaledBalanceOf', [account]),
@@ -287,8 +283,8 @@ export class LendingProtocol extends Protocol {
       }
     > = {};
     let j = 0;
-    for (let i = 0; i < this.reserves.length; i++) {
-      const { asset } = this.reserves[i];
+    for (let i = 0; i < this.reserveTokens.length; i++) {
+      const { asset } = this.reserveTokens[i];
 
       const { liquidityIndex } = reserveDataMap[asset.address];
       const [scaledBalance] = this.aTokenIface.decodeFunctionResult('scaledBalanceOf', returnData[j]);
@@ -318,12 +314,12 @@ export class LendingProtocol extends Protocol {
     const assetPriceMap = await this.getAssetPriceMap();
     const userBalancesMap = await this.getUserBalancesMap(account);
     const lstTokenAPYMap = await this.getLstTokenAPYMap(this.chainId);
-    const tokensForDeposit = await this.getTokensForDeposit();
-    const tokensForBorrow = await this.getTokensForBorrow();
+    const supplyTokenList = await this.getSupplyTokenList();
+    const borrowTokenList = await this.getBorrowTokenList();
 
     const supplies: SupplyObject[] = [];
 
-    for (const token of tokensForDeposit) {
+    for (const token of supplyTokenList) {
       if (this.hasNativeToken && token.isWrapped) continue;
 
       const reserveData = reserveDataMap[token.address];
@@ -360,7 +356,7 @@ export class LendingProtocol extends Protocol {
     }
 
     const borrows: BorrowObject[] = [];
-    for (const token of tokensForBorrow) {
+    for (const token of borrowTokenList) {
       if (this.hasNativeToken && token.isWrapped) continue;
 
       const { borrowAPY: apy, borrowCap, totalBorrow } = reserveDataMap[token.address];

@@ -1,5 +1,6 @@
 import BigNumberJS from 'bignumber.js';
 import Decimal from 'decimal.js-light';
+import axios from 'axios';
 
 export function calcUtilization(totalBorrowCapacityUSD: string | BigNumberJS, totalBorrowUSD: string | BigNumberJS) {
   let utilization = '0';
@@ -139,3 +140,13 @@ export const calcSupplyGrossApy = (apy: string, lstApy: string) => {
 export const calcBorrowGrossApy = (apy: string, lstApy: string) => {
   return lstApy === '0' ? apy : apy === '0' ? lstApy : BigNumberJS(apy).minus(lstApy).toString();
 };
+
+export async function fetchReservesData(protocolId: string, chainId: number) {
+  const url = `https://s3.amazonaws.com/cdn.protocolink.com/${chainId}/${protocolId.replace(/-/g, '')}/reserves.json`;
+
+  const { data } = await axios.get(url);
+
+  if (!data || !Array.isArray(data) || data.length === 0) throw new Error('Invalid data');
+
+  return data;
+}
