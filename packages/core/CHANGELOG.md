@@ -1,5 +1,11 @@
 # @protocolink/core
 
+## 0.6.0
+
+### Minor Changes
+
+- 0045058: add Router address to Polygon zkEVM
+
 ## 0.5.1
 
 ### Patch Changes
