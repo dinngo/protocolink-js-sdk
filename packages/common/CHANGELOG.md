@@ -1,5 +1,15 @@
 # @protocolink/common
 
+## 0.5.0
+
+### Minor Changes
+
+- ea3d88b: add Polygon zkEVM Chain information
+
+### Patch Changes
+
+- 4c3a8ae: remove multicall2Address from Network
+
 ## 0.4.2
 
 ### Patch Changes
