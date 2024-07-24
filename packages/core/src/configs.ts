@@ -24,6 +24,9 @@ export const contractAddressMap: Record<number, Record<ContractNames, string>> =
   [common.ChainId.metis]: {
     Router: '0xDec80E988F4baF43be69c13711453013c212feA8',
   },
+  [common.ChainId.polygonZkevm]: {
+    Router: '0xDec80E988F4baF43be69c13711453013c212feA8',
+  },
   [common.ChainId.base]: {
     Router: '0xDec80E988F4baF43be69c13711453013c212feA8',
   },
