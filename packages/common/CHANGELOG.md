@@ -1,5 +1,11 @@
 # @protocolink/common
 
+## 0.5.1
+
+### Patch Changes
+
+- b15a751: add polygon zkevm token list into unifyTokens
+
 ## 0.5.0
 
 ### Minor Changes
