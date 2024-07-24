@@ -13,6 +13,7 @@ import mainnetTokensJSON from './data/mainnet.json';
 import metisTokensJSON from './data/metis.json';
 import optimismTokensJSON from './data/optimism.json';
 import polygonTokensJSON from './data/polygon.json';
+import polygonZkEVMTokensJSON from './data/polygonZkevm.json';
 import sortBy from 'lodash/sortBy';
 import zksyncTokensJSON from './data/zksync.json';
 
@@ -23,6 +24,7 @@ type GnosisTokenSymbols = keyof typeof gnosisTokensJSON;
 type PolygonTokenSymbols = keyof typeof polygonTokensJSON;
 type ZksyncTokenSymbols = keyof typeof zksyncTokensJSON;
 type MetisTokenSymbols = keyof typeof metisTokensJSON;
+type PolygonZkevmTokenSymbols = keyof typeof polygonZkEVMTokensJSON;
 type BaseTokenSymbols = keyof typeof baseTokensJSON;
 type IotaTokenSymbols = keyof typeof iotaTokensJSON;
 type ArbitrumTokenSymbols = keyof typeof arbitrumTokensJSON;
@@ -35,6 +37,7 @@ export const gnosisTokens = toTokenMap<GnosisTokenSymbols>(gnosisTokensJSON);
 export const polygonTokens = toTokenMap<PolygonTokenSymbols>(polygonTokensJSON);
 export const zksyncTokens = toTokenMap<ZksyncTokenSymbols>(zksyncTokensJSON);
 export const metisTokens = toTokenMap<MetisTokenSymbols>(metisTokensJSON);
+export const polygonZkevmTokens = toTokenMap<PolygonZkevmTokenSymbols>(polygonZkEVMTokensJSON);
 export const baseTokens = toTokenMap<BaseTokenSymbols>(baseTokensJSON);
 export const iotaTokens = toTokenMap<IotaTokenSymbols>(iotaTokensJSON);
 export const arbitrumTokens = toTokenMap<ArbitrumTokenSymbols>(arbitrumTokensJSON);
@@ -75,6 +78,7 @@ const customTokenMap: Record<number, Record<string, Token>> = {
   [ChainId.polygon]: convertTokensToTokensByAddress(polygonTokens),
   [ChainId.zksync]: convertTokensToTokensByAddress(zksyncTokens),
   [ChainId.metis]: convertTokensToTokensByAddress(metisTokens),
+  [ChainId.polygonZkevm]: convertTokensToTokensByAddress(polygonZkevmTokens),
   [ChainId.base]: convertTokensToTokensByAddress(baseTokens),
   [ChainId.iota]: convertTokensToTokensByAddress(iotaTokens),
   [ChainId.arbitrum]: convertTokensToTokensByAddress(arbitrumTokens),
@@ -189,6 +193,9 @@ async function getTokens(chainId: number) {
     case ChainId.iota: {
       return await getIotaTokens();
     }
+    case ChainId.polygonZkevm: {
+      return await getPolygonZkevmTokens();
+    }
     default: {
       return await get1InchTokens(chainId);
     }
@@ -233,6 +240,21 @@ async function getIotaTokens() {
   const tokens = [getNativeToken(chainId)];
   for (const { name, symbol, decimals, logoURI, address, chainId } of data.tokens) {
     if (chainId !== ChainId.iota) continue;
+    tokens.push(new Token(chainId, address, decimals, symbol, name, logoURI));
+  }
+
+  return tokens;
+}
+
+async function getPolygonZkevmTokens() {
+  const chainId = ChainId.polygonZkevm;
+  const { data } = await axios.get<{
+    tokens: { name: string; symbol: string; decimals: number; logoURI: string; address: string; chainId: number }[];
+  }>(`https://unpkg.com/quickswap-default-token-list@1.3.48/build/quickswap-default.tokenlist.json`);
+
+  const tokens = [getNativeToken(chainId)];
+  for (const { name, symbol, decimals, logoURI, address, chainId } of data.tokens) {
+    if (chainId !== ChainId.polygonZkevm) continue;
     tokens.push(new Token(chainId, address, decimals, symbol, name, logoURI));
   }
 
