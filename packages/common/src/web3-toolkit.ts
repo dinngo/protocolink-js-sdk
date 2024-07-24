@@ -2,7 +2,7 @@ import { BigNumber, providers, utils } from 'ethers';
 import { ChainId, Network, getNetwork } from './networks';
 import { ELASTIC_ADDRESS, Token, TokenAmount, TokenOrAddress, isTokenObject } from './tokens';
 import { ERC20Interface } from './contracts/ERC20';
-import { ERC20__factory, Multicall2, Multicall2__factory, Multicall3, Multicall3__factory } from './contracts';
+import { ERC20__factory, Multicall2__factory, Multicall3, Multicall3__factory } from './contracts';
 import { Multicall2Interface } from './contracts/Multicall2';
 import { Multicall3Interface } from './contracts/Multicall3';
 import * as zk from 'zksync-web3';
@@ -42,15 +42,6 @@ export class Web3Toolkit {
       this._multicall2Iface = Multicall2__factory.createInterface();
     }
     return this._multicall2Iface;
-  }
-
-  private _multicall2?: Multicall2;
-
-  get multicall2() {
-    if (!this._multicall2) {
-      this._multicall2 = Multicall2__factory.connect(this.network.multicall2Address, this.provider);
-    }
-    return this._multicall2;
   }
 
   private _multicall3Iface?: Multicall3Interface;

@@ -9,7 +9,6 @@ export interface Network {
   rpcUrl: string;
   nativeToken: TokenObject;
   wrappedNativeToken: TokenObject;
-  multicall2Address: string;
   multicall3Address: string;
 }
 
@@ -59,6 +58,7 @@ export enum ChainId {
   polygon = 137,
   zksync = 324,
   metis = 1088,
+  polygonZkevm = 1101,
   base = 8453,
   iota = 8822,
   arbitrum = 42161,
@@ -73,6 +73,7 @@ export enum NetworkId {
   polygon = 'polygon',
   zksync = 'zksync',
   metis = 'metis',
+  polygonZkevm = 'polygonZkevm',
   base = 'base',
   iota = 'iota',
   arbitrum = 'arbitrum',
