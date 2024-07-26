@@ -8,7 +8,7 @@ import { mainnetTokens } from './tokens';
 
 describe('Test Adapter for Radiant V2', async function () {
   const chainId = common.ChainId.mainnet;
-  const blockTag = 20150000;
+  const blockTag = 20370000;
   let adapter: Adapter;
   let protocol: LendingProtocol;
 
@@ -20,7 +20,7 @@ describe('Test Adapter for Radiant V2', async function () {
 
   context('Test openByCollateral', function () {
     const account = '0x9edcb464C0AfdD01a5Ffbd09309b437C7dadeAB3';
-    const blockTag = 20150000;
+    const blockTag = 20370000;
 
     let portfolio: Portfolio;
 
@@ -113,7 +113,7 @@ describe('Test Adapter for Radiant V2', async function () {
 
   context('Test openByDebt', function () {
     const account = '0xBBaCb7F97BA96aa90E5603CFb47EaE09517C8731';
-    const blockTag = 20150000;
+    const blockTag = 20370000;
 
     let portfolio: Portfolio;
 
@@ -205,7 +205,7 @@ describe('Test Adapter for Radiant V2', async function () {
   });
 
   context('Test close', function () {
-    const blockTag = 20150000;
+    const blockTag = 20370000;
 
     let portfolio: Portfolio;
 
@@ -243,18 +243,18 @@ describe('Test Adapter for Radiant V2', async function () {
       expect(afterPortfolio.totalBorrowUSD).to.be.eq(0);
       expect(afterPortfolio.totalSupplyUSD).to.be.eq(0);
 
-      expect(logics).has.length(21);
+      expect(logics).has.length(18);
       expect(logics[0].rid).to.eq('permit2:pull-token');
       expect(logics[1].rid).to.eq('radiant-v2:withdraw');
       expect(logics[1].fields.balanceBps).to.eq(common.BPS_BASE);
-      expect(logics[2].rid).to.contain('swap-token');
-      expect(logics[3].rid).to.eq('permit2:pull-token');
-      expect(logics[4].rid).to.eq('radiant-v2:withdraw');
-      expect(logics[4].fields.balanceBps).to.eq(common.BPS_BASE);
-      expect(logics[5].rid).to.contain('swap-token');
-      expect(logics[6].rid).to.eq('permit2:pull-token');
-      expect(logics[7].rid).to.eq('radiant-v2:withdraw');
-      expect(logics[7].fields.balanceBps).to.eq(common.BPS_BASE);
+      expect(logics[2].rid).to.eq('permit2:pull-token');
+      expect(logics[3].rid).to.eq('radiant-v2:withdraw');
+      expect(logics[3].fields.balanceBps).to.eq(common.BPS_BASE);
+      expect(logics[4].rid).to.contain('swap-token');
+      expect(logics[5].rid).to.eq('permit2:pull-token');
+      expect(logics[6].rid).to.eq('radiant-v2:withdraw');
+      expect(logics[6].fields.balanceBps).to.eq(common.BPS_BASE);
+      expect(logics[7].rid).to.contain('swap-token');
       expect(logics[8].rid).to.eq('permit2:pull-token');
       expect(logics[9].rid).to.eq('radiant-v2:withdraw');
       expect(logics[9].fields.balanceBps).to.eq(common.BPS_BASE);
@@ -267,11 +267,7 @@ describe('Test Adapter for Radiant V2', async function () {
       expect(logics[15].rid).to.eq('radiant-v2:withdraw');
       expect(logics[15].fields.balanceBps).to.eq(common.BPS_BASE);
       expect(logics[16].rid).to.contain('swap-token');
-      expect(logics[17].rid).to.eq('permit2:pull-token');
-      expect(logics[18].rid).to.eq('radiant-v2:withdraw');
-      expect(logics[18].fields.balanceBps).to.eq(common.BPS_BASE);
-      expect(logics[19].rid).to.contain('swap-token');
-      expect(logics[20].rid).to.contain('utility:wrapped-native-token');
+      expect(logics[17].rid).to.contain('utility:wrapped-native-token');
     });
 
     it('success - collateral positions only', async function () {
@@ -707,7 +703,7 @@ describe('Test Adapter for Radiant V2', async function () {
     let portfolio: Portfolio;
 
     before(async function () {
-      protocol.setBlockTag(20150000);
+      protocol.setBlockTag(20380000);
       portfolio = await protocol.getPortfolio(account);
     });
 
@@ -757,7 +753,7 @@ describe('Test Adapter for Radiant V2', async function () {
     });
 
     it('insufficient dest collateral balance', async function () {
-      const srcToken = mainnetTokens.wstETH;
+      const srcToken = mainnetTokens.ETH;
       const destToken = mainnetTokens.USDC;
 
       const destCollateral = portfolio.findSupply(destToken)!;

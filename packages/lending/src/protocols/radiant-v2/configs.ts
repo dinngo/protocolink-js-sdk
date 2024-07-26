@@ -1,14 +1,11 @@
-import { arbitrumTokens } from './tokens';
 import * as common from '@protocolink/common';
 import * as logics from '@protocolink/logics';
 
 export const ID = 'radiant-v2';
 export const DISPLAY_NAME = 'Radiant V2';
 
-export interface Reserve {
-  asset: common.Token;
-  rToken: common.Token;
-}
+export type ReserveTokens = logics.radiantv2.ReserveTokens;
+export type ReserveMap = Record<string, ReserveTokens>;
 
 type ContractName = 'ProtocolDataProvider' | 'PriceOracle';
 
@@ -47,23 +44,3 @@ export function getContractAddress(chainId: number, name: ContractName) {
   const { contractMap } = configs.find((configs) => configs.chainId === chainId)!;
   return contractMap[name];
 }
-
-const supplyDisabledMap: Record<number, string[]> = {
-  [common.ChainId.mainnet]: [],
-  [common.ChainId.bnb]: [],
-  [common.ChainId.arbitrum]: [],
-};
-
-const borrowDisabledMap: Record<number, string[]> = {
-  [common.ChainId.mainnet]: [],
-  [common.ChainId.bnb]: [],
-  [common.ChainId.arbitrum]: [arbitrumTokens.gmETH.address, arbitrumTokens.gmBTC.address],
-};
-
-export const isSupplyEnabled = (chainId: number, token: common.Token) => {
-  return !supplyDisabledMap[chainId].includes(token.address);
-};
-
-export const isBorrowEnabled = (chainId: number, token: common.Token) => {
-  return !borrowDisabledMap[chainId].includes(token.address);
-};

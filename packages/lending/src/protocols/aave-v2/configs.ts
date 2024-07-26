@@ -4,10 +4,8 @@ import * as logics from '@protocolink/logics';
 export const ID = 'aave-v2';
 export const DISPLAY_NAME = 'Aave V2';
 
-export interface Reserve {
-  asset: common.Token;
-  aToken: common.Token;
-}
+export type ReserveTokens = logics.aavev2.ReserveTokens;
+export type ReserveMap = Record<string, ReserveTokens>;
 
 type ContractName = 'ProtocolDataProvider' | 'PriceOracle' | 'ETHPriceFeed';
 
@@ -52,23 +50,3 @@ export function getContractAddress(chainId: number, name: ContractName) {
   const { contractMap } = configs.find((configs) => configs.chainId === chainId)!;
   return contractMap[name];
 }
-
-const supplyDisabledMap: Record<number, string[]> = {
-  [common.ChainId.mainnet]: [],
-  [common.ChainId.polygon]: [],
-  [common.ChainId.avalanche]: [],
-};
-
-const borrowDisabledMap: Record<number, string[]> = {
-  [common.ChainId.mainnet]: [common.mainnetTokens.stETH.address],
-  [common.ChainId.polygon]: [],
-  [common.ChainId.avalanche]: [],
-};
-
-export const isSupplyEnabled = (chainId: number, token: common.Token) => {
-  return !supplyDisabledMap[chainId].includes(token.address);
-};
-
-export const isBorrowEnabled = (chainId: number, token: common.Token) => {
-  return !borrowDisabledMap[chainId].includes(token.address);
-};
