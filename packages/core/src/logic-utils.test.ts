@@ -3,14 +3,13 @@ import { WrapMode } from './logic-types';
 import * as common from '@protocolink/common';
 import { constants } from 'ethers';
 import { expect } from 'chai';
-import { mainnetTokens } from '@protocolink/test-helpers';
 import { newCallbackParams, newLogic, newLogicInput } from './logic-utils';
 
 describe('Test newLogicInput', function () {
   const testCases = [
     {
       options: {
-        input: new common.TokenAmount(mainnetTokens.ETH, '1'),
+        input: new common.TokenAmount(common.mainnetTokens.ETH, '1'),
       },
       expected: {
         token: common.ELASTIC_ADDRESS,
@@ -20,55 +19,55 @@ describe('Test newLogicInput', function () {
     },
     {
       options: {
-        input: new common.TokenAmount(mainnetTokens.WETH, '1'),
+        input: new common.TokenAmount(common.mainnetTokens.WETH, '1'),
       },
       expected: {
-        token: mainnetTokens.WETH.address,
+        token: common.mainnetTokens.WETH.address,
         balanceBps: BPS_NOT_USED,
         amountOrOffset: '1000000000000000000',
       },
     },
     {
       options: {
-        input: new common.TokenAmount(mainnetTokens.USDC, '1'),
+        input: new common.TokenAmount(common.mainnetTokens.USDC, '1'),
       },
       expected: {
-        token: mainnetTokens.USDC.address,
+        token: common.mainnetTokens.USDC.address,
         balanceBps: BPS_NOT_USED,
         amountOrOffset: '1000000',
       },
     },
     {
       options: {
-        input: new common.TokenAmount(mainnetTokens.USDC, '1'),
+        input: new common.TokenAmount(common.mainnetTokens.USDC, '1'),
         balanceBps: 5000,
       },
       expected: {
-        token: mainnetTokens.USDC.address,
+        token: common.mainnetTokens.USDC.address,
         balanceBps: BPS_NOT_USED,
         amountOrOffset: '1000000',
       },
     },
     {
       options: {
-        input: new common.TokenAmount(mainnetTokens.USDC, '1'),
+        input: new common.TokenAmount(common.mainnetTokens.USDC, '1'),
         balanceBps: 5000,
         amountOffset: 0,
       },
       expected: {
-        token: mainnetTokens.USDC.address,
+        token: common.mainnetTokens.USDC.address,
         balanceBps: 5000,
         amountOrOffset: 0,
       },
     },
     {
       options: {
-        input: new common.TokenAmount(mainnetTokens.USDC, '1'),
+        input: new common.TokenAmount(common.mainnetTokens.USDC, '1'),
         balanceBps: 5000,
         amountOffset: 32,
       },
       expected: {
-        token: mainnetTokens.USDC.address,
+        token: common.mainnetTokens.USDC.address,
         balanceBps: 5000,
         amountOrOffset: 32,
       },
@@ -103,13 +102,13 @@ describe('Test newLogic', function () {
       options: {
         to: '0xaAaAaAaaAaAaAaaAaAAAAAAAAaaaAaAaAaaAaaAa',
         data: '0x',
-        inputs: [{ token: mainnetTokens.USDC.address, balanceBps: 5000, amountOrOffset: 32 }],
+        inputs: [{ token: common.mainnetTokens.USDC.address, balanceBps: 5000, amountOrOffset: 32 }],
         wrapMode: WrapMode.wrapBefore,
         approveTo: '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
         callback: '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
       },
       expected: {
-        inputs: [{ token: mainnetTokens.USDC.address, balanceBps: 5000, amountOrOffset: 32 }],
+        inputs: [{ token: common.mainnetTokens.USDC.address, balanceBps: 5000, amountOrOffset: 32 }],
         wrapMode: WrapMode.wrapBefore,
         approveTo: '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
         callback: '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
@@ -140,7 +139,7 @@ describe('Test newCallbackParams', function () {
         newLogic({
           to: '0xaAaAaAaaAaAaAaaAaAAAAAAAAaaaAaAaAaaAaaAa',
           data: '0x',
-          inputs: [{ token: mainnetTokens.USDC.address, balanceBps: 5000, amountOrOffset: 32 }],
+          inputs: [{ token: common.mainnetTokens.USDC.address, balanceBps: 5000, amountOrOffset: 32 }],
           wrapMode: WrapMode.wrapBefore,
           approveTo: '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
           callback: '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',

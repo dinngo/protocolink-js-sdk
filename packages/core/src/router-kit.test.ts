@@ -2,7 +2,6 @@ import { RouterKit } from './router-kit';
 import { WrapMode } from './logic-types';
 import * as common from '@protocolink/common';
 import { expect } from 'chai';
-import { mainnetTokens } from '@protocolink/test-helpers';
 
 describe('RouterKit', function () {
   context('Test getAgentImplementationAddress', function () {
@@ -391,7 +390,7 @@ describe('RouterKit', function () {
             {
               to: '0xaAaAaAaaAaAaAaaAaAAAAAAAAaaaAaAaAaaAaaAa',
               data: '0x',
-              inputs: [{ token: mainnetTokens.USDC.address, balanceBps: 5000, amountOrOffset: 32 }],
+              inputs: [{ token: common.mainnetTokens.USDC.address, balanceBps: 5000, amountOrOffset: 32 }],
               wrapMode: WrapMode.wrapBefore,
               approveTo: '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
               callback: '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
