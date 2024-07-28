@@ -1,5 +1,11 @@
 # @protocolink/core
 
+## 0.6.1
+
+### Patch Changes
+
+- a5da6f5: use token info from common package
+
 ## 0.6.0
 
 ### Minor Changes
