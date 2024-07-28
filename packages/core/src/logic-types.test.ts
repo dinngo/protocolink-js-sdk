@@ -8,16 +8,15 @@ import {
 } from './logic-types';
 import * as common from '@protocolink/common';
 import { expect } from 'chai';
-import { mainnetTokens } from '@protocolink/test-helpers';
 
 describe('Test TokenToTokenParams', function () {
   const exactInParams: TokenToTokenParams = {
-    input: new common.TokenAmount(mainnetTokens.USDC, '1'),
-    tokenOut: mainnetTokens.DAI,
+    input: new common.TokenAmount(common.mainnetTokens.USDC, '1'),
+    tokenOut: common.mainnetTokens.DAI,
   };
   const exactOutParams: TokenToTokenParams = {
-    tokenIn: mainnetTokens.USDC,
-    output: new common.TokenAmount(mainnetTokens.DAI, '1'),
+    tokenIn: common.mainnetTokens.USDC,
+    output: new common.TokenAmount(common.mainnetTokens.DAI, '1'),
   };
 
   context('Test isTokenToTokenExactInParams', function () {
@@ -52,14 +51,14 @@ describe('Test TokenToTokenParams', function () {
 describe('Test FlashLoanParams', function () {
   const loanParams: FlashLoanParams = {
     loans: new common.TokenAmounts([
-      { token: mainnetTokens.USDC, amount: '1' },
-      { token: mainnetTokens.DAI, amount: '1' },
+      { token: common.mainnetTokens.USDC, amount: '1' },
+      { token: common.mainnetTokens.DAI, amount: '1' },
     ]),
   };
   const repayParams: FlashLoanParams = {
     repays: new common.TokenAmounts([
-      { token: mainnetTokens.USDC, amount: '1' },
-      { token: mainnetTokens.DAI, amount: '1' },
+      { token: common.mainnetTokens.USDC, amount: '1' },
+      { token: common.mainnetTokens.DAI, amount: '1' },
     ]),
   };
 
