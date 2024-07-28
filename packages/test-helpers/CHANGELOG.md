@@ -1,5 +1,12 @@
 # @protocolink/test-helpers
 
+## 0.4.2
+
+### Patch Changes
+
+- cd07926: Update dependencies
+  - @protocolink/common@0.5.1
+
 ## 0.4.1
 
 ### Patch Changes
