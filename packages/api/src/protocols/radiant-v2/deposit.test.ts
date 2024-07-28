@@ -2,7 +2,6 @@ import { DepositParams, getDepositQuotation, getDepositTokenList } from './depos
 import * as common from '@protocolink/common';
 import { expect } from 'chai';
 import * as logics from '@protocolink/logics';
-import { mainnetTokens } from '@protocolink/test-helpers';
 
 describe('RadiantV2 DepositLogic', function () {
   context('Test getTokenList', async function () {
@@ -19,11 +18,11 @@ describe('RadiantV2 DepositLogic', function () {
 
     const testCases: DepositParams[] = [
       {
-        input: { token: mainnetTokens.ETH, amount: '1' },
+        input: { token: common.mainnetTokens.ETH, amount: '1' },
         tokenOut: logics.radiantv2.mainnetTokens.rWETH,
       },
       {
-        input: { token: mainnetTokens.USDC, amount: '1' },
+        input: { token: common.mainnetTokens.USDC, amount: '1' },
         tokenOut: logics.radiantv2.mainnetTokens.rUSDC,
       },
     ];

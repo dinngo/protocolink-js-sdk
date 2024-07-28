@@ -2,7 +2,6 @@ import { SwapTokenParams, getSwapTokenQuotation, getSwapTokenTokenList } from '.
 import * as common from '@protocolink/common';
 import { expect } from 'chai';
 import * as logics from '@protocolink/logics';
-import { metisTokens } from '@protocolink/test-helpers';
 
 describe('OpenOceanV2 SwapTokenLogic', function () {
   context('Test getTokenList', async function () {
@@ -19,16 +18,16 @@ describe('OpenOceanV2 SwapTokenLogic', function () {
 
     const testCases: SwapTokenParams[] = [
       {
-        input: { token: metisTokens.METIS, amount: '1' },
-        tokenOut: metisTokens.USDC,
+        input: { token: common.metisTokens.METIS, amount: '1' },
+        tokenOut: common.metisTokens['m.USDC'],
       },
       {
-        input: { token: metisTokens.USDC, amount: '1' },
-        tokenOut: metisTokens.METIS,
+        input: { token: common.metisTokens['m.USDC'], amount: '1' },
+        tokenOut: common.metisTokens.METIS,
       },
       {
-        input: { token: metisTokens.USDC, amount: '1' },
-        tokenOut: metisTokens.DAI,
+        input: { token: common.metisTokens['m.USDC'], amount: '1' },
+        tokenOut: common.metisTokens['m.DAI'],
       },
     ];
 

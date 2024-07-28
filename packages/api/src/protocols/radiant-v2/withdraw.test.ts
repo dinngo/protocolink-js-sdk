@@ -2,7 +2,6 @@ import { WithdrawParams, getWithdrawQuotation, getWithdrawTokenList } from './wi
 import * as common from '@protocolink/common';
 import { expect } from 'chai';
 import * as logics from '@protocolink/logics';
-import { mainnetTokens } from '@protocolink/test-helpers';
 
 describe('RadiantV2 WithdrawLogic', function () {
   context('Test getTokenList', async function () {
@@ -20,11 +19,11 @@ describe('RadiantV2 WithdrawLogic', function () {
     const testCases: WithdrawParams[] = [
       {
         input: { token: logics.radiantv2.mainnetTokens.rWETH, amount: '1' },
-        tokenOut: mainnetTokens.ETH,
+        tokenOut: common.mainnetTokens.ETH,
       },
       {
         input: { token: logics.radiantv2.mainnetTokens.rUSDC, amount: '1' },
-        tokenOut: mainnetTokens.USDC,
+        tokenOut: common.mainnetTokens.USDC,
       },
     ];
 
