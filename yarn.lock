@@ -1129,15 +1129,15 @@
     lodash "^4.17.21"
     tiny-invariant "^1.3.1"
 
-"@protocolink/logics@^1.5.0":
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/@protocolink/logics/-/logics-1.5.0.tgz#78b27d8630a194e9f76926e8f44ceb1fbd9d647f"
-  integrity sha512-5zdQIdngZiDIC4mZAY2EqVgAduQxuB6WC/ylCEe1n6hcLJLc/MqkyXpdj6Y+PvbHpFiMZarREYL22sTWNnPe7g==
+"@protocolink/logics@^1.5.1":
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/@protocolink/logics/-/logics-1.5.1.tgz#ebc94a60644e8fd4505430467e7a0dd35631d9ed"
+  integrity sha512-PoeBvqewf4OxrolWkir3MDgA21Bu+6uRavlGf4NUlyuz6VTQMHXKTq+xk9+XVBxRaLUn4tCTVwWjcDjRY9/wWA==
   dependencies:
     "@paraswap/sdk" "^6.6.0"
     "@protocolink/common" "^0.5.1"
-    "@protocolink/core" "^0.6.0"
-    "@protocolink/smart-accounts" "^0.1.4"
+    "@protocolink/core" "^0.6.1"
+    "@protocolink/smart-accounts" "^0.1.5"
     "@types/lodash" "^4.14.195"
     "@uniswap/sdk" "^3.0.3"
     "@uniswap/sdk-core" "^3.2.6"

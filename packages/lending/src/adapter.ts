@@ -358,6 +358,7 @@ export class Adapter extends common.Web3Toolkit {
           // 1. ---------- swap ----------
           let supplyInput: common.TokenAmount;
           if (zapToken.is(collateralToken.wrapped)) {
+            // 1-1-1. exclude native zapToken
             supplyInput = new common.TokenAmount(zapToken, zapAmount);
           } else {
             const swapper = this.findSwapper([zapToken, collateralToken]);

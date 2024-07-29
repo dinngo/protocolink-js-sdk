@@ -26,8 +26,8 @@
     "@aave/math-utils": "^1.21.0",
     "@protocolink/api": "^1.2.0",
     "@protocolink/common": "^0.5.1",
-    "@protocolink/core": "^0.6.0",
-    "@protocolink/logics": "^1.5.0",
+    "@protocolink/core": "^0.6.1",
+    "@protocolink/logics": "^1.5.1",
     "bignumber.js": "^9.1.1",
     "decimal.js-light": "^2.5.1"
   },
