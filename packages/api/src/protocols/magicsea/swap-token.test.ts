@@ -3,9 +3,9 @@ import * as common from '@protocolink/common';
 import { expect } from 'chai';
 import * as logics from '@protocolink/logics';
 
-describe('OpenOceanV2 SwapTokenLogic', function () {
+describe('MagicSea SwapTokenLogic', function () {
   context('Test getTokenList', async function () {
-    logics.openoceanv2.SwapTokenLogic.supportedChainIds.forEach((chainId) => {
+    logics.magicsea.SwapTokenLogic.supportedChainIds.forEach((chainId) => {
       it(`network: ${common.toNetworkId(chainId)}`, async function () {
         const tokenList = await getSwapTokenTokenList(chainId);
         expect(tokenList).to.have.lengthOf.above(0);
@@ -14,20 +14,20 @@ describe('OpenOceanV2 SwapTokenLogic', function () {
   });
 
   context('Test getQuotation', async function () {
-    const chainId = common.ChainId.metis;
+    const chainId = common.ChainId.iota;
 
     const testCases: SwapTokenParams[] = [
       {
-        input: { token: common.metisTokens.METIS, amount: '1' },
-        tokenOut: common.metisTokens['m.USDC'],
+        input: { token: common.iotaTokens.IOTA, amount: '1' },
+        tokenOut: logics.magicsea.iotaTokens['USDC.e'],
       },
       {
-        input: { token: common.metisTokens['m.USDC'], amount: '1' },
-        tokenOut: common.metisTokens.METIS,
+        input: { token: logics.magicsea.iotaTokens['USDC.e'], amount: '1' },
+        tokenOut: common.iotaTokens.IOTA,
       },
       {
-        input: { token: common.metisTokens['m.USDC'], amount: '1' },
-        tokenOut: common.metisTokens['m.DAI'],
+        input: { token: logics.magicsea.iotaTokens['USDC.e'], amount: '1' },
+        tokenOut: logics.magicsea.iotaTokens.USDT,
       },
     ];
 

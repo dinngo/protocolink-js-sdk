@@ -2,7 +2,6 @@ import { SwapTokenParams, getSwapTokenQuotation, getSwapTokenTokenList } from '.
 import * as common from '@protocolink/common';
 import { expect } from 'chai';
 import * as logics from '@protocolink/logics';
-import { zksyncTokens } from '@protocolink/test-helpers';
 
 describe('Syncswap SwapTokenLogic', function () {
   context('Test getTokenList', async function () {
@@ -19,16 +18,16 @@ describe('Syncswap SwapTokenLogic', function () {
 
     const testCases: SwapTokenParams[] = [
       {
-        input: { token: zksyncTokens.ETH, amount: '1' },
-        tokenOut: zksyncTokens.USDC,
+        input: { token: common.zksyncTokens.ETH, amount: '1' },
+        tokenOut: common.zksyncTokens.USDC,
       },
       {
-        input: { token: zksyncTokens.USDC, amount: '1' },
-        tokenOut: zksyncTokens.ETH,
+        input: { token: common.zksyncTokens.USDC, amount: '1' },
+        tokenOut: common.zksyncTokens.ETH,
       },
       {
-        input: { token: zksyncTokens.USDC, amount: '1' },
-        tokenOut: zksyncTokens.USDT,
+        input: { token: common.zksyncTokens.USDC, amount: '1' },
+        tokenOut: common.zksyncTokens.USDT,
       },
     ];
 

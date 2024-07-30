@@ -2,7 +2,6 @@ import { RepayParams, getRepayQuotation, getRepayTokenList } from './repay';
 import * as common from '@protocolink/common';
 import { expect } from 'chai';
 import * as logics from '@protocolink/logics';
-import { mainnetTokens } from '@protocolink/test-helpers';
 
 describe('RadiantV2 RepayLogic', function () {
   context('Test getTokenList', async function () {
@@ -21,12 +20,12 @@ describe('RadiantV2 RepayLogic', function () {
       {
         borrower: '0xaAaAaAaaAaAaAaaAaAAAAAAAAaaaAaAaAaaAaaAa',
         interestRateMode: logics.radiantv2.InterestRateMode.variable,
-        tokenIn: mainnetTokens.ETH,
+        tokenIn: common.mainnetTokens.ETH,
       },
       {
         borrower: '0xaAaAaAaaAaAaAaaAaAAAAAAAAaaaAaAaAaaAaaAa',
         interestRateMode: logics.radiantv2.InterestRateMode.variable,
-        tokenIn: mainnetTokens.USDC,
+        tokenIn: common.mainnetTokens.USDC,
       },
     ];
 

@@ -3,7 +3,6 @@ import { buildRouterTransactionRequest, estimateRouterData, getProtocolTokenList
 import * as common from '@protocolink/common';
 import { expect } from 'chai';
 import * as logics from '@protocolink/logics';
-import { mainnetTokens } from '@protocolink/test-helpers';
 import * as utility from 'src/protocols/utility';
 
 describe('API client', function () {
@@ -25,7 +24,10 @@ describe('API client', function () {
   });
 
   it('Test quote', async function () {
-    const params = { input: new common.TokenAmount(mainnetTokens.ETH, '1'), tokenOut: mainnetTokens.USDC };
+    const params = {
+      input: new common.TokenAmount(common.mainnetTokens.ETH, '1'),
+      tokenOut: common.mainnetTokens.USDC,
+    };
     const quotation = await quote(common.ChainId.mainnet, logics.uniswapv3.SwapTokenLogic.rid, params);
     expect(quotation).to.include.all.keys('tradeType', 'input', 'output');
     expect(quotation).to.have.any.keys('path', 'fee');
@@ -36,11 +38,11 @@ describe('API client', function () {
     account: '0xaAaAaAaaAaAaAaaAaAAAAAAAAaaaAaAaAaaAaaAa',
     logics: [
       utility.newSendTokenLogic({
-        input: { token: mainnetTokens.ETH, amount: '1' },
+        input: { token: common.mainnetTokens.ETH, amount: '1' },
         recipient: '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
       }),
       utility.newSendTokenLogic({
-        input: { token: mainnetTokens.USDC, amount: '1' },
+        input: { token: common.mainnetTokens.USDC, amount: '1' },
         recipient: '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
       }),
     ],

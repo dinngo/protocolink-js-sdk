@@ -6,7 +6,6 @@ import {
 import * as common from '@protocolink/common';
 import { expect } from 'chai';
 import * as logics from '@protocolink/logics';
-import { mainnetTokens } from '@protocolink/test-helpers';
 
 describe('Utility WrappedNativeTokenLogic', function () {
   context('Test getTokenList', async function () {
@@ -23,12 +22,12 @@ describe('Utility WrappedNativeTokenLogic', function () {
 
     const testCases: WrappedNativeTokenParams[] = [
       {
-        input: { token: mainnetTokens.ETH, amount: '1' },
-        tokenOut: mainnetTokens.WETH,
+        input: { token: common.mainnetTokens.ETH, amount: '1' },
+        tokenOut: common.mainnetTokens.WETH,
       },
       {
-        input: { token: mainnetTokens.WETH, amount: '1' },
-        tokenOut: mainnetTokens.ETH,
+        input: { token: common.mainnetTokens.WETH, amount: '1' },
+        tokenOut: common.mainnetTokens.ETH,
       },
     ];
 
