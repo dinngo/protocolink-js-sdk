@@ -2,7 +2,6 @@ import { SwapTokenParams, getSwapTokenQuotation, getSwapTokenTokenList } from '.
 import * as common from '@protocolink/common';
 import { expect } from 'chai';
 import * as logics from '@protocolink/logics';
-import { mainnetTokens } from '@protocolink/test-helpers';
 
 describe('UniswapV3 SwapTokenLogic', function () {
   context('Test getTokenList', async function () {
@@ -19,28 +18,28 @@ describe('UniswapV3 SwapTokenLogic', function () {
 
     const testCases: SwapTokenParams[] = [
       {
-        input: { token: mainnetTokens.ETH, amount: '1' },
-        tokenOut: mainnetTokens.USDC,
+        input: { token: common.mainnetTokens.ETH, amount: '1' },
+        tokenOut: common.mainnetTokens.USDC,
       },
       {
-        input: { token: mainnetTokens.USDC, amount: '1' },
-        tokenOut: mainnetTokens.ETH,
+        input: { token: common.mainnetTokens.USDC, amount: '1' },
+        tokenOut: common.mainnetTokens.ETH,
       },
       {
-        input: { token: mainnetTokens.USDC, amount: '1' },
-        tokenOut: mainnetTokens.DAI,
+        input: { token: common.mainnetTokens.USDC, amount: '1' },
+        tokenOut: common.mainnetTokens.DAI,
       },
       {
-        tokenIn: mainnetTokens.ETH,
-        output: { token: mainnetTokens.USDC, amount: '1' },
+        tokenIn: common.mainnetTokens.ETH,
+        output: { token: common.mainnetTokens.USDC, amount: '1' },
       },
       {
-        tokenIn: mainnetTokens.USDC,
-        output: { token: mainnetTokens.ETH, amount: '1' },
+        tokenIn: common.mainnetTokens.USDC,
+        output: { token: common.mainnetTokens.ETH, amount: '1' },
       },
       {
-        tokenIn: mainnetTokens.USDC,
-        output: { token: mainnetTokens.DAI, amount: '1' },
+        tokenIn: common.mainnetTokens.USDC,
+        output: { token: common.mainnetTokens.DAI, amount: '1' },
       },
     ];
 

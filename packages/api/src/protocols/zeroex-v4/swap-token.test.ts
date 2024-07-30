@@ -2,7 +2,6 @@ import { SwapTokenParams, getSwapTokenQuotation, getSwapTokenTokenList } from '.
 import * as common from '@protocolink/common';
 import { expect } from 'chai';
 import * as logics from '@protocolink/logics';
-import { mainnetTokens } from '@protocolink/test-helpers';
 
 const apiKey = process.env.ZEROEX_API_KEY as string;
 
@@ -21,18 +20,18 @@ describe('ZeroExV4 SwapTokenLogic', function () {
 
     const testCases: SwapTokenParams[] = [
       {
-        input: { token: mainnetTokens.ETH, amount: '1' },
-        tokenOut: mainnetTokens.USDC,
+        input: { token: common.mainnetTokens.ETH, amount: '1' },
+        tokenOut: common.mainnetTokens.USDC,
         apiKey,
       },
       {
-        input: { token: mainnetTokens.USDC, amount: '1000' },
-        tokenOut: mainnetTokens.ETH,
+        input: { token: common.mainnetTokens.USDC, amount: '1000' },
+        tokenOut: common.mainnetTokens.ETH,
         apiKey,
       },
       {
-        input: { token: mainnetTokens.USDC, amount: '1' },
-        tokenOut: mainnetTokens.DAI,
+        input: { token: common.mainnetTokens.USDC, amount: '1' },
+        tokenOut: common.mainnetTokens.DAI,
         apiKey,
       },
     ];

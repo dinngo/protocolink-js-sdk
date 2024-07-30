@@ -2,7 +2,6 @@ import { FlashLoanParams, getFlashLoanQuotation, getFlashLoanTokenList } from '.
 import * as common from '@protocolink/common';
 import { expect } from 'chai';
 import * as logics from '@protocolink/logics';
-import { mainnetTokens } from '@protocolink/test-helpers';
 
 describe('BalancerV2 FlashLoanLogic', function () {
   context('Test getTokenList', async function () {
@@ -20,26 +19,26 @@ describe('BalancerV2 FlashLoanLogic', function () {
     const testCases: FlashLoanParams[] = [
       {
         loans: [
-          { token: mainnetTokens.WETH, amount: '1' },
-          { token: mainnetTokens.USDC, amount: '1' },
+          { token: common.mainnetTokens.WETH, amount: '1' },
+          { token: common.mainnetTokens.USDC, amount: '1' },
         ],
       },
       {
         repays: [
-          { token: mainnetTokens.WETH, amount: '1' },
-          { token: mainnetTokens.USDC, amount: '1' },
+          { token: common.mainnetTokens.WETH, amount: '1' },
+          { token: common.mainnetTokens.USDC, amount: '1' },
         ],
       },
       {
         loans: [
-          { token: mainnetTokens.WBTC, amount: '1' },
-          { token: mainnetTokens.DAI, amount: '1' },
+          { token: common.mainnetTokens.WBTC, amount: '1' },
+          { token: common.mainnetTokens.DAI, amount: '1' },
         ],
       },
       {
         repays: [
-          { token: mainnetTokens.WBTC, amount: '1' },
-          { token: mainnetTokens.DAI, amount: '1' },
+          { token: common.mainnetTokens.WBTC, amount: '1' },
+          { token: common.mainnetTokens.DAI, amount: '1' },
         ],
       },
     ];
