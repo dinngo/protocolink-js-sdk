@@ -4,7 +4,7 @@ import * as logics from '@protocolink/logics';
 export const ID = 'spark';
 export const DISPLAY_NAME = 'Spark';
 
-export type ReserveTokens = logics.aavev2.ReserveTokens;
+export type ReserveTokens = logics.spark.ReserveTokens;
 export type ReserveMap = Record<string, ReserveTokens>;
 
 type ContractName = 'Pool' | 'PoolDataProvider' | 'AaveOracle';

@@ -62,7 +62,7 @@ export class LendingProtocol extends Protocol {
       const { asset, rToken } = reserveToken;
 
       if (asset.isWrapped) {
-        reserveMap[asset.unwrapped.address] = { ...reserveToken, asset: asset.unwrapped };
+        reserveMap[asset.unwrapped.address] = reserveToken;
         reserveTokens.push({ ...reserveToken, asset: asset.unwrapped });
       }
 

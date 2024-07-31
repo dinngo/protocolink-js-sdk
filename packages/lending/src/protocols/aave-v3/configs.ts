@@ -4,7 +4,7 @@ import * as logics from '@protocolink/logics';
 export const ID = 'aave-v3';
 export const DISPLAY_NAME = 'Aave V3';
 
-export type ReserveTokens = logics.aavev2.ReserveTokens;
+export type ReserveTokens = logics.aavev3.ReserveTokens;
 export type ReserveMap = Record<string, ReserveTokens>;
 
 type ContractName = 'Pool' | 'PoolDataProvider' | 'AaveOracle';

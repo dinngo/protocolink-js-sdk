@@ -65,7 +65,7 @@ export class LendingProtocol extends Protocol {
       if (asset.isNative) hasNativeToken = true;
 
       if (asset.isWrapped) {
-        reserveMap[asset.unwrapped.address] = { ...reserveToken, asset: asset.unwrapped };
+        reserveMap[asset.unwrapped.address] = reserveToken;
         reserveTokens.push({ ...reserveToken, asset: asset.unwrapped });
       }
 
