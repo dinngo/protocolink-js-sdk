@@ -257,10 +257,10 @@ export class Adapter extends common.Web3Toolkit {
       if (srcCollateral && destBorrow) {
         try {
           // 1. ---------- swap ----------
-          let supplyInput: common.TokenAmount;
+          const supplyInput = new common.TokenAmount(collateralToken.wrapped, '0');
           if (zapToken.is(collateralToken.wrapped)) {
             // 1-1-1. exclude native zapToken
-            supplyInput = new common.TokenAmount(zapToken, zapAmount);
+            supplyInput.set(zapAmount);
           } else {
             const swapper = this.findSwapper([zapToken, collateralToken]);
             let swapQuotation: SwapperQuoteFields;
@@ -276,7 +276,7 @@ export class Adapter extends common.Web3Toolkit {
             const swapTokenLogic = swapper.newSwapTokenLogic(swapQuotation);
             output.logics.push(swapTokenLogic);
             // 1-2-1. the supply amount is the swap quotation output
-            supplyInput = swapQuotation.output;
+            supplyInput.set(swapQuotation.output);
           }
 
           // 2. ---------- leverage ----------
@@ -356,10 +356,10 @@ export class Adapter extends common.Web3Toolkit {
       if (srcCollateral && destBorrow) {
         try {
           // 1. ---------- swap ----------
-          let supplyInput: common.TokenAmount;
+          const supplyInput = new common.TokenAmount(collateralToken.wrapped, '0');
           if (zapToken.is(collateralToken.wrapped)) {
             // 1-1-1. exclude native zapToken
-            supplyInput = new common.TokenAmount(zapToken, zapAmount);
+            supplyInput.set(zapAmount);
           } else {
             const swapper = this.findSwapper([zapToken, collateralToken]);
             let swapQuotation: SwapperQuoteFields;
@@ -375,7 +375,7 @@ export class Adapter extends common.Web3Toolkit {
             const swapTokenLogic = swapper.newSwapTokenLogic(swapQuotation);
             output.logics.push(swapTokenLogic);
             // 1-2-1. the supply amount is the swap quotation output
-            supplyInput = swapQuotation.output;
+            supplyInput.set(swapQuotation.output);
           }
 
           // 2. ---------- leverage ----------
@@ -395,7 +395,7 @@ export class Adapter extends common.Web3Toolkit {
             // 2-1-1. find supply logic and add zap supply amount
             const logicIndex = collateralToken.wrapped.is(debtToken.wrapped) ? 1 : 2;
             const leverageSupplyAmount = leverageOutput.logics[logicIndex].fields.input;
-            const totalSupplyAmount = leverageSupplyAmount.add(supplyInput.amount).amount;
+            const totalSupplyAmount = leverageSupplyAmount.add(supplyInput).amount;
             leverageOutput.logics[logicIndex].fields.input.amount = totalSupplyAmount;
             leverageOutput.logics[logicIndex].fields.balanceBps = common.BPS_BASE;
             output.logics.push(...leverageOutput.logics);
@@ -443,7 +443,7 @@ export class Adapter extends common.Web3Toolkit {
       // 1. check borrow positions
       let flashLoanRepayLogic;
       const flashLoanLoan = new common.TokenAmount(withdrawalToken.wrapped, '0');
-      let flashLoanRepay = flashLoanLoan.clone();
+      const flashLoanRepay = flashLoanLoan.clone();
       const { protocolId, marketId } = portfolio;
       const protocol = this.getProtocol(protocolId);
 
@@ -474,7 +474,7 @@ export class Adapter extends common.Web3Toolkit {
           this.chainId,
           { loans: [flashLoanLoan], protocolId: protocol.preferredFlashLoanProtocolId }
         );
-        flashLoanRepay = flashLoanAggregatorQuotation.repays.get(withdrawalToken.wrapped);
+        flashLoanRepay.set(flashLoanAggregatorQuotation.repays.get(withdrawalToken.wrapped));
 
         const [loanLogic, repayLogic] = apisdk.protocols.utility.newFlashLoanAggregatorLogicPair(
           flashLoanAggregatorQuotation.protocolId,
@@ -518,7 +518,7 @@ export class Adapter extends common.Web3Toolkit {
           output.afterPortfolio = zapWithdrawOutput.afterPortfolio;
         }
 
-        const withdrawal = zapWithdraw.clone().sub(flashLoanRepay.amount);
+        const withdrawal = new common.TokenAmount(withdrawalToken, zapWithdraw.clone().sub(flashLoanRepay).amount);
         output.destAmount = withdrawal.amount;
 
         if (flashLoanRepayLogic) output.logics.push(flashLoanRepayLogic);
