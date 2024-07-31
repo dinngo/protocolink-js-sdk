@@ -18,15 +18,7 @@ import {
   SupplyParams,
   WithdrawParams,
 } from 'src/protocol.type';
-import {
-  DISPLAY_NAME,
-  ID,
-  Reserve,
-  getContractAddress,
-  isBorrowEnabled,
-  isSupplyEnabled,
-  supportedChainIds,
-} from './configs';
+import { DISPLAY_NAME, ID, ReserveMap, ReserveTokens, getContractAddress, supportedChainIds } from './configs';
 import { ETHPriceFeedInterface } from './contracts/ETHPriceFeed';
 import { Portfolio } from 'src/protocol.portfolio';
 import { PriceOracleInterface } from './contracts/PriceOracle';
@@ -49,8 +41,8 @@ export class LendingProtocol extends Protocol {
   readonly name = DISPLAY_NAME;
   readonly market: Market;
 
-  private reserves: logics.aavev2.ReserveTokens[] = [];
-  private reserveMap: Record<string, Reserve> = {};
+  private reserveTokens: ReserveTokens[] = [];
+  private reserveMap: ReserveMap = {};
 
   constructor(chainId: number, provider?: providers.Provider) {
     super(chainId, provider);
@@ -67,21 +59,23 @@ export class LendingProtocol extends Protocol {
 
   async initializeReservesConfig() {
     const service = new logics.aavev2.Service(this.chainId, this.provider);
-    const reserves = await service.getReserveTokens();
+    const { reserveTokens } = await service.getReserveTokens();
 
-    const reserveMap: Record<string, Reserve> = {};
+    const reserveMap: ReserveMap = {};
 
-    for (const { asset, aToken, stableDebtToken, variableDebtToken } of reserves) {
+    for (const reserveToken of reserveTokens) {
+      const { asset, aToken } = reserveToken;
+
       if (asset.isWrapped) {
-        reserveMap[asset.unwrapped.address] = { aToken, asset };
-        reserves.push({ asset: asset.unwrapped, aToken, stableDebtToken, variableDebtToken });
+        reserveMap[asset.unwrapped.address] = reserveToken;
+        reserveTokens.push({ ...reserveToken, asset: asset.unwrapped });
       }
 
-      reserveMap[asset.address] = { aToken, asset };
-      reserveMap[aToken.address] = { aToken, asset };
+      reserveMap[asset.address] = reserveToken;
+      reserveMap[aToken.address] = reserveToken;
     }
 
-    this.reserves = reserves;
+    this.reserveTokens = reserveTokens;
     this.reserveMap = reserveMap;
   }
 
@@ -154,32 +148,26 @@ export class LendingProtocol extends Protocol {
     return this._aTokenIface;
   }
 
-  private _tokensForDeposit?: common.Token[];
+  private _depositTokenList?: common.Token[];
 
-  async getTokensForDeposit() {
-    if (!this._tokensForDeposit) {
+  async getDepositTokenList() {
+    if (!this._depositTokenList) {
       const tokenList = await apisdk.protocols.aavev2.getDepositTokenList(this.chainId);
 
-      const tokens = tokenList.filter((tokens) => isSupplyEnabled(this.chainId, tokens[0])).map((tokens) => tokens[0]);
-
-      this._tokensForDeposit = tokens;
+      this._depositTokenList = tokenList.map((tokens) => tokens[0]);
     }
 
-    return this._tokensForDeposit;
+    return this._depositTokenList;
   }
 
-  private _tokensForBorrow?: common.Token[];
+  private _borrowTokenList?: common.Token[];
 
-  async getTokensForBorrow() {
-    if (!this._tokensForBorrow) {
-      const tokenList = await apisdk.protocols.aavev2.getBorrowTokenList(this.chainId);
-
-      const tokens = tokenList.filter((token) => isBorrowEnabled(this.chainId, token));
-
-      this._tokensForBorrow = tokens;
+  async getBorrowTokenList() {
+    if (!this._borrowTokenList) {
+      this._borrowTokenList = await apisdk.protocols.aavev2.getBorrowTokenList(this.chainId);
     }
 
-    return this._tokensForBorrow;
+    return this._borrowTokenList;
   }
 
   getMarketName() {
@@ -202,7 +190,7 @@ export class LendingProtocol extends Protocol {
   async getReserveDataMap() {
     if (!this._reserveDataMap) {
       const calls: common.Multicall3.CallStruct[] = [];
-      for (const { asset, aToken } of this.reserves) {
+      for (const { asset, aToken } of this.reserveTokens) {
         calls.push({
           target: this.protocolDataProvider.address,
           callData: this.protocolDataProviderIface.encodeFunctionData('getReserveConfigurationData', [
@@ -222,7 +210,7 @@ export class LendingProtocol extends Protocol {
 
       this._reserveDataMap = {};
       let j = 0;
-      for (const { asset } of this.reserves) {
+      for (const { asset } of this.reserveTokens) {
         const { ltv, liquidationThreshold, usageAsCollateralEnabled } =
           this.protocolDataProviderIface.decodeFunctionResult('getReserveConfigurationData', returnData[j]);
         j++;
@@ -262,7 +250,7 @@ export class LendingProtocol extends Protocol {
       {
         target: this.priceOracle.address,
         callData: this.priceOracleIface.encodeFunctionData('getAssetsPrices', [
-          this.reserves.map(({ asset }) => asset.wrapped.address),
+          this.reserveTokens.map(({ asset }) => asset.wrapped.address),
         ]),
       },
     ];
@@ -272,8 +260,8 @@ export class LendingProtocol extends Protocol {
     const [assetPrices] = this.priceOracleIface.decodeFunctionResult('getAssetsPrices', returnData[1]);
 
     const assetPriceMap: Record<string, string> = {};
-    for (let i = 0; i < this.reserves.length; i++) {
-      assetPriceMap[this.reserves[i].asset.address] = common.toBigUnit(
+    for (let i = 0; i < this.reserveTokens.length; i++) {
+      assetPriceMap[this.reserveTokens[i].asset.address] = common.toBigUnit(
         ethPrice.mul(assetPrices[i]).div(BigNumber.from(10).pow(18)),
         8
       );
@@ -284,7 +272,7 @@ export class LendingProtocol extends Protocol {
 
   async getUserBalancesMap(account: string) {
     const calls: common.Multicall3.CallStruct[] = [];
-    for (const { asset, aToken } of this.reserves) {
+    for (const { asset, aToken } of this.reserveTokens) {
       calls.push({ target: aToken.address, callData: this.erc20Iface.encodeFunctionData('balanceOf', [account]) });
       calls.push({
         target: this.protocolDataProvider.address,
@@ -305,8 +293,8 @@ export class LendingProtocol extends Protocol {
       }
     > = {};
     let j = 0;
-    for (let i = 0; i < this.reserves.length; i++) {
-      const { asset } = this.reserves[i];
+    for (let i = 0; i < this.reserveTokens.length; i++) {
+      const { asset } = this.reserveTokens[i];
 
       const [aTokenBalance] = this.erc20Iface.decodeFunctionResult('balanceOf', returnData[j]);
       j++;
@@ -334,11 +322,11 @@ export class LendingProtocol extends Protocol {
     const assetPriceMap = await this.getAssetPriceMap();
     const userBalancesMap = await this.getUserBalancesMap(account);
     const lstTokenAPYMap = await this.getLstTokenAPYMap(this.chainId);
-    const tokensForDeposit = await this.getTokensForDeposit();
-    const tokensForBorrow = await this.getTokensForBorrow();
+    const depositTokenList = await this.getDepositTokenList();
+    const borrowTokenList = await this.getBorrowTokenList();
 
     const supplies: SupplyObject[] = [];
-    for (const token of tokensForDeposit) {
+    for (const token of depositTokenList) {
       if (token.isWrapped) continue;
 
       const reserveData = reserveDataMap[token.address];
@@ -368,7 +356,7 @@ export class LendingProtocol extends Protocol {
     }
 
     const borrows: BorrowObject[] = [];
-    for (const token of tokensForBorrow) {
+    for (const token of borrowTokenList) {
       if (token.isWrapped) continue;
 
       const { supplyAPY: apy, totalBorrow } = reserveDataMap[token.address];

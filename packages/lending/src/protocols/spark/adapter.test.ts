@@ -9,7 +9,7 @@ import { mainnetTokens } from './tokens';
 
 describe('Test Adapter for Spark', async function () {
   const chainId = common.ChainId.mainnet;
-  const blockTag = 20175734;
+  const blockTag = 20370000;
   let adapter: Adapter;
   let protocol: LendingProtocol;
 

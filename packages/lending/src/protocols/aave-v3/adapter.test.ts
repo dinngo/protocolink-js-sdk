@@ -9,7 +9,7 @@ import { mainnetTokens } from './tokens';
 
 describe('Test Adapter for Aave V3', function () {
   const chainId = common.ChainId.mainnet;
-  const blockTag = 20187274;
+  const blockTag = 20370000;
   let adapter: Adapter;
   let protocol: LendingProtocol;
 

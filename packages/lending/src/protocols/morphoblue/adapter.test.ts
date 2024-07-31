@@ -273,7 +273,7 @@ describe('Test Adapter for Morpho Blue', async function () {
   // leverage only have one scenario - leverage by collateral token
   context('Test leverageByCollateral', function () {
     const account = '0x9edcb464C0AfdD01a5Ffbd09309b437C7dadeAB3';
-    const blockTag = 20180000;
+    const blockTag = 20380000;
 
     let portfolio: Portfolio;
 

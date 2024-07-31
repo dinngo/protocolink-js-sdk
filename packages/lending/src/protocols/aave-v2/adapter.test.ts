@@ -113,7 +113,7 @@ describe('Test Adapter for Aave V2', function () {
 
   context('Test openByDebt', function () {
     const account = '0xc94680947CF2114ec8eE43725898EAA7269a98c5';
-    const blockTag = 19167450;
+    const blockTag = 20370000;
 
     let portfolio: Portfolio;
 
@@ -167,10 +167,10 @@ describe('Test Adapter for Aave V2', function () {
 
     it('success', async function () {
       const zapToken = mainnetTokens.ETH;
-      const zapAmount = '1';
+      const zapAmount = '0.5';
       const collateralToken = mainnetTokens.USDC;
       const debtToken = mainnetTokens.ETH;
-      const debtAmount = '0.1';
+      const debtAmount = '0.8';
 
       const { destAmount, afterPortfolio, error, logics } = await adapter.openByDebt({
         account,
@@ -227,7 +227,7 @@ describe('Test Adapter for Aave V2', function () {
     });
 
     it('success', async function () {
-      const account = '0x624698bb841f344a200fe6adb695e8ff695bcad7';
+      const account = '0xa3C1C91403F0026b9dd086882aDbC8Cdbc3b3cfB';
       portfolio = await protocol.getPortfolio(account);
 
       const withdrawalToken = mainnetTokens.USDC;
@@ -243,16 +243,17 @@ describe('Test Adapter for Aave V2', function () {
       expect(afterPortfolio.totalBorrowUSD).to.be.eq(0);
       expect(afterPortfolio.totalSupplyUSD).to.be.eq(0);
 
-      expect(logics).has.length(7);
+      expect(logics).has.length(8);
       expect(logics[0].rid).to.eq('utility:flash-loan-aggregator');
       expect(logics[1].rid).to.contain('swap-token');
       expect(logics[2].rid).to.eq('aave-v2:repay');
       expect(logics[2].fields.balanceBps).to.eq(common.BPS_BASE);
-      expect(logics[3].rid).to.eq('permit2:pull-token');
-      expect(logics[4].rid).to.eq('aave-v2:withdraw');
-      expect(logics[4].fields.balanceBps).to.eq(common.BPS_BASE);
-      expect(logics[5].rid).to.contain('swap-token');
-      expect(logics[6].rid).to.eq('utility:flash-loan-aggregator');
+      expect(logics[3].rid).to.eq('aave-v2:repay');
+      expect(logics[4].rid).to.eq('permit2:pull-token');
+      expect(logics[5].rid).to.eq('aave-v2:withdraw');
+      expect(logics[5].fields.balanceBps).to.eq(common.BPS_BASE);
+      expect(logics[6].rid).to.contain('swap-token');
+      expect(logics[7].rid).to.eq('utility:flash-loan-aggregator');
     });
 
     it('success - collateral positions only', async function () {
@@ -759,7 +760,7 @@ describe('Test Adapter for Aave V2', function () {
 
     it('success - src token is not equal to dest token', async function () {
       const srcToken = mainnetTokens.USDC;
-      const srcAmount = '10000';
+      const srcAmount = '1';
       const destToken = mainnetTokens.stETH;
 
       const { destAmount, afterPortfolio, error, logics } = await adapter.deleverage({
