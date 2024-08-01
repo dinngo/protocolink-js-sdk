@@ -3,8 +3,22 @@ import { Portfolio } from 'src/protocol.portfolio';
 import * as common from '@protocolink/common';
 import { expect } from 'chai';
 import { filterPortfolio } from 'src/protocol.utils';
+import { supportedChainIds } from './configs';
 
 describe('Test Aave V3 LendingProtocol', function () {
+  context('Test getReserveTokens', function () {
+    supportedChainIds.forEach((chainId) => {
+      it(`network: ${common.toNetworkId(chainId)}`, async function () {
+        const protocol = await LendingProtocol.createProtocol(chainId);
+
+        const reserveTokens = await protocol.getReserveTokens();
+        const reserveTokensOnChain = await protocol.getReserveTokensOnChain();
+
+        expect(JSON.stringify(reserveTokens)).to.eq(JSON.stringify(reserveTokensOnChain));
+      });
+    });
+  });
+
   context('Test getPortfolio', function () {
     const testCases = [
       {

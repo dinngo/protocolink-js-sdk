@@ -22,7 +22,7 @@ import { Protocol } from 'src/protocol';
 import { ProtocolDataProviderInterface } from './contracts/ProtocolDataProvider';
 import { RAY_DECIMALS, SECONDS_PER_YEAR, calculateCompoundedRate, normalize } from '@aave/math-utils';
 import * as apisdk from '@protocolink/api';
-import { calcBorrowGrossApy, calcSupplyGrossApy, getLstApyFromMap } from 'src/protocol.utils';
+import { calcBorrowGrossApy, calcSupplyGrossApy, fetchReservesData, getLstApyFromMap } from 'src/protocol.utils';
 import * as common from '@protocolink/common';
 import * as logics from '@protocolink/logics';
 import { providers } from 'ethers';
@@ -53,8 +53,13 @@ export class LendingProtocol extends Protocol {
   }
 
   async initializeReservesConfig() {
-    const service = new logics.radiantv2.Service(this.chainId, this.provider);
-    const { reserveTokens } = await service.getReserveTokens();
+    let reserveTokens: ReserveTokens[] = [];
+
+    try {
+      reserveTokens = await this.getReserveTokens();
+    } catch {
+      reserveTokens = await this.getReserveTokensOnChain();
+    }
 
     const reserveMap: ReserveMap = {};
 
@@ -72,6 +77,17 @@ export class LendingProtocol extends Protocol {
 
     this.reserveTokens = reserveTokens;
     this.reserveMap = reserveMap;
+  }
+
+  async getReserveTokens() {
+    const reserveTokens: ReserveTokens[] = await fetchReservesData(this.id, this.chainId);
+    return reserveTokens;
+  }
+
+  async getReserveTokensOnChain() {
+    const service = new logics.radiantv2.Service(this.chainId, this.provider);
+    const { reserveTokens } = await service.getReserveTokens();
+    return reserveTokens;
   }
 
   private _protocolDataProvider?: ProtocolDataProvider;
