@@ -1,5 +1,12 @@
 # @protocolink/api
 
+## 1.2.1
+
+### Patch Changes
+
+- 2ba93e6: add Magic Sea test and example
+- 2bc567b: use token info from common package
+
 ## 1.2.0
 
 ### Minor Changes
