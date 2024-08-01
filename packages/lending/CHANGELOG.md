@@ -1,5 +1,14 @@
 # @protocolink/lending
 
+## 2.0.1
+
+### Patch Changes
+
+- ca67262: adjust reserve tokens, supply tokens, borrow tokens
+- Updated dependencies [2ba93e6]
+- Updated dependencies [2bc567b]
+  - @protocolink/api@1.2.1
+
 ## 2.0.0
 
 ### Major Changes
