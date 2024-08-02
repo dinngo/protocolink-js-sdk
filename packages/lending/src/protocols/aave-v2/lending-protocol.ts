@@ -402,6 +402,19 @@ export class LendingProtocol extends Protocol {
     return this.getPortfolios(account).then((portfolios) => portfolios[0]);
   }
 
+  async getProtocolInfos() {
+    const reserveTokens = await this.getReserveTokens();
+
+    return [
+      {
+        chainId: this.chainId,
+        protocolId: this.id,
+        marketId: this.market.id,
+        reserveTokens,
+      },
+    ];
+  }
+
   toUnderlyingToken(_marketId: string, protocolToken: common.Token) {
     return this.reserveMap[protocolToken.address].asset;
   }

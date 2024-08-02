@@ -2,6 +2,7 @@ import {
   BorrowFields,
   BorrowParams,
   Market,
+  ProtocolInfo,
   RepayFields,
   RepayParams,
   SupplyFields,
@@ -39,6 +40,8 @@ export abstract class Protocol extends common.Web3Toolkit {
   abstract getPortfolio(account: string, marketId: string): Promise<Portfolio>;
 
   abstract getPortfolios(account: string): Promise<Portfolio[]>;
+
+  abstract getProtocolInfos(): Promise<ProtocolInfo[]>;
 
   async getLstTokenAPYMap(chainId: number): Promise<Record<string, string>> {
     if (Protocol.lstAPYs) return Protocol.lstAPYs[chainId.toString()] || {};

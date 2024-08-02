@@ -187,6 +187,24 @@ export class LendingProtocol extends Protocol {
     return Promise.all(configMap[this.chainId].markets.map(({ id }) => this.getPortfolio(account, id)));
   }
 
+  async getProtocolInfo(marketId: string) {
+    const { loanToken, collateralToken } = getMarket(this.chainId, marketId);
+
+    return {
+      chainId: this.chainId,
+      protocolId: this.id,
+      marketId,
+      reserveTokens: [
+        { isSupplyEnabled: true, isBorrowEnabled: false, asset: collateralToken },
+        { isSupplyEnabled: false, isBorrowEnabled: true, asset: loanToken },
+      ],
+    };
+  }
+
+  async getProtocolInfos() {
+    return Promise.all(configMap[this.chainId].markets.map(({ id }) => this.getProtocolInfo(id)));
+  }
+
   override canCollateralSwap() {
     return false;
   }

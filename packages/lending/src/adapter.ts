@@ -8,12 +8,12 @@ import {
 } from './adapter.type';
 import { Portfolio } from './protocol.portfolio';
 import { Protocol, ProtocolClass } from './protocol';
+import { ProtocolInfo, defaultSlippage } from './protocol.type';
 import { Swapper, SwapperClass } from './swapper';
 import { SwapperQuoteFields } from './swapper.type';
 import * as apisdk from '@protocolink/api';
 import * as common from '@protocolink/common';
 import { configMap } from './adapter.config';
-import { defaultSlippage } from './protocol.type';
 import flatten from 'lodash/flatten';
 import { providers } from 'ethers';
 import { scaleRepayAmount } from './adapter.utils';
@@ -205,12 +205,25 @@ export class Adapter extends common.Web3Toolkit {
   }
 
   /**
+   * Retrieves an array of protocol information (tokens) from all registered protocols.
+   *
+   * @returns {Promise<ProtocolInfo[]>} an array of protocol information (tokens)
+   */
+  async getProtocolInfos(): Promise<ProtocolInfo[]> {
+    const protocolInfos = await Promise.all(
+      Object.values(this.protocolMap).map(async (protocol) => {
+        return await protocol.getProtocolInfos();
+      })
+    );
+    return flatten(protocolInfos);
+  }
+
+  /**
    * Retrieves a protocol instance by its identifier.
    *
    * @param {string} id - The identifier of the protocol.
    * @returns {Protocol} The Protocol instance associated with the given identifier.
    */
-
   getProtocol(id: string): Protocol {
     return this.protocolMap[id];
   }
