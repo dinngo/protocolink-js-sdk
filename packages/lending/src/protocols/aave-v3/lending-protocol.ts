@@ -57,9 +57,9 @@ export class LendingProtocol extends Protocol {
     let reserveTokens: ReserveTokens[] = [];
 
     try {
-      reserveTokens = await this.getReserveTokens();
+      reserveTokens = await this.getReserveTokensFromCache();
     } catch {
-      reserveTokens = await this.getReserveTokensOnChain();
+      reserveTokens = await this.getReserveTokens();
     }
 
     const reserveMap: ReserveMap = {};
@@ -83,12 +83,12 @@ export class LendingProtocol extends Protocol {
     this.hasNativeToken = hasNativeToken;
   }
 
-  async getReserveTokens() {
+  async getReserveTokensFromCache() {
     const reserveTokens: ReserveTokens[] = await fetchReservesData(this.id, this.chainId);
     return reserveTokens;
   }
 
-  async getReserveTokensOnChain() {
+  async getReserveTokens() {
     const service = new logics.aavev3.Service(this.chainId, this.provider);
     const { reserveTokens } = await service.getReserveTokens();
     return reserveTokens;

@@ -105,7 +105,7 @@ export interface RepayFields {
   balanceBps?: number;
 }
 
-type reserveTokens = {
+type reserveToken = {
   asset: common.Token;
   isSupplyEnabled: boolean;
   isBorrowEnabled: boolean;
@@ -116,5 +116,5 @@ export type ProtocolInfo = {
   chainId: number;
   protocolId: string;
   marketId: string;
-  reserveTokens: reserveTokens[];
+  reserveTokens: reserveToken[];
 };

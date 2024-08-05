@@ -17,7 +17,7 @@ describe('Test Adapter', function () {
           expect(protocolInfo).has.property('protocolId');
           expect(protocolInfo).has.property('marketId');
 
-          expect(Array.isArray(protocolInfo.reserveTokens)).to.equal(true);
+          expect(protocolInfo.reserveTokens).to.have.lengthOf.above(0);
 
           protocolInfo.reserveTokens.forEach((reserveToken) => {
             expect(reserveToken).has.property('asset');

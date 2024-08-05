@@ -11,10 +11,12 @@ describe('Test Aave V3 LendingProtocol', function () {
       it(`network: ${common.toNetworkId(chainId)}`, async function () {
         const protocol = await LendingProtocol.createProtocol(chainId);
 
+        const reserveTokensFromCache = await protocol.getReserveTokensFromCache();
         const reserveTokens = await protocol.getReserveTokens();
-        const reserveTokensOnChain = await protocol.getReserveTokensOnChain();
 
-        expect(JSON.stringify(reserveTokens)).to.eq(JSON.stringify(reserveTokensOnChain));
+        expect(reserveTokensFromCache).to.have.lengthOf.above(0);
+        expect(reserveTokens).to.have.lengthOf.above(0);
+        expect(reserveTokensFromCache).to.deep.equal(reserveTokens);
       });
     });
   });
