@@ -373,8 +373,8 @@ export class LendingProtocol extends Protocol {
       protocolId: this.id,
       marketId,
       reserveTokens: [
-        { isSupplyEnabled: true, isBorrowEnabled: false, asset: baseToken },
-        ...assets.map(({ token }) => ({ isSupplyEnabled: false, isBorrowEnabled: true, asset: token })),
+        { isSupplyEnabled: true, isBorrowEnabled: true, asset: baseToken },
+        ...assets.map(({ token }) => ({ isSupplyEnabled: true, isBorrowEnabled: false, asset: token })),
       ],
     };
   }

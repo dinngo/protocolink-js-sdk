@@ -83,9 +83,8 @@ export class LendingProtocol extends Protocol {
     this.hasNativeToken = hasNativeToken;
   }
 
-  async getReserveTokensFromCache() {
-    const reserveTokens: ReserveTokens[] = await fetchReservesData(this.id, this.chainId);
-    return reserveTokens;
+  async getReserveTokensFromCache(): Promise<ReserveTokens[]> {
+    return await fetchReservesData(this.id, this.chainId);
   }
 
   async getReserveTokens() {
