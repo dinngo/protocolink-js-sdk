@@ -28,7 +28,7 @@
   "dependencies": {
     "@protocolink/common": "^0.5.1",
     "@protocolink/core": "^0.6.1",
-    "@protocolink/logics": "^1.5.1",
+    "@protocolink/logics": "^1.6.0",
     "@types/lodash": "^4.14.195",
     "@types/uuid": "^9.0.2",
     "@uniswap/permit2-sdk": "^1.2.0",
