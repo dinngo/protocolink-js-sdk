@@ -24,7 +24,7 @@ import { Portfolio } from 'src/protocol.portfolio';
 import { Protocol } from 'src/protocol';
 import { RAY_DECIMALS, SECONDS_PER_YEAR, calculateCompoundedRate, normalize } from '@aave/math-utils';
 import * as apisdk from '@protocolink/api';
-import { calcBorrowGrossApy, calcSupplyGrossApy, getLstApyFromMap } from 'src/protocol.utils';
+import { calcBorrowGrossApy, calcSupplyGrossApy, fetchReservesData, getLstApyFromMap } from 'src/protocol.utils';
 import * as common from '@protocolink/common';
 import * as logics from '@protocolink/logics';
 
@@ -54,8 +54,13 @@ export class LendingProtocol extends Protocol {
   }
 
   async initializeReservesConfig() {
-    const service = new logics.spark.Service(this.chainId, this.provider);
-    const { reserveTokens } = await service.getReserveTokens();
+    let reserveTokens: ReserveTokens[] = [];
+
+    try {
+      reserveTokens = await this.getReserveTokensFromCache();
+    } catch {
+      reserveTokens = await this.getReserveTokens();
+    }
 
     const reserveMap: ReserveMap = {};
     let hasNativeToken = false;
@@ -76,6 +81,16 @@ export class LendingProtocol extends Protocol {
     this.reserveTokens = reserveTokens;
     this.reserveMap = reserveMap;
     this.hasNativeToken = hasNativeToken;
+  }
+
+  async getReserveTokensFromCache(): Promise<ReserveTokens[]> {
+    return await fetchReservesData(this.id, this.chainId);
+  }
+
+  async getReserveTokens() {
+    const service = new logics.spark.Service(this.chainId, this.provider);
+    const { reserveTokens } = await service.getReserveTokens();
+    return reserveTokens;
   }
 
   private _poolDataProvider?: PoolDataProvider;
@@ -376,6 +391,19 @@ export class LendingProtocol extends Protocol {
 
   async getPortfolio(account: string) {
     return this.getPortfolios(account).then((portfolios) => portfolios[0]);
+  }
+
+  async getProtocolInfos() {
+    const reserveTokens = await this.getReserveTokens();
+
+    return [
+      {
+        chainId: this.chainId,
+        protocolId: this.id,
+        marketId: this.market.id,
+        reserveTokens,
+      },
+    ];
   }
 
   toUnderlyingToken(_marketId: string, protocolToken: common.Token) {

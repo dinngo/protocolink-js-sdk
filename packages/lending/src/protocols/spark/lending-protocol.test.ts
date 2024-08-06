@@ -3,8 +3,24 @@ import { Portfolio } from 'src/protocol.portfolio';
 import * as common from '@protocolink/common';
 import { expect } from 'chai';
 import { filterPortfolio } from 'src/protocol.utils';
+import { supportedChainIds } from './configs';
 
 describe('Test Spark LendingProtocol', function () {
+  context('Test getReserveTokens', function () {
+    supportedChainIds.forEach((chainId) => {
+      it(`network: ${common.toNetworkId(chainId)}`, async function () {
+        const protocol = await LendingProtocol.createProtocol(chainId);
+
+        const reserveTokensFromCache = await protocol.getReserveTokensFromCache();
+        const reserveTokens = await protocol.getReserveTokens();
+
+        expect(reserveTokensFromCache).to.have.lengthOf.above(0);
+        expect(reserveTokens).to.have.lengthOf.above(0);
+        expect(reserveTokensFromCache).to.deep.equal(reserveTokens);
+      });
+    });
+  });
+
   context('Test getPortfolio', function () {
     const testCases = [
       {

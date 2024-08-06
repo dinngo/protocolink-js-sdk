@@ -1,5 +1,7 @@
 import BigNumberJS from 'bignumber.js';
 import Decimal from 'decimal.js-light';
+import axios from 'axios';
+import * as common from '@protocolink/common';
 
 export function calcUtilization(totalBorrowCapacityUSD: string | BigNumberJS, totalBorrowUSD: string | BigNumberJS) {
   let utilization = '0';
@@ -139,3 +141,24 @@ export const calcSupplyGrossApy = (apy: string, lstApy: string) => {
 export const calcBorrowGrossApy = (apy: string, lstApy: string) => {
   return lstApy === '0' ? apy : apy === '0' ? lstApy : BigNumberJS(apy).minus(lstApy).toString();
 };
+
+export async function fetchReservesData(protocolId: string, chainId: number) {
+  const url = `https://s3.amazonaws.com/cdn.protocolink.com/${chainId}/${protocolId.replace(/-/g, '')}/reserves.json`;
+
+  try {
+    const { data } = await axios.get(url, { timeout: 5000 });
+
+    if (!data || !Array.isArray(data) || data.length === 0) throw new Error('Invalid data received');
+
+    return data.map((item) => ({
+      ...item,
+      asset: new common.Token(item.asset),
+      ...(item.aToken && { aToken: new common.Token(item.aToken) }),
+      ...(item.rToken && { rToken: new common.Token(item.rToken) }),
+      stableDebtToken: new common.Token(item.stableDebtToken),
+      variableDebtToken: new common.Token(item.variableDebtToken),
+    }));
+  } catch (error) {
+    throw new Error(`An unexpected error occurred: ${(error as Error).message}`);
+  }
+}

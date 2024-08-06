@@ -365,6 +365,24 @@ export class LendingProtocol extends Protocol {
     return Promise.all(configMap[this.chainId].markets.map(({ id }) => this.getPortfolio(account, id)));
   }
 
+  async getProtocolInfo(marketId: string) {
+    const { baseToken, assets } = await this.getMarket(marketId);
+
+    return {
+      chainId: this.chainId,
+      protocolId: this.id,
+      marketId,
+      reserveTokens: [
+        { isSupplyEnabled: true, isBorrowEnabled: true, asset: baseToken },
+        ...assets.map(({ token }) => ({ isSupplyEnabled: true, isBorrowEnabled: false, asset: token })),
+      ],
+    };
+  }
+
+  async getProtocolInfos() {
+    return Promise.all(configMap[this.chainId].markets.map(({ id }) => this.getProtocolInfo(id)));
+  }
+
   newSupplyLogic({ marketId, input }: SupplyParams) {
     const { baseToken, comet } = getMarketConfig(this.chainId, marketId);
 

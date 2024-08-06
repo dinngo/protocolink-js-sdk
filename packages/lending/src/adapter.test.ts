@@ -2,8 +2,33 @@ import { Adapter } from 'src/adapter';
 import * as common from '@protocolink/common';
 import { expect } from 'chai';
 import { filterPortfolio } from './protocol.utils';
+import { supportedChainIds } from './adapter.config';
 
-describe('Test Adapter for getPortfolios', function () {
+describe('Test Adapter', function () {
+  context('Test getProtocolInfos', function () {
+    supportedChainIds.forEach((chainId) => {
+      it(`network: ${common.toNetworkId(chainId)}`, async function () {
+        const adapter = await Adapter.createAdapter(chainId);
+
+        const protocolInfos = await adapter.getProtocolInfos();
+
+        protocolInfos.forEach((protocolInfo) => {
+          expect(protocolInfo).has.property('chainId', chainId);
+          expect(protocolInfo).has.property('protocolId');
+          expect(protocolInfo).has.property('marketId');
+
+          expect(protocolInfo.reserveTokens).to.have.lengthOf.above(0);
+
+          protocolInfo.reserveTokens.forEach((reserveToken) => {
+            expect(reserveToken).has.property('asset');
+            expect(reserveToken).has.property('isSupplyEnabled');
+            expect(reserveToken).has.property('isBorrowEnabled');
+          });
+        });
+      });
+    });
+  });
+
   context('Test getPortfolios', function () {
     const testCases = [
       {

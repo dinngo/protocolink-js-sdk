@@ -104,3 +104,17 @@ export interface RepayFields {
   borrower: string;
   balanceBps?: number;
 }
+
+type reserveToken = {
+  asset: common.Token;
+  isSupplyEnabled: boolean;
+  isBorrowEnabled: boolean;
+  [key: string]: any;
+};
+
+export type ProtocolInfo = {
+  chainId: number;
+  protocolId: string;
+  marketId: string;
+  reserveTokens: reserveToken[];
+};
