@@ -7,7 +7,7 @@ export const faucetMap: Record<number, { default: string; specified?: Record<str
     specified: {
       '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48': '0x47ac0Fb4F2D84898e4D9E7b4DaB3C24507a6D503', // USDC
       '0xBe9895146f7AF43049ca1c1AE358B0541Ea49704': '0xA9D1e08C7793af67e9d92fe308d5697FB81d3E43', // cbETH
-      '0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0': '0x5fEC2f34D80ED82370F733043B6A536d7e9D7f8d', // wstETH
+      '0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0': '0x0B925eD163218f6662a35e0f0371Ac234f9E9371', // wstETH
     },
   },
   [common.ChainId.polygon]: {

@@ -1,5 +1,4 @@
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
-import { arbitrumTokens } from 'src/fixtures';
 import { claimToken } from 'src/utils/faucet';
 import * as common from '@protocolink/common';
 import { expect } from 'chai';
@@ -19,11 +18,11 @@ describe('arbitrum: Test faucet claim', function () {
   snapshotAndRevertEach();
 
   const testCases: { tokenOrAddress: common.TokenOrAddress; amount: string }[] = [
-    { tokenOrAddress: arbitrumTokens.ETH, amount: '1' },
-    { tokenOrAddress: arbitrumTokens.WETH, amount: '1' },
-    { tokenOrAddress: arbitrumTokens.USDC, amount: '1' },
-    { tokenOrAddress: arbitrumTokens['USDC.e'], amount: '1' },
-    { tokenOrAddress: arbitrumTokens.WBTC, amount: '1' },
+    { tokenOrAddress: common.arbitrumTokens.ETH, amount: '1' },
+    { tokenOrAddress: common.arbitrumTokens.WETH, amount: '1' },
+    { tokenOrAddress: common.arbitrumTokens.USDC, amount: '1' },
+    { tokenOrAddress: common.arbitrumTokens['USDC.e'], amount: '1' },
+    { tokenOrAddress: common.arbitrumTokens.WBTC, amount: '1' },
   ];
 
   testCases.forEach(({ tokenOrAddress, amount }) => {
