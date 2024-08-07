@@ -14,5 +14,29 @@
     "symbol": "wIOTA",
     "name": "wIOTA",
     "logoUri": "https://cdn.furucombo.app/assets/img/token/wIOTA.svg"
+  },
+  "WETH": {
+    "chainId": 8822,
+    "address": "0x160345fC359604fC6e70E3c5fAcbdE5F7A9342d8",
+    "decimals": 18,
+    "symbol": "WETH",
+    "name": "WETH",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/WETH.svg"
+  },
+  "USDT": {
+    "chainId": 8822,
+    "address": "0xC1B8045A6ef2934Cf0f78B0dbD489969Fa9Be7E4",
+    "decimals": 6,
+    "symbol": "USDT",
+    "name": "Tether USD",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/USDT.svg"
+  },
+  "USDC.e": {
+    "chainId": 8822,
+    "address": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+    "decimals": 6,
+    "symbol": "USDC.e",
+    "name": "Bridged USDC (Stargate) (USDC.e)",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/USDC.svg"
   }
 }

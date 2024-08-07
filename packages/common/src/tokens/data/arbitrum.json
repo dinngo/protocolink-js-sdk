@@ -198,5 +198,21 @@
     "symbol": "GMX",
     "name": "GMX",
     "logoUri": "https://cdn.furucombo.app/assets/img/token/GMX.svg"
+  },
+  "gmBTC-USD": {
+    "chainId": 42161,
+    "address": "0x47c031236e19d024b42f8AE6780E44A573170703",
+    "decimals": 18,
+    "symbol": "gmBTC-USD",
+    "name": "GMX Market BTC-USD",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/gmBTC-USD.png"
+  },
+  "gmETH-USD": {
+    "chainId": 42161,
+    "address": "0x70d95587d40A2caf56bd97485aB3Eec10Bee6336",
+    "decimals": 18,
+    "symbol": "gmETH-USD",
+    "name": "GMX Market ETH-USD",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/gmETH-USD.png"
   }
 }
