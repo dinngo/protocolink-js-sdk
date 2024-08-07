@@ -2,6 +2,5 @@
 /* tslint:disable */
 /* eslint-disable */
 export { ERC20__factory } from './ERC20__factory';
-export { Multicall2__factory } from './Multicall2__factory';
 export { Multicall3__factory } from './Multicall3__factory';
 export { WETH__factory } from './WETH__factory';
