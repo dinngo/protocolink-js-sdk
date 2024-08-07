@@ -1,7 +1,7 @@
 import { Adapter } from 'src/adapter';
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 import * as apisdk from '@protocolink/api';
-import { claimToken, mainnetTokens, snapshotAndRevertEach } from '@protocolink/test-helpers';
+import { claimToken, snapshotAndRevertEach } from '@protocolink/test-helpers';
 import * as common from '@protocolink/common';
 import { expect } from 'chai';
 import hre from 'hardhat';
@@ -21,7 +21,7 @@ describe('Transaction: Deleverage', function () {
   before(async function () {
     adapter = await Adapter.createAdapter(chainId, hre.ethers.provider);
     [, user] = await hre.ethers.getSigners();
-    await claimToken(chainId, user.address, mainnetTokens.WETH, initSupplyAmount);
+    await claimToken(chainId, user.address, common.mainnetTokens.WETH, initSupplyAmount);
     await claimToken(chainId, user.address, logics.morphoblue.mainnetTokens.wstETH, initSupplyAmount);
   });
 
@@ -32,33 +32,33 @@ describe('Transaction: Deleverage', function () {
       {
         protocolId: 'aave-v2',
         marketId: 'mainnet',
-        srcToken: mainnetTokens.USDC,
+        srcToken: common.mainnetTokens.USDC,
         srcAmount: '100',
-        destToken: mainnetTokens.WETH,
+        destToken: common.mainnetTokens.WETH,
         expects: { logicLength: 6 },
       },
       {
         protocolId: 'radiant-v2',
         marketId: 'mainnet',
-        srcToken: mainnetTokens.USDC,
+        srcToken: common.mainnetTokens.USDC,
         srcAmount: '100',
-        destToken: mainnetTokens.WETH,
+        destToken: common.mainnetTokens.WETH,
         expects: { logicLength: 6 },
       },
       {
         protocolId: 'aave-v3',
         marketId: 'mainnet',
-        srcToken: mainnetTokens.USDC,
+        srcToken: common.mainnetTokens.USDC,
         srcAmount: '100',
-        destToken: mainnetTokens.WETH,
+        destToken: common.mainnetTokens.WETH,
         expects: { logicLength: 6 },
       },
       {
         protocolId: 'spark',
         marketId: 'mainnet',
-        srcToken: mainnetTokens.DAI,
+        srcToken: common.mainnetTokens.DAI,
         srcAmount: '100',
-        destToken: mainnetTokens.WETH,
+        destToken: common.mainnetTokens.WETH,
         expects: { logicLength: 6 },
       },
     ];
@@ -131,7 +131,7 @@ describe('Transaction: Deleverage', function () {
         protocolId: 'compound-v3',
         marketId: logics.compoundv3.MarketId.ETH,
         account: '0x4aab5cbfe493fc2ac18c46a68ef42c58ba06c9bd',
-        srcToken: mainnetTokens.ETH,
+        srcToken: common.mainnetTokens.ETH,
         srcAmount: '0.1',
         destToken: morphoblue.mainnetTokens.wstETH,
         expects: { logicLength: 5 },
@@ -140,7 +140,7 @@ describe('Transaction: Deleverage', function () {
         protocolId: 'morphoblue',
         marketId: '0xc54d7acf14de29e0e5527cabd7a576506870346a78a11a6762e2cca66322ec41',
         account: '0x4aab5cbfe493fc2ac18c46a68ef42c58ba06c9bd',
-        srcToken: mainnetTokens.WETH,
+        srcToken: common.mainnetTokens.WETH,
         srcAmount: '0.01',
         destToken: morphoblue.mainnetTokens.wstETH,
         expects: { logicLength: 5 },

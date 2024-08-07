@@ -2,7 +2,7 @@ import { Adapter } from 'src/adapter';
 import { Portfolio } from 'src/protocol.portfolio';
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 import * as apisdk from '@protocolink/api';
-import { claimToken, mainnetTokens, snapshotAndRevertEach } from '@protocolink/test-helpers';
+import { claimToken, snapshotAndRevertEach } from '@protocolink/test-helpers';
 import * as common from '@protocolink/common';
 import { expect } from 'chai';
 import hre from 'hardhat';
@@ -23,7 +23,7 @@ describe('Transaction: Debt swap', function () {
     adapter = await Adapter.createAdapter(chainId, hre.ethers.provider);
     [, user] = await hre.ethers.getSigners();
 
-    await claimToken(chainId, user.address, mainnetTokens.WETH, initSupplyAmount);
+    await claimToken(chainId, user.address, common.mainnetTokens.WETH, initSupplyAmount);
   });
 
   snapshotAndRevertEach();
@@ -33,35 +33,35 @@ describe('Transaction: Debt swap', function () {
       {
         protocolId: 'aave-v2',
         marketId: 'mainnet',
-        supplyToken: mainnetTokens.WETH,
-        srcToken: mainnetTokens.USDC,
+        supplyToken: common.mainnetTokens.WETH,
+        srcToken: common.mainnetTokens.USDC,
         srcAmount: '100',
-        destToken: mainnetTokens.DAI,
+        destToken: common.mainnetTokens.DAI,
         expects: { logicLength: 5 },
       },
       {
         protocolId: 'radiant-v2',
         marketId: 'mainnet',
-        supplyToken: mainnetTokens.WETH,
-        srcToken: mainnetTokens.USDC,
+        supplyToken: common.mainnetTokens.WETH,
+        srcToken: common.mainnetTokens.USDC,
         srcAmount: '100',
-        destToken: mainnetTokens.USDT,
+        destToken: common.mainnetTokens.USDT,
         expects: { logicLength: 5 },
       },
       {
         protocolId: 'aave-v3',
         marketId: 'mainnet',
-        supplyToken: mainnetTokens.WETH,
-        srcToken: mainnetTokens.USDC,
+        supplyToken: common.mainnetTokens.WETH,
+        srcToken: common.mainnetTokens.USDC,
         srcAmount: '100',
-        destToken: mainnetTokens.DAI,
+        destToken: common.mainnetTokens.DAI,
         expects: { logicLength: 5 },
       },
       {
         protocolId: 'spark',
         marketId: 'mainnet',
-        supplyToken: mainnetTokens.WETH,
-        srcToken: mainnetTokens.DAI,
+        supplyToken: common.mainnetTokens.WETH,
+        srcToken: common.mainnetTokens.DAI,
         srcAmount: '100',
         destToken: spark.mainnetTokens.wstETH,
         expects: { logicLength: 5 },

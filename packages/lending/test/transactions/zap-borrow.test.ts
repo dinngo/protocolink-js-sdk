@@ -1,7 +1,7 @@
 import { Adapter } from 'src/adapter';
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 import * as apisdk from '@protocolink/api';
-import { claimToken, mainnetTokens, snapshotAndRevertEach } from '@protocolink/test-helpers';
+import { claimToken, snapshotAndRevertEach } from '@protocolink/test-helpers';
 import * as common from '@protocolink/common';
 import { expect } from 'chai';
 import hre from 'hardhat';
@@ -19,7 +19,7 @@ describe('Transaction: Zap Borrow', function () {
   before(async function () {
     adapter = await Adapter.createAdapter(chainId, hre.ethers.provider);
     [, user] = await hre.ethers.getSigners();
-    await claimToken(chainId, user.address, mainnetTokens.WETH, initSupplyAmount);
+    await claimToken(chainId, user.address, common.mainnetTokens.WETH, initSupplyAmount);
     await claimToken(chainId, user.address, logics.morphoblue.mainnetTokens.wstETH, initSupplyAmount);
   });
 
@@ -30,55 +30,55 @@ describe('Transaction: Zap Borrow', function () {
       {
         protocolId: 'aave-v2',
         marketId: 'mainnet',
-        supplyToken: mainnetTokens.WETH,
-        srcToken: mainnetTokens.USDC,
+        supplyToken: common.mainnetTokens.WETH,
+        srcToken: common.mainnetTokens.USDC,
         srcAmount: '100',
-        destToken: mainnetTokens.USDT,
+        destToken: common.mainnetTokens.USDT,
         expects: { logicLength: 2 },
       },
       {
         protocolId: 'radiant-v2',
         marketId: 'mainnet',
-        supplyToken: mainnetTokens.WETH,
-        srcToken: mainnetTokens.USDC,
+        supplyToken: common.mainnetTokens.WETH,
+        srcToken: common.mainnetTokens.USDC,
         srcAmount: '100',
-        destToken: mainnetTokens.USDT,
+        destToken: common.mainnetTokens.USDT,
         expects: { logicLength: 2 },
       },
       {
         protocolId: 'aave-v3',
         marketId: 'mainnet',
-        supplyToken: mainnetTokens.WETH,
-        srcToken: mainnetTokens.USDC,
+        supplyToken: common.mainnetTokens.WETH,
+        srcToken: common.mainnetTokens.USDC,
         srcAmount: '100',
-        destToken: mainnetTokens.WBTC,
+        destToken: common.mainnetTokens.WBTC,
         expects: { logicLength: 2 },
       },
       {
         protocolId: 'spark',
         marketId: 'mainnet',
-        supplyToken: mainnetTokens.WETH,
-        srcToken: mainnetTokens.DAI,
+        supplyToken: common.mainnetTokens.WETH,
+        srcToken: common.mainnetTokens.DAI,
         srcAmount: '100',
-        destToken: mainnetTokens.WBTC,
+        destToken: common.mainnetTokens.WBTC,
         expects: { logicLength: 2 },
       },
       {
         protocolId: 'compound-v3',
         marketId: logics.compoundv3.MarketId.USDC,
-        supplyToken: mainnetTokens.WETH,
-        srcToken: mainnetTokens.USDC,
+        supplyToken: common.mainnetTokens.WETH,
+        srcToken: common.mainnetTokens.USDC,
         srcAmount: '100',
-        destToken: mainnetTokens.USDT,
+        destToken: common.mainnetTokens.USDT,
         expects: { logicLength: 2 },
       },
       {
         protocolId: 'morphoblue',
         marketId: '0xb323495f7e4148be5643a4ea4a8221eef163e4bccfdedc2a6f4696baacbc86cc',
         supplyToken: logics.morphoblue.mainnetTokens.wstETH,
-        srcToken: mainnetTokens.USDC,
+        srcToken: common.mainnetTokens.USDC,
         srcAmount: '100',
-        destToken: mainnetTokens.USDT,
+        destToken: common.mainnetTokens.USDT,
         expects: { logicLength: 2 },
       },
     ];

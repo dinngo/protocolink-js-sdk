@@ -2,7 +2,7 @@ import { Adapter } from 'src/adapter';
 import { Portfolio } from 'src/protocol.portfolio';
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 import * as apisdk from '@protocolink/api';
-import { claimToken, mainnetTokens, snapshotAndRevertEach } from '@protocolink/test-helpers';
+import { claimToken, snapshotAndRevertEach } from '@protocolink/test-helpers';
 import * as common from '@protocolink/common';
 import { expect } from 'chai';
 import hre from 'hardhat';
@@ -22,9 +22,9 @@ describe('Transaction: Zap Repay', function () {
     adapter = await Adapter.createAdapter(chainId, hre.ethers.provider);
     [, user] = await hre.ethers.getSigners();
 
-    await claimToken(chainId, user.address, mainnetTokens.WETH, initSupplyAmount);
-    await claimToken(chainId, user.address, mainnetTokens.USDT, '500');
-    await claimToken(chainId, '0x4aab5cbfe493fc2ac18c46a68ef42c58ba06c9bd', mainnetTokens.USDT, '500');
+    await claimToken(chainId, user.address, common.mainnetTokens.WETH, initSupplyAmount);
+    await claimToken(chainId, user.address, common.mainnetTokens.USDT, '500');
+    await claimToken(chainId, '0x4aab5cbfe493fc2ac18c46a68ef42c58ba06c9bd', common.mainnetTokens.USDT, '500');
   });
 
   snapshotAndRevertEach();
@@ -34,37 +34,37 @@ describe('Transaction: Zap Repay', function () {
       {
         protocolId: 'aave-v2',
         marketId: 'mainnet',
-        supplyToken: mainnetTokens.WETH,
-        srcToken: mainnetTokens.USDC,
+        supplyToken: common.mainnetTokens.WETH,
+        srcToken: common.mainnetTokens.USDC,
         srcAmount: '100',
-        destToken: mainnetTokens.USDT,
+        destToken: common.mainnetTokens.USDT,
         expects: { logicLength: 2 },
       },
       {
         protocolId: 'radiant-v2',
         marketId: 'mainnet',
-        supplyToken: mainnetTokens.WETH,
-        srcToken: mainnetTokens.USDC,
+        supplyToken: common.mainnetTokens.WETH,
+        srcToken: common.mainnetTokens.USDC,
         srcAmount: '100',
-        destToken: mainnetTokens.USDT,
+        destToken: common.mainnetTokens.USDT,
         expects: { logicLength: 2 },
       },
       {
         protocolId: 'aave-v3',
         marketId: 'mainnet',
-        supplyToken: mainnetTokens.WETH,
-        srcToken: mainnetTokens.USDC,
+        supplyToken: common.mainnetTokens.WETH,
+        srcToken: common.mainnetTokens.USDC,
         srcAmount: '100',
-        destToken: mainnetTokens.USDT,
+        destToken: common.mainnetTokens.USDT,
         expects: { logicLength: 2 },
       },
       {
         protocolId: 'spark',
         marketId: 'mainnet',
-        supplyToken: mainnetTokens.WETH,
-        srcToken: mainnetTokens.DAI,
+        supplyToken: common.mainnetTokens.WETH,
+        srcToken: common.mainnetTokens.DAI,
         srcAmount: '100',
-        destToken: mainnetTokens.USDT,
+        destToken: common.mainnetTokens.USDT,
         expects: { logicLength: 2 },
       },
     ];
@@ -126,18 +126,18 @@ describe('Transaction: Zap Repay', function () {
         protocolId: 'compound-v3',
         marketId: logics.compoundv3.MarketId.ETH,
         account: '0x4aab5cbfe493fc2ac18c46a68ef42c58ba06c9bd',
-        srcToken: mainnetTokens.ETH,
+        srcToken: common.mainnetTokens.ETH,
         srcAmount: '0.1',
-        destToken: mainnetTokens.USDT,
+        destToken: common.mainnetTokens.USDT,
         expects: { logicLength: 2 },
       },
       {
         protocolId: 'morphoblue',
         marketId: '0xc54d7acf14de29e0e5527cabd7a576506870346a78a11a6762e2cca66322ec41',
         account: '0x4aab5cbfe493fc2ac18c46a68ef42c58ba06c9bd',
-        srcToken: mainnetTokens.WETH,
+        srcToken: common.mainnetTokens.WETH,
         srcAmount: '0.01',
-        destToken: mainnetTokens.USDT,
+        destToken: common.mainnetTokens.USDT,
         expects: { logicLength: 2 },
       },
     ];
