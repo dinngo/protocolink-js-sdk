@@ -1,5 +1,15 @@
 # @protocolink/lending
 
+## 2.1.0
+
+### Minor Changes
+
+- e309c92: implement reserves data caching
+
+### Patch Changes
+
+- b4a8464: support radiant v2 on base
+
 ## 2.0.1
 
 ### Patch Changes
