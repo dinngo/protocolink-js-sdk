@@ -1,5 +1,12 @@
 # @protocolink/common
 
+## 0.5.2
+
+### Patch Changes
+
+- 3dd9b8f: add common tokens
+- 3e8fb86: remove multicall2 related
+
 ## 0.5.1
 
 ### Patch Changes
