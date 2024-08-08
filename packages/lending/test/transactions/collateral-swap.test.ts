@@ -2,7 +2,7 @@ import { Adapter } from 'src/adapter';
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 import { TokenAmount } from '@protocolink/common';
 import * as apisdk from '@protocolink/api';
-import { claimToken, mainnetTokens, snapshotAndRevertEach } from '@protocolink/test-helpers';
+import { claimToken, snapshotAndRevertEach } from '@protocolink/test-helpers';
 import * as common from '@protocolink/common';
 import { expect } from 'chai';
 import hre from 'hardhat';
@@ -21,7 +21,7 @@ describe('Transaction: Collateral swap', function () {
   before(async function () {
     adapter = await Adapter.createAdapter(chainId, hre.ethers.provider);
     [, user] = await hre.ethers.getSigners();
-    await claimToken(chainId, user.address, mainnetTokens.WETH, initSupplyAmount);
+    await claimToken(chainId, user.address, common.mainnetTokens.WETH, initSupplyAmount);
   });
 
   snapshotAndRevertEach();
@@ -31,31 +31,31 @@ describe('Transaction: Collateral swap', function () {
       {
         protocolId: 'aave-v2',
         marketId: 'mainnet',
-        srcToken: mainnetTokens.WETH,
+        srcToken: common.mainnetTokens.WETH,
         srcAmount: '1',
-        destToken: mainnetTokens.WBTC,
+        destToken: common.mainnetTokens.WBTC,
         expects: { logicLength: 7 },
       },
       {
         protocolId: 'radiant-v2',
         marketId: 'mainnet',
-        srcToken: mainnetTokens.WETH,
+        srcToken: common.mainnetTokens.WETH,
         srcAmount: '1',
-        destToken: mainnetTokens.WBTC,
+        destToken: common.mainnetTokens.WBTC,
         expects: { logicLength: 7 },
       },
       {
         protocolId: 'aave-v3',
         marketId: 'mainnet',
-        srcToken: mainnetTokens.WETH,
+        srcToken: common.mainnetTokens.WETH,
         srcAmount: '1',
-        destToken: mainnetTokens.WBTC,
+        destToken: common.mainnetTokens.WBTC,
         expects: { logicLength: 7 },
       },
       {
         protocolId: 'spark',
         marketId: 'mainnet',
-        srcToken: mainnetTokens.WETH,
+        srcToken: common.mainnetTokens.WETH,
         srcAmount: '1',
         destToken: spark.mainnetTokens.wstETH,
         expects: { logicLength: 7 },
@@ -63,9 +63,9 @@ describe('Transaction: Collateral swap', function () {
       {
         protocolId: 'compound-v3',
         marketId: logics.compoundv3.MarketId.USDC,
-        srcToken: mainnetTokens.WETH,
+        srcToken: common.mainnetTokens.WETH,
         srcAmount: '1',
-        destToken: mainnetTokens.WBTC,
+        destToken: common.mainnetTokens.WBTC,
         expects: { logicLength: 5 },
       },
     ];

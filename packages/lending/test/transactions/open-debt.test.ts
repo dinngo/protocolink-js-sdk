@@ -2,7 +2,7 @@ import { Adapter } from 'src/adapter';
 import { Portfolio } from 'src/protocol.portfolio';
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 import * as apisdk from '@protocolink/api';
-import { claimToken, mainnetTokens, snapshotAndRevertEach } from '@protocolink/test-helpers';
+import { claimToken, snapshotAndRevertEach } from '@protocolink/test-helpers';
 import * as common from '@protocolink/common';
 import { expect } from 'chai';
 import hre from 'hardhat';
@@ -20,8 +20,8 @@ describe('Transaction: Open By Debt', function () {
   before(async function () {
     adapter = await Adapter.createAdapter(chainId, hre.ethers.provider);
     [, user] = await hre.ethers.getSigners();
-    await claimToken(chainId, user.address, mainnetTokens.USDT, '2000');
-    await claimToken(chainId, user.address, mainnetTokens.WETH, initSupplyAmount);
+    await claimToken(chainId, user.address, common.mainnetTokens.USDT, '2000');
+    await claimToken(chainId, user.address, common.mainnetTokens.WETH, initSupplyAmount);
   });
 
   snapshotAndRevertEach();
@@ -32,10 +32,10 @@ describe('Transaction: Open By Debt', function () {
         protocolId: 'aave-v2',
         marketId: 'mainnet',
         hasCollateral: true,
-        zapToken: mainnetTokens.USDT,
+        zapToken: common.mainnetTokens.USDT,
         zapAmount: '1000',
-        collateralToken: mainnetTokens.WETH,
-        debtToken: mainnetTokens.USDC,
+        collateralToken: common.mainnetTokens.WETH,
+        debtToken: common.mainnetTokens.USDC,
         debtAmount: '100',
         expects: { logicLength: 7 },
       },
@@ -43,10 +43,10 @@ describe('Transaction: Open By Debt', function () {
         protocolId: 'radiant-v2',
         marketId: 'mainnet',
         hasCollateral: false,
-        zapToken: mainnetTokens.USDT,
+        zapToken: common.mainnetTokens.USDT,
         zapAmount: '1000',
-        collateralToken: mainnetTokens.WETH,
-        debtToken: mainnetTokens.USDC,
+        collateralToken: common.mainnetTokens.WETH,
+        debtToken: common.mainnetTokens.USDC,
         debtAmount: '100',
         expects: { logicLength: 7 },
       },
@@ -54,10 +54,10 @@ describe('Transaction: Open By Debt', function () {
         protocolId: 'aave-v3',
         marketId: 'mainnet',
         hasCollateral: true,
-        zapToken: mainnetTokens.USDT,
+        zapToken: common.mainnetTokens.USDT,
         zapAmount: '1000',
-        collateralToken: mainnetTokens.WETH,
-        debtToken: mainnetTokens.USDC,
+        collateralToken: common.mainnetTokens.WETH,
+        debtToken: common.mainnetTokens.USDC,
         debtAmount: '100',
         expects: { logicLength: 7 },
       },
@@ -65,10 +65,10 @@ describe('Transaction: Open By Debt', function () {
         protocolId: 'spark',
         marketId: 'mainnet',
         hasCollateral: false,
-        zapToken: mainnetTokens.USDT,
+        zapToken: common.mainnetTokens.USDT,
         zapAmount: '1000',
-        collateralToken: mainnetTokens.WETH,
-        debtToken: mainnetTokens.DAI,
+        collateralToken: common.mainnetTokens.WETH,
+        debtToken: common.mainnetTokens.DAI,
         debtAmount: '100',
         expects: { logicLength: 7 },
       },

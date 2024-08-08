@@ -30,6 +30,13 @@ export const configs: Config[] = [
     },
   },
   {
+    chainId: common.ChainId.base,
+    contractMap: {
+      ProtocolDataProvider: '0x07d2DC09A1CbDD01e5f6Ca984b060A3Ff31b9EAF',
+      PriceOracle: '0xe373749cd9b2D379f7f6Dd595e5164498b922164',
+    },
+  },
+  {
     chainId: common.ChainId.arbitrum,
     contractMap: {
       ProtocolDataProvider: '0x596B0cc4c5094507C50b579a662FE7e7b094A2cC',

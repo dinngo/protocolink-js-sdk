@@ -1,7 +1,7 @@
 import { Adapter } from 'src/adapter';
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 import * as apisdk from '@protocolink/api';
-import { claimToken, mainnetTokens, snapshotAndRevertEach } from '@protocolink/test-helpers';
+import { claimToken, snapshotAndRevertEach } from '@protocolink/test-helpers';
 import * as common from '@protocolink/common';
 import { expect } from 'chai';
 import hre from 'hardhat';
@@ -20,8 +20,8 @@ describe('Transaction: Open By Collateral', function () {
   before(async function () {
     adapter = await Adapter.createAdapter(chainId, hre.ethers.provider);
     [, user] = await hre.ethers.getSigners();
-    await claimToken(chainId, user.address, mainnetTokens.USDT, '2000');
-    await claimToken(chainId, user.address, mainnetTokens.WETH, initSupplyAmount);
+    await claimToken(chainId, user.address, common.mainnetTokens.USDT, '2000');
+    await claimToken(chainId, user.address, common.mainnetTokens.WETH, initSupplyAmount);
     await claimToken(chainId, user.address, morphoblue.mainnetTokens.wstETH, initSupplyAmount);
   });
 
@@ -33,66 +33,66 @@ describe('Transaction: Open By Collateral', function () {
         protocolId: 'aave-v2',
         marketId: 'mainnet',
         hasCollateral: true,
-        zapToken: mainnetTokens.USDT,
+        zapToken: common.mainnetTokens.USDT,
         zapAmount: '1000',
-        collateralToken: mainnetTokens.WETH,
+        collateralToken: common.mainnetTokens.WETH,
         collateralAmount: '0.1',
-        debtToken: mainnetTokens.USDC,
+        debtToken: common.mainnetTokens.USDC,
         expects: { logicLength: 7 },
       },
       {
         protocolId: 'radiant-v2',
         marketId: 'mainnet',
         hasCollateral: false,
-        zapToken: mainnetTokens.USDT,
+        zapToken: common.mainnetTokens.USDT,
         zapAmount: '1000',
-        collateralToken: mainnetTokens.WETH,
+        collateralToken: common.mainnetTokens.WETH,
         collateralAmount: '0.1',
-        debtToken: mainnetTokens.USDC,
+        debtToken: common.mainnetTokens.USDC,
         expects: { logicLength: 7 },
       },
       {
         protocolId: 'aave-v3',
         marketId: 'mainnet',
         hasCollateral: true,
-        zapToken: mainnetTokens.USDT,
+        zapToken: common.mainnetTokens.USDT,
         zapAmount: '1000',
-        collateralToken: mainnetTokens.WETH,
+        collateralToken: common.mainnetTokens.WETH,
         collateralAmount: '0.1',
-        debtToken: mainnetTokens.USDC,
+        debtToken: common.mainnetTokens.USDC,
         expects: { logicLength: 7 },
       },
       {
         protocolId: 'spark',
         marketId: 'mainnet',
         hasCollateral: false,
-        zapToken: mainnetTokens.USDT,
+        zapToken: common.mainnetTokens.USDT,
         zapAmount: '1000',
-        collateralToken: mainnetTokens.WETH,
+        collateralToken: common.mainnetTokens.WETH,
         collateralAmount: '0.1',
-        debtToken: mainnetTokens.DAI,
+        debtToken: common.mainnetTokens.DAI,
         expects: { logicLength: 7 },
       },
       {
         protocolId: 'compound-v3',
         marketId: logics.compoundv3.MarketId.USDC,
         hasCollateral: true,
-        zapToken: mainnetTokens.USDT,
+        zapToken: common.mainnetTokens.USDT,
         zapAmount: '1000',
-        collateralToken: mainnetTokens.WETH,
+        collateralToken: common.mainnetTokens.WETH,
         collateralAmount: '0.1',
-        debtToken: mainnetTokens.USDC,
+        debtToken: common.mainnetTokens.USDC,
         expects: { logicLength: 6 },
       },
       {
         protocolId: 'morphoblue',
         marketId: '0xb323495f7e4148be5643a4ea4a8221eef163e4bccfdedc2a6f4696baacbc86cc',
         hasCollateral: true,
-        zapToken: mainnetTokens.USDT,
+        zapToken: common.mainnetTokens.USDT,
         zapAmount: '1000',
         collateralToken: morphoblue.mainnetTokens.wstETH,
         collateralAmount: '0.1',
-        debtToken: mainnetTokens.USDC,
+        debtToken: common.mainnetTokens.USDC,
         expects: { logicLength: 6 },
       },
     ];

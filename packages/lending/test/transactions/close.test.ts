@@ -1,7 +1,7 @@
 import { Adapter } from 'src/adapter';
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 import * as apisdk from '@protocolink/api';
-import { claimToken, mainnetTokens, snapshotAndRevertEach } from '@protocolink/test-helpers';
+import { claimToken, snapshotAndRevertEach } from '@protocolink/test-helpers';
 import * as common from '@protocolink/common';
 import { expect } from 'chai';
 import hre from 'hardhat';
@@ -21,7 +21,7 @@ describe('Transaction: Close', function () {
   before(async function () {
     adapter = await Adapter.createAdapter(chainId, hre.ethers.provider);
     [, user] = await hre.ethers.getSigners();
-    await claimToken(chainId, user.address, mainnetTokens.WETH, initSupplyAmount);
+    await claimToken(chainId, user.address, common.mainnetTokens.WETH, initSupplyAmount);
   });
 
   snapshotAndRevertEach();
@@ -31,33 +31,33 @@ describe('Transaction: Close', function () {
       {
         protocolId: 'aave-v2',
         marketId: 'mainnet',
-        supplyToken: mainnetTokens.WETH,
-        borrowToken: mainnetTokens.USDC,
-        withdrawalToken: mainnetTokens.ETH,
+        supplyToken: common.mainnetTokens.WETH,
+        borrowToken: common.mainnetTokens.USDC,
+        withdrawalToken: common.mainnetTokens.ETH,
         expects: { logicLength: 7 },
       },
       {
         protocolId: 'radiant-v2',
         marketId: 'mainnet',
-        supplyToken: mainnetTokens.WETH,
-        borrowToken: mainnetTokens.USDC,
-        withdrawalToken: mainnetTokens.ETH,
+        supplyToken: common.mainnetTokens.WETH,
+        borrowToken: common.mainnetTokens.USDC,
+        withdrawalToken: common.mainnetTokens.ETH,
         expects: { logicLength: 7 },
       },
       {
         protocolId: 'aave-v3',
         marketId: 'mainnet',
-        supplyToken: mainnetTokens.WETH,
-        borrowToken: mainnetTokens.USDC,
-        withdrawalToken: mainnetTokens.USDT,
+        supplyToken: common.mainnetTokens.WETH,
+        borrowToken: common.mainnetTokens.USDC,
+        withdrawalToken: common.mainnetTokens.USDT,
         expects: { logicLength: 7 },
       },
       {
         protocolId: 'spark',
         marketId: 'mainnet',
-        supplyToken: mainnetTokens.WETH,
-        borrowToken: mainnetTokens.DAI,
-        withdrawalToken: mainnetTokens.USDT,
+        supplyToken: common.mainnetTokens.WETH,
+        borrowToken: common.mainnetTokens.DAI,
+        withdrawalToken: common.mainnetTokens.USDT,
         expects: { logicLength: 7 },
       },
     ];
@@ -119,18 +119,18 @@ describe('Transaction: Close', function () {
         protocolId: 'compound-v3',
         marketId: logics.compoundv3.MarketId.ETH,
         account: '0x4AAB5CbFe493fc2AC18C46A68eF42c58ba06C9BD',
-        withdrawalToken: mainnetTokens.USDT,
+        withdrawalToken: common.mainnetTokens.USDT,
         supplyToken: morphoblue.mainnetTokens.wstETH,
-        borrowToken: mainnetTokens.WETH,
+        borrowToken: common.mainnetTokens.WETH,
         expects: { logicLength: 6 },
       },
       {
         protocolId: 'morphoblue',
         marketId: '0xc54d7acf14de29e0e5527cabd7a576506870346a78a11a6762e2cca66322ec41',
         account: '0x4AAB5CbFe493fc2AC18C46A68eF42c58ba06C9BD',
-        withdrawalToken: mainnetTokens.USDT,
+        withdrawalToken: common.mainnetTokens.USDT,
         supplyToken: morphoblue.mainnetTokens.wstETH,
-        borrowToken: mainnetTokens.WETH,
+        borrowToken: common.mainnetTokens.WETH,
         expects: { logicLength: 6 },
       },
     ];

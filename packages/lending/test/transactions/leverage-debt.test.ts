@@ -1,7 +1,7 @@
 import { Adapter } from 'src/adapter';
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 import * as apisdk from '@protocolink/api';
-import { claimToken, mainnetTokens, snapshotAndRevertEach } from '@protocolink/test-helpers';
+import { claimToken, snapshotAndRevertEach } from '@protocolink/test-helpers';
 import * as common from '@protocolink/common';
 import { expect } from 'chai';
 import hre from 'hardhat';
@@ -18,7 +18,7 @@ describe('Transaction: Leverage By Debt', function () {
   before(async function () {
     adapter = await Adapter.createAdapter(chainId, hre.ethers.provider);
     [, user] = await hre.ethers.getSigners();
-    await claimToken(chainId, user.address, mainnetTokens.WETH, initSupplyAmount);
+    await claimToken(chainId, user.address, common.mainnetTokens.WETH, initSupplyAmount);
   });
 
   snapshotAndRevertEach();
@@ -28,33 +28,33 @@ describe('Transaction: Leverage By Debt', function () {
       {
         protocolId: 'aave-v2',
         marketId: 'mainnet',
-        srcToken: mainnetTokens.USDC,
+        srcToken: common.mainnetTokens.USDC,
         srcAmount: '100',
-        destToken: mainnetTokens.WETH,
+        destToken: common.mainnetTokens.WETH,
         expects: { logicLength: 6 },
       },
       {
         protocolId: 'radiant-v2',
         marketId: 'mainnet',
-        srcToken: mainnetTokens.USDC,
+        srcToken: common.mainnetTokens.USDC,
         srcAmount: '100',
-        destToken: mainnetTokens.WETH,
+        destToken: common.mainnetTokens.WETH,
         expects: { logicLength: 6 },
       },
       {
         protocolId: 'aave-v3',
         marketId: 'mainnet',
-        srcToken: mainnetTokens.USDC,
+        srcToken: common.mainnetTokens.USDC,
         srcAmount: '100',
-        destToken: mainnetTokens.WETH,
+        destToken: common.mainnetTokens.WETH,
         expects: { logicLength: 6 },
       },
       {
         protocolId: 'spark',
         marketId: 'mainnet',
-        srcToken: mainnetTokens.DAI,
+        srcToken: common.mainnetTokens.DAI,
         srcAmount: '100',
-        destToken: mainnetTokens.WETH,
+        destToken: common.mainnetTokens.WETH,
         expects: { logicLength: 6 },
       },
     ];
