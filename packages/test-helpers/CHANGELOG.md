@@ -1,5 +1,11 @@
 # @protocolink/test-helpers
 
+## 0.4.3
+
+### Patch Changes
+
+- e86f12f: remove fixtures and change wstETH faucet mainnet address
+
 ## 0.4.2
 
 ### Patch Changes
