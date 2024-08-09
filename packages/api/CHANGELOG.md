@@ -1,5 +1,14 @@
 # @protocolink/api
 
+## 1.2.3
+
+### Patch Changes
+
+- 0276637: Updated dependencies
+  - @protocolink/common@0.5.3
+  - @protocolink/core@0.6.2
+  - @protocolink/logics@1.6.1
+
 ## 1.2.2
 
 ### Patch Changes
