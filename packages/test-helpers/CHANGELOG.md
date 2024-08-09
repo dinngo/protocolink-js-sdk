@@ -1,5 +1,12 @@
 # @protocolink/test-helpers
 
+## 0.4.4
+
+### Patch Changes
+
+- aa0da24: Updated dependencies
+  - @protocolink/common@0.5.3
+
 ## 0.4.3
 
 ### Patch Changes
