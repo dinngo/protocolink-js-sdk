@@ -1,5 +1,12 @@
 # @protocolink/api
 
+## 1.2.4
+
+### Patch Changes
+
+- 5ceb910: Updated dependencies
+  - @protocolink/logics@1.6.2
+
 ## 1.2.3
 
 ### Patch Changes
