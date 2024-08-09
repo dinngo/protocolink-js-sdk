@@ -1104,10 +1104,10 @@
     lodash "^4.17.21"
     tiny-invariant "^1.3.1"
 
-"@protocolink/logics@^1.6.1":
-  version "1.6.1"
-  resolved "https://registry.yarnpkg.com/@protocolink/logics/-/logics-1.6.1.tgz#90fbb12ed69901dbf0aeb196c0dbfb06f9e8def0"
-  integrity sha512-86MhxhRc4S2Y10+llGxW4waMSa+1VUHtZ+53PsEg0hlgD/idUpQPNaiHR88YcNXKkNBUoNiprEaX23Pvju1BkQ==
+"@protocolink/logics@^1.6.2":
+  version "1.6.2"
+  resolved "https://registry.yarnpkg.com/@protocolink/logics/-/logics-1.6.2.tgz#91ca145eb17bb31406f7fa125cdd6c4573041dee"
+  integrity sha512-8/jpxi3zV4vCVUL1nS44UIldhnd2/UKtXo+3E+8sQ9zmrRIoJXeStfDk45C3NENyzX3sNsLfQdfyDJpUosHPsg==
   dependencies:
     "@paraswap/sdk" "^6.6.0"
     "@protocolink/common" "^0.5.3"
