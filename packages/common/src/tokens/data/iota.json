@@ -33,7 +33,7 @@
   },
   "USDC.e": {
     "chainId": 8822,
-    "address": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+    "address": "0xFbDa5F676cB37624f28265A144A48B0d6e87d3b6",
     "decimals": 6,
     "symbol": "USDC.e",
     "name": "Bridged USDC (Stargate) (USDC.e)",
