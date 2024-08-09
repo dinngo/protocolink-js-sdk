@@ -1,5 +1,11 @@
 # @protocolink/common
 
+## 0.5.3
+
+### Patch Changes
+
+- 989dc36: fix: iota evm usdc.e address
+
 ## 0.5.2
 
 ### Patch Changes
