@@ -1,5 +1,15 @@
 # @protocolink/lending
 
+## 2.1.1
+
+### Patch Changes
+
+- 3960c5a: Update dependencies
+  - @protocolink/api@1.2.4
+  - @protocolink/common@0.5.3
+  - @protocolink/core@0.6.2
+  - @protocolink/logics@1.6.2
+
 ## 2.1.0
 
 ### Minor Changes
