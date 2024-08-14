@@ -1,5 +1,11 @@
 # @protocolink/api
 
+## 1.3.0
+
+### Minor Changes
+
+- 1f16ab8: add Stargate V2, skip Stargate V2 test
+
 ## 1.2.4
 
 ### Patch Changes
