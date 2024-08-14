@@ -11,6 +11,7 @@ export * as radiantv2 from './radiant-v2';
 export * as sonne from './sonne';
 export * as spark from './spark';
 export * as stargate from './stargate';
+export * as stargatev2 from './stargate-v2';
 export * as syncswap from './syncswap';
 export * as uniswapv3 from './uniswap-v3';
 export * as utility from './utility';
