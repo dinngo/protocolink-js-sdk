@@ -86,5 +86,21 @@
     "symbol": "wstETH",
     "name": "Wrapped liquid staked Ether 2.0",
     "logoUri": "https://cdn.furucombo.app/assets/img/token/wstETH.png"
+  },
+  "AAVE": {
+    "chainId": 1101,
+    "address": "0x68791CFE079814c46e0E25C19Bcc5BFC71A744f7",
+    "decimals": 18,
+    "symbol": "AAVE",
+    "name": "Aave Token",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/AAVE.svg"
+  },
+  "Cake": {
+    "chainId": 1101,
+    "address": "0x0D1E753a25eBda689453309112904807625bEFBe",
+    "decimals": 18,
+    "symbol": "Cake",
+    "name": "PancakeSwap Token",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/CAKE.png"
   }
 }
