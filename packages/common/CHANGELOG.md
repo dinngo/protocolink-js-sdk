@@ -1,5 +1,11 @@
 # @protocolink/common
 
+## 0.5.4
+
+### Patch Changes
+
+- fa243e8: update polygon zkevm token info
+
 ## 0.5.3
 
 ### Patch Changes
