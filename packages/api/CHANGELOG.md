@@ -1,5 +1,12 @@
 # @protocolink/api
 
+## 1.3.2
+
+### Patch Changes
+
+- ae81654: Update dependencies
+  - @protocolink/logics@1.7.2
+
 ## 1.3.1
 
 ### Patch Changes
