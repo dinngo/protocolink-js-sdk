@@ -76,17 +76,13 @@ export class LendingProtocol extends Protocol {
     return this._cometIface;
   }
 
-  private _marketMap = supportedChainIds.reduce((accumulator, chainId) => {
-    accumulator[chainId] = {};
-    return accumulator;
-  }, {} as Record<number, Record<string, MarketInfo>>);
+  private _marketMap: Record<string, MarketInfo> = {};
 
   async getMarket(id: string) {
-    if (!this._marketMap[this.chainId][id]) {
+    if (!this._marketMap[id]) {
       const market = getMarketConfig(this.chainId, id);
       const { comet } = market;
 
-      let baseTokenPriceFeed: string;
       let numAssets: number;
       let utilization: BigNumber;
       let baseBorrowMin: BigNumber;
@@ -94,10 +90,6 @@ export class LendingProtocol extends Protocol {
       let totalBorrow: BigNumber;
       {
         const calls: common.Multicall3.CallStruct[] = [
-          {
-            target: comet.address,
-            callData: this.cometIface.encodeFunctionData('baseTokenPriceFeed'),
-          },
           {
             target: comet.address,
             callData: this.cometIface.encodeFunctionData('numAssets'),
@@ -121,12 +113,11 @@ export class LendingProtocol extends Protocol {
         ];
         const { returnData } = await this.multicall3.callStatic.aggregate(calls, { blockTag: this.blockTag });
 
-        [baseTokenPriceFeed] = this.cometIface.decodeFunctionResult('baseTokenPriceFeed', returnData[0]);
-        [numAssets] = this.cometIface.decodeFunctionResult('numAssets', returnData[1]);
-        [baseBorrowMin] = this.cometIface.decodeFunctionResult('baseBorrowMin', returnData[2]);
-        [utilization] = this.cometIface.decodeFunctionResult('getUtilization', returnData[3]);
-        [totalSupply] = this.cometIface.decodeFunctionResult('totalSupply', returnData[4]);
-        [totalBorrow] = this.cometIface.decodeFunctionResult('totalBorrow', returnData[5]);
+        [numAssets] = this.cometIface.decodeFunctionResult('numAssets', returnData[0]);
+        [baseBorrowMin] = this.cometIface.decodeFunctionResult('baseBorrowMin', returnData[1]);
+        [utilization] = this.cometIface.decodeFunctionResult('getUtilization', returnData[2]);
+        [totalSupply] = this.cometIface.decodeFunctionResult('totalSupply', returnData[3]);
+        [totalBorrow] = this.cometIface.decodeFunctionResult('totalBorrow', returnData[4]);
       }
 
       const assetInfos: Omit<AssetConfig, 'totalSupply'>[] = [];
@@ -171,19 +162,18 @@ export class LendingProtocol extends Protocol {
         }
       }
 
-      this._marketMap[this.chainId][id] = {
+      this._marketMap[id] = {
         ...market,
         assets,
         numAssets,
         utilization: utilization.toString(),
-        baseTokenPriceFeedAddress: baseTokenPriceFeed,
         baseBorrowMin: common.toBigUnit(baseBorrowMin, market.baseToken.decimals),
         totalSupply: common.toBigUnit(totalSupply, market.baseToken.decimals),
         totalBorrow: common.toBigUnit(totalBorrow, market.baseToken.decimals),
       };
     }
 
-    return this._marketMap[this.chainId][id];
+    return this._marketMap[id];
   }
 
   async getAPYs(marketId: string) {

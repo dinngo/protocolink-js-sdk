@@ -13,12 +13,15 @@ export interface AssetConfig {
   supplyCap: string;
 }
 
-export interface MarketConfig {
+export interface PriceFeedConfig {
+  baseTokenPriceFeedAddress: string;
+  baseTokenQuotePriceFeedAddress?: string;
+}
+
+export interface MarketConfig extends PriceFeedConfig {
   id: string;
   comet: common.Token;
   baseToken: common.Token;
-  baseTokenPriceFeedAddress: string;
-  baseTokenQuotePriceFeedAddress?: string;
 }
 
 export interface MarketInfo extends MarketConfig {
@@ -37,7 +40,7 @@ export interface Config {
 
 const MarketId = logics.compoundv3.MarketId;
 
-export const priceFeedMap: Record<number, Record<string, Record<string, string>>> = {
+export const priceFeedMap: Record<number, Record<string, PriceFeedConfig>> = {
   [common.ChainId.mainnet]: {
     [MarketId.USDC]: {
       baseTokenPriceFeedAddress: '0x8fFfFfd4AfB6115b954Bd326cbe7B4BA576818f6',

@@ -3,7 +3,7 @@ import * as logics from '@protocolink/logics';
 import { mainnetTokens } from './tokens';
 
 export const ID = 'morphoblue';
-export const DISPLAY_NAME = 'Morpho Blue';
+export const DISPLAY_NAME = 'Morpho';
 
 export const loanTokenPriceFeedMap: Record<number, Record<string, string>> = {
   [common.ChainId.mainnet]: {

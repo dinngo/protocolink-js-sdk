@@ -80,111 +80,114 @@ export class LendingProtocol extends Protocol {
   }
 
   async getPortfolio(account: string, marketId: string) {
-    const { loanToken, collateralToken, loanTokenPriceFeedAddress, oracle, lltv } = getMarket(this.chainId, marketId);
-
-    const calls: common.Multicall3.CallStruct[] = [
-      {
-        target: this.morpho.address,
-        callData: this.morphoIface.encodeFunctionData('position', [marketId, account]),
-      },
-      {
-        target: this.morpho.address,
-        callData: this.morphoIface.encodeFunctionData('market', [marketId]),
-      },
-      {
-        target: loanTokenPriceFeedAddress,
-        callData: this.priceFeedIface.encodeFunctionData('latestAnswer'),
-      },
-      {
-        target: oracle,
-        callData: this.oracleIface.encodeFunctionData('price'),
-      },
-    ];
-
-    const { returnData } = await this.multicall3.callStatic.aggregate(calls, { blockTag: this.blockTag });
-
-    const { borrowShares, collateral } = this.morphoIface.decodeFunctionResult('position', returnData[0]);
-
-    const { totalSupplyAssets, totalSupplyShares, totalBorrowAssets, totalBorrowShares, lastUpdate, fee } =
-      this.morphoIface.decodeFunctionResult('market', returnData[1]);
-
-    const [_loanTokenPrice] = this.priceFeedIface.decodeFunctionResult('latestAnswer', returnData[2]);
-
-    // https://docs.morpho.org/contracts/morpho-blue/reference/oracles/#price
-    // It corresponds to the price of 10**(collateral token decimals) assets of
-    // collateral token quoted in 10**(loan token decimals) assets of loan token
-    // with `36 + loan token decimals - collateral token decimals` decimals of precision.
-    const [normalizedCollateralLoanPrice] = this.oracleIface.decodeFunctionResult('price', returnData[3]);
-    const normalizedCollateralLoanDecimals = 36 + loanToken.decimals - collateralToken.decimals;
-
-    const loan = totalBorrowAssets.mul(borrowShares).div(totalBorrowShares);
-
-    const supplyBalance = common.toBigUnit(collateral, collateralToken.decimals);
-    const borrowBalance = common.toBigUnit(loan.toString(), loanToken.decimals);
-    const totalSupply = common.toBigUnit(totalSupplyAssets, collateralToken.decimals);
-    const totalBorrow = common.toBigUnit(totalBorrowAssets, loanToken.decimals);
-
-    const loanTokenPrice = common.toBigUnit(_loanTokenPrice, 8);
-    const collateralTokenPrice = common.toBigUnit(
-      _loanTokenPrice.mul(normalizedCollateralLoanPrice).div(BigNumber.from(10).pow(normalizedCollateralLoanDecimals)),
-      8
-    );
-
-    const borrowApy = await this.getBorrowAPY(marketId, {
-      totalSupplyAssets,
-      totalSupplyShares,
-      totalBorrowAssets,
-      totalBorrowShares,
-      lastUpdate,
-      fee,
-    });
-
-    const maxLtv = common.toBigUnit(lltv, 18);
-
-    const lstTokenAPYMap = await this.getLstTokenAPYMap(this.chainId);
-
-    // morphoblue collateral assets do not earn any interest
-    const supplyApy = '0';
-    const supplyLstApy = getLstApyFromMap(collateralToken.address, lstTokenAPYMap);
-    const supplyGrossApy = calcSupplyGrossApy(supplyApy, supplyLstApy);
-
-    const supplies: SupplyObject[] = [
-      {
-        token: collateralToken,
-        price: collateralTokenPrice,
-        balance: supplyBalance,
-        apy: supplyApy,
-        lstApy: supplyLstApy,
-        grossApy: supplyGrossApy,
-        usageAsCollateralEnabled: true,
-        ltv: maxLtv,
-        liquidationThreshold: maxLtv,
-        totalSupply,
-      },
-    ];
-
-    const borrowLstApy = getLstApyFromMap(loanToken.address, lstTokenAPYMap);
-    const borrowGrossApy = calcBorrowGrossApy(borrowApy, borrowLstApy);
-
-    const borrows: BorrowObject[] = [
-      {
-        token: loanToken,
-        price: loanTokenPrice,
-        balance: borrowBalance,
-        apy: borrowApy,
-        lstApy: borrowLstApy,
-        grossApy: borrowGrossApy,
-        totalBorrow,
-      },
-    ];
-
-    const portfolio = new Portfolio(this.chainId, this.id, marketId, supplies, borrows);
-
-    return portfolio;
+    const portfolios = await this.fetchAndProcessPortfolios(account, [marketId]);
+    return portfolios[0];
   }
 
   async getPortfolios(account: string) {
-    return Promise.all(configMap[this.chainId].markets.map(({ id }) => this.getPortfolio(account, id)));
+    const marketIds = configMap[this.chainId].markets.map(({ id }) => id);
+    return this.fetchAndProcessPortfolios(account, marketIds);
+  }
+
+  private async fetchAndProcessPortfolios(account: string, marketIds: string[]) {
+    const lstTokenAPYMap = await this.getLstTokenAPYMap(this.chainId);
+
+    const calls: common.Multicall3.CallStruct[] = marketIds.flatMap((marketId) => {
+      const { loanTokenPriceFeedAddress, oracle } = getMarket(this.chainId, marketId);
+      return [
+        { target: this.morpho.address, callData: this.morphoIface.encodeFunctionData('position', [marketId, account]) },
+        { target: this.morpho.address, callData: this.morphoIface.encodeFunctionData('market', [marketId]) },
+        { target: loanTokenPriceFeedAddress, callData: this.priceFeedIface.encodeFunctionData('latestAnswer') },
+        { target: oracle, callData: this.oracleIface.encodeFunctionData('price') },
+      ];
+    });
+
+    const { returnData } = await this.multicall3.callStatic.aggregate(calls, { blockTag: this.blockTag });
+
+    const portfolios = await Promise.all(
+      marketIds.map(async (marketId, index) => {
+        const { loanToken, collateralToken, lltv } = getMarket(this.chainId, marketId);
+
+        const offset = index * 4;
+        const [positionData, marketData, loanTokenPriceData, oraclePriceData] = returnData.slice(offset, offset + 4);
+
+        const { borrowShares, collateral } = this.morphoIface.decodeFunctionResult('position', positionData);
+        const { totalSupplyAssets, totalSupplyShares, totalBorrowAssets, totalBorrowShares, lastUpdate, fee } =
+          this.morphoIface.decodeFunctionResult('market', marketData);
+        const [_loanTokenPrice] = this.priceFeedIface.decodeFunctionResult('latestAnswer', loanTokenPriceData);
+        const [normalizedCollateralLoanPrice] = this.oracleIface.decodeFunctionResult('price', oraclePriceData);
+
+        // https://docs.morpho.org/contracts/morpho-blue/reference/oracles/#price
+        // It corresponds to the price of 10**(collateral token decimals) assets of
+        // collateral token quoted in 10**(loan token decimals) assets of loan token
+        // with `36 + loan token decimals - collateral token decimals` decimals of precision.
+        const normalizedCollateralLoanDecimals = 36 + loanToken.decimals - collateralToken.decimals;
+        const loan = totalBorrowAssets.mul(borrowShares).div(totalBorrowShares);
+
+        const supplyBalance = common.toBigUnit(collateral, collateralToken.decimals);
+        const borrowBalance = common.toBigUnit(loan.toString(), loanToken.decimals);
+        const totalSupply = common.toBigUnit(totalSupplyAssets, collateralToken.decimals);
+        const totalBorrow = common.toBigUnit(totalBorrowAssets, loanToken.decimals);
+
+        const loanTokenPrice = common.toBigUnit(_loanTokenPrice, 8);
+        const collateralTokenPrice = common.toBigUnit(
+          _loanTokenPrice
+            .mul(normalizedCollateralLoanPrice)
+            .div(BigNumber.from(10).pow(normalizedCollateralLoanDecimals)),
+          8
+        );
+
+        const borrowApy = await this.getBorrowAPY(marketId, {
+          totalSupplyAssets,
+          totalSupplyShares,
+          totalBorrowAssets,
+          totalBorrowShares,
+          lastUpdate,
+          fee,
+        });
+
+        const maxLtv = common.toBigUnit(lltv, 18);
+
+        // morphoblue collateral assets do not earn any interest
+        const supplyApy = '0';
+        const supplyLstApy = getLstApyFromMap(collateralToken.address, lstTokenAPYMap);
+        const supplyGrossApy = calcSupplyGrossApy(supplyApy, supplyLstApy);
+
+        const supplies: SupplyObject[] = [
+          {
+            token: collateralToken,
+            price: collateralTokenPrice,
+            balance: supplyBalance,
+            apy: supplyApy,
+            lstApy: supplyLstApy,
+            grossApy: supplyGrossApy,
+            usageAsCollateralEnabled: true,
+            ltv: maxLtv,
+            liquidationThreshold: maxLtv,
+            totalSupply,
+          },
+        ];
+
+        const borrowLstApy = getLstApyFromMap(loanToken.address, lstTokenAPYMap);
+        const borrowGrossApy = calcBorrowGrossApy(borrowApy, borrowLstApy);
+
+        const borrows: BorrowObject[] = [
+          {
+            token: loanToken,
+            price: loanTokenPrice,
+            balance: borrowBalance,
+            apy: borrowApy,
+            lstApy: borrowLstApy,
+            grossApy: borrowGrossApy,
+            totalBorrow,
+          },
+        ];
+
+        return new Portfolio(this.chainId, this.id, marketId, supplies, borrows);
+      })
+    );
+
+    return portfolios;
   }
 
   async getProtocolInfo(marketId: string) {
