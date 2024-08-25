@@ -1,5 +1,11 @@
 # @protocolink/api
 
+## 1.3.3
+
+### Patch Changes
+
+- 8c684b2: add Stargate V2 test and example
+
 ## 1.3.2
 
 ### Patch Changes
