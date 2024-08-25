@@ -1,5 +1,13 @@
 # @protocolink/lending
 
+## 2.1.2
+
+### Patch Changes
+
+- 29d51dd: optimize morphoblue getPortfolios multicall, fix compound-v3 type and private props
+- Updated dependencies [8c684b2]
+  - @protocolink/api@1.3.3
+
 ## 2.1.1
 
 ### Patch Changes
