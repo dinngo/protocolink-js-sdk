@@ -345,28 +345,40 @@ export class LendingProtocol extends Protocol {
       if (token.isWrapped) continue;
 
       const reserveData = reserveDataMap[token.address];
-      const assetPrice = assetPriceMap[token.address];
-      const userBalance = userBalancesMap[token.address];
+      if (!reserveData) continue;
 
-      let usageAsCollateralEnabled = reserveData.usageAsCollateralEnabled;
-      if (Number(userBalance.supplyBalance) > 0) {
-        usageAsCollateralEnabled = usageAsCollateralEnabled && userBalance.usageAsCollateralEnabled;
-      }
+      const {
+        usageAsCollateralEnabled: reserveDataUsageAsCollateralEnabled,
+        supplyAPY: apy,
+        ltv,
+        liquidationThreshold,
+        totalSupply,
+      } = reserveData;
+
+      const price = assetPriceMap[token.address];
+
+      const { supplyBalance: balance, usageAsCollateralEnabled: userUsageAsCollateralEnabled } =
+        userBalancesMap[token.address];
+
+      const usageAsCollateralEnabled =
+        Number(balance) > 0
+          ? reserveDataUsageAsCollateralEnabled && userUsageAsCollateralEnabled
+          : reserveDataUsageAsCollateralEnabled;
 
       const lstApy = getLstApyFromMap(token.address, lstTokenAPYMap);
-      const grossApy = calcSupplyGrossApy(reserveData.supplyAPY, lstApy);
+      const grossApy = calcSupplyGrossApy(apy, lstApy);
 
       supplies.push({
         token,
-        price: assetPrice,
-        balance: userBalance.supplyBalance,
-        apy: reserveData.supplyAPY,
+        price,
+        balance,
+        apy,
         lstApy,
         grossApy,
         usageAsCollateralEnabled,
-        ltv: reserveData.ltv,
-        liquidationThreshold: reserveData.liquidationThreshold,
-        totalSupply: reserveData.totalSupply,
+        ltv,
+        liquidationThreshold,
+        totalSupply,
       });
     }
 
@@ -374,22 +386,17 @@ export class LendingProtocol extends Protocol {
     for (const token of borrowTokenList) {
       if (token.isWrapped) continue;
 
-      const { supplyAPY: apy, totalBorrow } = reserveDataMap[token.address];
+      const reserveData = reserveDataMap[token.address];
+      if (!reserveData) continue;
+
+      const { supplyAPY: apy, totalBorrow } = reserveData;
       const price = assetPriceMap[token.address];
       const { borrowBalance: balance } = userBalancesMap[token.address];
 
       const lstApy = getLstApyFromMap(token.address, lstTokenAPYMap);
       const grossApy = calcBorrowGrossApy(apy, lstApy);
 
-      borrows.push({
-        token,
-        price,
-        balance,
-        apy,
-        lstApy,
-        grossApy,
-        totalBorrow,
-      });
+      borrows.push({ token, price, balance, apy, lstApy, grossApy, totalBorrow });
     }
 
     const portfolio = new Portfolio(this.chainId, this.id, this.market.id, supplies, borrows);

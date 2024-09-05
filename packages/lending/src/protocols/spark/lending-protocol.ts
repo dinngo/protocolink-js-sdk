@@ -329,19 +329,29 @@ export class LendingProtocol extends Protocol {
       if (this.hasNativeToken && token.isWrapped) continue;
 
       const reserveData = reserveDataMap[token.address];
-      const { supplyAPY: apy, ltv, liquidationThreshold, supplyCap, totalSupply, debtCeiling } = reserveData;
+      if (!reserveData) continue;
+
+      const {
+        supplyAPY: apy,
+        ltv,
+        liquidationThreshold,
+        supplyCap,
+        totalSupply,
+        debtCeiling,
+        usageAsCollateralEnabled: reserveDataUsageAsCollateralEnabled,
+      } = reserveData;
 
       const price = assetPriceMap[token.address];
 
-      const userBalances = userBalancesMap[token.address];
-      const { supplyBalance: balance } = userBalances;
+      const { supplyBalance: balance, usageAsCollateralEnabled: userUsageAsCollateralEnabled } =
+        userBalancesMap[token.address];
 
       // https://github.com/aave/interface/blob/release-2023-08-12_03-18/src/components/transactions/utils.ts#L61
       const usageAsCollateralEnabled = debtCeiling.gt(0)
         ? false
         : Number(balance) > 0
-        ? userBalances.usageAsCollateralEnabled
-        : reserveData.usageAsCollateralEnabled;
+        ? userUsageAsCollateralEnabled
+        : reserveDataUsageAsCollateralEnabled;
 
       const lstApy = getLstApyFromMap(token.address, lstTokenAPYMap);
       const grossApy = calcSupplyGrossApy(apy, lstApy);
@@ -365,23 +375,17 @@ export class LendingProtocol extends Protocol {
     for (const token of borrowTokenList) {
       if (this.hasNativeToken && token.isWrapped) continue;
 
-      const { borrowAPY: apy, borrowCap, totalBorrow } = reserveDataMap[token.address];
+      const reserveData = reserveDataMap[token.address];
+      if (!reserveData) continue;
+
+      const { borrowAPY: apy, borrowCap, totalBorrow } = reserveData;
       const price = assetPriceMap[token.address];
       const { borrowBalance: balance } = userBalancesMap[token.address];
 
       const lstApy = getLstApyFromMap(token.address, lstTokenAPYMap);
       const grossApy = calcBorrowGrossApy(apy, lstApy);
 
-      borrows.push({
-        token,
-        price,
-        balance,
-        apy,
-        lstApy,
-        grossApy,
-        borrowCap,
-        totalBorrow,
-      });
+      borrows.push({ token, price, balance, apy, lstApy, grossApy, borrowCap, totalBorrow });
     }
 
     const portfolio = new Portfolio(this.chainId, this.id, this.market.id, supplies, borrows);
