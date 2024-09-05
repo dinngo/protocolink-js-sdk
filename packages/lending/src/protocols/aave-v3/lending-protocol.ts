@@ -339,7 +339,7 @@ export class LendingProtocol extends Protocol {
         supplyCap,
         totalSupply,
         debtCeiling,
-        usageAsCollateralEnabled: _usageAsCollateralEnabled,
+        usageAsCollateralEnabled: reserveDataUsageAsCollateralEnabled,
       } = reserveData;
 
       const price = assetPriceMap[token.address];
@@ -352,7 +352,7 @@ export class LendingProtocol extends Protocol {
         ? false
         : Number(balance) > 0
         ? userUsageAsCollateralEnabled
-        : _usageAsCollateralEnabled;
+        : reserveDataUsageAsCollateralEnabled;
 
       const lstApy = getLstApyFromMap(token.address, lstTokenAPYMap);
       const grossApy = calcSupplyGrossApy(apy, lstApy);
