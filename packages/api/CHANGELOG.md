@@ -1,5 +1,12 @@
 # @protocolink/api
 
+## 1.4.0
+
+### Minor Changes
+
+- 3b121a9: add Wagmi, skip Wagmi tests
+- 27f14c8: add IOLEND, skip IOLEND tests
+
 ## 1.3.3
 
 ### Patch Changes
