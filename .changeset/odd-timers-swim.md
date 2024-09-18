@@ -2,4 +2,4 @@
 '@protocolink/api': patch
 ---
 
-add IOLEND test and example
+add Wagmi test and example
