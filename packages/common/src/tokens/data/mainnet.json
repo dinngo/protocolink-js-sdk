@@ -366,5 +366,29 @@
     "symbol": "STG",
     "name": "Stargate Finance",
     "logoUri": "https://cdn.furucombo.app/assets/img/token/STG.png"
+  },
+  "USDS": {
+    "chainId": 1,
+    "address": "0xdC035D45d973E3EC169d2276DDab16f1e407384F",
+    "decimals": 18,
+    "symbol": "USDS",
+    "name": "USDS Stablecoin",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/USDS.svg"
+  },
+  "SKY": {
+    "chainId": 1,
+    "address": "0x56072C95FAA701256059aa122697B133aDEd9279",
+    "decimals": 18,
+    "symbol": "SKY",
+    "name": "SKY Governance Token",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/SKY.svg"
+  },
+  "POL": {
+    "chainId": 1,
+    "address": "0x455e53CBB86018Ac2B8092FdCd39d8444aFFC3F6",
+    "decimals": 18,
+    "symbol": "POL",
+    "name": "Polygon Ecosystem Token",
+    "logoUri": "https://cdn.furucombo.app/assets/img/token/POL.png"
   }
 }
