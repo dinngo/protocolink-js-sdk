@@ -1,5 +1,11 @@
 # @protocolink/test-helpers
 
+## 0.4.7
+
+### Patch Changes
+
+- 446c258: migrate MATIC & WMATIC to POL & WPOL
+
 ## 0.4.6
 
 ### Patch Changes
