@@ -1,5 +1,11 @@
 # @protocolink/core
 
+## 0.6.4
+
+### Patch Changes
+
+- 31f60ee: Update dependencies
+
 ## 0.6.3
 
 ### Patch Changes
