@@ -1,5 +1,12 @@
 # @protocolink/lending
 
+## 2.1.3
+
+### Patch Changes
+
+- 6fad897: Update dependencies & migrate POL
+- 5afd6bf: fix getReserveTokens differs from getDepositTokenList, getBorrowTokenList when listing a new token
+
 ## 2.1.2
 
 ### Patch Changes
