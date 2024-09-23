@@ -1,5 +1,11 @@
 # @protocolink/common
 
+## 0.5.5
+
+### Patch Changes
+
+- b92c48f: polygon & sky token update
+
 ## 0.5.4
 
 ### Patch Changes
