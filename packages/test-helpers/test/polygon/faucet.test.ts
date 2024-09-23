@@ -18,8 +18,8 @@ describe('polygon: Test faucet claim', function () {
   snapshotAndRevertEach();
 
   const testCases: { tokenOrAddress: common.TokenOrAddress; amount: string }[] = [
-    { tokenOrAddress: common.polygonTokens.MATIC, amount: '1' },
-    { tokenOrAddress: common.polygonTokens.WMATIC, amount: '1' },
+    { tokenOrAddress: common.polygonTokens.POL, amount: '1' },
+    { tokenOrAddress: common.polygonTokens.WPOL, amount: '1' },
     { tokenOrAddress: common.polygonTokens.WETH, amount: '1' },
     { tokenOrAddress: common.polygonTokens['USDC.e'], amount: '1' },
     { tokenOrAddress: common.polygonTokens.WBTC, amount: '1' },
