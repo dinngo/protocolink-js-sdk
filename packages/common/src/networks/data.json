@@ -105,17 +105,17 @@
       "chainId": 137,
       "address": "0x0000000000000000000000000000000000000000",
       "decimals": 18,
-      "symbol": "MATIC",
-      "name": "Matic Token",
-      "logoUri": "https://cdn.furucombo.app/assets/img/token/MATIC.png"
+      "symbol": "POL",
+      "name": "Polygon Ecosystem Token",
+      "logoUri": "https://cdn.furucombo.app/assets/img/token/POL.png"
     },
     "wrappedNativeToken": {
       "chainId": 137,
       "address": "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270",
       "decimals": 18,
-      "symbol": "WMATIC",
-      "name": "Wrapped Matic Token",
-      "logoUri": "https://cdn.furucombo.app/assets/img/token/WMATIC.png"
+      "symbol": "WPOL",
+      "name": "Wrapped Polygon Ecosystem Token",
+      "logoUri": "https://cdn.furucombo.app/assets/img/token/WPOL.png"
     },
     "multicall3Address": "0xcA11bde05977b3631167028862bE2a173976CA11"
   },
