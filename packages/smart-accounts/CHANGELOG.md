@@ -1,5 +1,11 @@
 # @protocolink/smart-accounts
 
+## 0.1.8
+
+### Patch Changes
+
+- 3b8b6eb: Update dependencies
+
 ## 0.1.7
 
 ### Patch Changes
