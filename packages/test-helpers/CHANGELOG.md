@@ -1,5 +1,11 @@
 # @protocolink/test-helpers
 
+## 0.4.6
+
+### Patch Changes
+
+- b7989ca: Update dependencies
+
 ## 0.4.5
 
 ### Patch Changes
