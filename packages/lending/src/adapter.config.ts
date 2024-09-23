@@ -18,7 +18,7 @@ export const configs: Config[] = [
     chainId: common.ChainId.polygon,
     primaryStablecoin: common.polygonTokens['USDC.e'],
     secondaryStablecoin: common.polygonTokens.DAI,
-    primaryNonstablecoin: common.polygonTokens.MATIC,
+    primaryNonstablecoin: common.polygonTokens.POL,
   },
   {
     chainId: common.ChainId.arbitrum,
