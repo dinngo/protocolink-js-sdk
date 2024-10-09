@@ -1,5 +1,11 @@
 # @protocolink/lending
 
+## 2.1.4
+
+### Patch Changes
+
+- d037bb9: update Aave V3 PoolDataProvider addresses
+
 ## 2.1.3
 
 ### Patch Changes
