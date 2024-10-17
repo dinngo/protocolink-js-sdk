@@ -1,5 +1,12 @@
 # @protocolink/api
 
+## 1.4.2
+
+### Patch Changes
+
+- e7bf1da: Update dependencies
+  - @protocolink/logics@1.8.3
+
 ## 1.4.1
 
 ### Patch Changes
