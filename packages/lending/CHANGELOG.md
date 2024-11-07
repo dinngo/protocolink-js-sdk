@@ -1,5 +1,13 @@
 # @protocolink/lending
 
+## 2.1.5
+
+### Patch Changes
+
+- e17aed2: Update dependencies
+  - @protocolink/logics@1.8.6
+  - @protocolink/api@1.4.5
+
 ## 2.1.4
 
 ### Patch Changes
