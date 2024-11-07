@@ -23,24 +23,10 @@ export const configs: Config[] = [
     },
   },
   {
-    chainId: common.ChainId.bnb,
-    contractMap: {
-      ProtocolDataProvider: '0x2f9D57E97C3DFED8676e605BC504a48E0c5917E9',
-      PriceOracle: '0x0BB5c1Bc173b207cBf47CDf013617087776F3782',
-    },
-  },
-  {
     chainId: common.ChainId.base,
     contractMap: {
       ProtocolDataProvider: '0x07d2DC09A1CbDD01e5f6Ca984b060A3Ff31b9EAF',
       PriceOracle: '0xe373749cd9b2D379f7f6Dd595e5164498b922164',
-    },
-  },
-  {
-    chainId: common.ChainId.arbitrum,
-    contractMap: {
-      ProtocolDataProvider: '0x596B0cc4c5094507C50b579a662FE7e7b094A2cC',
-      PriceOracle: '0xC0cE5De939aaD880b0bdDcf9aB5750a53EDa454b',
     },
   },
 ];
