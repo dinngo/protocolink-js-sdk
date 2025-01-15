@@ -1,5 +1,11 @@
 # @protocolink/api
 
+## 1.4.6
+
+### Patch Changes
+
+- 00b8b96: chore(api): update dependencies
+
 ## 1.4.5
 
 ### Patch Changes
