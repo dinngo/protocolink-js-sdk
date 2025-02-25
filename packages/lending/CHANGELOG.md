@@ -1,5 +1,13 @@
 # @protocolink/lending
 
+## 2.1.7
+
+### Patch Changes
+
+- bc566ec: Support radiant v2 on Arbitrum, BNB and Update dependencies
+  - @protocolink/api@1.4.7
+  - @protocolink/logics@1.8.8
+
 ## 2.1.6
 
 ### Patch Changes
