@@ -1,5 +1,12 @@
 # @protocolink/api
 
+## 1.4.7
+
+### Patch Changes
+
+- dc316c5: Update dependencies
+  - @protocolink/logics@1.8.8
+
 ## 1.4.6
 
 ### Patch Changes
