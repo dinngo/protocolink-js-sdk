@@ -1,5 +1,11 @@
 # @protocolink/lending
 
+## 2.1.8
+
+### Patch Changes
+
+- b2fa58f: Update dependencies
+
 ## 2.1.7
 
 ### Patch Changes
