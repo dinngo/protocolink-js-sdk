@@ -1,5 +1,11 @@
 # @protocolink/api
 
+## 1.4.8
+
+### Patch Changes
+
+- e88bdec: Update dependencies
+
 ## 1.4.7
 
 ### Patch Changes
