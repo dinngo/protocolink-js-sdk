@@ -122,7 +122,9 @@ export class LendingProtocol extends Protocol {
         // collateral token quoted in 10**(loan token decimals) assets of loan token
         // with `36 + loan token decimals - collateral token decimals` decimals of precision.
         const normalizedCollateralLoanDecimals = 36 + loanToken.decimals - collateralToken.decimals;
-        const loan = totalBorrowAssets.mul(borrowShares).div(totalBorrowShares);
+        const loan = totalBorrowShares.isZero()
+          ? BigNumber.from(0)
+          : totalBorrowAssets.mul(borrowShares).div(totalBorrowShares);
 
         const supplyBalance = common.toBigUnit(collateral, collateralToken.decimals);
         const borrowBalance = common.toBigUnit(loan.toString(), loanToken.decimals);

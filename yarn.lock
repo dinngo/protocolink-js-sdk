@@ -1083,27 +1083,6 @@
     node-addon-api "^3.2.1"
     node-gyp-build "^4.3.0"
 
-"@protocolink/logics@^1.8.8":
-  version "1.8.8"
-  resolved "https://registry.yarnpkg.com/@protocolink/logics/-/logics-1.8.8.tgz#d3fb3d3d6016b0b4e019d3b0588d8a3edd570d56"
-  integrity sha512-Z0PxKBB0fdqguDfLkjYTJTlWunh+ovRt3utl6LXXd2oIG8+GG9FIAPpAncvgBMhieXmyqLXWlvHrswsHGtkrcQ==
-  dependencies:
-    "@paraswap/sdk" "^6.6.0"
-    "@protocolink/common" "^0.5.5"
-    "@protocolink/core" "^0.6.4"
-    "@protocolink/smart-accounts" "^0.1.8"
-    "@types/lodash" "^4.14.195"
-    "@uniswap/sdk" "^3.0.3"
-    "@uniswap/sdk-core" "^3.2.6"
-    "@uniswap/token-lists" "^1.0.0-beta.31"
-    "@uniswap/v3-sdk" "^3.9.0"
-    axios "^1.3.6"
-    axios-retry "^3.5.1"
-    bignumber.js "^9.1.1"
-    ethers "^5.7.2"
-    lodash "^4.17.21"
-    tiny-invariant "^1.3.1"
-
 "@protocolink/logics@^1.8.9":
   version "1.8.9"
   resolved "https://registry.yarnpkg.com/@protocolink/logics/-/logics-1.8.9.tgz#6ea4fc702f59286560ff28dddab4be33c173aa3b"
