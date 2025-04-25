@@ -6,6 +6,8 @@ export const mainnetTokens = logics.radiantv2.mainnetTokens;
 
 export const bnbTokens = common.bnbTokens;
 
+export const baseTokens = common.baseTokens;
+
 type ArbitrumTokenSymbols = keyof typeof arbitrumTokensJSON;
 
 export const arbitrumTokens = {
