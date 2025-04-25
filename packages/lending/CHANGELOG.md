@@ -1,5 +1,11 @@
 # @protocolink/lending
 
+## 2.1.9
+
+### Patch Changes
+
+- 36d2945: add baseTokens to radiant config
+
 ## 2.1.8
 
 ### Patch Changes
