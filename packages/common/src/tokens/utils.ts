@@ -7,6 +7,7 @@ import avalancheTokensJSON from './data/avalanche.json';
 import { axios } from 'src/utils/http';
 import baseTokensJSON from './data/base.json';
 import bnbTokensJSON from './data/bnb.json';
+import chain138TokensJSON from './data/chain138.json';
 import gnosisTokensJSON from './data/gnosis.json';
 import iotaTokensJSON from './data/iota.json';
 import mainnetTokensJSON from './data/mainnet.json';
@@ -22,6 +23,7 @@ type OptimismTokenSymbols = keyof typeof optimismTokensJSON;
 type BnbTokenSymbols = keyof typeof bnbTokensJSON;
 type GnosisTokenSymbols = keyof typeof gnosisTokensJSON;
 type PolygonTokenSymbols = keyof typeof polygonTokensJSON;
+type Chain138TokenSymbols = keyof typeof chain138TokensJSON;
 type ZksyncTokenSymbols = keyof typeof zksyncTokensJSON;
 type MetisTokenSymbols = keyof typeof metisTokensJSON;
 type PolygonZkevmTokenSymbols = keyof typeof polygonZkEVMTokensJSON;
@@ -35,6 +37,7 @@ export const optimismTokens = toTokenMap<OptimismTokenSymbols>(optimismTokensJSO
 export const bnbTokens = toTokenMap<BnbTokenSymbols>(bnbTokensJSON);
 export const gnosisTokens = toTokenMap<GnosisTokenSymbols>(gnosisTokensJSON);
 export const polygonTokens = toTokenMap<PolygonTokenSymbols>(polygonTokensJSON);
+export const chain138Tokens = toTokenMap<Chain138TokenSymbols>(chain138TokensJSON);
 export const zksyncTokens = toTokenMap<ZksyncTokenSymbols>(zksyncTokensJSON);
 export const metisTokens = toTokenMap<MetisTokenSymbols>(metisTokensJSON);
 export const polygonZkevmTokens = toTokenMap<PolygonZkevmTokenSymbols>(polygonZkEVMTokensJSON);
@@ -76,6 +79,7 @@ const customTokenMap: Record<number, Record<string, Token>> = {
   [ChainId.bnb]: convertTokensToTokensByAddress(bnbTokens),
   [ChainId.gnosis]: convertTokensToTokensByAddress(gnosisTokens),
   [ChainId.polygon]: convertTokensToTokensByAddress(polygonTokens),
+  [ChainId.chain138]: convertTokensToTokensByAddress(chain138Tokens),
   [ChainId.zksync]: convertTokensToTokensByAddress(zksyncTokens),
   [ChainId.metis]: convertTokensToTokensByAddress(metisTokens),
   [ChainId.polygonZkevm]: convertTokensToTokensByAddress(polygonZkevmTokens),

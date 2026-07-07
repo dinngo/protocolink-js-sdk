@@ -316,3 +316,53 @@ describe('Test setNetwork', function () {
     });
   });
 });
+
+describe('Chain 138 network metadata', function () {
+  it('has ChainId and NetworkId constants', function () {
+    expect(ChainId.chain138).to.eq(138);
+    expect(NetworkId.chain138).to.eq('chain138');
+    expect(isSupportedChainId(ChainId.chain138)).to.be.true;
+    expect(isSupportedNetworkId(NetworkId.chain138)).to.be.true;
+  });
+
+  it('has explorer, Multicall3, native, and wrapped native metadata', function () {
+    const network = getNetwork(ChainId.chain138);
+
+    expect(network.id).to.eq(NetworkId.chain138);
+    expect(network.chainId).to.eq(138);
+    expect(network.name).to.eq('DeFi Oracle Meta Mainnet');
+    expect(network.explorerUrl).to.eq('https://blockscout.defi-oracle.io/');
+    expect(network.rpcUrl).to.eq('https://rpc.d-bis.org');
+    expect(network.multicall3Address).to.eq('0xcA11bde05977b3631167028862bE2a173976CA11');
+
+    expect(network.nativeToken).to.include({
+      chainId: 138,
+      address: '0x0000000000000000000000000000000000000000',
+      decimals: 18,
+      symbol: 'ETH',
+      name: 'Ethereum',
+    });
+    expect(network.wrappedNativeToken).to.include({
+      chainId: 138,
+      address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+      decimals: 18,
+      symbol: 'WETH',
+      name: 'Wrapped Ether',
+    });
+  });
+
+  it('builds Blockscout explorer URLs', function () {
+    const txHash = '0x7b00ad829b19ebd4df94f8b5cd0120d300d67482d41755dd5d259defb0164743';
+    const address = '0xDec80E988F4baF43be69c13711453013c212feA8';
+
+    expect(newExplorerUrl(ChainId.chain138, ExplorerType.tx, txHash)).to.eq(
+      `https://blockscout.defi-oracle.io/tx/${txHash}`
+    );
+    expect(newExplorerUrl(ChainId.chain138, ExplorerType.address, address)).to.eq(
+      `https://blockscout.defi-oracle.io/address/${address}`
+    );
+    expect(newExplorerUrl(ChainId.chain138, ExplorerType.token, address)).to.eq(
+      `https://blockscout.defi-oracle.io/token/${address}`
+    );
+  });
+});

@@ -18,6 +18,10 @@ export const contractAddressMap: Record<number, Record<ContractNames, string>> =
   [common.ChainId.polygon]: {
     Router: '0xDec80E988F4baF43be69c13711453013c212feA8',
   },
+  [common.ChainId.chain138]: {
+    // Chain 138 fallback Router. Replace with the canonical Router after the canonical CREATE3Factory is deployed.
+    Router: '0xE7f51632381d0791eC5c05F5585e7b1bFf1de5F5',
+  },
   [common.ChainId.zksync]: {
     Router: '0xF0eD7De3cCc91682550cD178f1628830CDBcA237',
   },
