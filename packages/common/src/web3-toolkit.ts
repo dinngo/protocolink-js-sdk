@@ -72,9 +72,12 @@ export class Web3Toolkit {
         let name: string;
         try {
           [symbol] = this.erc20Iface.decodeFunctionResult('symbol', returnData[1]);
-          [name] = this.erc20Iface.decodeFunctionResult('name', returnData[2]);
         } catch {
           symbol = utils.parseBytes32String(returnData[1]);
+        }
+        try {
+          [name] = this.erc20Iface.decodeFunctionResult('name', returnData[2]);
+        } catch {
           name = utils.parseBytes32String(returnData[2]);
         }
 
@@ -106,20 +109,20 @@ export class Web3Toolkit {
       if (tokenAddress === this.nativeToken.address || tokenAddress === ELASTIC_ADDRESS) {
         tokens.push(this.nativeToken);
       } else {
-        const [decimals] = this.erc20Iface.decodeFunctionResult('decimals', returnData[j]);
-        j++;
+        const [decimals] = this.erc20Iface.decodeFunctionResult('decimals', returnData[j++]);
+        const symbolIndex = j++;
+        const nameIndex = j++;
         let symbol: string;
         let name: string;
         try {
-          [symbol] = this.erc20Iface.decodeFunctionResult('symbol', returnData[j]);
-          j++;
-          [name] = this.erc20Iface.decodeFunctionResult('name', returnData[j]);
-          j++;
+          [symbol] = this.erc20Iface.decodeFunctionResult('symbol', returnData[symbolIndex]);
         } catch {
-          symbol = utils.parseBytes32String(returnData[j]);
-          j++;
-          name = utils.parseBytes32String(returnData[j]);
-          j++;
+          symbol = utils.parseBytes32String(returnData[symbolIndex]);
+        }
+        try {
+          [name] = this.erc20Iface.decodeFunctionResult('name', returnData[nameIndex]);
+        } catch {
+          name = utils.parseBytes32String(returnData[nameIndex]);
         }
         tokens.push(new Token(this.chainId, tokenAddress, decimals, symbol, name));
       }
