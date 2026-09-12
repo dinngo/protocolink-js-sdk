@@ -108,19 +108,23 @@ export class Web3Toolkit {
       } else {
         const [decimals] = this.erc20Iface.decodeFunctionResult('decimals', returnData[j]);
         j++;
+
         let symbol: string;
-        let name: string;
         try {
           [symbol] = this.erc20Iface.decodeFunctionResult('symbol', returnData[j]);
-          j++;
-          [name] = this.erc20Iface.decodeFunctionResult('name', returnData[j]);
-          j++;
         } catch {
           symbol = utils.parseBytes32String(returnData[j]);
-          j++;
-          name = utils.parseBytes32String(returnData[j]);
-          j++;
         }
+        j++;
+
+        let name: string;
+        try {
+          [name] = this.erc20Iface.decodeFunctionResult('name', returnData[j]);
+        } catch {
+          name = utils.parseBytes32String(returnData[j]);
+        }
+        j++;
+
         tokens.push(new Token(this.chainId, tokenAddress, decimals, symbol, name));
       }
     }
