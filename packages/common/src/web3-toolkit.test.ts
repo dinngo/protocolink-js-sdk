@@ -57,10 +57,11 @@ describe('Web3Toolkit', function () {
           mainnetTokens.USDC.address,
           mainnetTokens.ETH.address,
           mainnetTokens.WETH.address,
+          mainnetTokens.MKR.address,
           ELASTIC_ADDRESS,
           mainnetTokens.DAI.address,
         ],
-        expected: [mainnetTokens.USDC, mainnetTokens.ETH, mainnetTokens.WETH, mainnetTokens.ETH, mainnetTokens.DAI],
+        expected: [mainnetTokens.USDC, mainnetTokens.ETH, mainnetTokens.WETH, mainnetTokens.MKR, mainnetTokens.ETH, mainnetTokens.DAI],
       },
       {
         chainId: ChainId.zksync,
